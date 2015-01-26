@@ -98,7 +98,8 @@ namespace odfaeg {
                     math::Ray *r2 = new math::Ray (p1, p2);
                     addSegment(r2);
                 }
-                shadowScale = math::Vec3f(1.f, sy, 1.f);
+                shadowScale = math::Vec3f(1.f, sy, sy);
+
                 shadowCenter = math::Vec3f(0, 0, 0);
                 shadowRotationAngle = 0;
                 shadowRotationAxis = math::Vec3f::zAxis;

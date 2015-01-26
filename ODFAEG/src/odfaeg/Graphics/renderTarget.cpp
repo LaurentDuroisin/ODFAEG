@@ -97,10 +97,11 @@ namespace odfaeg {
         math::Vec3f RenderTarget::mapPixelToCoords(const math::Vec3f& point, View& view)
         {
             ViewportMatrix vpm;
-            vpm.setViewport(math::Vec3f(view.getViewport().getPosition().x, view.getViewport().getPosition().y, -view.getViewport().getDepth()), math::Vec3f(view.getViewport().getWidth(), view.getViewport().getHeight(), view.getViewport().getDepth()));
+            vpm.setViewport(math::Vec3f(view.getViewport().getPosition().x, view.getViewport().getPosition().y, 0)
+                                        ,math::Vec3f(view.getViewport().getWidth(), view.getViewport().getHeight(), 1));
             math::Vec3f coords = vpm.toNormalizedCoordinates(point);
             coords = view.getProjMatrix().unProject(coords);
-            coords /= math::Math::abs(coords.w);
+            coords /= coords.w;
             coords = view.getViewMatrix().inverseTransform(coords);
             return coords;
         }
@@ -111,29 +112,27 @@ namespace odfaeg {
         }
 
 
-        math::Vec3f RenderTarget::mapCoordsToPixel(const math::Vec3f& point, View& view)
-        {
+        math::Vec3f RenderTarget::mapCoordsToPixel(const math::Vec3f& point, View& view) {
+
             ViewportMatrix vpm;
-            vpm.setViewport(math::Vec3f(view.getViewport().getPosition().x, view.getViewport().getPosition().y, -view.getDepth()),
-            math::Vec3f(view.getViewport().getWidth(), view.getViewport().getHeight(), view.getDepth()));
+            vpm.setViewport(math::Vec3f(view.getViewport().getPosition().x, view.getViewport().getPosition().y, 0),
+            math::Vec3f(view.getViewport().getWidth(), view.getViewport().getHeight(), 1));
             math::Vec3f coords = view.getViewMatrix().transform(point);
             coords = view.getProjMatrix().project(coords);
-            float tmp = coords.y;
-            coords.y = coords.z;
-            coords.z = -tmp;
             coords = vpm.toViewportCoordinates(coords);
-            coords /= math::Math::abs(coords.w);
+            coords /= coords.w;
             /*if (view.isXFlipped())
-                coords.x = view.getViewport().getSize().x - coords.x;
+            coords.x = view.getViewport().getSize().x - coords.x;
             if (view.isYFlipped())
-                coords.y = view.getViewport().getSize().y - coords.y;*/
+            coords.y = view.getViewport().getSize().y - coords.y;*/
             return coords;
-           /*physic::BoundingBox frustum = view.getFrustum();
-           math::Vec3f fCoords = view.getViewMatrix().transform(point);
-           fCoords = fCoords - frustum.getPosition();
+            /*physic::BoundingBox frustum = view.getFrustum();
+            math::Vec3f fCoords = view.getViewMatrix().transform(point);
+            fCoords = fCoords - frustum.getPosition();
             std::cout<<"f coords : "<<fCoords<<std::endl;
-           return fCoords;*/
+            return fCoords;*/
         }
+
 
         ////////////////////////////////////////////////////////////
         void RenderTarget::draw(Drawable& drawable, RenderStates states)
@@ -165,7 +164,7 @@ namespace odfaeg {
                     applyCurrentView();
                 // Check if the vertex count is low enough so that we can pre-transform them
                 bool useVertexCache = (vertexCount <= StatesCache::VertexCacheSize);
-                if (useVertexCache && !GLEW_ARB_vertex_buffer_object)
+               /* if (useVertexCache && states.transform.isGpuTransform!GLEW_ARB_vertex_buffer_object)
                 {
 
                     // Pre-transform the vertices and store them into the vertex cache
@@ -184,10 +183,10 @@ namespace odfaeg {
                     states.transform.reset3D();
                     applyTransform(states.transform);
                 }
-                else
-                {
+                /*else
+                {*/
                     applyTransform(states.transform);
-                }
+                /*}*/
                 // Apply the blend mode
                 if (states.blendMode != m_cache.lastBlendMode)
                     applyBlendMode(states.blendMode);
@@ -212,7 +211,7 @@ namespace odfaeg {
                         vertices = nullptr;
                 }
                 // Setup the pointers to the vertices' components
-                if (vertices && GLEW_ARB_vertex_buffer_object) {
+                /*if (vertices && GLEW_ARB_vertex_buffer_object) {
                     //In moddern opengl we need to use glVertexAttribPointer functions. (gl*Pointer is deprecated)
                     if (majorVersion >= 3 && minorVersion >= 3) {
                         glCheck(glBindBuffer(GL_ARRAY_BUFFER, states.vertexBufferId));
@@ -295,7 +294,7 @@ namespace odfaeg {
                         states.vertexBufferId = 0;
                         states.normalBufferId = 0;
                     }
-                } else if (vertices) {
+                } else*/ if (vertices) {
                     glCheck(glEnableClientState(GL_COLOR_ARRAY));
                     glCheck(glEnableClientState(GL_NORMAL_ARRAY));
                     glCheck(glEnableClientState(GL_TEXTURE_COORD_ARRAY));
@@ -419,8 +418,8 @@ namespace odfaeg {
         {
 
             // Setup the default and current views
-            m_defaultView = View (static_cast<float>(getSize().x), static_cast<float>(getSize().y),0, static_cast<float>(getSize().y)+100);
-            m_defaultView.reset(physic::BoundingBox(0, 0, 0,static_cast<float>(getSize().x), static_cast<float>(getSize().y),static_cast<float>(getSize().y)+100));
+            m_defaultView = View (static_cast<float>(getSize().x), static_cast<float>(getSize().y), -static_cast<float>(getSize().y) - 100, static_cast<float>(getSize().y)+100);
+            m_defaultView.reset(physic::BoundingBox(0, 0, -static_cast<float>(getSize().y) - 100,static_cast<float>(getSize().x), static_cast<float>(getSize().y),static_cast<float>(getSize().y)+100));
             m_view = m_defaultView;
 
             // Set GL states only on first draw, so that we don't pollute user's states
@@ -445,7 +444,7 @@ namespace odfaeg {
 
             // Go back to model-view mode
             glCheck(glMatrixMode(GL_MODELVIEW));
-
+            glCheck(glLoadIdentity());
         }
         ////////////////////////////////////////////////////////////
         void RenderTarget::applyBlendMode(const BlendMode& mode)
@@ -477,18 +476,6 @@ namespace odfaeg {
 
             m_cache.lastBlendMode = mode;
         }
-
-
-        ////////////////////////////////////////////////////////////
-        void RenderTarget::applyTransform(TransformMatrix& transform)
-        {
-            // No need to call glMatrixMode(GL_MODELVIEW), it is always the
-            // current mode (for optimization purpose, since it's the most used)
-            glCheck(glLoadIdentity());
-            glCheck(glMultMatrixf(transform.getGlMatrix()));
-        }
-
-
         ////////////////////////////////////////////////////////////
         void RenderTarget::applyTexture(const Texture* texture)
         {
@@ -497,6 +484,15 @@ namespace odfaeg {
 
             m_cache.lastTextureId = texture ? texture->m_cacheId : 0;
 
+        }
+        void RenderTarget::applyTransform(TransformMatrix& tm) {
+
+            /*if (tm.isGpuTransform()) {
+                glCheck(glLoadIdentity());
+                float* matrix = tm.getGlMatrix();
+                glCheck(glMultMatrixf(matrix));
+                delete matrix;
+            }*/
         }
         void RenderTarget::setMajorVersion(unsigned int version) {
              majorVersion = version;

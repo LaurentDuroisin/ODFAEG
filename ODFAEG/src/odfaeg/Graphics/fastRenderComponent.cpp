@@ -30,7 +30,6 @@ namespace odfaeg {
                 //With modern openg, we need to use another vertex shader.
                 //GLSL 3 is not supported by all the drivers so we use GLSL 1.
                 if (Shader::getShadingLanguageVersionMajor() >= 3 && Shader::getShadingLanguageVersionMinor() >= 3) {
-                    std::cout<<"version 330"<<std::endl;
                     const std::string vertexShader =
                     "#version 330 core \n"
                     "layout(location = 0) in vec3 vertex_position;"
@@ -141,16 +140,16 @@ namespace odfaeg {
                         "uniform float haveTexture;"
                         "uniform float maxM;"
                         "uniform float maxP;"
-                        "uniform float m;"
-                        "uniform float p;"
+                        "/*uniform float m;"
+                        "uniform float p;*/"
                         "in mat4 projMat;"
                         "void main () {"
                             "vec2 position = ( gl_FragCoord.xy / resolution.xy );"
                             "vec4 color = texture2D(depthBuffer, position);"
                             "vec4 pixel = (haveTexture==1) ? gl_Color * texture2D(texture, gl_TexCoord[0].xy) : gl_Color;"
                             "float z = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
-                            "float intensity = (maxM != 0) ? m / maxM : 0.f;"
-                            "float power = (maxP != 0) ? p / maxP : 0.f;"
+                            "/*float intensity = (maxM != 0) ? m / maxM : 0.f;"
+                            "float power = (maxP != 0) ? p / maxP : 0.f;*/"
                             "if (z >= color.z && pixel.a >= color.a) {"
                                 "gl_FragColor = vec4(z, pixel.a, z, pixel.a);"
                             "} else {"
@@ -171,12 +170,14 @@ namespace odfaeg {
                             "vec4 color = texture2D(frameBuffer, position);"
                             "vec4 pixel = (haveTexture==1) ? gl_Color * texture2D(texture, gl_TexCoord[0].xy) : gl_Color;"
                             "float z = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
-                            "if (z >= depth.r) {"
-                                "gl_FragColor = pixel * pixel.a + color * (1 - pixel.a) /*pixel*/;"
-                                "gl_FragColor.a = color.a + pixel.a * (1 - color.a);"
+                            "if (z >= depth.z) {"
+                                "/*gl_FragColor = pixel * pixel.a + color * (1 - pixel.a);"
+                                "gl_FragColor.a = pixel.a + depth.g * (1 - pixel.a);*/"
+                                "gl_FragColor = pixel;"
                             "} else {"
-                                "gl_FragColor = color * depth.g + pixel * (1 - depth.g) /*color*/;"
-                                "gl_FragColor.a = pixel.a + color.a * (1 - pixel.a);"
+                                "/*gl_FragColor = color * depth.g + pixel * (1 - depth.g);"
+                                "gl_FragColor.a = color.a + pixel.a * (1 - color.a);*/"
+                                "gl_FragColor = color;"
                             "}"
                         "}";
                         if (!depthBufferGenerator->loadFromMemory(vertexShader, depthGenFragShader))
@@ -267,7 +268,7 @@ namespace odfaeg {
                 loadEntitiesOnComponent(visibleEntities);
                 update = false;
             }
-            //currentStates.blendMode = sf::BlendAlpha;
+            //currentStates.blendMode = sf::BlendNone;
             if (Shader::isAvailable()) {
                 if (Shader::getShadingLanguageVersionMajor() >= 3 && Shader::getShadingLanguageVersionMinor() >= 3) {
                     std::vector<float> instancesMVP;
@@ -339,8 +340,8 @@ namespace odfaeg {
                         currentStates.texture = m_instances[i]->getMaterial().getTexture();
                         float specularIntensity = m_instances[i]->getMaterial().getSpecularIntensity();
                         float specularPower = m_instances[i]->getMaterial().getSpecularPower();
-                        depthBufferGenerator->setParameter("m", specularIntensity);
-                        depthBufferGenerator->setParameter("p", specularPower);
+                        /*depthBufferGenerator->setParameter("m", specularIntensity);
+                        depthBufferGenerator->setParameter("p", specularPower);*/
                         if (currentStates.texture != nullptr) {
 
                             depthBufferGenerator->setParameter("haveTexture", 1.f);
@@ -350,19 +351,21 @@ namespace odfaeg {
                             depthBufferGenerator->setParameter("haveTexture", 0.f);
                             frameBufferGenerator->setParameter("haveTexture", 0.f);
                         }
-
-                        /*VertexArray& va = m_instances[i]->getVertexArray();
+                        VertexArray& va = m_instances[i]->getVertexArray();
                         currentStates.shader = frameBufferGenerator;
                         frameBuffer->draw(va, currentStates);
                         currentStates.shader = depthBufferGenerator;
-                        depthBuffer->draw(va, currentStates);*/
-                        for (unsigned int j = 0; j < m_instances[i]->getVertexArrays().size(); j++) {
-                            currentStates.transform = m_instances[i]->getTransforms()[j].get();
+                        depthBuffer->draw(va, currentStates);
+                        /*for (unsigned int j = 0; j < va.getVertexCount(); j++) {
+                            std::cout<<va[j].position.x<<" "<<va[j].position.y<<" "<<va[j].position.z<<std::endl;
+                        }*/
+                        /*for (unsigned int j = 0; j < m_instances[i]->getVertexArrays().size(); j++) {
+                            //currentStates.transform = m_instances[i]->getTransforms()[j].get();
                             currentStates.shader = frameBufferGenerator;
                             frameBuffer->draw(*m_instances[i]->getVertexArrays()[j], currentStates);
                             currentStates.shader = depthBufferGenerator;
                             depthBuffer->draw(*m_instances[i]->getVertexArrays()[j], currentStates);
-                        }
+                        }*/
                     }
                 }
                 depthBuffer->display();

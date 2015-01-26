@@ -19,7 +19,7 @@ namespace odfaeg {
             v2.texCoords = sf::Vector2f(subRect.left + subRect.width, subRect.top);
             v3.texCoords = sf::Vector2f(subRect.left + subRect.width, subRect.top + subRect.height);
             v4.texCoords = sf::Vector2f(subRect.left, subRect.top + subRect.height);
-            Face* face = new Face(sf::TrianglesFan,getTransform());
+            Face* face = new Face(sf::Quads,getTransform());
             face->getMaterial().addTexture(tile.getFaces()[0]->getMaterial().getTexture(), subRect);
             face->append(v1, 0);
             face->append(v2, 1);
@@ -34,7 +34,7 @@ namespace odfaeg {
         }
         Tile::Tile (const Texture *image, math::Vec3f position, math::Vec3f size, sf::IntRect subRect, sf::Color color, Entity *parent)
         : Entity (position, size, size * 0.5f, "E_TILE") {
-            Face* face = new Face(sf::TrianglesFan,getTransform());
+            Face* face = new Face(sf::Quads,getTransform());
             Vertex v1(sf::Vector3f(position.x, position.y, position.z));
             Vertex v2(sf::Vector3f(position.x + size.x, position.y, position.z));
             Vertex v3(sf::Vector3f(position.x + size.x, position.y + size.y, position.z));
@@ -56,6 +56,10 @@ namespace odfaeg {
             getFaces()[0]->getVertexArray()[1].position.z = h2;
             getFaces()[0]->getVertexArray()[2].position.z = h3;
             getFaces()[0]->getVertexArray()[3].position.z = h4;
+            getFaces()[0]->getVertexArray().setLocal(0, math::Vec3f(getFaces()[0]->getVertexArray().getLocal(0).x,getFaces()[0]->getVertexArray().getLocal(0).y, h1));
+            getFaces()[0]->getVertexArray().setLocal(1, math::Vec3f(getFaces()[0]->getVertexArray().getLocal(1).x,getFaces()[0]->getVertexArray().getLocal(1).y, h2));
+            getFaces()[0]->getVertexArray().setLocal(2, math::Vec3f(getFaces()[0]->getVertexArray().getLocal(2).x,getFaces()[0]->getVertexArray().getLocal(2).y, h3));
+            getFaces()[0]->getVertexArray().setLocal(3, math::Vec3f(getFaces()[0]->getVertexArray().getLocal(3).x,getFaces()[0]->getVertexArray().getLocal(3).y, h4));
             float min, max;
             if (h1 < h2 && h1 < h3 && h1 < h4)
                 min = h1;

@@ -128,7 +128,7 @@ namespace odfaeg {
                 m_position += t;
                 m_center += t;
                 math::Vec3f localT = m_position - getLocalBounds().getPosition();
-                tm.setTranslation(math::Vec3f(localT.x, localT.y, localT.z));
+                tm.setTranslation(m_center);
                 onMove(t);
             }
             /**
@@ -139,7 +139,8 @@ namespace odfaeg {
             void setOrigin(math::Vec3f origin) {
                m_origin = origin;
                m_center = m_position + origin;
-               tm.setOrigin(math::Vec3f(m_center.x, m_center.y, m_center.z));
+               tm.setOrigin(m_origin);
+               tm.setTranslation(m_center);
             }
             /**
             * \fn Vec3f getScale() const
@@ -296,7 +297,7 @@ namespace odfaeg {
                 m_origin = math::Vec3f(0, 0, 0);
                 m_scale = math::Vec3f (1.f, 1.f, 1.f);
                 m_rotation = 0;
-                tm.setOrigin(math::Vec3f(m_center.x, m_center.y, m_center.z));
+                tm.setOrigin(m_origin);
                 tm.setRotation(math::Vec3f::zAxis, 0);
             }
             /**
@@ -314,8 +315,9 @@ namespace odfaeg {
                 m_origin = origin;
                 m_scale = math::Vec3f (1.f, 1.f, 1.f);
                 m_rotation = 0;
-                tm.setOrigin(math::Vec3f(m_center.x, m_center.y, m_center.z));
+                tm.setOrigin(m_origin);
                 tm.setRotation(math::Vec3f::zAxis, 0);
+                tm.setTranslation(m_center);
             }
             /**
             * \fn void combine (TransformMatrix &tm)
@@ -361,4 +363,3 @@ namespace odfaeg {
     }
 }
 #endif // TRANSF_ENTITY
-

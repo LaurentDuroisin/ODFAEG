@@ -204,6 +204,7 @@ namespace odfaeg
 
             // Render the inside
             states.texture = m_texture;
+            m_vertices.transform(getTransform());
             target.draw(m_vertices, states);
 
             // Render the outline

@@ -153,6 +153,7 @@
 		<Unit filename="include/odfaeg/Graphics/view.h" />
 		<Unit filename="include/odfaeg/Graphics/viewMatrix.h" />
 		<Unit filename="include/odfaeg/Graphics/viewportMatrix.h" />
+		<Unit filename="include/odfaeg/Graphics/world.h" />
 		<Unit filename="include/odfaeg/Math/computer.h" />
 		<Unit filename="include/odfaeg/Math/distribution.h" />
 		<Unit filename="include/odfaeg/Math/distributions.h" />
@@ -218,7 +219,6 @@
 		<Unit filename="src/odfaeg/Core/stateGroup.cpp" />
 		<Unit filename="src/odfaeg/Core/stateStack.cpp" />
 		<Unit filename="src/odfaeg/Core/utilities.cpp" />
-		<Unit filename="src/odfaeg/Core/world.cpp" />
 		<Unit filename="src/odfaeg/Graphics/2D/ambientLight.cpp" />
 		<Unit filename="src/odfaeg/Graphics/2D/decor.cpp" />
 		<Unit filename="src/odfaeg/Graphics/2D/directionnalLight.cpp" />
@@ -277,6 +277,7 @@
 		<Unit filename="src/odfaeg/Graphics/view.cpp" />
 		<Unit filename="src/odfaeg/Graphics/viewMatrix.cpp" />
 		<Unit filename="src/odfaeg/Graphics/viewport.cpp" />
+		<Unit filename="src/odfaeg/Graphics/world.cpp" />
 		<Unit filename="src/odfaeg/Math/Segment.cpp" />
 		<Unit filename="src/odfaeg/Math/computer.cpp" />
 		<Unit filename="src/odfaeg/Math/distribution.cpp" />
@@ -302,6 +303,7 @@
 		<Unit filename="src/odfaeg/Physics/boundingPolyhedron.cpp" />
 		<Unit filename="src/odfaeg/Physics/boundingSphere.cpp" />
 		<Unit filename="src/odfaeg/Physics/boundingVolume.cpp" />
+		<Unit filename="src/odfaeg/Physics/collisionResultSet.cpp" />
 		<Unit filename="src/odfaeg/Physics/emitter.cpp" />
 		<Unit filename="src/odfaeg/Physics/orientedBoundingBox.cpp" />
 		<Unit filename="src/odfaeg/Physics/particle.cpp" />

@@ -268,7 +268,7 @@ namespace odfaeg {
             points[5] = math::Vec3f (getPosition().x, getPosition().y + getHeight(), getPosition().z - getDepth());
             points[6] = math::Vec3f (getPosition().x + getWidth(), getPosition().y + getHeight(), getPosition().z - getDepth());
             points[7] = math::Vec3f (getPosition().x + getWidth(), getPosition().y, getPosition().z - getDepth());
-            tm.setOrigin(center);
+            //tm.setOrigin(center - getPosition());
             for (unsigned int i = 0; i < points.size(); i++) {
                 points[i] = tm.transform(points[i]);
 
@@ -282,9 +282,9 @@ namespace odfaeg {
         }
         void BoundingBox::move(math::Vec3f t) {
             graphic::TransformMatrix tm;
-            tm.setTranslation(t);
             tm.setOrigin(center);
-            center = tm.transform(center);
+            center = center + t;
+            tm.setTranslation(center);
             for (unsigned int i = 0; i < points.size(); i++)
                 points[i] = tm.transform(points[i]);
             std::array<std::array<float, 2>, 3> extends = math::Computer::getExtends(points);
@@ -298,7 +298,7 @@ namespace odfaeg {
         void BoundingBox::scale(math::Vec3f s) {
             graphic::TransformMatrix tm;
             tm.setScale(s);
-            tm.setOrigin(center);
+            tm.setOrigin(center-getPosition());
             for (unsigned int i = 0; i < points.size(); i++)
                 points[i] = tm.transform(points[i]);
             std::array<std::array<float, 2>, 3> extends = math::Computer::getExtends(points);

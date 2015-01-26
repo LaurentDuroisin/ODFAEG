@@ -147,22 +147,19 @@ namespace odfaeg {
                     unsigned int numIndexes = va->getIndexes().size();
                     for (unsigned int i = 0; i < va->getVertexCount(); i++) {
                         m_vertices.append((*va)[i]);
-                        for (unsigned int j = 0; j < va->getIndexes().size(); j++) {
-                            m_vertices.addIndex(va->getIndexes()[i]);
-                        }
+                    }
+                    for (unsigned int i = 0; i < va->getIndexes().size(); i++) {
+                        m_vertices.addIndex(va->getIndexes()[i]);
                     }
                     m_vertices.addInstancedRenderingInfos(numIndexes,baseVertex,baseIndex);
                     numInstances++;
                 } else {
+                    unsigned int numIndexes = m_vertices.getIndexes().size();
                     for (unsigned int i = 0; i < va->getVertexCount(); i++) {
-                        math::Vec3f position = va->getLocal(i);
-                        position = tm.transform(position);
-                        Vertex v = (*va)[i];
-                        v.position = position;
-                        m_vertices.append(v);
-                        for (unsigned int j = 0; j < va->getIndexes().size(); j++) {
-                            m_vertices.addIndex(va->getIndexes()[j]);
-                        }
+                        m_vertices.append((*va)[i]);
+                    }
+                    for (unsigned int i = 0; i < va->getIndexes().size(); i++) {
+                        m_vertices.addIndex(numIndexes + va->getIndexes()[i]);
                     }
                 }
                 m_transforms.push_back(std::ref(tm));
@@ -194,7 +191,6 @@ namespace odfaeg {
             Instance::~Instance() {
                 m_vertices.clear();
                 m_transforms.clear();
-                m_vertices.clear();
                 m_vertexArrays.clear();
             }
 

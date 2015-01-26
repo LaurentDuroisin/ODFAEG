@@ -89,7 +89,8 @@ namespace odfaeg {
             ///
             ////////////////////////////////////////////////////////////
             const Vertex& operator [](unsigned int index) const;
-            const math::Vec3f getLocal(unsigned int index) const;
+            math::Vec3f getLocal(unsigned int index) const;
+            void setLocal(unsigned int index, math::Vec3f v);
             std::vector<unsigned int> getBaseIndexes();
 
             ////////////////////////////////////////////////////////////

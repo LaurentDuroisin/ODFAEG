@@ -41,10 +41,16 @@ namespace odfaeg {
                     v1 = Vector3f (center.x, center.y, center.z);
                     v2 = Vector3f (center.x + getSize().x * 0.5f * math::Math::cosinus (i * angle), center.y + getSize().y * 0.5f * math::Math::sinus (i * angle), center.z);
                     v3 = Vector3f (center.x + getSize().x * 0.5f * math::Math::cosinus ((i + 1) * angle), center.y + getSize().y * 0.5f * math::Math::sinus ((i + 1) * angle), center.z);
+                    Face* face = new Face(sf::Quads,getTransform());
+
                     VertexArray *triangle = new VertexArray (Triangles);
                     triangle->append(Vertex(v1, color));
                     triangle->append(Vertex(v2, color2));
                     triangle->append(Vertex(v3, color2));
+                    face->append(v1, 0);
+                    face->append(v2, 1);
+                    face->append(v3, 2);
+                    addFace(face);
                     addTriangle(triangle);
                 }
 

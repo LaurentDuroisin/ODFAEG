@@ -101,9 +101,13 @@ namespace odfaeg {
             }
         }
         void Entity::updateTransform() {
+
             getTransform().update();
-            for (unsigned int i = 0; i < children.size(); i++) {
-                children[i]->getTransform().update();
+            //std::cout<<"update : "<<std::endl;
+
+            for (unsigned int i = 0; i < faces.size(); i++) {
+                VertexArray& va = faces[i]->getVertexArray();
+                va.transform(getTransform());
             }
         }
         //Return the children of the entities.
@@ -123,17 +127,25 @@ namespace odfaeg {
         }
 
         void Entity::onMove(math::Vec3f &t) {
+            updateTransform();
             for (unsigned int i = 0; i < children.size(); i++) {
                 children[i]->move(t);
             }
+
+
         }
         void Entity::onScale(math::Vec3f &s) {
-            for (unsigned int i = 0; i < children.size(); i++)
+            updateTransform();
+            for (unsigned int i = 0; i < children.size(); i++) {
                 children[i]->scale(s);
+            }
+
         }
         void Entity::onRotate(float angle) {
-            for (unsigned int i = 0; i < children.size(); i++)
+            updateTransform();
+            for (unsigned int i = 0; i < children.size(); i++) {
                 children[i]->rotate(angle);
+            }
         }
         void Entity::addFace (Face* face) {
             faces.push_back(face);

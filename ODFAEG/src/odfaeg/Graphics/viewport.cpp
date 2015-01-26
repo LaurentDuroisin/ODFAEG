@@ -25,7 +25,7 @@ namespace odfaeg {
                 viewport.m21 = 0.f;
                 viewport.m22 = size.y * 0.5f;
                 viewport.m23 = 0.f;
-                viewport.m24 = size.y  * 0.5f + position.y;
+                viewport.m24 = size.y * 0.5f + position.y;
                 viewport.m31 = 0.f;
                 viewport.m32 = 0.f;
                 viewport.m33 = size.z * 0.5f;

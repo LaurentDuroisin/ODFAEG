@@ -414,6 +414,7 @@ namespace odfaeg {
                     Entity* entity2 = cells[i]->getEntitiesInside()[j];
                     if (entity2 != entity) {
                         physic::BoundingVolume* bv2 = entity2->getCollisionVolume();
+
                         if (bv1 != nullptr && bv2 != nullptr) {
                             if (bv1->intersects(*bv2)) {
                                 physic::CollisionResultSet::pushCollisionEntity(entity2);
