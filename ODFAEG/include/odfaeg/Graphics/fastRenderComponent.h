@@ -111,6 +111,7 @@ namespace odfaeg {
             * \return the texture of the normals.
             */
             const Texture& getNormalMapTexture();
+            const Texture& getSpecularTexture();
             /**
             * \fn getFrameBufferTile ()
             * \brief get the frame buffer tile.
@@ -131,8 +132,10 @@ namespace odfaeg {
             std::vector<Entity*> visibleEntities; /**> Entities loaded*/
             RenderTexture *frameBuffer; /**> the frame buffer.*/
             RenderTexture *depthBuffer; /**> the depth buffer.*/
+            RenderTexture *specularTexture; /**> specular components.*/
             Shader* depthBufferGenerator; /**> the shader to generate the depth buffer.*/
             Shader* frameBufferGenerator; /**> the shader to generate the frame buffer.*/
+            Shader* specularTextureGenerator;
             RenderStates currentStates; /**> the current render states.*/
             View view; /**> the view of the component.*/
             Tile* frameBufferTile, *depthBufferTile; /**> the frame, depth and normal buffer.*/

@@ -113,7 +113,6 @@ namespace odfaeg {
 
 
         math::Vec3f RenderTarget::mapCoordsToPixel(const math::Vec3f& point, View& view) {
-
             ViewportMatrix vpm;
             vpm.setViewport(math::Vec3f(view.getViewport().getPosition().x, view.getViewport().getPosition().y, 0),
             math::Vec3f(view.getViewport().getWidth(), view.getViewport().getHeight(), 1));
@@ -121,16 +120,7 @@ namespace odfaeg {
             coords = view.getProjMatrix().project(coords);
             coords = vpm.toViewportCoordinates(coords);
             coords /= coords.w;
-            /*if (view.isXFlipped())
-            coords.x = view.getViewport().getSize().x - coords.x;
-            if (view.isYFlipped())
-            coords.y = view.getViewport().getSize().y - coords.y;*/
             return coords;
-            /*physic::BoundingBox frustum = view.getFrustum();
-            math::Vec3f fCoords = view.getViewMatrix().transform(point);
-            fCoords = fCoords - frustum.getPosition();
-            std::cout<<"f coords : "<<fCoords<<std::endl;
-            return fCoords;*/
         }
 
 

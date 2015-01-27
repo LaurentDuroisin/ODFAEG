@@ -62,7 +62,7 @@ namespace odfaeg {
             void ShadowWall::onMove(math::Vec3f& t) {
                 shadow->move(t);
             }
-            void ShadowWall::onDraw(RenderTarget &target, RenderStates states) const {
+            void ShadowWall::onDraw(RenderTarget &target, RenderStates states) {
                  target.draw(*shadow, states);
             }
             bool ShadowWall::operator== (Entity& other) {

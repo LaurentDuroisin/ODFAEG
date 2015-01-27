@@ -38,22 +38,15 @@ namespace odfaeg {
 
                 for (int i = 0; i < end; i++) {
                     Vector3f v1, v2, v3;
-                    v1 = Vector3f (center.x, center.y, center.z);
-                    v2 = Vector3f (center.x + getSize().x * 0.5f * math::Math::cosinus (i * angle), center.y + getSize().y * 0.5f * math::Math::sinus (i * angle), center.z);
-                    v3 = Vector3f (center.x + getSize().x * 0.5f * math::Math::cosinus ((i + 1) * angle), center.y + getSize().y * 0.5f * math::Math::sinus ((i + 1) * angle), center.z);
-                    Face* face = new Face(sf::Quads,getTransform());
-
+                    v1 = Vector3f (0, 0, 0);
+                    v2 = Vector3f (getSize().x * 0.5f * math::Math::cosinus (i * angle), getSize().y * 0.5f * math::Math::sinus (i * angle), 0);
+                    v3 = Vector3f (getSize().x * 0.5f * math::Math::cosinus ((i + 1) * angle), getSize().y * 0.5f * math::Math::sinus ((i + 1) * angle), 0);
                     VertexArray *triangle = new VertexArray (Triangles);
                     triangle->append(Vertex(v1, color));
                     triangle->append(Vertex(v2, color2));
                     triangle->append(Vertex(v3, color2));
-                    face->append(v1, 0);
-                    face->append(v2, 1);
-                    face->append(v3, 2);
-                    addFace(face);
                     addTriangle(triangle);
                 }
-
             }
             //Ajoute un triangle à la source lumineuse.
             void PonctualLight::addTriangle (VertexArray *triangle) {
@@ -71,14 +64,10 @@ namespace odfaeg {
             vector<VertexArray*> PonctualLight::getTris () {
                 return triangles;
             }
-            void PonctualLight::onDraw(RenderTarget &target, RenderStates states) const {
-
+            void PonctualLight::onDraw(RenderTarget &target, RenderStates states) {
                 for (unsigned int i = 0; i < triangles.size(); i++) {
-                    /*for (unsigned int j = 0; j < triangles[i]->getVertexCount(); j++)
-                        std::cout<<(*triangles[i])[j].position.x<<" "<<(*triangles[i])[j].position.y<<std::endl;
-                    std::string s;
-                    std::cin>>s;*/
-                    target.draw(*triangles[i], states);
+                     triangles[i]->transform(getTransform());
+                     target.draw(*triangles[i], states);
                 }
             }
             //Recherche l'intersection entre le triangle numéro n de la lumière et le segment s1.

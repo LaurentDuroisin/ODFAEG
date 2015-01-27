@@ -108,7 +108,7 @@ namespace odfaeg {
                 * \param target : the render target.
                 * \param states : the states.
                 */
-                void onDraw (RenderTarget &target, RenderStates states) const;
+                void onDraw (RenderTarget &target, RenderStates states);
                 /**
                 * \fn bool operator== (Entity &other);
                 * \brief compare an entity with another.

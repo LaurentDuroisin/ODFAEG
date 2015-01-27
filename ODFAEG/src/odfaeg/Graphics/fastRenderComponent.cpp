@@ -15,18 +15,22 @@ namespace odfaeg {
             sf::Vector3i resolution ((int) window.getSize().x, (int) window.getSize().y, window.getView().getSize().z);
             depthBuffer = new RenderTexture();
             frameBuffer = new RenderTexture();
+            specularTexture = new RenderTexture();
+            specularTexture->create(resolution.x, resolution.y,window.getSettings());
             depthBuffer->create(resolution.x, resolution.y,window.getSettings());
             frameBuffer->create(resolution.x, resolution.y,window.getSettings());
             frameBuffer->setView(window.getView());
             depthBuffer->setView(window.getView());
             frameBuffer->clear(sf::Color::Transparent);
             depthBuffer->clear(sf::Color::Transparent);
+            specularTexture->clear(sf::Color::Transparent);
             frameBufferTile = new Tile(&frameBuffer->getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
             depthBufferTile = new Tile(&depthBuffer->getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
             if (Shader::isAvailable()) {
 
                 frameBufferGenerator = new Shader();
                 depthBufferGenerator = new Shader();
+                specularTextureGenerator = new Shader();
                 //With modern openg, we need to use another vertex shader.
                 //GLSL 3 is not supported by all the drivers so we use GLSL 1.
                 if (Shader::getShadingLanguageVersionMajor() >= 3 && Shader::getShadingLanguageVersionMinor() >= 3) {
@@ -121,7 +125,6 @@ namespace odfaeg {
                     if (!frameBufferGenerator->loadFromMemory(vertexShader, frameBufferGenFragShader))
                         throw core::Erreur(51, "Failed to load frame buffer generator shader", 0);
                 } else {
-                   std::cout<<"version 130"<<std::endl;
                    const std::string  vertexShader =
                    "#version 130 \n"
                    "out mat4 projMat;"
@@ -131,30 +134,53 @@ namespace odfaeg {
                         "gl_FrontColor = gl_Color;"
                         "projMat = gl_ProjectionMatrix;"
                    "}";
-                    const std::string depthGenFragShader =
+                   const std::string specularGenFragShader =
+                        "#version 130 \n"
+                        "uniform sampler2D specularTexture;"
+                        "uniform sampler2D texture;"
+                        "uniform vec3 resolution;"
+                        "uniform float maxM;"
+                        "uniform float maxP;"
+                        "uniform float m;"
+                        "uniform float p;"
+                        "uniform float haveTexture;"
+                        "in mat4 projMat;"
+                        "void main() {"
+                            "vec2 position = ( gl_FragCoord.xy / resolution.xy );"
+                            "vec4 color = texture2D(specularTexture, position);"
+                            "vec4 pixel = (haveTexture==1) ? gl_Color * texture2D(texture, gl_TexCoord[0].xy) : gl_Color;"
+                            "float z = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
+                            "if(z >= color.z && pixel.a >= color.a) {"
+                                "float intensity = (maxM != 0) ? m / maxM : 0.f;"
+                                "float power = (maxP != 0) ? p / maxP : 0.f;"
+                                "gl_FragColor = vec4(intensity, power, z, pixel.a);"
+                            "} else {"
+                                "gl_FragColor = color;"
+                            "}"
+                        "}";
+                   const std::string depthGenFragShader =
                         "#version 130 \n"
                         "uniform sampler2D depthBuffer;"
                         "uniform sampler2D heightMap;"
                         "uniform sampler2D texture;"
                         "uniform vec3 resolution;"
                         "uniform float haveTexture;"
-                        "uniform float maxM;"
-                        "uniform float maxP;"
-                        "/*uniform float m;"
-                        "uniform float p;*/"
                         "in mat4 projMat;"
                         "void main () {"
                             "vec2 position = ( gl_FragCoord.xy / resolution.xy );"
                             "vec4 color = texture2D(depthBuffer, position);"
                             "vec4 pixel = (haveTexture==1) ? gl_Color * texture2D(texture, gl_TexCoord[0].xy) : gl_Color;"
                             "float z = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
-                            "/*float intensity = (maxM != 0) ? m / maxM : 0.f;"
-                            "float power = (maxP != 0) ? p / maxP : 0.f;*/"
-                            "if (z >= color.z && pixel.a >= color.a) {"
+                            "vec4 colors[2];"
+                            "colors[1] = vec4(z, pixel.a, z, pixel.a);"
+                            "colors[0] = vec4(z, pixel.a, color.b, color.a);"
+                            "bool b = (z >= color.z && pixel.a >= color.a);"
+                            "gl_FragColor = colors[int(b)];"
+                            "/*if (z >= color.z && pixel.a >= color.a) {"
                                 "gl_FragColor = vec4(z, pixel.a, z, pixel.a);"
                             "} else {"
                                 "gl_FragColor = vec4(z, pixel.a, color.b, color.a);"
-                            "}"
+                            "}*/"
                         "}";
                         const std::string frameBufferGenFragShader =
                         "#version 130 \n"
@@ -170,13 +196,18 @@ namespace odfaeg {
                             "vec4 color = texture2D(frameBuffer, position);"
                             "vec4 pixel = (haveTexture==1) ? gl_Color * texture2D(texture, gl_TexCoord[0].xy) : gl_Color;"
                             "float z = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
+                            "/*vec4 colors[2];"
+                            "colors[1] = pixel * pixel.a + color * (1 - pixel.a);"
+                            "colors[1].a = pixel.a + color.a * (1 - pixel.a);"
+                            "colors[0] = color * depth.g + pixel * (1 - depth.g);"
+                            "colors[0].a = color.a + pixel.a * (1 - color.a);"
+                            "colors[1] = pixel;"
+                            "colors[0] = color;"
+                            "bool b = (z >= depth.z);"
+                            "gl_FragColor = colors[int(b)];*/"
                             "if (z >= depth.z) {"
-                                "/*gl_FragColor = pixel * pixel.a + color * (1 - pixel.a);"
-                                "gl_FragColor.a = pixel.a + depth.g * (1 - pixel.a);*/"
                                 "gl_FragColor = pixel;"
                             "} else {"
-                                "/*gl_FragColor = color * depth.g + pixel * (1 - depth.g);"
-                                "gl_FragColor.a = color.a + pixel.a * (1 - color.a);*/"
                                 "gl_FragColor = color;"
                             "}"
                         "}";
@@ -184,6 +215,8 @@ namespace odfaeg {
                             throw core::Erreur(50, "Failed to load depth buffer generator shader", 0);
                         if (!frameBufferGenerator->loadFromMemory(vertexShader, frameBufferGenFragShader))
                             throw core::Erreur(51, "Failed to load frame buffer generator shader", 0);
+                        if (!specularTextureGenerator->loadFromMemory(vertexShader, specularGenFragShader))
+                            throw core::Erreur(52, "Failed to load specular texture generator shader", 0);
                 }
                 frameBufferGenerator->setParameter("resolution",resolution.x, resolution.y, resolution.z);
                 frameBufferGenerator->setParameter("depthBuffer", depthBuffer->getTexture());
@@ -192,8 +225,11 @@ namespace odfaeg {
                 depthBufferGenerator->setParameter("resolution",resolution.x, resolution.y, resolution.z);
                 depthBufferGenerator->setParameter("depthBuffer", depthBuffer->getTexture());
                 depthBufferGenerator->setParameter("texture", Shader::CurrentTexture);
-                depthBufferGenerator->setParameter("maxM", Material::getMaxSpecularIntensity());
-                depthBufferGenerator->setParameter("maxP", Material::getMaxSpecularPower());
+                specularTextureGenerator->setParameter("resolution",resolution.x, resolution.y, resolution.z);
+                specularTextureGenerator->setParameter("specularTexture",specularTexture->getTexture());
+                specularTextureGenerator->setParameter("texture",Shader::CurrentTexture);
+                specularTextureGenerator->setParameter("maxM", Material::getMaxSpecularIntensity());
+                specularTextureGenerator->setParameter("maxP", Material::getMaxSpecularPower());
                 /*if (window.getSettings().majorVersion >= 3) {
                     frameBufferGenerator->bindAttribute(0, "vertex_position");
                     depthBufferGenerator->bindAttribute(0, "vertex_position");
@@ -237,6 +273,9 @@ namespace odfaeg {
         const Texture& FastRenderComponent::getFrameBufferTexture() {
             return frameBuffer->getTexture();
         }
+        const Texture& FastRenderComponent::getSpecularTexture() {
+            return specularTexture->getTexture();
+        }
         bool FastRenderComponent::loadEntitiesOnComponent(std::vector<Entity*> vEntities)
         {
 
@@ -268,7 +307,7 @@ namespace odfaeg {
                 loadEntitiesOnComponent(visibleEntities);
                 update = false;
             }
-            //currentStates.blendMode = sf::BlendNone;
+            currentStates.blendMode = sf::BlendAlpha;
             if (Shader::isAvailable()) {
                 if (Shader::getShadingLanguageVersionMajor() >= 3 && Shader::getShadingLanguageVersionMinor() >= 3) {
                     std::vector<float> instancesMVP;
@@ -340,22 +379,26 @@ namespace odfaeg {
                         currentStates.texture = m_instances[i]->getMaterial().getTexture();
                         float specularIntensity = m_instances[i]->getMaterial().getSpecularIntensity();
                         float specularPower = m_instances[i]->getMaterial().getSpecularPower();
-                        /*depthBufferGenerator->setParameter("m", specularIntensity);
-                        depthBufferGenerator->setParameter("p", specularPower);*/
+                        specularTextureGenerator->setParameter("m", specularIntensity);
+                        specularTextureGenerator->setParameter("p", specularPower);
                         if (currentStates.texture != nullptr) {
 
                             depthBufferGenerator->setParameter("haveTexture", 1.f);
                             frameBufferGenerator->setParameter("haveTexture", 1.f);
+                            specularTextureGenerator->setParameter("haveTexture", 1.f);
                         } else {
 
                             depthBufferGenerator->setParameter("haveTexture", 0.f);
                             frameBufferGenerator->setParameter("haveTexture", 0.f);
+                            specularTextureGenerator->setParameter("haveTexture", 0.f);
                         }
                         VertexArray& va = m_instances[i]->getVertexArray();
                         currentStates.shader = frameBufferGenerator;
                         frameBuffer->draw(va, currentStates);
                         currentStates.shader = depthBufferGenerator;
                         depthBuffer->draw(va, currentStates);
+                        currentStates.shader = specularTextureGenerator;
+                        specularTexture->draw(va, currentStates);
                         /*for (unsigned int j = 0; j < va.getVertexCount(); j++) {
                             std::cout<<va[j].position.x<<" "<<va[j].position.y<<" "<<va[j].position.z<<std::endl;
                         }*/
@@ -370,6 +413,7 @@ namespace odfaeg {
                 }
                 depthBuffer->display();
                 frameBuffer->display();
+                specularTexture->display();
             } else {
                 for (unsigned int i = 0; i < visibleEntities.size(); i++) {
                     for (unsigned int j = 0; j < visibleEntities[i]->getFaces().size(); j++) {
@@ -405,7 +449,8 @@ namespace odfaeg {
             delete depthBufferGenerator;
             delete frameBufferTile;
             delete depthBufferTile;
-
+            delete specularTexture;
+            delete specularTextureGenerator;
             GLuint mvp = reinterpret_cast<GLuint>(mvpBuffer);
             glCheck(glDeleteBuffers(1, &mvp));
         }

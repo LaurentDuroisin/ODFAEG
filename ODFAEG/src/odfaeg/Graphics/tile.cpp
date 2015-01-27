@@ -101,7 +101,7 @@ namespace odfaeg {
             return !(*this == tile);
         }
 
-        void Tile::onDraw(RenderTarget &target, RenderStates states) const {
+        void Tile::onDraw(RenderTarget &target, RenderStates states) {
             states.texture = const_cast<Tile*>(this)->getFaces()[0]->getMaterial().getTexture();
             target.draw(const_cast<Tile*>(this)->getFaces()[0]->getVertexArray(), states);
 

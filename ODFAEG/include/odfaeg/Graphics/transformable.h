@@ -308,7 +308,7 @@ namespace odfaeg {
             * \param origin = the origin of the transformable object.
             */
             Transformable(math::Vec3f position, math::Vec3f size, math::Vec3f origin) {
-                localBounds = physic::BoundingBox(position.x, position.y, position.z, size.x, size.y, size.z);
+                localBounds = physic::BoundingBox(0, 0, 0, size.x, size.y, size.z);
                 m_position = position;
                 m_size = size;
                 m_center = math::Vec3f (m_position.x + origin.x, m_position.y + origin.y, m_position.z + origin.z);

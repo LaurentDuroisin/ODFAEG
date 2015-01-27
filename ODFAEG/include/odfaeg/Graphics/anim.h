@@ -123,7 +123,7 @@ namespace odfaeg {
                 *   \param RenderTarget target : the target which draw the frame.
                 *   \param RenderStates states : the states to render the frame with. (blendMode, shaders, etc...)
                 */
-                void onDraw (RenderTarget &target, RenderStates states) const;
+                void onDraw (RenderTarget &target, RenderStates states);
                 /** \fn bool operator==(Entity& other)
                 *   \brief compare two animations.
                 *   \param Entity& other : the other entity.

@@ -299,6 +299,7 @@ namespace odfaeg {
             graphic::TransformMatrix tm;
             tm.setScale(s);
             tm.setOrigin(center-getPosition());
+            tm.setTranslation(center);
             for (unsigned int i = 0; i < points.size(); i++)
                 points[i] = tm.transform(points[i]);
             std::array<std::array<float, 2>, 3> extends = math::Computer::getExtends(points);

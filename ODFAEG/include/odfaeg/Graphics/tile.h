@@ -76,7 +76,7 @@ namespace odfaeg {
                 * \param target : the render target.
                 * \param states : the render states.
                 */
-                void onDraw (RenderTarget &target, RenderStates states) const;
+                void onDraw (RenderTarget &target, RenderStates states);
                 /**
                 * \fn void setColor(sf::Color color);
                 * \brief set the color of the tile.

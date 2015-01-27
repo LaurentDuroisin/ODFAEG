@@ -46,7 +46,7 @@ private :
     odfaeg::physic::UniversalEmitter emitter;
     odfaeg::physic::ParticleSystem ps;
     odfaeg::audio::Player player;
-    odfaeg::audio::Player fire;
+    odfaeg::audio::Player pfire;
 public :
     MyAppli(sf::VideoMode wm, std::string title);
     void keyHeldDown (sf::Keyboard::Key key);

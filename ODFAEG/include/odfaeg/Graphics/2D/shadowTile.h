@@ -56,7 +56,7 @@ namespace odfaeg {
                     * \param target : the render target.
                     * \param states : the render states.
                     */
-                    void onDraw(RenderTarget &target, RenderStates states) const;
+                    void onDraw(RenderTarget &target, RenderStates states);
                     /**
                     * \fn void onMove(math::Vec3f &t);
                     * \brief redefinition of the methode of the entity base class.

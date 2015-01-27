@@ -176,6 +176,7 @@ void Caracter::setDir (Vec2f dir) {
     if (isMoving()) {
         anims[currentAnimIndex]->play(true);
     }
+    anims[currentAnimIndex]->updateTransform();
 }
 Vec2f Caracter::getDir () {
     return dir;
@@ -229,7 +230,7 @@ int Caracter::getLevel() {
 string Caracter::getClass () {
     return classs;
 }
-void Caracter::onDraw(RenderTarget &target, RenderStates states) const {
+void Caracter::onDraw(RenderTarget &target, RenderStates states) {
     target.draw(*getCurrentEntity(), states);
 }
 Entity* Caracter::getCurrentEntity() const {

@@ -46,7 +46,7 @@ namespace odfaeg {
             void ShadowTile::onMove(math::Vec3f &t) {
                 shadow->move(t);
             }
-            void ShadowTile::onDraw(RenderTarget &target, RenderStates states) const {
+            void ShadowTile::onDraw(RenderTarget &target, RenderStates states) {
                 target.draw(*shadow, states);
             }
             bool ShadowTile::operator== (Entity& other) {

@@ -129,7 +129,7 @@ namespace odfaeg {
                 *   \param RenderTarget target : the rendertarget onwhich to draw the entities.
                 *   \param RenderStates states : the states used to render the entities.
                 */
-                virtual void onDraw(RenderTarget &target, RenderStates states) const {}
+                virtual void onDraw(RenderTarget &target, RenderStates states) {}
                 /** \fn void onMove (math::Vec3f& t)
                 *   \brief virtual method which can be redefined if we need to do something when the entity is moving.
                 *   \param math::Vec3f t : the translation of the entity.

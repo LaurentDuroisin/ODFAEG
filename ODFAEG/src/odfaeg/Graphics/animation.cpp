@@ -98,7 +98,7 @@ namespace odfaeg {
               return currentEntity;
         }
 
-        void Anim::onDraw(RenderTarget &target, RenderStates states) const {
+        void Anim::onDraw(RenderTarget &target, RenderStates states) {
             target.draw(*getChildren()[currentTile], states);
         }
 

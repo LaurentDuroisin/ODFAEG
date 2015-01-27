@@ -64,7 +64,6 @@ void MyAppli::keyHeldDown (sf::Keyboard::Key key) {
 void MyAppli::leftMouseButtonPressed(sf::Vector2f mousePos) {
     Vec2f mouse(mousePos.x, mousePos.y);
     Vec3f finalPos = getRenderWindow().mapPixelToCoords(Vec3f(mouse.x, getRenderWindow().getSize().y-mouse.y, 0));
-    std::cout<<"final pos : "<<finalPos<<std::endl;
     std::vector<Vec2f> path = World::getPath(caracter, finalPos);
     if (path.size() > 0) {
         caracter->setPath(path);
@@ -99,7 +98,7 @@ void MyAppli::onLoad() {
     Stream* stream2 = new Stream();
     stream2->load(*sm.getResourceByAlias("fire"));
     player.setAudioStream(stream);
-    fire.setAudioStream(stream2);
+    pfire.setAudioStream(stream2);
     cache.addResourceManager(tm, "TextureManager");
     cache.addResourceManager(sm, "SoundManager");
 }
@@ -195,24 +194,25 @@ void MyAppli::onInit () {
         decor->setPosition(Vec3f(-100, 250, 400));
         BoundingVolume *bb = new BoundingBox(decor->getGlobalBounds().getPosition().x, decor->getGlobalBounds().getPosition().y + decor->getGlobalBounds().getSize().y * 0.4f, 0,
         decor->getGlobalBounds().getSize().x, decor->getGlobalBounds().getSize().y * 0.25f, 0);
+        //std::cout<<bb->getPosition()<<" "<<bb->getSize()<<std::endl;
         decor->setCollisionVolume(bb);
-        decor->setShadowCenter(Vec3f(-10, 500, 0));
+        decor->setShadowCenter(Vec3f(0, 500, 0));
         World::addEntity(decor);
         Anim* fire = new Anim(0.1f, Vec3f(0, 100, 150), Vec3f(100, 100, 0), 0);
         Tile* tf1 = new Tile(tm.getResourceByAlias("FIRE1"), Vec3f(0, 100, 150), Vec3f(100, 100, 0), sf::IntRect(0, 0, 150, 200));
         tf1->getFaces()[0]->getMaterial().setTexId("FIRE1");
         g2d::Decor *fire1 = new g2d::Decor(tf1, &g2d::AmbientLight::getAmbientLight(), 100, Shadow::SHADOW_TYPE::SHADOW_TILE);
-        fire1->setShadowCenter(Vec3f(0, 400, 0));
+        fire1->setShadowCenter(Vec3f(0, 200, 0));
         //decor->changeGravityCenter(Vec3f(50, 50, 0));
         Tile* tf2 = new Tile(tm.getResourceByAlias("FIRE2"), Vec3f(0, 100, 150), Vec3f(100, 100, 0), sf::IntRect(0, 0, 150, 200));
         tf2->getFaces()[0]->getMaterial().setTexId("FIRE2");
         g2d::Decor *fire2 = new g2d::Decor(tf2, &g2d::AmbientLight::getAmbientLight(), 100, Shadow::SHADOW_TYPE::SHADOW_TILE);
-        fire2->setShadowCenter(Vec3f(0, 400, 0));
+        fire2->setShadowCenter(Vec3f(0, 200, 0));
         //decor->changeGravityCenter(Vec3f(50, 50, 0));
         Tile* tf3 = new Tile(tm.getResourceByAlias("FIRE3"), Vec3f(0, 100, 150), Vec3f(100, 100, 0), sf::IntRect(0, 0, 150, 200));
         tf3->getFaces()[0]->getMaterial().setTexId("FIRE3");
         g2d::Decor *fire3 = new g2d::Decor(tf3, &g2d::AmbientLight::getAmbientLight(), 100, Shadow::SHADOW_TYPE::SHADOW_TILE);
-        fire3->setShadowCenter(Vec3f(0, 400, 0));
+        fire3->setShadowCenter(Vec3f(0, 200, 0));
         //decor->changeGravityCenter(Vec3f(50, 50, 0));
         //fire1->setShadowCenter(Vec2f(80, 100));
         //fire2->setShadowCenter(Vec2f(80, 100));
@@ -277,14 +277,13 @@ void MyAppli::onInit () {
         caracter->addAnimation(animation);
         au->addAnim(animation);
     }
-
     BoundingVolume* bb2 = new BoundingBox(caracter->getGlobalBounds().getPosition().x, caracter->getGlobalBounds().getPosition().y + caracter->getGlobalBounds().getSize().y * 0.4f, 0,
     caracter->getGlobalBounds().getSize().x, caracter->getGlobalBounds().getSize().y * 0.25f, 0);
     caracter->setCollisionVolume(bb2);
     caracter->setCenter(Vec3f(getView().getPosition().x, getView().getPosition().y, 300));
-
-    g2d::PonctualLight* light1 = new g2d::PonctualLight(Vec3f(0, 420, 420), 100, 50, -1, 255, sf::Color::Yellow, 16);
-    light2 = new g2d::PonctualLight(Vec3f(50, 160, 160), 100, 50, -1, 255, sf::Color::Yellow, 16);
+    //std::cout<<bb2->getPosition()<<" "<<bb2->getSize()<<std::endl;
+    g2d::PonctualLight* light1 = new g2d::PonctualLight(Vec3f(-50, 420, 420), 100, 50, 0, 255, sf::Color::Yellow, 16);
+    light2 = new g2d::PonctualLight(Vec3f(50, 160, 160), 100, 50, 0, 255, sf::Color::Yellow, 16);
     World::addEntity(light1);
     World::addEntity(light2);
     //getView().move(d.x * 0.5f, d.y * 0.5f, 0);
@@ -300,7 +299,8 @@ void MyAppli::onInit () {
     Action combined  = a1 || a2 || a3 || a4;
     Command moveAction(combined, FastDelegate<void>(&MyAppli::keyHeldDown, this, sf::Keyboard::Unknown));
     getListener().connect("MoveAction", moveAction);
-    g2d::AmbientLight::getAmbientLight().setColor(sf::Color(0, 0, 255));
+    if (!day)
+        g2d::AmbientLight::getAmbientLight().setColor(sf::Color(0, 0, 255));
     Command mouseInsideAction(FastDelegate<bool>(&MyAppli::mouseInside,this, sf::Vector2f(-1, -1)), FastDelegate<void>(&MyAppli::onMouseInside, this, sf::Vector2f(-1,-1)));
     getListener().connect("MouseInside",mouseInsideAction);
     Command leftMouseButtonPressedAction (a5, FastDelegate<void>(&MyAppli::leftMouseButtonPressed, this, sf::Vector2f(-1, -1)));
@@ -309,10 +309,10 @@ void MyAppli::onInit () {
     player.setPosition(0.f, 0.f, 0.f);
     player.setMinDistance(5.f);
     player.setAttenuation(10.f);
-    fire.setPosition(0, 100, 0);
-    fire.setMinDistance(200);
-    fire.setAttenuation(10.f);
-    fire.play(true);
+    pfire.setPosition(0, 100, 0);
+    pfire.setMinDistance(200);
+    pfire.setAttenuation(10.f);
+    pfire.play(true);
     sf::Listener::setPosition(caracter->getCenter().x, caracter->getCenter().y, 0);
 }
 void MyAppli::onRender(FastRenderComponentManager *cm) {
@@ -381,10 +381,8 @@ void MyAppli::onDisplay(RenderWindow* window) {
     //getView().rotate(0, 0, 20);
     window->draw(ps);
     //getView().rotate(0, 0, 0);
-    if (!day) {
-        Entity& lightMap = World::getLightMap("E_PONCTUAL_LIGHT", 2, 1);
-        window->draw(lightMap, sf::BlendMultiply);
-    }
+    Entity& lightMap = World::getLightMap("E_PONCTUAL_LIGHT", 2, 1);
+    window->draw(lightMap, sf::BlendMultiply);
     /*Entity& normalMap = theMap->getNormalMapTile();
     window->draw(normalMap);*/
     /*std::vector<Vec2f> segments = caracter->getPath();
@@ -405,11 +403,11 @@ void MyAppli::onDisplay(RenderWindow* window) {
     window->draw(shape);*/
     //window->draw(World::getLightMap<Entity>());
     /*std::vector<Entity*> entities = World::getVisibleEntities("E_BIGTILE");
-    std::cout<<entities.size()<<std::endl;
+    //std::cout<<entities.size()<<std::endl;
     for (unsigned int i = 0; i < entities.size(); i++) {
         window->draw(*entities[i]);
-    }*/
-    /*entities = World::getVisibleEntities<g2d::Entity>("E_WALL+E_DECOR+E_ANIMATION+E_CARACTER");
+    }
+    entities = World::getVisibleEntities("E_WALL+E_DECOR+E_ANIMATION+E_CARACTER");
     for (unsigned int i = 0; i < entities.size(); i++) {
     if(entities[i]->getType() != "E_SHADOW_WALL" && entities[i]->getType() != "E_SHADOW_TILE")
         window->draw(*entities[i]);
@@ -429,7 +427,7 @@ void MyAppli::onUpdate (sf::Event& event) {
         stop();
         eu->stop();
         au->stop();
-        fire.stop();
+        pfire.stop();
         std::vector<Entity*> entities = World::getEntities("E_BIGTILE+E_WALL+E_DECOR+E_ANIMATION");
         std::ofstream ofs("FichierDeSerialisation");
         OTextArchive oa(ofs);

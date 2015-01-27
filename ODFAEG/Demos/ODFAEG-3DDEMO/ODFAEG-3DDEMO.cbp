@@ -56,6 +56,7 @@
 			<Add library="../../../../../usr/lib/x86_64-linux-gnu/libpthread.so" />
 			<Add library="../../../../../usr/lib/x86_64-linux-gnu/libGLEW.a" />
 		</Linker>
+		<Unit filename="../ODFAEG/include/odfaeg/Physics/collisionResultSet.hpp" />
 		<Unit filename="application.cpp" />
 		<Unit filename="application.h" />
 		<Unit filename="main.cpp" />

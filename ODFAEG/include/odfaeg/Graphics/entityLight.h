@@ -30,7 +30,7 @@ namespace odfaeg {
             *  create an entity light with the given center, height, color, etc...
             */
             EntityLight (math::Vec3f center, sf::Color color, float radius1, float radius2, float radius3, int height, std::string type, Entity* parent)
-            : Light (center, height, color), Entity (math::Vec3f(center.x - radius1, center.y - radius2, center.z - radius3), math::Vec3f(radius1 * 2, radius2 * 2, radius3 * 2), math::Vec3f (radius1, radius2, radius3), type, parent) {
+            : Light (center, height, color), Entity (math::Vec3f(center.x, center.y, center.z), math::Vec3f(radius1 * 2, radius2 * 2, radius3 * 2), math::Vec3f (radius1, radius2, radius3), type, parent) {
             }
             /**
             * \fn isLeaf() const

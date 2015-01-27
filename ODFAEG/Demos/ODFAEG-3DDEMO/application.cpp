@@ -46,7 +46,8 @@ void MyAppli::onInit() {
     cube = new g3d::Cube(Vec3f(-1, -1, -1), 2, 2, 2, sf::Color(255, 0, 0));
     cube->move(Vec3f(0.f, 0.f, 20.f));
     cube->rotate(45, Vec3f(0, 0, 1));
-    cube->scale(Vec3f(2, 2, 2));
+    cube->setOrigin(Vec3f(0, 0, 0));
+    cube->scale(Vec3f(10, 10, 10));
     World::addEntity(cube);
     std::vector<Tile*> tGround;
     std::vector<Tile*> tWall;
@@ -72,7 +73,7 @@ void MyAppli::onInit() {
     emitter.setParticleTextureIndex(Distributions::uniformui(0, 9));
     emitter.setParticleScale(Distributions::rect(Vec3f(2.1f, 2.1f, 2.f), Vec3f(2.f, 2.f, 2.f)));
     ps.addEmitter(emitter);
-    g2d::PonctualLight* light = new g2d::PonctualLight(Vec3f(0, 0, 10), 300, 300, 0, 255, sf::Color::Yellow, 16);
+    g2d::PonctualLight* light = new g2d::PonctualLight(Vec3f(0, 0, 10), 200, 200, 200, 255, sf::Color::Yellow, 16);
     World::addEntity(light);
     eu = new EntitiesUpdater(false);
     World::addEntitiesUpdater(eu);
@@ -94,7 +95,7 @@ void MyAppli::onRender(FastRenderComponentManager* frcm) {
     World::drawOnComponents("E_BIGTILE+E_CUBE", 0);
     /*Entity& lightMap = World::getLightMap("E_PONCTUAL_LIGHT", 1, 0);
     World::drawOnComponents(lightMap, 0, sf::BlendMultiply);*/
-    World::drawOnComponents(*billboard, 0);
+    //World::drawOnComponents(*billboard, 0);
     /*std::vector<Entity*> entities = World::getVisibleEntities("E_BIGTILE+E_CUBE");
     frcm->getRenderComponent(0)->loadEntitiesOnComponent(entities);
     frcm->getRenderComponent(0)->drawNextFrame();
@@ -121,7 +122,7 @@ void MyAppli::onUpdate (sf::Event& event) {
             // Ajust the viewport size when the window is resized.
             getView().reset(BoundingBox(0, 0, getView().getViewport().getPosition().z,event.size.width, event.size.height, getView().getViewport().getDepth()));
         } else if (event.type == sf::Event::MouseMoved && sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
-            int relX = -(event.mouseMove.x - oldX) * sensivity;
+            int relX = (event.mouseMove.x - oldX) * sensivity;
             int relY = (event.mouseMove.y - oldY) * sensivity;
             //Rotate the view, (Polar coordinates) but you can also use the lookAt function to look at a point.
             for (unsigned int i = 0; i < getRenderComponentManager().getNbComponents(); i++) {
