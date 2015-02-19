@@ -72,7 +72,7 @@ namespace odfaeg {
                 *\brief check if the ray is in collision with another.
                 *\param the ray to test with.
                 */
-                bool intersects (math::Ray& ray);
+                bool intersects (math::Ray& ray, bool segment);
                 /**
                 *\fn bool intersects (math::Ray &ray)
                 *\brief check if the ray is in collision with another and give the intersection points.
@@ -111,6 +111,12 @@ namespace odfaeg {
                 }
                 bool onIntersects(BaseInterface& interface) {
                     return interface.intersects(*this);
+                }
+                bool onIntersects(BaseInterface& interface, math::Ray& ray, bool segment) {
+                    return interface.intersects(ray, segment);
+                }
+                bool onIntersects(BaseInterface& interface, math::Ray& ray, math::Vec3f& near, math::Vec3f& far) {
+                    return interface.intersectsWhere(ray, near, far);
                 }
                 std::unique_ptr<BoundingVolume> clone() {
                     return std::make_unique<BoundingEllipsoid>(*this);

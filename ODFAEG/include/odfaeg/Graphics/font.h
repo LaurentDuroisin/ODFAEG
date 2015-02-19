@@ -182,7 +182,7 @@ namespace odfaeg
             /// \return Kerning value for \a first and \a second, in pixels
             ///
             ////////////////////////////////////////////////////////////
-            int getKerning(sf::Uint32 first, sf::Uint32 second, unsigned int characterSize) const;
+            float getKerning(sf::Uint32 first, sf::Uint32 second, unsigned int characterSize) const;
 
             ////////////////////////////////////////////////////////////
             /// \brief Get the line spacing
@@ -195,7 +195,36 @@ namespace odfaeg
             /// \return Line spacing, in pixels
             ///
             ////////////////////////////////////////////////////////////
-            int getLineSpacing(unsigned int characterSize) const;
+            float getLineSpacing(unsigned int characterSize) const;
+
+            ////////////////////////////////////////////////////////////
+            /// \brief Get the position of the underline
+            ///
+            /// Underline position is the vertical offset to apply between the
+            /// baseline and the underline.
+            ///
+            /// \param characterSize Reference character size
+            ///
+            /// \return Underline position, in pixels
+            ///
+            /// \see getUnderlineThickness
+            ///
+            ////////////////////////////////////////////////////////////
+            float getUnderlinePosition(unsigned int characterSize) const;
+
+            ////////////////////////////////////////////////////////////
+            /// \brief Get the thickness of the underline
+            ///
+            /// Underline thickness is the vertical size of the underline.
+            ///
+            /// \param characterSize Reference character size
+            ///
+            /// \return Underline thickness, in pixels
+            ///
+            /// \see getUnderlinePosition
+            ///
+            ////////////////////////////////////////////////////////////
+            float getUnderlineThickness(unsigned int characterSize) const;
 
             ////////////////////////////////////////////////////////////
             /// \brief Retrieve the texture containing the loaded glyphs of a certain size

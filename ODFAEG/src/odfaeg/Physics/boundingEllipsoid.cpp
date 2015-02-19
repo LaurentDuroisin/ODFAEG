@@ -23,12 +23,12 @@ namespace odfaeg {
         bool BoundingEllipsoid::intersects(BoundingSphere &bs) {
             //We do the same for check the collision with a circle, except taht the circle have only 1 ray.
             //The equation for the circle is then a bit different.
-            math::Ray r(center, bs.getCenter());
+            math::Ray r(bs.getCenter(), center);
             math::Vec3f near, far;
             if (!intersectsWhere(r, near, far))
                 return false;
-            math::Vec3f d = far - bs.getCenter();
-            return d.magnSquared() <= bs.getRadius() * bs.getRadius();
+            math::Vec3f d = far - center;
+            return (center.computeDistSquared(bs.getCenter()) - bs.getRadius() * bs.getRadius() - d.magnSquared()) <= 0;
         }
         bool BoundingEllipsoid::intersects(BoundingEllipsoid &be) {
              //The distance between the 2 centers.
@@ -41,7 +41,7 @@ namespace odfaeg {
                 return false;
              math::Vec3f d1 = far1 - center;
              math::Vec3f d2 = far2 - be.getCenter();
-             return center.computeDistSquared(be.getCenter()) <= d1.magnSquared() + d2.magnSquared();
+             return (center.computeDistSquared(be.getCenter()) - d1.magnSquared() - d2.magnSquared()) <= 0;
         }
         bool BoundingEllipsoid::intersects(BoundingBox &bx) {
              math::Ray r1(center, bx.getCenter());
@@ -53,7 +53,7 @@ namespace odfaeg {
                 return false;
              math::Vec3f d1 = far1 - center;
              math::Vec3f d2 = far2 - bx.getCenter();
-             return center.computeDistSquared(bx.getCenter()) <= d1.magnSquared() + d2.magnSquared();
+             return (center.computeDistSquared(bx.getCenter()) - d1.magnSquared() - d2.magnSquared()) <= 0;
         }
         bool BoundingEllipsoid::intersects(OrientedBoundingBox &obx) {
              //The line between the two centers.
@@ -66,7 +66,7 @@ namespace odfaeg {
                 return false;
              math::Vec3f d1 = far1 - center;
              math::Vec3f d2 = far2 - obx.getCenter();
-             return center.computeDistSquared(obx.getCenter()) <= d1.magnSquared() + d2.magnSquared();
+             return (center.computeDistSquared(obx.getCenter()) - d1.magnSquared() - d2.magnSquared()) <= 0;
         }
         bool BoundingEllipsoid::intersects(BoundingPolyhedron &bp) {
              math::Ray r1(center, bp.getCenter());
@@ -78,16 +78,17 @@ namespace odfaeg {
                 return false;
              math::Vec3f d1 = far1 - center;
              math::Vec3f d2 = far2 - bp.getCenter();
-             return center.computeDistSquared(bp.getCenter()) <= d1.magnSquared() + d2.magnSquared();
+             return (center.computeDistSquared(bp.getCenter()) - d1.magnSquared() -d2.magnSquared()) <= 0;
         }
-        bool BoundingEllipsoid::intersects (math::Ray &r) {
+        bool BoundingEllipsoid::intersects (math::Ray &r, bool segment) {
             math::Matrix4f transform = scale * rotation * translation;
             math::Matrix4f invTransform = transform.inverse();
             math::Vec3f orig = invTransform * r.getOrig();
             math::Vec3f ext = invTransform * r.getExt();
             math::Ray tRay (orig, ext);
+            math::Vec3f mtu;
             BoundingSphere bs(math::Vec3f(0, 0, 0), 1);
-            if (!bs.intersects(tRay))
+            if (!bs.intersects(tRay, segment))
                 return false;
             return false;
         }
@@ -107,7 +108,7 @@ namespace odfaeg {
         }
         bool BoundingEllipsoid::isPointInside (math::Vec3f point) {
             math::Ray r (center, point);
-            if (!intersects(r))
+            if (!intersects(r, false))
                 return false;
             return true;
         }

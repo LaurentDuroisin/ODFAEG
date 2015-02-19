@@ -153,12 +153,6 @@ namespace odfaeg {
             */
             math::Vec2f getCoordinatesAt (math::Vec2f &point);
             /**
-            * \fn void reassignIds (Entity *entity);
-            * \brief reassign the ids when an entity is removed.
-            * \param the entity which'll be removed.
-            */
-            void reassignIds (Entity *entity);
-            /**
             * \fn void createCellMap(Vec3f &point);
             * \brief create a cell a the given position.
             * \param point : the position.

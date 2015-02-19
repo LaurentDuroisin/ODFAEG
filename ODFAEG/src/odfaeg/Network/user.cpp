@@ -101,6 +101,19 @@ namespace odfaeg {
         bool User::isUsingSecuredConnexion() {
             return useSecuredConnexion;
         }
+        void User::setLastSrvTime(sf::Int64 time) {
+            lastSrvTime = time;
+        }
+        sf::Int64 User::getLastSrvTime () {
+            return lastSrvTime;
+        }
+        void User::setClientTime(sf::Int64 time) {
+            elapsedTime.restart();
+            clientTime = time;
+        }
+        sf::Int64 User::getClientTime () {
+            return clientTime + elapsedTime.getElapsedTime().asMicroseconds();
+        }
         User::~User () {
 
         }

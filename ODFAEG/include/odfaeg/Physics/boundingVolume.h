@@ -1,6 +1,7 @@
 #ifndef ODFAEG_BOUNDING_VOLUME_HPP
 #define ODFAEG_BOUNDING_VOLUME_HPP
 #include "../Math/vec4.h"
+#include "../Math/ray.h"
 #include <string>
 #include <iostream>
 /**
@@ -29,11 +30,15 @@ namespace odfaeg {
         class BaseInterface {
              public :
              virtual bool onIntersects(BaseInterface& other) = 0;
+             virtual bool onIntersects(BaseInterface& bi, math::Ray& ray, bool segment) = 0;
+             virtual bool onIntersects(BaseInterface& bi, math::Ray& ray, math::Vec3f& near, math::Vec3f& far) = 0;
              virtual bool intersects (BoundingBox &bb) = 0;
              virtual bool intersects (BoundingSphere &bs) = 0;
              virtual bool intersects (BoundingEllipsoid &be) = 0;
              virtual bool intersects (OrientedBoundingBox &ob) = 0;
              virtual bool intersects (BoundingPolyhedron &bp) = 0;
+             virtual bool intersects (math::Ray& ray, bool segment) = 0;
+             virtual bool intersectsWhere (math::Ray& ray, math::Vec3f& near, math::Vec3f& far) = 0;
              std::vector<BoundingVolume*> getChildren() {
                 std::vector<BoundingVolume*> raws;
                 for (unsigned int i = 0; i < children.size(); i++) {
@@ -78,6 +83,12 @@ namespace odfaeg {
                     }
                 }
                 return false;
+            }
+            bool intersects(math::Ray& ray, bool segment) {
+                return onIntersects(*this, ray, segment);
+            }
+            bool intersectsWhere(math::Ray& ray, math::Vec3f near, math::Vec3f& far) {
+                return onIntersects(*this, ray, near, far);
             }
             virtual math::Vec3f getPosition() = 0;
             virtual math::Vec3f getSize() = 0;

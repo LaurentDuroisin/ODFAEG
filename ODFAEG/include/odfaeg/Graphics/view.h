@@ -79,7 +79,7 @@ namespace odfaeg {
             * \brief perfom a rotation around the z axis of the view.
             * \param the gamma.
             */
-            void rotate (float pitch, float yaw, float roll);
+            void rotate (float gamma);
             /**
             * \fn void lookAt (float x, float y, float z)
             * \brief make the view look at a point in space.
@@ -184,7 +184,7 @@ namespace odfaeg {
             void setConstrains(float lockTeta, float lockPhi);
             void update();
             float getDepth();
-            math::Vec3f getAngles();
+            float getGamma();
             void setFlipX(bool flipX);
             void setFlipY(bool flipY);
             bool isXFlipped();
@@ -231,7 +231,7 @@ namespace odfaeg {
             ProjMatrix projMatrix; /**> The projection matrix.*/
             ViewMatrix viewMatrix; /**> The view matrix.*/
             math::Vec3f position, up, target, forward, left; /**> The position, the up vector, the target, the forward and the left vector of the view.*/
-            float teta, gamma, phi, pitch, yaw, roll, zoomFactor; /**> The angles and the zoom factor of the view.*/
+            float teta, gamma, phi, zoomFactor; /**> The angles and the zoom factor of the view.*/
             physic::BoundingBox viewport; /**the viewport of the view.*/
             float depth; /**> the depth of the view. (The distance between the near and the far plane. */
             float lockTeta, lockPhi;

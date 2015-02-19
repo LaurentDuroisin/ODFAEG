@@ -132,6 +132,10 @@ namespace odfaeg {
                 * \return the clock.
                 */
                 sf::Clock& getPingClock();
+                void setLastSrvTime(sf::Int64 time);
+                sf::Int64 getLastSrvTime ();
+                void setClientTime(sf::Int64 time);
+                sf::Int64 getClientTime ();
                 /**
                 * \fn ~User ()
                 * \brief destructor.
@@ -151,6 +155,9 @@ namespace odfaeg {
                 std::condition_variable g_signal; /**> the condition variable used to wait until the remote udp port
                 * is given before sending a message.*/
                 std::mutex g_lock_send; /**> the mutex used to lock the condition variable on.*/
+                sf::Int64 lastSrvTime;
+                sf::Int64 clientTime;
+                sf::Clock elapsedTime;
         };
     }
 }

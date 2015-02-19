@@ -154,7 +154,7 @@ namespace odfaeg {
                     applyCurrentView();
                 // Check if the vertex count is low enough so that we can pre-transform them
                 bool useVertexCache = (vertexCount <= StatesCache::VertexCacheSize);
-               /* if (useVertexCache && states.transform.isGpuTransform!GLEW_ARB_vertex_buffer_object)
+                if (useVertexCache /*&& !GLEW_ARB_vertex_buffer_object*/)
                 {
 
                     // Pre-transform the vertices and store them into the vertex cache
@@ -173,10 +173,13 @@ namespace odfaeg {
                     states.transform.reset3D();
                     applyTransform(states.transform);
                 }
-                /*else
-                {*/
-                    applyTransform(states.transform);
-                /*}*/
+                else
+                {
+                    TransformMatrix tm;
+                    if (states.gpuTransform)
+                        tm = states.transform;
+                    applyTransform(tm);
+                }
                 // Apply the blend mode
                 if (states.blendMode != m_cache.lastBlendMode)
                     applyBlendMode(states.blendMode);
@@ -434,7 +437,6 @@ namespace odfaeg {
 
             // Go back to model-view mode
             glCheck(glMatrixMode(GL_MODELVIEW));
-            glCheck(glLoadIdentity());
         }
         ////////////////////////////////////////////////////////////
         void RenderTarget::applyBlendMode(const BlendMode& mode)
@@ -476,13 +478,10 @@ namespace odfaeg {
 
         }
         void RenderTarget::applyTransform(TransformMatrix& tm) {
-
-            /*if (tm.isGpuTransform()) {
-                glCheck(glLoadIdentity());
-                float* matrix = tm.getGlMatrix();
-                glCheck(glMultMatrixf(matrix));
-                delete matrix;
-            }*/
+            glCheck(glLoadIdentity());
+            /*float* matrix = tm.getGlMatrix();
+            glCheck(glMultMatrixf(matrix));
+            delete matrix;*/
         }
         void RenderTarget::setMajorVersion(unsigned int version) {
              majorVersion = version;

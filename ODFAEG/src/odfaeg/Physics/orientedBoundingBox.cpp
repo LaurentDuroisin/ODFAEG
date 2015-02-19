@@ -105,7 +105,7 @@ namespace odfaeg {
         bool OrientedBoundingBox::intersects(BoundingEllipsoid &be) {
             return be.intersects(*this);
         }
-        bool OrientedBoundingBox::intersects (math::Ray& ray) {
+        bool OrientedBoundingBox::intersects (math::Ray& ray, bool segment) {
             float tFar = INT_MAX;
             float tNear = -INT_MAX;
             int hi[3];
@@ -145,7 +145,7 @@ namespace odfaeg {
             }
             return true;
         }
-        bool OrientedBoundingBox::intersectsWhere (math::Ray ray, math::Vec3f& i1, math::Vec3f& i2) {
+        bool OrientedBoundingBox::intersectsWhere (math::Ray& ray, math::Vec3f& i1, math::Vec3f& i2) {
             float tFar = INT_MAX;
             float tNear = -INT_MAX;
             int hi[3];
@@ -190,36 +190,36 @@ namespace odfaeg {
             i2 = ray.getOrig() + ray.getDir() * tFar;
             return true;
         }
-        bool OrientedBoundingBox::intersects (BoundingBox &box) {
-             std::array<math::Vec3f, 8> bissectors1 = {-bx * width * 0.5f,
-                                               -by * height * 0.5f,
-                                               -bz * depth * 0.5f,
-                                               bx * width * 0.5f,
-                                               by * height * 0.5f,
-                                               bz * depth * 0.5f};
-             std::array<math::Vec3f, 8> bissectors2 = {math::Vec3f(-box.getWidth() * 0.5f, 0, 0),
-                                               math::Vec3f(0, -box.getHeight() * 0.5f,0),
-                                               math::Vec3f(0, 0, -box.getDepth() * 0.5f),
-                                               math::Vec3f(box.getCenter().x + box.getWidth() * 0.5f, 0, 0),
-                                               math::Vec3f(0, box.getHeight() * 0.5f, 0),
-                                               math::Vec3f(0, 0, box.getDepth() * 0.5f)};
-             unsigned int ptIndex1 = 0, ptIndex2 = 0, faceIndex1 = 0, faceIndex2 = 0;
-             float distMin1, distMin2;
-             ptIndex1 = math::Computer::checkNearestVertexFromShape(points, bissectors2,distMin1,faceIndex2);
-             ptIndex2 = math::Computer::checkNearestVertexFromShape(box.getVertices(), bissectors1,distMin2,faceIndex1);
-             if (distMin1 < distMin2) {
-                math::Vec3f d = points[ptIndex1] - box.getCenter();
+        bool OrientedBoundingBox::intersects (BoundingBox &bx) {
+            std::array<math::Vec3f, 6> bissectors1 = {-this->bx * width * 0.5f,
+            -this->by * height * 0.5f,
+            -this->bz * depth * 0.5f,
+            this->bx * width * 0.5f,
+            this->by * height * 0.5f,
+            this->bz * depth * 0.5f};
+            std::array<math::Vec3f, 6> bissectors2 = {math::Vec3f(-bx.getWidth() * 0.5f, 0, 0),
+            math::Vec3f(0, -bx.getHeight() * 0.5f,0),
+            math::Vec3f(0, 0, -bx.getDepth() * 0.5f),
+            math::Vec3f(bx.getCenter().x + bx.getWidth() * 0.5f, 0, 0),
+            math::Vec3f(0, bx.getHeight() * 0.5f, 0),
+            math::Vec3f(0, 0, bx.getDepth() * 0.5f)};
+            unsigned int ptIndex1 = 0, ptIndex2 = 0, faceIndex1 = 0, faceIndex2 = 0;
+            float distMin1, distMin2;
+            ptIndex1 = math::Computer::checkNearestVertexFromShape(points, bissectors2,distMin1,faceIndex2);
+            ptIndex2 = math::Computer::checkNearestVertexFromShape(bx.getVertices(), bissectors1,distMin2,faceIndex1);
+            if (distMin1 < distMin2) {
+                math::Vec3f d = points[ptIndex1] - bx.getCenter();
                 float p = d.projOnAxis(bissectors2[faceIndex2]);
                 if (p * p > bissectors2[faceIndex2].magnSquared())
                     return false;
                 return true;
-             } else {
-                math::Vec3f d = box.getVertices()[ptIndex2] - center;
+            } else {
+                math::Vec3f d = bx.getVertices()[ptIndex2] - center;
                 float p = d.projOnAxis(bissectors1[faceIndex1]);
                 if (p * p > bissectors1[faceIndex1].magnSquared())
                     return false;
                 return true;
-             }
+            }
         }
         bool OrientedBoundingBox::intersects (OrientedBoundingBox &obx) {
             std::array<math::Vec3f, 6> bi1;
@@ -241,21 +241,21 @@ namespace odfaeg {
             ptIndex1 = math::Computer::checkNearestVertexFromShape(points, bi2, distMin1, faceIndex2);
             ptIndex2 = math::Computer::checkNearestVertexFromShape(obx.getVertices(), bi1, distMin2, faceIndex1);
             if (distMin1 < distMin2) {
-                  math::Vec3f bpn = bi2[faceIndex2];
-                  math::Vec3f d = points[ptIndex1] - obx.getCenter();
-                  float p = d.projOnAxis(bpn);
-                  if (p * p > bpn.magnSquared()) {
-                     return false;
-                  }
-                  return true;
-            } else {
-                 math::Vec3f bpn = bi1[faceIndex1];
-                 math::Vec3f d = obx.getVertices()[ptIndex2] - center;
-                 float p = d.projOnAxis(bpn);
-                 if (p * p > bpn.magnSquared()) {
+                math::Vec3f bpn = bi2[faceIndex2];
+                math::Vec3f d = points[ptIndex1] - obx.getCenter();
+                float p = d.projOnAxis(bpn);
+                if (p * p > bpn.magnSquared()) {
                     return false;
-                 }
-                 return true;
+                }
+                return true;
+            } else {
+                math::Vec3f bpn = bi1[faceIndex1];
+                math::Vec3f d = obx.getVertices()[ptIndex2] - center;
+                float p = d.projOnAxis(bpn);
+                if (p * p > bpn.magnSquared()) {
+                    return false;
+                }
+                return true;
             }
         }
         bool OrientedBoundingBox::intersects (BoundingPolyhedron &bp) {
@@ -275,21 +275,21 @@ namespace odfaeg {
             int ptIndex1 = math::Computer::checkNearestVertexFromShape(points, bissectors, distMin1, faceIndex2);
             int ptIndex2 = math::Computer::checkNearestVertexFromShape(bp.getPoints(), bi, distMin2, faceIndex1);
             if (distMin1 < distMin2) {
-                  math::Vec3f bpn = (bissectors[faceIndex2] - bp.getCenter()).projOnVector(normals[faceIndex2]);
-                  math::Vec3f d = points[ptIndex1] - bp.getCenter();
-                  float p = d.projOnAxis(bpn);
-                  if (p * p > bpn.magnSquared()) {
-                     return false;
-                  }
-                  return true;
-            } else {
-                 math::Vec3f bpn = bi[faceIndex1];
-                 math::Vec3f d = bp.getPoints()[ptIndex2] - center;
-                 float p = d.projOnAxis(bpn);
-                 if (p * p > bpn.magnSquared()) {
+                math::Vec3f bpn = (bissectors[faceIndex2] - bp.getCenter()).projOnVector(normals[faceIndex2]);
+                math::Vec3f d = points[ptIndex1] - bp.getCenter();
+                float p = d.projOnAxis(bpn);
+                if (p * p > bpn.magnSquared()) {
                     return false;
-                 }
-                 return true;
+                }
+                return true;
+            } else {
+                math::Vec3f bpn = bi[faceIndex1];
+                math::Vec3f d = bp.getPoints()[ptIndex2] - center;
+                float p = d.projOnAxis(bpn);
+                if (p * p > bpn.magnSquared()) {
+                    return false;
+                }
+                return true;
             }
         }
 

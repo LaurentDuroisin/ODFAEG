@@ -4,10 +4,20 @@ namespace odfaeg {
         FastRenderComponentManager::FastRenderComponentManager(RenderWindow& window) : window (window) {
 
         }
-        void FastRenderComponentManager::addRenderComponent(FastRenderComponent* component) {
-            if (component->getPosition().z >= components.size())
-                components.resize(component->getPosition().z+1);
-            components[component->getPosition().z].push_back(component);
+        void FastRenderComponentManager::addComponent(Component* component) {
+             components.push_back(component);
+        }
+        bool FastRenderComponentManager::removeComponent(unsigned int layer) {
+            std::vector<Component*>::iterator it;
+            for (it = components.begin(); it != components.end();) {
+                if ((*it)->getId() == layer) {
+                    it = components.erase(it);
+                    return true;
+                } else {
+                    it++;
+                }
+            }
+            return false;
         }
         RenderWindow& FastRenderComponentManager::getWindow() {
             return window;
@@ -16,40 +26,55 @@ namespace odfaeg {
             return components.size();
         }
 
-        void FastRenderComponentManager::drawComponents() const {
-            for (unsigned int l = 0; l < components.size(); l++) {
-                for (unsigned int i = 0; i < components[l].size(); i++) {
-                    window.draw(*components[l][i]);
-                }
+        void FastRenderComponentManager::drawRenderComponents() {
+            for (unsigned int i = 0; i < components.size(); i++) {
+                if (getRenderComponent(i) != nullptr && getRenderComponent(i)->isVisible())
+                    window.draw(*components[i]);
             }
+        }
+        void FastRenderComponentManager::drawGuiComponents() {
+            View view = window.getView();
+            View defaultView = window.getDefaultView();
+            defaultView.setCenter(math::Vec3f(window.getSize().x * 0.5f, window.getSize().y * 0.5f, 0));
+            window.setView(defaultView);
+            for (unsigned int i = 0; i < components.size(); i++) {
+                if (getRenderComponent(i) == nullptr && components[i]->isVisible())
+                    window.draw(*components[i]);
+                if (getRenderComponent(i) == nullptr)
+                    static_cast<LightComponent*>(components[i])->update();
+            }
+            window.setView(view);
+        }
+        LightComponent* FastRenderComponentManager::getGuiComponent(unsigned int layer) {
+            return dynamic_cast<LightComponent*>(components[layer]);
         }
         bool FastRenderComponentManager::isComponentCreated(unsigned int layer) {
            if (layer >= components.size())
                return false;
            return true;
         }
-        FastRenderComponent* FastRenderComponentManager::getRenderComponent(unsigned int layer) {
-            return static_cast<FastRenderComponent*>(components[layer][0]);
+        HeavyComponent* FastRenderComponentManager::getRenderComponent(unsigned int layer) {
+            return dynamic_cast<HeavyComponent*>(components[layer]);
+        }
+        Component* FastRenderComponentManager::getComponent(unsigned int layer) {
+            return components[layer];
         }
         void FastRenderComponentManager::clearComponents() {
-            for (unsigned int l = 0; l < components.size(); l++) {
-                for (unsigned int i = 0; i < components[l].size(); i++) {
-                    components[l][i]->clear();
-                }
+            for (unsigned int i = 0; i < components.size(); i++) {
+                if(components[i]->isVisible())
+                    components[i]->clear();
             }
         }
         void FastRenderComponentManager::updateComponents() {
-            for (unsigned int l = 0; l < components.size(); l++) {
-                for (unsigned int i = 0; i < components[l].size(); i++) {
-                    components[l][i]->getListener().processEvents();
+            for (unsigned int i = 0; i < components.size(); i++) {
+                if (components[i]->isEventContextActivated()) {
+                    components[i]->getListener().processEvents();
                 }
             }
         }
         FastRenderComponentManager::~FastRenderComponentManager() {
-            for (unsigned int l = 0; l < components.size(); l++) {
-                for (unsigned int i = 0; i < components[l].size(); i++) {
-                    delete components[l][i];
-                }
+            for (unsigned int i = 0; i < components.size(); i++) {
+                delete components[i];
             }
         }
     }

@@ -157,8 +157,9 @@ namespace odfaeg {
                 } else {
                      std::map<std::string, Command>::iterator it;
                      for (it = commands.begin(); it != commands.end(); it++) {
-                        if (it->second.isTriggered())
+                        if (it->second.isTriggered()) {
                             (it->second)();
+                        }
                      }
                      Command::clearEventsStack();
                 }

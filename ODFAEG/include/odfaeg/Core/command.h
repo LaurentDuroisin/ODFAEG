@@ -103,7 +103,7 @@ namespace odfaeg
             */
             Action* getAction();
             Command& operator= (const Command& other);
-            static bool equalEvent (sf::Event& event, sf::Event& other);
+            static bool equalEvent (sf::Event event, sf::Event other);
         private :
 
             /** \fn bool equalEvent (sf::Event event, sf::Event other)

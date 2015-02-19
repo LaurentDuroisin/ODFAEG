@@ -1,5 +1,6 @@
 #include "../../../include/odfaeg/Network/srkserveur.h"
 #include "../../../include/odfaeg/Network/network.h"
+#include "../../../include/odfaeg/Core/application.h"
 namespace odfaeg {
     namespace network {
         using namespace sf;
@@ -177,12 +178,26 @@ namespace odfaeg {
                         User* user = Network::getUser(client.getRemoteAddress());
                         if (user != nullptr && user->getRemotePortUDP()) {
                             Packet packet;
-                            packet<<"Ping";
+                            packet<<"PING";
                             user->getPingClock().restart();
                             user->sendUdpPacket(packet);
                         }
                     }
                     Network::getTimeBtw2PingsClk().restart();
+                }
+                if (Network::getTimeBtw2SyncClk().getElapsedTime().asMicroseconds() >= Network::getTimeBtw2Sync()) {
+                    lock_guard<recursive_mutex> locker (rec_mutex);
+                    for (it = clients.begin(); it != clients.end();it++) {
+                        TcpSocket& client = **it;
+                        User* user = Network::getUser(client.getRemoteAddress());
+                        if (user != nullptr && user->getRemotePortUDP()) {
+                            Packet packet;
+                            packet<<"GET_TIME";
+                            sf::Int64 lastSrvTime = core::Application::getTimeClk().getElapsedTime().asMicroseconds();
+                            user->setLastSrvTime(lastSrvTime);
+                        }
+                    }
+                    Network::getTimeBtw2SyncClk().restart();
                 }
                 if (selector.wait(sf::milliseconds(10))) {
                     lock_guard<recursive_mutex> locker (rec_mutex);
@@ -270,8 +285,14 @@ namespace odfaeg {
                             packet>>request;
                             User* user = Network::getUser(sender);
                             if (user != nullptr) {
-                                if (request == "Pong") {
+                                std::vector<std::string> infos = core::split(request, "*");
+                                if (infos[0] == "PONG") {
                                     user->addPingTime(user->getPingClock().getElapsedTime().asMicroseconds() * 0.5f);
+                                } else if (request == "SET_TIME") {
+                                    sf::Int64 cliTime = core::conversionStringLong(infos[1]);
+                                    sf::Int64 srvTime = core::Application::getTimeClk().getElapsedTime().asMicroseconds();
+                                    sf::Int64 syncTime = cliTime + (srvTime - user->getLastSrvTime()) * 0.5f;
+                                    user->setClientTime(syncTime);
                                 } else {
                                     Network::addRequest(user, request);
                                 }

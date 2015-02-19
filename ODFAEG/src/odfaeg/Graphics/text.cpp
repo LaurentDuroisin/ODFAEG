@@ -214,7 +214,11 @@ namespace odfaeg
 
             return m_bounds;
         }
-
+        FloatRect Text::getGlobalBounds()
+        {
+            physic::BoundingBox bb;
+            return FloatRect(bb.getPosition().x, bb.getPosition().y, bb.getSize().x, bb.getSize().y);
+        }
 
         ////////////////////////////////////////////////////////////
         void Text::draw(RenderTarget& target, RenderStates states)
@@ -222,8 +226,9 @@ namespace odfaeg
             if (m_font)
             {
                 ensureGeometryUpdate();
-
                 states.transform = getTransform();
+                m_vertices.transform(getTransform());
+                //states.gpuTransform = true;
                 states.texture = &m_font->getTexture(m_characterSize);
                 target.draw(m_vertices, states);
             }
@@ -282,8 +287,8 @@ namespace odfaeg
                 // If we're using the underlined style and there's a new line, draw a line
                 if (underlined && (curChar == L'\n'))
                 {
-                    float top = y + underlineOffset;
-                    float bottom = top + underlineThickness;
+                    float top = std::floor(y + underlineOffset - (underlineThickness / 2) + 0.5f);
+                    float bottom = top + std::floor(underlineThickness + 0.5f);
 
                     m_vertices.append(Vertex(Vector3f(0, top, 0),    m_color, Vector2f(1, 1)));
                     m_vertices.append(Vertex(Vector3f(x, top, 0),    m_color, Vector2f(1, 1)));
@@ -316,7 +321,7 @@ namespace odfaeg
                 }
 
                 // Extract the current glyph's description
-                const Glyph& glyph = m_font->getGlyph(curChar, m_characterSize, bold);
+                const sf::Glyph& glyph = m_font->getGlyph(curChar, m_characterSize, bold);
 
                 int left   = glyph.bounds.left;
                 int top    = glyph.bounds.top;

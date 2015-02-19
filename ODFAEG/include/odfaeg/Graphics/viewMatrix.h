@@ -32,7 +32,7 @@ namespace odfaeg {
                 bool needToUpdate3D; /**< determine if the 3D matrix need to be update.*/
                 bool inverseNeedToUpdate3D; /**< determine if the 3D inversed matrix need to be update.*/
                 math::Vec3f xAxis, yAxis, zAxis;
-                float pitch, yaw, roll;
+                float angle;
             public :
             /** \fn ViewMatrix()
             *   \brief constructor. (defines the identity matrix)
@@ -80,7 +80,7 @@ namespace odfaeg {
                 return s3d;
             }
             void setAxis(math::Vec3f left,  math::Vec3f up,  math::Vec3f forward);
-            void setRotation(float pitch, float yaw, float roll);
+            void setRotation(float angle);
         };
     }
 }

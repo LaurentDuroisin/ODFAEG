@@ -9,14 +9,13 @@ namespace odfaeg {
             setPerspective(-1, 1, -1, 1, 0, 1);
             up = math::Vec3f(0, 1, 0);
             position = math::Vec3f (0, 0, 0);
-            teta = phi;
+            teta = phi = gamma = 0;
             forward = math::Math::toCartesian(phi, teta).normalize();
             left = forward.cross(up).normalize();
             target = position + forward;
             viewMatrix.setScale(math::Vec3f(1.f, 1.f, 1.f));
             viewMatrix.setAxis(left, up, forward);
             viewMatrix.setOrigin(position);
-            pitch = yaw = roll = 0;
             lockTeta = lockPhi = 0;
             viewUpdated = true;
             flipX = flipY = false;
@@ -30,13 +29,13 @@ namespace odfaeg {
             teta = upToXYPlane.getAngleBetween(math::Vec3f::yAxis, math::Vec3f::yAxis);
             math::Vec3f upToYZPlane(0, up.y, math::Math::abs(up.z));
             phi = upToYZPlane.getAngleBetween(math::Vec3f::zAxis, math::Vec3f::zAxis);
+            gamma = 0;
             forward = math::Math::toCartesian(teta, phi).normalize();
             left = forward.cross(up).normalize();
             target = position + forward;
             viewMatrix.setScale(math::Vec3f(1.f, 1.f, 1.f));
             viewMatrix.setAxis(left, up, forward);
             viewMatrix.setOrigin(position);
-            pitch = yaw = roll = 0;
             lockTeta = lockPhi = 0;
             viewUpdated = true;
             flipX = false;
@@ -73,6 +72,7 @@ namespace odfaeg {
             teta = upToXYPlane.getAngleBetween(math::Vec3f::yAxis, math::Vec3f::yAxis);
             math::Vec3f upToYZPlane(0, up.y, math::Math::abs(up.z));
             phi = upToYZPlane.getAngleBetween(math::Vec3f::zAxis, math::Vec3f::zAxis);
+            gamma = 0;
             forward = math::Math::toCartesian(teta, phi).normalize();
             left = forward.cross(up).normalize();
             up = left.cross(forward);
@@ -80,7 +80,6 @@ namespace odfaeg {
             viewMatrix.setScale(math::Vec3f(1.f, 1.f, 1.f));
             viewMatrix.setAxis(left, up, forward);
             viewMatrix.setOrigin(position);
-            pitch = yaw = roll = 0;
             lockTeta = lockPhi = 0;
             viewUpdated = true;
             flipX = flipY = false;
@@ -117,27 +116,19 @@ namespace odfaeg {
                                    getSize().x,
                                    getSize().y,
                                    getSize().z);
-            float x = math::Math::toRadians(pitch);
-            float y = math::Math::toRadians(yaw);
-            float z = math::Math::toRadians(roll);
-            float cx = math::Math::cosinus(x);
-            float sx = math::Math::sinus(x);
-            float cy = math::Math::cosinus(y);
-            float sy = math::Math::sinus(y);
-            float cz = math::Math::cosinus(z);
-            float sz = math::Math::sinus(z);
+            float angle = math::Math::toRadians(gamma);
             math::Matrix4f transform;
-            transform.m11 = cy*cz;
-            transform.m12 = sx*sy*cz + cx*sz;
-            transform.m13 = -cx*sy*cz + sx*sz;
+            transform.m11 = (forward.x * forward.x * (1 - math::Math::cosinus(angle)) + math::Math::cosinus(angle));
+            transform.m12 = (forward.x * forward.y * (1 - math::Math::cosinus(angle)) - forward.z * math::Math::sinus(angle));
+            transform.m13 = (forward.x * forward.z * (1 - math::Math::cosinus(angle)) + forward.y * math::Math::sinus(angle));
             transform.m14 = 0;
-            transform.m21 = -cy*sz;
-            transform.m22 = -sx*sy*sz + cx*cz;
-            transform.m23 = cx*sy*sz + sx*cz;
+            transform.m21 = (forward.y * forward.x * (1 - math::Math::cosinus(angle)) + forward.z * math::Math::sinus(angle));
+            transform.m22 = (forward.y * forward.y * (1 - math::Math::cosinus(angle)) + math::Math::cosinus(angle));
+            transform.m23 = (forward.y * forward.z * (1 - math::Math::cosinus(angle)) - forward.x * math::Math::sinus(angle));
             transform.m24 = 0;
-            transform.m31 = sy;
-            transform.m32 = -sx*cy;
-            transform.m33 = cx*cy;
+            transform.m31 = (forward.z * forward.x * (1 - math::Math::cosinus(angle)) - forward.y * math::Math::sinus(angle));
+            transform.m32 = (forward.z * forward.y * (1 - math::Math::cosinus(angle)) + forward.x * math::Math::cosinus(angle));
+            transform.m33 = (forward.z * forward.z * (1 - math::Math::cosinus(angle)) + math::Math::cosinus(angle));
             transform.m34 = 0;
             transform.m41 = 0;
             transform.m42 = 0;
@@ -237,11 +228,9 @@ namespace odfaeg {
             viewMatrix.setAxis(left, up, forward);
             viewUpdated = true;
         }
-        void View::rotate(float pitch, float yaw, float roll) {
-            this->pitch = pitch;
-            this->yaw = yaw;
-            this->roll = roll;
-            viewMatrix.setRotation(pitch, yaw, roll);
+        void View::rotate(float gamma) {
+            this->gamma = gamma;
+            viewMatrix.setRotation(gamma);
             viewUpdated = true;
         }
         void View::setPerspective (double left, double right, double bottom, double top, double front, double back) {
@@ -264,8 +253,8 @@ namespace odfaeg {
             viewMatrix.setOrigin(position);
             viewUpdated = true;
         }
-        math::Vec3f View::getAngles() {
-            return math::Vec3f(pitch, yaw, roll);
+        float View::getGamma() {
+            return gamma;
         }
     }
 }

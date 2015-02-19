@@ -52,6 +52,12 @@ namespace odfaeg {
             bool onIntersects (BaseInterface& interface) {
                 return interface.intersects(*this);
             }
+            bool onIntersects (BaseInterface& interface, math::Ray& ray, bool segment) {
+                return interface.intersects(ray, segment);
+            }
+            bool onIntersects (BaseInterface& interface, math::Ray& ray, math::Vec3f& near, math::Vec3f& far) {
+                return interface.intersectsWhere(ray, near, far);
+            }
             std::unique_ptr<BoundingVolume> clone() {
                 return std::make_unique<BoundingPolyhedron>(*this);
             }
@@ -114,8 +120,8 @@ namespace odfaeg {
             *  \return the number of points of the bounding polyhedron.
             */
             int nbPoints ();
-            bool intersects (math::Ray ray);
-            bool intersectsWhere(math::Ray ray, math::Vec3f& i1, math::Vec3f& i2);
+            bool intersects (math::Ray& ray, bool segment);
+            bool intersectsWhere(math::Ray& ray, math::Vec3f& i1, math::Vec3f& i2);
             std::string getType() {
                 return "BoundingPolygon";
             }

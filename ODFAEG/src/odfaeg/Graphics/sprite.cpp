@@ -118,6 +118,7 @@ namespace odfaeg {
             {
 
                 states.transform = getTransform();
+                //m_vertices.transform(getTransform());
                 states.texture = m_texture;
                 target.draw(m_vertices, states);
             }

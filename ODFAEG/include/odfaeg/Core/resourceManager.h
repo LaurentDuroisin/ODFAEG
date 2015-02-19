@@ -258,7 +258,6 @@ namespace odfaeg
                     std::string path; /**> holds the path of the resource.*/
                     unsigned int id; /**> holds the id of the resource.*/
                 };
-                void updateIds(const unsigned int id);
                 /** \fn insertResource (const std::string& path, R* resource, const I& alias)
                 *   \brief insert a resource into the map.
                 *   \param const std::string& path : the path of the resource.
@@ -577,33 +576,6 @@ namespace odfaeg
             mResourceMap.push_back(std::move(r));
             nbResources++;
         }
-        template <typename R, typename I> void ResourceManager<R, I>::updateIds (const unsigned int id) {
-            typename std::vector<Resource>::iterator it;
-            for (it = mResourceMap.begin(); it != mResourceMap.end();) {
-                if (it->getId() == id) {
-                    it = mResourceMap.erase(it);
-                    typename std::map<I, unsigned int>::iterator it2;
-                    for (it2 = mAliasMap.begin(); it2 != mAliasMap.end();) {
-                         if (it2->second == id)
-                            it2 = mAliasMap.erase(it2);
-                         else
-                            it2++;
-                    }
-                    nbResources--;
-                } else if (it->getId() > id) {
-                    typename std::map<I, unsigned int>::iterator it2;
-                    for (it2 = mAliasMap.begin(); it2 != mAliasMap.end(); it2++) {
-                         if (it2->second == it->getId()) {
-                            it2->second--;
-                         }
-                    }
-                    const_cast<unsigned int&> (it->getId())--;
-                    it++;
-                } else {
-                    it++;
-                }
-            }
-        }
         template <typename R, typename I>
         void ResourceManager<R, I>::deleteResourceById(const unsigned int id) {
             std::lock_guard<std::recursive_mutex> locker(rec_mutex);
@@ -636,7 +608,6 @@ namespace odfaeg
                             it2++;
                     }
                     R* res = const_cast<R*>(it->getResource());
-                    updateIds(it->getId());
                     delete res;
                     res = nullptr;
                 } else {
@@ -651,7 +622,6 @@ namespace odfaeg
             for (it = mResourceMap.begin(); it != mResourceMap.end();) {
                 if (it->getResource() != nullptr) {
                     R* resource = const_cast<R*>(it->getResource());
-                    updateIds(it->getId());
                     delete resource;
                     resource = nullptr;
                 } else {

@@ -222,10 +222,15 @@ namespace odfaeg {
                         return srv;
                     }
                 }
-
+                static sf::Clock getTimeBtw2SyncClk() {
+                    return timeBtw2SyncClk;
+                }
+                static sf::Int64 getTimeBtw2Sync() {
+                    return timeBtw2Sync;
+                }
             private :
                 static sf::Time timeOut; /**>Time out.*/
-                static sf::Clock clock; /**>clock.*/
+                static sf::Clock timeoutClk; /**>clock.*/
                 static int timeout;
                 static SrkClient &cli; /**>The client.*/
                 static SrkServer &srv; /**>The server.*/
@@ -233,6 +238,8 @@ namespace odfaeg {
                 static std::vector<std::pair<User*, std::string>> requests; /**> requests.*/
                 static std::vector<User*> users; /**> users.*/
                 static sf::Int64 timeBtw2Pings; /**> time between two pings.*/
+                static sf::Int64 timeBtw2Sync;
+                static sf::Clock timeBtw2SyncClk;
                 static sf::Clock timeBtw2PingsClk; /**> clock measuring the interval between two pings.*/
         };
     }

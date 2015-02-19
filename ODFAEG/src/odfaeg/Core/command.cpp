@@ -95,22 +95,28 @@ namespace odfaeg {
                     it++;
             }
         }
-        bool Command::equalEvent (sf::Event& event, sf::Event& other) {
+        bool Command::equalEvent (sf::Event event, sf::Event other) {
             if (event.type != other.type)
                 return false;
             if (event.type == sf::Event::Resized) {
                 return event.size.width == other.size.width && event.size.height == other.size.height;
             }
             if (event.type == sf::Event::TextEntered) {
+                if (other.text.unicode == 0)
+                    return true;
                 return event.text.unicode == other.text.unicode;
             }
             if (event.type == sf::Event::KeyPressed || event.type == sf::Event::KeyReleased) {
+                if (other.key.code == sf::Keyboard::Unknown)
+                    return true;
                 return event.key.code == other.key.code;
             }
             if (event.type == sf::Event::MouseWheelMoved) {
                 return event.mouseWheel.delta == other.mouseWheel.delta;
             }
             if (event.type == sf::Event::MouseButtonPressed || event.type == sf::Event::MouseButtonReleased) {
+                if (event.mouseButton.button == -1)
+                    return true;
                 return event.mouseButton.button == other.mouseButton.button;
             }
             if (event.type == sf::Event::MouseMoved) {

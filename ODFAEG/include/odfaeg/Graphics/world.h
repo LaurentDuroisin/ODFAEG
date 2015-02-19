@@ -27,7 +27,28 @@ namespace odfaeg {
         */
         class ODFAEG_CORE_API World {
             public :
-
+                struct Cache {
+                    ~Cache() {
+                        std::vector<core::EntitySystem*>::iterator it1; /**> holds every entity systems*/
+                        std::vector<core::Timer*>::iterator it2; /**> holds every timers.*/
+                        std::vector<EntityManager*>::iterator it3; /**> holds every entity managers*/
+                        for (it1 = eus.begin(); it1 != eus.end();) {
+                            delete *it1;
+                            it1 = eus.erase(it1);
+                        }
+                        for (it2 = aus.begin(); it2 != aus.end();) {
+                            delete *it2;
+                            it2 = aus.erase(it2);
+                        }
+                        for (it3 = ems.begin(); it3 != ems.end();) {
+                            delete *it3;
+                            it3 = ems.erase(it3);
+                        }
+                    }
+                    std::vector<core::EntitySystem*> eus; /**> holds every entity systems*/
+                    std::vector<core::Timer*> aus; /**> holds every timers.*/
+                    std::vector<EntityManager*> ems; /**> holds every entity managers*/
+                };
                 /**
                 *    \fn std::vector<CellMap<E>*> getCasesMap()
                 *    \brief get all the cells (containing the entities) of the entity manager.
@@ -45,6 +66,14 @@ namespace odfaeg {
                 static bool addEntity (Entity* entity) {
                     if (currentEntityManager != nullptr)
                         return currentEntityManager->addEntity(entity);
+                }
+                static bool removeEntity(Entity* entity) {
+                    if (currentEntityManager != nullptr)
+                        return currentEntityManager->removeEntity(entity);
+                }
+                static bool deleteEntity(Entity* entity) {
+                    if (currentEntityManager != nullptr)
+                        return currentEntityManager->deleteEntity(entity);
                 }
                 /**
                 *   \fn E& getShadowMap()
@@ -115,6 +144,11 @@ namespace odfaeg {
                 static bool collide(Entity* entity, math::Vec3f position) {
                     if (currentEntityManager != nullptr) {
                         return currentEntityManager->collide(entity, position);
+                    }
+                }
+                static bool collide(Entity* entity, math::Ray ray) {
+                    if (currentEntityManager != nullptr) {
+                        return currentEntityManager->collide(entity, ray);
                     }
                 }
                 /**\fn void generateMap(std::vector<E*> tGrounds, std::vector<E*> tWalls)
@@ -273,9 +307,9 @@ namespace odfaeg {
                     }
                 }
                 static void updateTimers() {
-                    for (unsigned int i = 0; i < aus.size(); i++) {
-                        if (!aus[i]->isUsingThread()) {
-                            aus[i]->update();
+                    for (unsigned int i = 0; i < cache.aus.size(); i++) {
+                        if (!cache.aus[i]->isUsingThread()) {
+                            cache.aus[i]->update();
                         }
                     }
                 }
@@ -286,15 +320,14 @@ namespace odfaeg {
                     return graphic::BaseChangementMatrix();
                 }
                 static void addEntitiesUpdater(core::EntitySystem *eu) {
-                    eus.push_back(eu);
+                    cache.eus.push_back(eu);
                 }
                 static void addAnimUpdater(core::Timer *au) {
-
-                    aus.push_back(au);
+                    cache.aus.push_back(au);
                 }
                 static void update() {
-                    for (unsigned int i = 0; i < eus.size(); i++) {
-                        eus[i]->update();
+                    for (unsigned int i = 0; i < cache.eus.size(); i++) {
+                        cache.eus[i]->update();
                     }
                 }
                 static void computeIntersectionsWithWalls() {
@@ -302,7 +335,7 @@ namespace odfaeg {
                         currentEntityManager->computeIntersectionsWithWalls();
                 }
                 static void addEntityManager(graphic::EntityManager* holder) {
-                    ems.push_back(holder);
+                    cache.ems.push_back(holder);
                 }
                 static void checkVisibleEntities() {
                     if (currentEntityManager != nullptr) {
@@ -312,10 +345,10 @@ namespace odfaeg {
                 }
                 static void removeEntityManager (std::string emName) {
                     std::vector<EntityManager*>::iterator it;
-                    for (it = ems.begin(); it != ems.end();) {
+                    for (it = cache.ems.begin(); it != cache.ems.end();) {
                         std::string otherName = (*it)->getName();
                         if (emName == otherName) {
-                            it = ems.erase(it);
+                            it = cache.ems.erase(it);
                             if (currentEntityManager == *it)
                                 currentEntityManager = nullptr;
                         } else {
@@ -326,7 +359,7 @@ namespace odfaeg {
                 static void setCurrentEntityManager (std::string mapName) {
 
                     std::vector<EntityManager*>::iterator it;
-                    for (it = ems.begin(); it != ems.end(); it++) {
+                    for (it = cache.ems.begin(); it != cache.ems.end(); it++) {
                         std::string otherName = (*it)->getName();
                         if (otherName == mapName) {
                            currentEntityManager = *it;
@@ -334,9 +367,10 @@ namespace odfaeg {
                     }
                 }
             private :
-                static std::vector<core::EntitySystem*> eus; /**> holds every entity systems*/
-                static std::vector<core::Timer*> aus; /**> holds every timers.*/
-                static std::vector<EntityManager*> ems; /**> holds every entity managers*/
+                /*static std::vector<core::EntitySystem*> eus;*/
+                /*static std::vector<core::Timer*> aus;*/
+                /*static std::vector<EntityManager*> ems;*/
+                static Cache cache;
                 static graphic::EntityManager* currentEntityManager; /**> holds the current entity manager.*/
         };
     }

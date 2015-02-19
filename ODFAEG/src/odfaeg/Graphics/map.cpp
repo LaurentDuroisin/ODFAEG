@@ -15,6 +15,7 @@ namespace odfaeg {
             id = 0;
             version = 1;
             this->name = name;
+            diagSize = math::Math::sqrt(math::Math::power(cellWidth, 2) + math::Math::power(cellHeight, 2));
             sf::Vector3i resolution;
             if (frcm != nullptr) {
                 shadowMap = new RenderTexture();
@@ -31,7 +32,6 @@ namespace odfaeg {
                 perPixShadowShader = new Shader();
                 buildNormalMapShader = new Shader();
                 if (Shader::getShadingLanguageVersionMajor() >= 3 && Shader::getShadingLanguageVersionMinor() >= 3) {
-                    std::cout<<"version 330"<<std::endl;
                     const std::string perPixLightingVertexShader =
                     "#version 330 core \n"
                     "layout (location = 0) in vec3 vertex_position;"
@@ -401,13 +401,22 @@ namespace odfaeg {
 
             return gridMap->addEntity(entity);
         }
-
         bool Map::removeEntity (Entity *entity) {
             std::vector<Entity*> tiles;
             getChildren(entity, tiles, "*");
             for (unsigned int i = 0; i < tiles.size(); i++) {
                for (unsigned int j = 0; j < tiles[i]->getFaces().size(); j++) {
-                   increaseComptImg(tiles[i]->getFaces()[j]->getMaterial().getTexture());
+                   decreaseComptImg(tiles[i]->getFaces()[j]->getMaterial().getTexture());
+               }
+            }
+            return gridMap->removeEntity(entity);
+        }
+        bool Map::deleteEntity (Entity *entity) {
+            std::vector<Entity*> tiles;
+            getChildren(entity, tiles, "*");
+            for (unsigned int i = 0; i < tiles.size(); i++) {
+               for (unsigned int j = 0; j < tiles[i]->getFaces().size(); j++) {
+                   decreaseComptImg(tiles[i]->getFaces()[j]->getMaterial().getTexture());
                }
             }
             return gridMap->deleteEntity(entity);
@@ -443,46 +452,48 @@ namespace odfaeg {
         }
         void Map::checkVisibleEntities() {
             for (unsigned int c = 0; c < frcm->getNbComponents() + 1; c++) {
-                physic::BoundingBox view ;
-                if (c == frcm->getNbComponents())
-                    view = frcm->getWindow().getView().getViewVolume();
-                else
-                    view = frcm->getRenderComponent(c)->getView().getViewVolume();
-                visibleParentEntities.clear();
-                vEntitiesByType.clear();
-                int x = view.getPosition().x;
-                int y = view.getPosition().y;
-                int z = view.getPosition().z;
-                int endX = view.getPosition().x + view.getWidth();
-                int endY = view.getPosition().y + view.getHeight();
-                int endZ = view.getDepth();
-                physic::BoundingBox bx (x, y, z, endX-view.getPosition().x, endY-view.getPosition().y, endZ);
+                if (c == frcm->getNbComponents() || c < frcm->getNbComponents() && frcm->getRenderComponent(c) != nullptr) {
+                    physic::BoundingBox view;
+                    if (c == frcm->getNbComponents())
+                        view = frcm->getWindow().getView().getViewVolume();
+                    else
+                        view = frcm->getRenderComponent(c)->getView().getViewVolume();
+                    visibleParentEntities.clear();
+                    vEntitiesByType.clear();
+                    int x = view.getPosition().x;
+                    int y = view.getPosition().y;
+                    int z = view.getPosition().z;
+                    int endX = view.getPosition().x + view.getWidth();
+                    int endY = view.getPosition().y + view.getHeight();
+                    int endZ = view.getDepth();
+                    physic::BoundingBox bx (x, y, z, endX-view.getPosition().x, endY-view.getPosition().y, endZ);
 
-                for (int i = x; i <= endX; i+=gridMap->getOffsetX()) {
-                    for (int j = y; j <= endY; j+=gridMap->getOffsetY()) {
-                        //for (int k = 0; k <= endZ; k+=gridMap->getOffsetZ()) {
-                            math::Vec3f point(i, j, 0);
-                            CellMap* cell = getGridCellAt(point);
-                            if (cell != nullptr) {
-                                for (unsigned int n = 0; n < cell->getEntitiesInside().size(); n++) {
-                                   Entity* entity = cell->getEntityInside(n);
-                                   physic::BoundingBox bx2 = entity->getGlobalBounds();
-                                   if (!containsVisibleParentEntity(entity)) {
-                                        visibleParentEntities.push_back(entity);
-                                        /*if (entity->isAnimated()) {
-                                            if (!containsAnimatedVisibleEntity(static_cast<AnimatedEntity*>(entity))) {
-                                                animatedVisibleEntities.push_back(static_cast<AnimatedEntity*>(entity));
-                                            }
-                                        } else {*/
-                                            insertVisibleEntity(entity);
-                                        //}
+                    for (int i = x; i <= endX; i+=gridMap->getOffsetX()) {
+                        for (int j = y; j <= endY; j+=gridMap->getOffsetY()) {
+                            //for (int k = 0; k <= endZ; k+=gridMap->getOffsetZ()) {
+                                math::Vec3f point(i, j, 0);
+                                CellMap* cell = getGridCellAt(point);
+                                if (cell != nullptr) {
+                                    for (unsigned int n = 0; n < cell->getEntitiesInside().size(); n++) {
+                                       Entity* entity = cell->getEntityInside(n);
+                                       physic::BoundingBox bx2 = entity->getGlobalBounds();
+                                       if (!containsVisibleParentEntity(entity)) {
+                                            visibleParentEntities.push_back(entity);
+                                            /*if (entity->isAnimated()) {
+                                                if (!containsAnimatedVisibleEntity(static_cast<AnimatedEntity*>(entity))) {
+                                                    animatedVisibleEntities.push_back(static_cast<AnimatedEntity*>(entity));
+                                                }
+                                            } else {*/
+                                                insertVisibleEntity(entity);
+                                            //}
+                                        }
                                     }
-                                }
-                            //}
+                                //}
+                            }
                         }
                     }
                 }
-                if (c < frcm->getNbComponents()) {
+                if (c < frcm->getNbComponents() && frcm->getRenderComponent(c) != nullptr) {
                     std::vector<Entity*> entities = getVisibleEntities(frcm->getRenderComponent(c)->getExpression());
                     frcm->getRenderComponent(c)->loadEntitiesOnComponent(entities);
                 }
@@ -569,7 +580,8 @@ namespace odfaeg {
         }
         void Map::changeVisibleEntity(Entity* toRemove, Entity* toAdd) {
             for (unsigned int i = 0; i < frcm->getNbComponents(); i++) {
-                frcm->getRenderComponent(i)->changeVisibleEntities(toRemove, toAdd, this);
+                if (frcm->getRenderComponent(i) != nullptr)
+                    frcm->getRenderComponent(i)->changeVisibleEntities(toRemove, toAdd, this);
             }
             View view = frcm->getWindow().getView();
             physic::BoundingBox bx (view.getViewVolume().getPosition().x,view.getViewVolume().getPosition().y,view.getViewVolume().getPosition().z,view.getViewVolume().getWidth(), view.getViewVolume().getHeight(), view.getViewVolume().getDepth());
@@ -817,6 +829,19 @@ namespace odfaeg {
         bool Map::collide (Entity *entity) {
              return gridMap->collideWithEntity(entity);
         }
+        bool Map::collide (Entity* entity, math::Ray ray) {
+             math::Vec3f point = ray.getOrig() + ray.getDir() * diagSize * 0.1f;
+             math::Vec3f v1 = ray.getExt() - ray.getOrig();
+             math::Vec3f v2 = point - ray.getOrig();
+             while (v2.magnSquared() / v1.magnSquared() < 1) {
+                    if (collide(entity, point))
+                        return true;
+                    point += ray.getDir() * diagSize * 0.1f;
+                    v2 = point - ray.getOrig();
+             }
+             point = ray.getExt();
+             return collide(entity, point);
+        }
         void Map::computeIntersectionsWithWalls () {
              vector<Entity*> visibleLights = getEntities ("E_PONCTUAL_LIGHT");
              vector<Entity*> visibleDecors = getEntities ("E_DECOR+E_WALL");
@@ -832,7 +857,7 @@ namespace odfaeg {
 
                     for (unsigned int s = 0; s < decor->getSegments().size(); s++) {
                         math::Ray ray = *decor->getSegments()[s];
-                        if (bc.intersects(ray)) {
+                        if (bc.intersects(ray, true)) {
                             int size = light->getTris().size();
                             for (int n = 0; n < size; n++) {
                                 light->checkInterTri(n, ray);
@@ -847,15 +872,19 @@ namespace odfaeg {
             visibleDecors.clear();
         }
         void Map::drawOnComponents(std::string expression, int layer, sf::BlendMode blendMode) {
-            FastRenderComponent* frc = frcm->getRenderComponent(layer);
-            frc->getFrameBufferTile().setCenter(frcm->getWindow().getView().getPosition());
-            frc->setExpression(expression);
-            frc->drawNextFrame();
+            HeavyComponent* frc = frcm->getRenderComponent(layer);
+            if (frc != nullptr) {
+                frc->getFrameBufferTile().setCenter(frcm->getWindow().getView().getPosition());
+                frc->setExpression(expression);
+                frc->drawNextFrame();
+            }
         }
         void Map::drawOnComponents(Drawable& drawable, int layer, RenderStates states) {
-            FastRenderComponent *frc = frcm->getRenderComponent(layer);
-            frc->getFrameBufferTile().setCenter(frcm->getWindow().getView().getPosition());
-            frc->draw(drawable, states);
+            HeavyComponent *frc = frcm->getRenderComponent(layer);
+            if (frc != nullptr) {
+                frc->getFrameBufferTile().setCenter(frcm->getWindow().getView().getPosition());
+                frc->draw(drawable, states);
+            }
         }
 
         void Map::generateStencilBuffer(std::string expression, int n, va_list args) {
@@ -878,50 +907,51 @@ namespace odfaeg {
                             idsCompInt.push_back(j);
                     }
                     for (unsigned int i = 0; i < frcm->getNbComponents(); i++) {
-                        entities = frcm->getRenderComponent(i)->getEntities();
-                        view = frcm->getRenderComponent(i)->getView();
-                        math::Vec3f centerLight = g2d::AmbientLight::getAmbientLight().getLightCenter();
-                        view = View(view.getSize().x, view.getSize().y, -g2d::AmbientLight::getAmbientLight().getHeight(), g2d::AmbientLight::getAmbientLight().getHeight());
-                        view.setCenter(centerLight);
-                        view.rotate(0, 0, frcm->getRenderComponent(i)->getView().getTeta() + frcm->getRenderComponent(i)->getView().getAngles().z);
-                        math::Vec3f forward = frcm->getRenderComponent(i)->getView().getPosition() - view.getPosition();
-                        math::Vec3f target = view.getPosition() + forward;
-                        view.lookAt(target.x, target.y, target.z);
-                        stencilBuffer->setView(view);
-                        bool find = false;
-                        math::Vec3f v = view.getPosition() - frcm->getRenderComponent(i)->getView().getPosition();
-                        math::Matrix4f biasMatrix(0.5f, 0.0f, 0.0f, 0.0f,
-                                                  0.0f, 0.5f, 0.0f, 0.0f,
-                                                  0.0f, 0.0f, 0.5f, 0.0f,
-                                                  0.5f, 0.5f, 0.5f, 1.f);
-                        math::Matrix4f depthBiasMatrix = biasMatrix * view.getViewMatrix().getMatrix() * view.getProjMatrix().getMatrix();
-                        perPixShadowShader->setParameter("depthBiasMatrix", depthBiasMatrix.transpose());
-                        for (unsigned int k = 0; k < entities.size(); k++) {
-                            forward = entities[k]->getCenter() - view.getPosition();
-                            target = view.getPosition() + forward;
+                        if (frcm->getRenderComponent(i) != nullptr) {
+                            entities = frcm->getRenderComponent(i)->getEntities();
+                            view = frcm->getRenderComponent(i)->getView();
+                            math::Vec3f centerLight = g2d::AmbientLight::getAmbientLight().getLightCenter();
+                            view = View(view.getSize().x, view.getSize().y, -g2d::AmbientLight::getAmbientLight().getHeight(), g2d::AmbientLight::getAmbientLight().getHeight());
+                            view.setCenter(centerLight);
+                            math::Vec3f forward = frcm->getRenderComponent(i)->getView().getPosition() - view.getPosition();
+                            math::Vec3f target = view.getPosition() + forward;
                             view.lookAt(target.x, target.y, target.z);
-                            if (entities[k]->getFaces().size() > 0) {
-                                if (entities[k]->getFaces()[0]->getMaterial().getTexture() != nullptr) {
-                                    buildShadowMapShader->setParameter("haveTexture", 1);
-                                } else {
-                                    buildShadowMapShader->setParameter("haveTexture", 0);
+                            stencilBuffer->setView(view);
+                            bool find = false;
+                            math::Vec3f v = view.getPosition() - frcm->getRenderComponent(i)->getView().getPosition();
+                            math::Matrix4f biasMatrix(0.5f, 0.0f, 0.0f, 0.0f,
+                                                      0.0f, 0.5f, 0.0f, 0.0f,
+                                                      0.0f, 0.0f, 0.5f, 0.0f,
+                                                      0.5f, 0.5f, 0.5f, 1.f);
+                            math::Matrix4f depthBiasMatrix = biasMatrix * view.getViewMatrix().getMatrix() * view.getProjMatrix().getMatrix();
+                            perPixShadowShader->setParameter("depthBiasMatrix", depthBiasMatrix.transpose());
+                            for (unsigned int k = 0; k < entities.size(); k++) {
+                                forward = entities[k]->getCenter() - view.getPosition();
+                                target = view.getPosition() + forward;
+                                view.lookAt(target.x, target.y, target.z);
+                                if (entities[k]->getFaces().size() > 0) {
+                                    if (entities[k]->getFaces()[0]->getMaterial().getTexture() != nullptr) {
+                                        buildShadowMapShader->setParameter("haveTexture", 1);
+                                    } else {
+                                        buildShadowMapShader->setParameter("haveTexture", 0);
+                                    }
+                                    math::Vec3f shadowCenter, shadowScale(1.f, 1.f, 1.f), shadowRotationAxis;
+                                    float shadowRotationAngle = 0;
+                                    if (entities[k]->getParent() != nullptr && entities[k]->getParent()->isModel()) {
+                                        shadowCenter = static_cast<Model*>(entities[k]->getParent())->getShadowCenter();
+                                        shadowScale = static_cast<Model*>(entities[k]->getParent())->getShadowScale();
+                                        shadowRotationAxis = static_cast<Model*>(entities[k]->getParent())->getShadowRotationAxis();
+                                        shadowRotationAngle = static_cast<Model*>(entities[k]->getParent())->getShadowRotationAngle();
+                                    }
+                                    TransformMatrix tm;
+                                    tm.setOrigin(entities[k]->getPosition());
+                                    tm.setScale(shadowScale);
+                                    tm.setRotation(shadowRotationAxis, shadowRotationAngle);
+                                    tm.setTranslation(entities[k]->getPosition() + shadowCenter);
+                                    tm.update();
+                                    buildShadowMapShader->setParameter("shadowProjMat", tm.getMatrix().transpose());
+                                    stencilBuffer->draw(*entities[k], states);
                                 }
-                                math::Vec3f shadowCenter, shadowScale(1.f, 1.f, 1.f), shadowRotationAxis;
-                                float shadowRotationAngle = 0;
-                                if (entities[k]->getParent() != nullptr && entities[k]->getParent()->isModel()) {
-                                    shadowCenter = static_cast<Model*>(entities[k]->getParent())->getShadowCenter();
-                                    shadowScale = static_cast<Model*>(entities[k]->getParent())->getShadowScale();
-                                    shadowRotationAxis = static_cast<Model*>(entities[k]->getParent())->getShadowRotationAxis();
-                                    shadowRotationAngle = static_cast<Model*>(entities[k]->getParent())->getShadowRotationAngle();
-                                }
-                                TransformMatrix tm;
-                                tm.setOrigin(entities[k]->getPosition());
-                                tm.setScale(shadowScale);
-                                tm.setRotation(shadowRotationAxis, shadowRotationAngle);
-                                tm.setTranslation(entities[k]->getPosition() + shadowCenter);
-                                tm.update();
-                                buildShadowMapShader->setParameter("shadowProjMat", tm.getMatrix().transpose());
-                                stencilBuffer->draw(*entities[k], states);
                             }
                         }
                     }
@@ -950,52 +980,54 @@ namespace odfaeg {
                             idsCompInt.push_back(j);
                     }
                     for (unsigned int i = 0; i < frcm->getNbComponents(); i++) {
-                        entities = frcm->getRenderComponent(i)->getEntities();
-                        view = frcm->getRenderComponent(i)->getView();
-                        shadowMap->setView(view);
-                        bool find = false;
-                        for (unsigned int k = 0; k < idsCompInt.size(); k++)
-                            if (idsCompInt[k] == i)
-                                find = true;
-                        if (find) {
-                            //std::cout<<"don't set"<<std::endl;
-                            perPixShadowShader->setParameter("set", 1);
-                        } else {
-                            //std::cout<<"set"<<std::endl;
-                            perPixShadowShader->setParameter("set", 0);
-                        }
-                        for (unsigned int p = 0; p < 2; p++) {
-                            for (unsigned int k = 0; k < entities.size(); k++) {
-                                if (entities[k]->getFaces().size() > 0) {
-                                    if (entities[k]->getFaces()[0]->getMaterial().getTexture() != nullptr) {
-                                        perPixShadowShader->setParameter("haveTexture", 1);
-                                    } else {
-                                        perPixShadowShader->setParameter("haveTexture", 0);
-                                    }
-                                    math::Vec3f shadowCenter, shadowScale(1.f, 1.f, 1.f), shadowRotationAxis;
-                                    float shadowRotationAngle = 0;
-                                    if (entities[k]->getParent() != nullptr && entities[k]->getParent()->isModel()) {
-                                        shadowCenter = static_cast<Model*>(entities[k]->getParent())->getShadowCenter();
-                                        shadowScale = static_cast<Model*>(entities[k]->getParent())->getShadowScale();
-                                        shadowRotationAxis = static_cast<Model*>(entities[k]->getParent())->getShadowRotationAxis();
-                                        shadowRotationAngle = static_cast<Model*>(entities[k]->getParent())->getShadowRotationAngle();
-                                    }
-                                    if (p == 0) {
-                                        TransformMatrix tm;
-                                        tm.setOrigin(entities[k]->getPosition());
-                                        tm.setScale(shadowScale);
-                                        tm.setRotation(shadowRotationAxis, shadowRotationAngle);
-                                        tm.setTranslation(entities[k]->getPosition() + shadowCenter);
-                                        tm.update();
-                                        perPixShadowShader->setParameter("shadowProjMat", tm.getMatrix().transpose());
-                                        perPixShadowShader->setParameter("firstPass", 1);
-                                        shadowMap->draw(*entities[k], states);
-                                    } else {
-                                        TransformMatrix tm;
-                                        //tm.update();
-                                        perPixShadowShader->setParameter("shadowProjMat", tm.getMatrix().transpose());
-                                        perPixShadowShader->setParameter("firstPass", 0);
-                                        shadowMap->draw(*entities[k], states);
+                        if (frcm->getRenderComponent(i) != nullptr) {
+                            entities = frcm->getRenderComponent(i)->getEntities();
+                            view = frcm->getRenderComponent(i)->getView();
+                            shadowMap->setView(view);
+                            bool find = false;
+                            for (unsigned int k = 0; k < idsCompInt.size(); k++)
+                                if (idsCompInt[k] == i)
+                                    find = true;
+                            if (find) {
+                                //std::cout<<"don't set"<<std::endl;
+                                perPixShadowShader->setParameter("set", 1);
+                            } else {
+                                //std::cout<<"set"<<std::endl;
+                                perPixShadowShader->setParameter("set", 0);
+                            }
+                            for (unsigned int p = 0; p < 2; p++) {
+                                for (unsigned int k = 0; k < entities.size(); k++) {
+                                    if (entities[k]->getFaces().size() > 0) {
+                                        if (entities[k]->getFaces()[0]->getMaterial().getTexture() != nullptr) {
+                                            perPixShadowShader->setParameter("haveTexture", 1);
+                                        } else {
+                                            perPixShadowShader->setParameter("haveTexture", 0);
+                                        }
+                                        math::Vec3f shadowCenter, shadowScale(1.f, 1.f, 1.f), shadowRotationAxis;
+                                        float shadowRotationAngle = 0;
+                                        if (entities[k]->getParent() != nullptr && entities[k]->getParent()->isModel()) {
+                                            shadowCenter = static_cast<Model*>(entities[k]->getParent())->getShadowCenter();
+                                            shadowScale = static_cast<Model*>(entities[k]->getParent())->getShadowScale();
+                                            shadowRotationAxis = static_cast<Model*>(entities[k]->getParent())->getShadowRotationAxis();
+                                            shadowRotationAngle = static_cast<Model*>(entities[k]->getParent())->getShadowRotationAngle();
+                                        }
+                                        if (p == 0) {
+                                            TransformMatrix tm;
+                                            tm.setOrigin(entities[k]->getPosition());
+                                            tm.setScale(shadowScale);
+                                            tm.setRotation(shadowRotationAxis, shadowRotationAngle);
+                                            tm.setTranslation(entities[k]->getPosition() + shadowCenter);
+                                            tm.update();
+                                            perPixShadowShader->setParameter("shadowProjMat", tm.getMatrix().transpose());
+                                            perPixShadowShader->setParameter("firstPass", 1);
+                                            shadowMap->draw(*entities[k], states);
+                                        } else {
+                                            TransformMatrix tm;
+                                            //tm.update();
+                                            perPixShadowShader->setParameter("shadowProjMat", tm.getMatrix().transpose());
+                                            perPixShadowShader->setParameter("firstPass", 0);
+                                            shadowMap->draw(*entities[k], states);
+                                        }
                                     }
                                 }
                             }
@@ -1037,33 +1069,35 @@ namespace odfaeg {
                                idsCompInt.push_back(j);
                        }
                        for (unsigned int i = 0; i < frcm->getNbComponents(); i++) {
-                            bool find = false;
-                            for (unsigned int k = 0; k < idsCompInt.size(); k++)
-                                if (idsCompInt[k] == i)
-                                    find = true;
-                            if (find) {
-                                lightMap->setView(frcm->getRenderComponent(i)->getView());
-                                normalMap->setView(frcm->getRenderComponent(i)->getView());
-                                normalMap->clear(sf::Color::Transparent);
-                                Tile& heightMapTile = frcm->getRenderComponent(i)->getDepthBufferTile();
-                                heightMapTile.setCenter(frcm->getRenderComponent(i)->getView().getPosition());
-                                states.shader = buildNormalMapShader;
-                                states.blendMode = sf::BlendNone;
-                                normalMap->draw(heightMapTile, states);
-                                normalMap->display();
-                                perPixLightingShader->setParameter("specularTexture", frcm->getRenderComponent(i)->getSpecularTexture());
-                                perPixLightingShader->setParameter("normalMap", normalMap->getTexture());
-                                states.shader = perPixLightingShader;
-                                states.blendMode = sf::BlendAdd;
-                                for (unsigned int j = 0; j < lights.size(); j++) {
-                                    EntityLight* el = static_cast<EntityLight*> (lights[j]);
-                                    math::Vec3f center = frcm->getWindow().mapCoordsToPixel(el->getLightCenter(), frcm->getRenderComponent(i)->getView());
-                                    center.w = el->getSize().x * 0.5f;
-                                    perPixLightingShader->setParameter("lightPos", center.x, center.y, center.z, center.w);
-                                    perPixLightingShader->setParameter("lightColor", el->getColor().r, el->getColor().g,el->getColor().b,el->getColor().a);
-                                    lightMap->draw(*el, states);
+                            if (frcm->getRenderComponent(i) != nullptr) {
+                                bool find = false;
+                                for (unsigned int k = 0; k < idsCompInt.size(); k++)
+                                    if (idsCompInt[k] == i)
+                                        find = true;
+                                if (find) {
+                                    lightMap->setView(frcm->getRenderComponent(i)->getView());
+                                    normalMap->setView(frcm->getRenderComponent(i)->getView());
+                                    normalMap->clear(sf::Color::Transparent);
+                                    Tile& heightMapTile = frcm->getRenderComponent(i)->getDepthBufferTile();
+                                    heightMapTile.setCenter(frcm->getRenderComponent(i)->getView().getPosition());
+                                    states.shader = buildNormalMapShader;
+                                    states.blendMode = sf::BlendNone;
+                                    normalMap->draw(heightMapTile, states);
+                                    normalMap->display();
+                                    perPixLightingShader->setParameter("specularTexture", frcm->getRenderComponent(i)->getSpecularTexture());
+                                    perPixLightingShader->setParameter("normalMap", normalMap->getTexture());
+                                    states.shader = perPixLightingShader;
+                                    states.blendMode = sf::BlendAdd;
+                                    for (unsigned int j = 0; j < lights.size(); j++) {
+                                        EntityLight* el = static_cast<EntityLight*> (lights[j]);
+                                        math::Vec3f center = frcm->getWindow().mapCoordsToPixel(el->getLightCenter(), frcm->getRenderComponent(i)->getView());
+                                        center.w = el->getSize().x * 0.5f;
+                                        perPixLightingShader->setParameter("lightPos", center.x, center.y, center.z, center.w);
+                                        perPixLightingShader->setParameter("lightColor", el->getColor().r, el->getColor().g,el->getColor().b,el->getColor().a);
+                                        lightMap->draw(*el, states);
+                                    }
                                 }
-                            }
+                           }
                        }
                        lightMap->display();
                 }

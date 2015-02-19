@@ -63,6 +63,7 @@ namespace odfaeg {
             */
             virtual bool collide (Entity* entity) = 0;
             virtual bool collide (Entity* entity, math::Vec3f position) = 0;
+            virtual bool collide (Entity* entity, math::Ray ray) = 0;
             /**
             * \fn void generate_map(std::vector<Tile*> tGrounds, std::vector<Tile*> tWalls, BoundingBox& zone) = 0;
             * \brief virtual method used to generate the map.
@@ -149,6 +150,8 @@ namespace odfaeg {
             virtual void changeVisibleEntity(Entity* toRemove, Entity* toAdd) = 0;
             virtual void removeAnimatedVisibleEntity(Entity* toRemove, std::vector<Entity*>& entities, View& view, bool& removed) = 0;
             virtual void insertAnimatedVisibleEntity (Entity* toAdd, std::vector<Entity*>& entities, View& view) = 0;
+            virtual bool removeEntity(Entity* entity) = 0;
+            virtual bool deleteEntity(Entity* entity) = 0;
             std::string getName() {
                 return name;
             }

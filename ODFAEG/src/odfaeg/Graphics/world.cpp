@@ -8,9 +8,7 @@
 namespace odfaeg {
     namespace graphic {
         using namespace std;
-        vector<EntityManager*> World::ems = vector<EntityManager*>();
-        vector<core::EntitySystem*> World::eus = vector<core::EntitySystem*>();
-        vector<core::Timer*> World::aus = vector<core::Timer*>();
         EntityManager* World::currentEntityManager = nullptr;
+        World::Cache World::cache = World::Cache();
     }
 }

@@ -3,6 +3,7 @@
 #include "../Math/vec2f.h"
 #include "../Math/ray.h"
 #include "boundingVolume.h"
+#include "collisionResultSet.hpp"
 /**
   *\namespace odfaeg
   * the namespace of the Opensource Development Framework Adapted for Every Games.
@@ -39,7 +40,15 @@ namespace odfaeg {
                  * \param the other bounding sphere to test with.
                  * \return the result of the collision test.
                  */
-                bool onIntersects (BoundingVolume& interface);
+                bool onIntersects (BaseInterface& interface) {
+                    return interface.intersects(*this);
+                }
+                bool onIntersects (BaseInterface& interface, math::Ray& ray, bool segment) {
+                    return interface.intersects(ray, segment);
+                }
+                bool onIntersects (BaseInterface& interface, math::Ray& ray, math::Vec3f& near, math::Vec3f& far) {
+                    return interface.intersectsWhere(ray, near, far);
+                }
                 bool intersects (BoundingSphere &other);
                 /** \fn bool intersects (BoundingEllipsoid &be)
                  *  \brief check if the bounding sphere is in collision with a bounding ellipsoid.
@@ -76,7 +85,7 @@ namespace odfaeg {
                  *  \param the ray to test with.
                  *  \return the result of the collision test.
                  */
-                bool intersects (math::Ray& ray);
+                bool intersects (math::Ray& ray, bool segment);
                 /** \fn bool intersects (Segment &ray, Vec2f &near, Vec2f &far)
                  *  \brief check if a ray interects the sphere and get the points of the intersection.
                  *  \param the ray to test with.
@@ -106,9 +115,6 @@ namespace odfaeg {
                 const BoundingSphere& operator= (const BoundingSphere& other) {
                     *this = other;
                     return *this;
-                }
-                bool onIntersects(BaseInterface &interface) {
-                    return interface.intersects(*this);
                 }
                 std::unique_ptr<BoundingVolume> clone() {
                     return std::make_unique<BoundingSphere>(*this);

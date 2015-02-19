@@ -13,7 +13,6 @@ namespace odfaeg {
             this->cellHeight = cellHeight;
             offsetX = cellWidth * 0.5f;
             offsetY = cellHeight * 0.5f;
-            bm.set2DIsoMatrix();
         }
 
         int GridMap::getCellWidth() {
@@ -191,8 +190,6 @@ namespace odfaeg {
                     }
                 }
             }
-
-            reassignIds(entity);
             delete entity;
             return removed;
         }
@@ -358,23 +355,6 @@ namespace odfaeg {
 
         std::vector<CellMap*> GridMap::getCasesMap () {
             return casesMap;
-        }
-
-        void GridMap::reassignIds (Entity *entity) {
-            vector<Entity*> entities = getEntities();
-
-            for (unsigned int i = 0; i < entities.size(); i++) {
-                if(entities[i]->getChildren().size() == 0) {
-                    if (entities[i]->getId() > entity->getId())
-                        entities[i]->setId(entities[i]->getId() - entity->getNbChildren() + 1);
-                } else {
-                    for (unsigned int j = 0; j < entities[i]->getChildren().size(); j++) {
-                        if (entities[i]->getChildren()[j]->getId() > entity->getId())
-                            entities[i]->getChildren()[j]->setId(entities[i]->getChildren()[j]->getId() - entity->getNbChildren() + 1);
-                    }
-                }
-            }
-
         }
         bool GridMap::collideWithEntity(Entity* entity, math::Vec3f position) {
             CellMap* cell = getGridCellAt(position);

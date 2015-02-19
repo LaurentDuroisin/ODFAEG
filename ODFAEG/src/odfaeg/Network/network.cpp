@@ -6,10 +6,12 @@ namespace odfaeg {
         SrkClient& Network::cli = Network::getCliInstance();
         SrkServer& Network::srv = Network::getSrvInstance();
         Int64 Network::timeBtw2Pings = sf::seconds(1.f).asMicroseconds();
+        Int64 Network::timeBtw2Sync = sf::seconds(1.f).asMicroseconds();
+        Clock Network::timeBtw2SyncClk = Clock();
         Clock Network::timeBtw2PingsClk = sf::Clock();
+        Clock Network::timeoutClk = Clock();
         std::vector<std::pair<User*, std::string>> Network::requests = std::vector<std::pair<User*, std::string>>();
         std::vector<User*> Network::users = std::vector<User*>();
-        Clock Network::clock = Clock();
         vector<string> Network::responses = vector<string>();
         Time Network::timeOut = seconds(3.f);
         bool Network::startCli (int portTCP, int portUDP, IpAddress address, bool useThread, bool useSecuredConnexion) {
@@ -81,9 +83,9 @@ namespace odfaeg {
             std::string request="";
             if (srv.isUsingThread()) {
                 std::lock_guard<std::recursive_mutex> locker(rec_mutex);
-                clock.restart();
+                timeoutClk.restart();
                 std::vector<std::pair<User*, std::string>>::iterator it;
-                while (request == "" && clock.getElapsedTime().asSeconds() < timeOut.asSeconds()) {
+                while (request == "" && timeoutClk.getElapsedTime().asSeconds() < timeOut.asSeconds()) {
                     if (requests.size() > 0) {
                         it = requests.begin();
                         request = it->second;
@@ -92,9 +94,9 @@ namespace odfaeg {
                     }
                 }
             } else {
-                clock.restart();
+                timeoutClk.restart();
                 std::vector<std::pair<User*, std::string>>::iterator it;
-                while (request == "" && clock.getElapsedTime().asSeconds() < timeOut.asSeconds()) {
+                while (request == "" && timeoutClk.getElapsedTime().asSeconds() < timeOut.asSeconds()) {
                     srv.checkMessages();
                     if (requests.size() > 0) {
                         it = requests.begin();
@@ -132,10 +134,10 @@ namespace odfaeg {
             string response = "";
             if (cli.isUsingThread()) {
                 std::lock_guard<std::recursive_mutex> locker(rec_mutex);
-                clock.restart();
+                timeoutClk.restart();
                 vector<string>::iterator it;
 
-                while (response == "" && clock.getElapsedTime().asSeconds() < timeOut.asSeconds()) {
+                while (response == "" && timeoutClk.getElapsedTime().asSeconds() < timeOut.asSeconds()) {
                     if (responses.size() > 0) {
                         it = responses.begin();
                         response = *it;
@@ -144,9 +146,9 @@ namespace odfaeg {
 
                 }
             } else {
-                clock.restart();
+                timeoutClk.restart();
                 vector<string>::iterator it;
-                while (response == "" && clock.getElapsedTime().asSeconds() < timeOut.asSeconds()) {
+                while (response == "" && timeoutClk.getElapsedTime().asSeconds() < timeOut.asSeconds()) {
                     cli.checkMessages();
                     if (responses.size() > 0) {
                         it = responses.begin();
@@ -246,9 +248,9 @@ namespace odfaeg {
             string response = "";
             if (cli.isUsingThread()) {
                 std::lock_guard<std::recursive_mutex> locker(rec_mutex);
-                clock.restart();
+                timeoutClk.restart();
                 vector<string>::iterator it;
-                while (response == "" && clock.getElapsedTime().asSeconds() <= timeOut.asSeconds()) {
+                while (response == "" && timeoutClk.getElapsedTime().asSeconds() <= timeOut.asSeconds()) {
                     if (responses.size() > 0) {
                             if(tag == "") {
                                 it = responses.begin();
@@ -261,9 +263,9 @@ namespace odfaeg {
                     }
                 }
             } else {
-                clock.restart();
+                timeoutClk.restart();
                 vector<string>::iterator it;
-                while (response == "" && clock.getElapsedTime().asSeconds() <= timeOut.asSeconds()) {
+                while (response == "" && timeoutClk.getElapsedTime().asSeconds() <= timeOut.asSeconds()) {
                     cli.checkMessages();
                     if (responses.size() > 0) {
                             if(tag == "") {

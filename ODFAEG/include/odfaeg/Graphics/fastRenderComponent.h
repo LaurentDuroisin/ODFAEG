@@ -6,7 +6,7 @@
 #include <thread>
 #include <condition_variable>
 #include "entityManager.h"
-#include "component.h"
+#include "heavyComponent.h"
 /**
   *\namespace odfaeg
   * the namespace of the Opensource Development Framework Adapted for Every Games.
@@ -21,7 +21,7 @@ namespace odfaeg {
           * \date 1/02/2014
           * \brief represent a component used to render the entities of a scene.
           */
-        class ODFAEG_GRAPHICS_API FastRenderComponent : public Component {
+        class ODFAEG_GRAPHICS_API FastRenderComponent : public HeavyComponent {
             public :
             /**
             * \fn FastRenderComponent (RenderWindow& window, int layer)
@@ -38,6 +38,7 @@ namespace odfaeg {
             */
             std::vector<Entity*> getEntities();
             bool loadEntitiesOnComponent(std::vector<Entity*> visibleEntities);
+            bool needToUpdate();
             /**
             * \fn void clearBufferBits()
             * \brief clear the buffer bits of the component.
@@ -110,7 +111,6 @@ namespace odfaeg {
             * \brief get the texture of the normal buffer.
             * \return the texture of the normals.
             */
-            const Texture& getNormalMapTexture();
             const Texture& getSpecularTexture();
             /**
             * \fn getFrameBufferTile ()

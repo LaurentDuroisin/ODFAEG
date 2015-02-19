@@ -19,9 +19,6 @@ namespace odfaeg {
             this->center = center;
             this->radius = radius;
         }
-        bool BoundingSphere::onIntersects (BoundingVolume& interface) {
-             return intersects(static_cast<BoundingSphere&>(interface));
-        }
         bool BoundingSphere::intersects (BoundingSphere &other) {
             float d = center.computeDist(other.center);
             float rSum = radius + other.radius;
@@ -31,34 +28,40 @@ namespace odfaeg {
             return be.intersects(*this);
         }
         bool BoundingSphere::intersects (BoundingBox &bx) {
-             math::Ray ray(center, bx.getCenter());
-             math::Vec3f near, far;
-             if (!intersectsWhere(ray, near, far)) {
+            math::Ray ray1(bx.getCenter(), center);
+            math::Ray ray2(center, bx.getCenter());
+            math::Vec3f near1, far1, near2, far2;
+            if (!bx.intersectsWhere(ray1, near1, far1)) {
                 return false;
-             }
-             math::Vec3f d = far - center;
-             return radius * radius + d.magnSquared() < center.computeDistSquared(bx.getCenter());
+            }
+            if (!intersectsWhere(ray2, near2, far2)) {
+                return false;
+            }
+            math::Vec3f d = far1 - bx.getCenter();
+            math::Vec3f mtu = far2 - far1;
+            CollisionResultSet::pushCollisionMTU(mtu);
+            return (center.computeDistSquared(bx.getCenter()) - radius * radius - d.magnSquared()) <= 0;
         }
 
         bool BoundingSphere::intersects (OrientedBoundingBox &obx) {
-             math::Ray ray(center, obx.getCenter());
+             math::Ray ray(obx.getCenter(), center);
              math::Vec3f near, far;
-             if (!intersectsWhere(ray, near, far)) {
+             if (!obx.intersectsWhere(ray, near, far)) {
                 return false;
              }
-             math::Vec3f d = far - center;
-             return radius * radius + d.magnSquared() < center.computeDistSquared(obx.getCenter());
+             math::Vec3f d = far - obx.getCenter();
+             return (center.computeDistSquared(obx.getCenter()) - radius * radius - d.magnSquared()) <= 0;
         }
         bool BoundingSphere::intersects (BoundingPolyhedron &bp) {
-             math::Ray ray(center, bp.getCenter());
+             math::Ray ray(bp.getCenter(), center);
              math::Vec3f near, far;
-             if (!intersectsWhere(ray, near, far)) {
+             if (!bp.intersectsWhere(ray, near, far)) {
                 return false;
              }
-             math::Vec3f d = far - center;
-             return radius * radius + d.magnSquared() < center.computeDistSquared(bp.getCenter());
+             math::Vec3f d = far - bp.getCenter();
+             return (center.computeDistSquared(bp.getCenter()) - radius * radius - d.magnSquared()) <= 0;
         }
-        bool BoundingSphere::intersects (math::Ray &ray) {
+        bool BoundingSphere::intersects (math::Ray &ray, bool segment) {
             if (isPointInside(ray.getOrig()))
                 return true;
             math::Vec3f d1 = center - ray.getOrig();
@@ -67,7 +70,24 @@ namespace odfaeg {
                 return false;
             math::Vec3f p = ray.getOrig() + ray.getDir().normalize() * d1.projOnAxis(ray.getDir());
             math::Vec3f d2 = p - center;
-            return d2.magnSquared() <= radius * radius;
+            if (!segment) {
+                return d2.magnSquared() <= radius * radius;
+            } else {
+                if(d2.magnSquared() > radius * radius) {
+                    return false;
+                } else {
+                    math::Vec3f near, far;
+                    intersectsWhere(ray, near, far);
+                    math::Vec3f v1 = near - ray.getOrig();
+                    math::Vec3f v2 = far - ray.getOrig();
+                    math::Vec3f d = ray.getExt() - ray.getOrig();
+                    float i1 = v1.magnSquared() / d.magnSquared();
+                    float i2 = v2.magnSquared() / d.magnSquared();
+                    if (i1 <= 1 || i2 <= 1)
+                            return true;
+                    return false;
+                }
+            }
         }
         bool BoundingSphere::intersectsWhere (math::Ray& r, math::Vec3f& near, math::Vec3f &far) {
             math::Vec3f p = r.getOrig();

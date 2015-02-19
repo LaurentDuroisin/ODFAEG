@@ -76,8 +76,8 @@ namespace odfaeg {
                 *  \param the bounding polygon to test with.
                 *  \return the result of the collision test.
                 */
-                bool intersects (math::Ray &ray);
-                bool intersectsWhere(math::Ray ray, math::Vec3f& i1, math::Vec3f& i2);
+                bool intersects (math::Ray &ray, bool segment);
+                bool intersectsWhere(math::Ray& ray, math::Vec3f& i1, math::Vec3f& i2);
                 /**\fn bool isPointInside (math::Vec3f point)
                 *  \brief check if the point is inside the oriented bounding box.
                 *  \param the point to test in.
@@ -162,6 +162,12 @@ namespace odfaeg {
                 }
                 bool onIntersects(BaseInterface &interface) {
                     return interface.intersects(*this);
+                }
+                bool onIntersects(BaseInterface &interface, math::Ray& ray, bool segment) {
+                    return interface.intersects(ray, segment);
+                }
+                bool onIntersects(BaseInterface& interface, math::Ray& ray, math::Vec3f &near, math::Vec3f& far) {
+                    return interface.intersectsWhere(ray, near, far);
                 }
                 std::unique_ptr<BoundingVolume> clone() {
                     return std::make_unique<OrientedBoundingBox>(*this);

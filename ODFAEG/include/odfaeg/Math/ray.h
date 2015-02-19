@@ -1,6 +1,7 @@
 #ifndef ODFAEG_RAY_HPP
 #define ODFAEG_RAY_HPP
 #include "../Math/vec4.h"
+#include "../Math/matrix4.h"
 /**
   *\namespace odfaeg
   * the namespace of the Opensource Development Framework Adapted for Every Games.
@@ -55,7 +56,7 @@ namespace odfaeg {
                 * \brief Test if two rays intersects. (return 1 if the two rays interssects, 0 or -1 if they don't intersects)
                 * \return a value that determine if the two rays intersects.
                 */
-                float intersects(Ray &other);
+                bool intersects(Ray &other);
                 /**
                 * \fn float intersectsWhere (Segment &other)
                 * \brief Test if two rays intersects and return the distance of the intersection from the ray's origin.

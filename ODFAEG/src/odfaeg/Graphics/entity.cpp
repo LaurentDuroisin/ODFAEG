@@ -55,6 +55,7 @@ namespace odfaeg {
         }
         void Entity::setId (int id) {
             this->id = id;
+            onIDUpdated(id);
         }
         int& Entity::getId () {
 
@@ -157,7 +158,6 @@ namespace odfaeg {
             for (unsigned int i = 0; i < faces.size(); i++)
                 delete faces[i];
             faces.clear();
-            nbEntities--;
         }
     }
 }

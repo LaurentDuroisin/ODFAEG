@@ -4,7 +4,8 @@
 #include "renderWindow.h"
 #include "shader.h"
 #include "../Graphics/tile.h"
-#include "../../../include/odfaeg/Graphics/fastRenderComponent.h"
+#include "../../../include/odfaeg/Graphics/heavyComponent.h"
+#include "../../../include/odfaeg/Graphics/lightComponent.h"
 /**
   *\namespace odfaeg
   * the namespace of the Opensource Development Framework Adapted for Every Games.
@@ -34,7 +35,8 @@ namespace odfaeg {
             * \brief add a render component.
             * \param component : the render component to add.
             */
-            void addRenderComponent(graphic::FastRenderComponent* component);
+            void addComponent(graphic::Component* component);
+            bool removeComponent(unsigned int layer);
             /**
             * \fn RenderWindow& getWindow()
             * \brief get the window.
@@ -55,7 +57,8 @@ namespace odfaeg {
             * \fn void drawComponents();
             * \brief draw the components into the window.
             */
-            void drawComponents () const;
+            void drawRenderComponents ();
+            void drawGuiComponents();
             /**
             * \fn sf::Color getClrColor();
             * \brief get the clear color.
@@ -75,7 +78,9 @@ namespace odfaeg {
             * \param layer : the number of the layer.
             * \return the render component.
             */
-            FastRenderComponent* getRenderComponent(unsigned int layer);
+            HeavyComponent* getRenderComponent(unsigned int layer);
+            LightComponent* getGuiComponent(unsigned int layer);
+            Component* getComponent(unsigned int layer);
             /**
             * \fn ~FastRenderComponentManager();
             * \brief destructor.
@@ -89,7 +94,7 @@ namespace odfaeg {
             unsigned int getNbComponents();
             void updateComponents();
         protected :
-            std::vector<std::vector<Component*>> components; /**> the components.*/
+            std::vector<Component*> components; /**> the components.*/
             RenderWindow& window; /**> the window.*/
         };
     }

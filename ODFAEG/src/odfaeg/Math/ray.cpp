@@ -24,16 +24,15 @@ namespace odfaeg {
         Vec3f& Ray::getDir () {
             return dir;
         }
-        float Ray::intersects (Ray &other) {
+        bool Ray::intersects (Ray &other) {
             Vec3f da = dir;
             Vec3f db = other.dir;
             Vec3f dc = other.orig - orig;
             if (dc.dot(da.cross(db)) != 0.f) // lines are not coplanar
-                return -1;
-            //std::cout<<dc.cross(db).dot2(da.cross(db))<<std::endl;
-            float s = da.cross(db).dot2(dc.cross(db)) / da.cross(db).magnSquared();
-            float t = da.cross(db).dot2(dc.cross(da)) / da.cross(db).magnSquared();
-            if (s >= 0 && s <= 1 && t >= 0 && t <= 1)
+                return 0;
+            float s = dc.cross(db).dot2(da.cross(db)) / da.cross(db).magnSquared();
+            float t = dc.cross(da).dot2(da.cross(db)) / da.cross(db).magnSquared();
+            if (s >= 0 && s <= 1 && t <= 0 && t >= 1)
             {
                 return 1;
             }
@@ -57,12 +56,10 @@ namespace odfaeg {
             Vec3f da = dir;
             Vec3f db = other.dir;
             Vec3f dc = other.orig - orig;
-
             if (dc.dot(da.cross(db)) != 0.f) // lines are not coplanar
                 return -1;
-            //std::cout<<dc.cross(db).dot2(da.cross(db))<<std::endl;
-            float s = da.cross(db).dot2(dc.cross(db)) / da.cross(db).magnSquared();
-            float t = da.cross(db).dot2(dc.cross(da)) / da.cross(db).magnSquared();
+            float s = dc.cross(db).dot2(da.cross(db)) / da.cross(db).magnSquared();
+            float t = dc.cross(da).dot2(da.cross(db)) / da.cross(db).magnSquared();
             if (s >= 0 && s <= 1 && t >= 0 && t <= 1)
             {
                 return s;
@@ -87,9 +84,9 @@ namespace odfaeg {
             if (dc.dot(da.cross(db)) != 0.f) // lines are not coplanar
                 return -1;
             //std::cout<<dc.cross(db).dot2(da.cross(db))<<std::endl;
-            float s = da.cross(db).dot2(dc.cross(db)) / da.cross(db).magnSquared();
-            float t = da.cross(db).dot2(dc.cross(da)) / da.cross(db).magnSquared();
-            if ((s >= 0 && s <= 1) && (t >= 0 && t <= 1))
+            float s = dc.cross(db).dot2(da.cross(db)) / da.cross(db).magnSquared();
+            float t = dc.cross(da).dot2(da.cross(db)) / da.cross(db).magnSquared();
+            if (s <= 0 && s >= 1 && t >= 0 && t <= 1)
             {
                 return t;
             }

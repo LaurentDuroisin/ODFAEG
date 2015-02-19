@@ -37,7 +37,7 @@ namespace
     // Compute the normal of a segment
     sf::Vector3f computeNormal(const sf::Vector3f& p1, const sf::Vector3f& p2)
     {
-        sf::Vector3f normal(0, p1.y - p2.y, p2.x - p1.x);
+        sf::Vector3f normal(p2.x - p1.x, p1.y - p2.y, 0);
         float length = odfaeg::math::Math::sqrt(normal.x * normal.x + normal.y * normal.y);
         if (length != 0.f)
             normal /= length;
@@ -205,6 +205,7 @@ namespace odfaeg
             // Render the inside
             states.texture = m_texture;
             m_vertices.transform(getTransform());
+            m_outlineVertices.transform(getTransform());
             target.draw(m_vertices, states);
 
             // Render the outline

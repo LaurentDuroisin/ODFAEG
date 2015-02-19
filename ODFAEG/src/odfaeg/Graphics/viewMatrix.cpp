@@ -8,7 +8,7 @@ namespace odfaeg {
         ViewMatrix::ViewMatrix() {
             s3d = math::Vec3f (1, 1, 1);
             o3d = math::Vec3f (0, 0, 0);
-            pitch = yaw = roll = 0;
+            angle = 0;
             needToUpdate3D = false;
             inverseNeedToUpdate3D = false;
         }
@@ -29,27 +29,19 @@ namespace odfaeg {
         }
         math::Vec3f ViewMatrix::transform (const math::Vec3f vec3) {
             if (needToUpdate3D) {
-                float x = math::Math::toRadians(pitch);
-                float y = math::Math::toRadians(yaw);
-                float z = math::Math::toRadians(roll);
-                float cx = math::Math::cosinus(x);
-                float sx = math::Math::sinus(x);
-                float cy = math::Math::cosinus(y);
-                float sy = math::Math::sinus(y);
-                float cz = math::Math::cosinus(z);
-                float sz = math::Math::sinus(z);
+                float a = math::Math::toRadians(angle);
                 math::Matrix4f transform;
-                transform.m11 = cy*cz;
-                transform.m12 = sx*sy*cz + cx*sz;
-                transform.m13 = -cx*sy*cz + sx*sz;
+                transform.m11 = (zAxis.x * zAxis.x * (1 - math::Math::cosinus(a)) + math::Math::cosinus(a));
+                transform.m12 = (zAxis.x * zAxis.y * (1 - math::Math::cosinus(a)) - zAxis.z * math::Math::sinus(a));
+                transform.m13 = (zAxis.x * zAxis.z * (1 - math::Math::cosinus(a)) + zAxis.y * math::Math::sinus(a));
                 transform.m14 = 0;
-                transform.m21 = -cy*sz;
-                transform.m22 = -sx*sy*sz + cx*cz;
-                transform.m23 = cx*sy*sz + sx*cz;
+                transform.m21 = (zAxis.y * zAxis.x * (1 - math::Math::cosinus(a)) + zAxis.z * math::Math::sinus(a));
+                transform.m22 = (zAxis.y * zAxis.y * (1 - math::Math::cosinus(a)) + math::Math::cosinus(a));
+                transform.m23 = (zAxis.y * zAxis.z * (1 - math::Math::cosinus(a)) - zAxis.x * math::Math::sinus(a));
                 transform.m24 = 0;
-                transform.m31 = sy;
-                transform.m32 = -sx*cy;
-                transform.m33 = cx*cy;
+                transform.m31 = (zAxis.z * zAxis.x * (1 - math::Math::cosinus(a)) - zAxis.y * math::Math::sinus(a));
+                transform.m32 = (zAxis.z * zAxis.y * (1 - math::Math::cosinus(a)) + zAxis.x * math::Math::cosinus(a));
+                transform.m33 = (zAxis.z * zAxis.z * (1 - math::Math::cosinus(a)) + math::Math::cosinus(a));
                 transform.m34 = 0;
                 transform.m41 = 0;
                 transform.m42 = 0;
@@ -79,27 +71,19 @@ namespace odfaeg {
         float* ViewMatrix::getGlMatrix () {
             float* matrix = new float[16];
             if (needToUpdate3D) {
-                float x = math::Math::toRadians(pitch);
-                float y = math::Math::toRadians(yaw);
-                float z = math::Math::toRadians(roll);
-                float cx = math::Math::cosinus(x);
-                float sx = math::Math::sinus(x);
-                float cy = math::Math::cosinus(y);
-                float sy = math::Math::sinus(y);
-                float cz = math::Math::cosinus(z);
-                float sz = math::Math::sinus(z);
+                float a = math::Math::toRadians(angle);
                 math::Matrix4f transform;
-                transform.m11 = cy*cz;
-                transform.m12 = sx*sy*cz + cx*sz;
-                transform.m13 = -cx*sy*cz + sx*sz;
+                transform.m11 = (zAxis.x * zAxis.x * (1 - math::Math::cosinus(a)) + math::Math::cosinus(a));
+                transform.m12 = (zAxis.x * zAxis.y * (1 - math::Math::cosinus(a)) - zAxis.z * math::Math::sinus(a));
+                transform.m13 = (zAxis.x * zAxis.z * (1 - math::Math::cosinus(a)) + zAxis.y * math::Math::sinus(a));
                 transform.m14 = 0;
-                transform.m21 = -cy*sz;
-                transform.m22 = -sx*sy*sz + cx*cz;
-                transform.m23 = cx*sy*sz + sx*cz;
+                transform.m21 = (zAxis.y * zAxis.x * (1 - math::Math::cosinus(a)) + zAxis.z * math::Math::sinus(a));
+                transform.m22 = (zAxis.y * zAxis.y * (1 - math::Math::cosinus(a)) + math::Math::cosinus(a));
+                transform.m23 = (zAxis.y * zAxis.z * (1 - math::Math::cosinus(a)) - zAxis.x * math::Math::sinus(a));
                 transform.m24 = 0;
-                transform.m31 = sy;
-                transform.m32 = -sx*cy;
-                transform.m33 = cx*cy;
+                transform.m31 = (zAxis.z * zAxis.x * (1 - math::Math::cosinus(a)) - zAxis.y * math::Math::sinus(a));
+                transform.m32 = (zAxis.z * zAxis.y * (1 - math::Math::cosinus(a)) + zAxis.x * math::Math::cosinus(a));
+                transform.m33 = (zAxis.z * zAxis.z * (1 - math::Math::cosinus(a)) + math::Math::cosinus(a));
                 transform.m34 = 0;
                 transform.m41 = 0;
                 transform.m42 = 0;
@@ -143,27 +127,19 @@ namespace odfaeg {
             return matrix;
         }
         void ViewMatrix::update() {
-            float x = math::Math::toRadians(pitch);
-            float y = math::Math::toRadians(yaw);
-            float z = math::Math::toRadians(roll);
-            float cx = math::Math::cosinus(x);
-            float sx = math::Math::sinus(x);
-            float cy = math::Math::cosinus(y);
-            float sy = math::Math::sinus(y);
-            float cz = math::Math::cosinus(z);
-            float sz = math::Math::sinus(z);
+            float a = math::Math::toRadians(angle);
             math::Matrix4f transform;
-            transform.m11 = cy*cz;
-            transform.m12 = sx*sy*cz + cx*sz;
-            transform.m13 = -cx*sy*cz + sx*sz;
+            transform.m11 = (zAxis.x * zAxis.x * (1 - math::Math::cosinus(a)) + math::Math::cosinus(a));
+            transform.m12 = (zAxis.x * zAxis.y * (1 - math::Math::cosinus(a)) - zAxis.z * math::Math::sinus(a));
+            transform.m13 = (zAxis.x * zAxis.z * (1 - math::Math::cosinus(a)) + zAxis.y * math::Math::sinus(a));
             transform.m14 = 0;
-            transform.m21 = -cy*sz;
-            transform.m22 = -sx*sy*sz + cx*cz;
-            transform.m23 = cx*sy*sz + sx*cz;
+            transform.m21 = (zAxis.y * zAxis.x * (1 - math::Math::cosinus(a)) + zAxis.z * math::Math::sinus(a));
+            transform.m22 = (zAxis.y * zAxis.y * (1 - math::Math::cosinus(a)) + math::Math::cosinus(a));
+            transform.m23 = (zAxis.y * zAxis.z * (1 - math::Math::cosinus(a)) - zAxis.x * math::Math::sinus(a));
             transform.m24 = 0;
-            transform.m31 = sy;
-            transform.m32 = -sx*cy;
-            transform.m33 = cx*cy;
+            transform.m31 = (zAxis.z * zAxis.x * (1 - math::Math::cosinus(a)) - zAxis.y * math::Math::sinus(a));
+            transform.m32 = (zAxis.z * zAxis.y * (1 - math::Math::cosinus(a)) + zAxis.x * math::Math::cosinus(a));
+            transform.m33 = (zAxis.z * zAxis.z * (1 - math::Math::cosinus(a)) + math::Math::cosinus(a));
             transform.m34 = 0;
             transform.m41 = 0;
             transform.m42 = 0;
@@ -195,27 +171,19 @@ namespace odfaeg {
 
             if (inverseNeedToUpdate3D) {
                 if (needToUpdate3D) {
-                    float x = math::Math::toRadians(pitch);
-                    float y = math::Math::toRadians(yaw);
-                    float z = math::Math::toRadians(roll);
-                    float cx = math::Math::cosinus(x);
-                    float sx = math::Math::sinus(x);
-                    float cy = math::Math::cosinus(y);
-                    float sy = math::Math::sinus(y);
-                    float cz = math::Math::cosinus(z);
-                    float sz = math::Math::sinus(z);
+                    float a = math::Math::toRadians(angle);
                     math::Matrix4f transform;
-                    transform.m11 = cy*cz;
-                    transform.m12 = sx*sy*cz + cx*sz;
-                    transform.m13 = -cx*sy*cz + sx*sz;
+                    transform.m11 = (zAxis.x * zAxis.x * (1 - math::Math::cosinus(a)) + math::Math::cosinus(a));
+                    transform.m12 = (zAxis.x * zAxis.y * (1 - math::Math::cosinus(a)) - zAxis.z * math::Math::sinus(a));
+                    transform.m13 = (zAxis.x * zAxis.z * (1 - math::Math::cosinus(a)) + zAxis.y * math::Math::sinus(a));
                     transform.m14 = 0;
-                    transform.m21 = -cy*sz;
-                    transform.m22 = -sx*sy*sz + cx*cz;
-                    transform.m23 = cx*sy*sz + sx*cz;
+                    transform.m21 = (zAxis.y * zAxis.x * (1 - math::Math::cosinus(a)) + zAxis.z * math::Math::sinus(a));
+                    transform.m22 = (zAxis.y * zAxis.y * (1 - math::Math::cosinus(a)) + math::Math::cosinus(a));
+                    transform.m23 = (zAxis.y * zAxis.z * (1 - math::Math::cosinus(a)) - zAxis.x * math::Math::sinus(a));
                     transform.m24 = 0;
-                    transform.m31 = sy;
-                    transform.m32 = -sx*cy;
-                    transform.m33 = cx*cy;
+                    transform.m31 = (zAxis.z * zAxis.x * (1 - math::Math::cosinus(a)) - zAxis.y * math::Math::sinus(a));
+                    transform.m32 = (zAxis.z * zAxis.y * (1 - math::Math::cosinus(a)) + zAxis.x * math::Math::cosinus(a));
+                    transform.m33 = (zAxis.z * zAxis.z * (1 - math::Math::cosinus(a)) + math::Math::cosinus(a));
                     transform.m34 = 0;
                     transform.m41 = 0;
                     transform.m42 = 0;
@@ -245,10 +213,8 @@ namespace odfaeg {
             }
             return invMat4f * vec3;
         }
-        void ViewMatrix::setRotation(float pitch, float yaw, float roll) {
-            this->pitch = pitch;
-            this->yaw = yaw;
-            this->roll = roll;
+        void ViewMatrix::setRotation(float angle) {
+            this->angle = angle;
         }
         void ViewMatrix::setAxis(math::Vec3f left, math::Vec3f up, math::Vec3f forward) {
             xAxis = left;

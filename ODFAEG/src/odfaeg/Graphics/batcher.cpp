@@ -36,9 +36,13 @@ namespace odfaeg {
                 return specularPower;
             }
             void Material::setSpecularIntensity(float specularIntensity) {
+                if (specularIntensity > maxSpecularIntensity)
+                    maxSpecularIntensity = specularIntensity;
                 this->specularIntensity = specularIntensity;
             }
             void Material::setSpecularPower(float specularPower) {
+                if (specularPower > maxSpecularPower)
+                    maxSpecularPower = specularPower;
                 this->specularPower = specularPower;
             }
 

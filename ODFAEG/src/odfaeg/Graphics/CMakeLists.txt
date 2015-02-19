@@ -58,6 +58,8 @@ set(SRC_GRAPHICS
 	${SRCROOT}/vertexArray.cpp
 	${INCROOT}/view.h
 	${SRCROOT}/view.cpp
+	${INCROOT}/component.h
+	${SRCROOT}/component.cpp
 	${INCROOT}/fastRenderComponentManager.h
 	${SRCROOT}/fastRenderComponentManager.cpp
 	${INCROOT}/vbo.h
@@ -127,13 +129,22 @@ set(SRC_GRAPHICS_3D
 	${SRCROOT}/3D/cube.cpp)
 	
 source_group("3d_graphics" FILES ${SRC_GRAPHICS_3D})
+set(SRC_GUI
+    ${INCROOT}/GUI/button.hpp
+    ${SRCROOT}/GUI/button.cpp
+    ${INCROOT}/GUI/textArea.hpp
+    ${SRCROOT}/GUI/textArea.cpp
+    ${INCROOT}/GUI/optionPane.hpp
+    ${SRCROOT}/GUI/optionPane.cpp)
+
+source_group ("gui" FILES ${SRC_GUI})
 find_package (SFML 2 REQUIRED)
 find_package(Freetype REQUIRED)
 include_directories(${CMAKE_INCLUDE_PATH} ${FREETYPE_INCLUDE_DIRS})
 link_directories(${CMAKE_LIBRARY_PATH})
 
 sfgl_add_library(odfaeg-graphics
-                 SOURCES ${SRC_GRAPHICS} ${SRC_GRAPHICS_2D} ${SRC_GRAPHICS_3D}
+                 SOURCES ${SRC_GRAPHICS} ${SRC_GRAPHICS_2D} ${SRC_GRAPHICS_3D} ${SRC_GUI}
 				 DEPENDS odfaeg-core odfaeg-math odfaeg-physics)
 target_link_libraries (odfaeg-graphics ${SFML_LIBRARIES})
 

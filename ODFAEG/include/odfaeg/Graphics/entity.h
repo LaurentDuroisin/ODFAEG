@@ -111,6 +111,7 @@ namespace odfaeg {
                 *   \param the id of the entity.
                 */
                 void setId (int id);
+                virtual void onIDUpdated(int id) {}
                 //This method have to be redifinied to determine when two entity's are equals.
                 //This can avoid to have two equqls entity's at the same place.
                 /** \fn

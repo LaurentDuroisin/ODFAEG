@@ -39,8 +39,8 @@
 #include FT_BITMAP_H
 #include <cstdlib>
 #include <cstring>
-using namespace sf;
 
+using namespace sf;
 namespace
 {
     // FreeType callbacks that operate on a sf::InputStream
@@ -198,7 +198,7 @@ namespace odfaeg
                 return false;
             }
 
-            // Select the unicode character map
+            // Select the Unicode character map
             if (FT_Select_Charmap(face, FT_ENCODING_UNICODE) != 0)
             {
                 err() << "Failed to load font from memory (failed to set the Unicode character set)" << std::endl;
@@ -262,7 +262,7 @@ namespace odfaeg
                 return false;
             }
 
-            // Select the unicode character map
+            // Select the Unicode character map
             if (FT_Select_Charmap(face, FT_ENCODING_UNICODE) != 0)
             {
                 err() << "Failed to load font from stream (failed to set the Unicode character set)" << std::endl;
@@ -315,11 +315,11 @@ namespace odfaeg
 
 
         ////////////////////////////////////////////////////////////
-        int Font::getKerning(Uint32 first, Uint32 second, unsigned int characterSize) const
+        float Font::getKerning(Uint32 first, Uint32 second, unsigned int characterSize) const
         {
             // Special case where first or second is 0 (null character)
             if (first == 0 || second == 0)
-                return 0;
+                return 0.f;
 
             FT_Face face = static_cast<FT_Face>(m_face);
 
@@ -333,29 +333,73 @@ namespace odfaeg
                 FT_Vector kerning;
                 FT_Get_Kerning(face, index1, index2, FT_KERNING_DEFAULT, &kerning);
 
+                // X advance is already in pixels for bitmap fonts
+                if (!FT_IS_SCALABLE(face))
+                    return static_cast<float>(kerning.x);
+
                 // Return the X advance
-                return kerning.x >> 6;
+                return static_cast<float>(kerning.x) / static_cast<float>(1 << 6);
             }
             else
             {
                 // Invalid font, or no kerning
-                return 0;
+                return 0.f;
             }
         }
 
 
         ////////////////////////////////////////////////////////////
-        int Font::getLineSpacing(unsigned int characterSize) const
+        float Font::getLineSpacing(unsigned int characterSize) const
         {
             FT_Face face = static_cast<FT_Face>(m_face);
 
             if (face && setCurrentSize(characterSize))
             {
-                return (face->size->metrics.height >> 6);
+                return static_cast<float>(face->size->metrics.height) / static_cast<float>(1 << 6);
             }
             else
             {
-                return 0;
+                return 0.f;
+            }
+        }
+
+
+        ////////////////////////////////////////////////////////////
+        float Font::getUnderlinePosition(unsigned int characterSize) const
+        {
+            FT_Face face = static_cast<FT_Face>(m_face);
+
+            if (face && setCurrentSize(characterSize))
+            {
+                // Return a fixed position if font is a bitmap font
+                if (!FT_IS_SCALABLE(face))
+                    return characterSize / 10.f;
+
+                return -static_cast<float>(FT_MulFix(face->underline_position, face->size->metrics.y_scale)) / static_cast<float>(1 << 6);
+            }
+            else
+            {
+                return 0.f;
+            }
+        }
+
+
+        ////////////////////////////////////////////////////////////
+        float Font::getUnderlineThickness(unsigned int characterSize) const
+        {
+            FT_Face face = static_cast<FT_Face>(m_face);
+
+            if (face && setCurrentSize(characterSize))
+            {
+                // Return a fixed thickness if font is a bitmap font
+                if (!FT_IS_SCALABLE(face))
+                    return characterSize / 14.f;
+
+                return static_cast<float>(FT_MulFix(face->underline_thickness, face->size->metrics.y_scale)) / static_cast<float>(1 << 6);
+            }
+            else
+            {
+                return 0.f;
             }
         }
 
@@ -458,8 +502,7 @@ namespace odfaeg
 
             // Convert the glyph to a bitmap (i.e. rasterize it)
             FT_Glyph_To_Bitmap(&glyphDesc, FT_RENDER_MODE_NORMAL, 0, 1);
-            FT_BitmapGlyph bitmapGlyph = (FT_BitmapGlyph)glyphDesc;
-            FT_Bitmap& bitmap = bitmapGlyph->bitmap;
+            FT_Bitmap& bitmap = reinterpret_cast<FT_BitmapGlyph>(glyphDesc)->bitmap;
 
             // Apply bold if necessary -- fallback technique using bitmap (lower quality)
             if (bold && !outline)
@@ -468,21 +511,17 @@ namespace odfaeg
             }
 
             // Compute the glyph's advance offset
-            glyph.advance = glyphDesc->advance.x >> 16;
+            glyph.advance = static_cast<float>(face->glyph->metrics.horiAdvance) / static_cast<float>(1 << 6);
             if (bold)
-                glyph.advance += weight >> 6;
+                glyph.advance += static_cast<float>(weight) / static_cast<float>(1 << 6);
 
             int width  = bitmap.width;
             int height = bitmap.rows;
-            int ascender = face->size->metrics.ascender >> 6;
-
-            // Offset to make up for empty space between ascender and virtual top of the typeface
-            int offset = characterSize - ascender;
 
             if ((width > 0) && (height > 0))
             {
                 // Leave a small padding around characters, so that filtering doesn't
-                // pollute them with pixels from neighbours
+                // pollute them with pixels from neighbors
                 const unsigned int padding = 1;
 
                 // Get the glyphs page corresponding to the character size
@@ -491,11 +530,18 @@ namespace odfaeg
                 // Find a good position for the new glyph into the texture
                 glyph.textureRect = findGlyphRect(page, width + 2 * padding, height + 2 * padding);
 
+                // Make sure the texture data is positioned in the center
+                // of the allocated texture rectangle
+                glyph.textureRect.left += padding;
+                glyph.textureRect.top += padding;
+                glyph.textureRect.width -= 2 * padding;
+                glyph.textureRect.height -= 2 * padding;
+
                 // Compute the glyph's bounding box
-                glyph.bounds.left   = bitmapGlyph->left - padding;
-                glyph.bounds.top    = -bitmapGlyph->top - padding - offset;
-                glyph.bounds.width  = width + 2 * padding;
-                glyph.bounds.height = height + 2 * padding;
+                glyph.bounds.left   = static_cast<float>(face->glyph->metrics.horiBearingX) / static_cast<float>(1 << 6);
+                glyph.bounds.top    = -static_cast<float>(face->glyph->metrics.horiBearingY) / static_cast<float>(1 << 6);
+                glyph.bounds.width  = static_cast<float>(face->glyph->metrics.width) / static_cast<float>(1 << 6);
+                glyph.bounds.height = static_cast<float>(face->glyph->metrics.height) / static_cast<float>(1 << 6);
 
                 // Extract the glyph's pixels from the bitmap
                 m_pixelBuffer.resize(width * height * 4, 255);
@@ -530,10 +576,10 @@ namespace odfaeg
                 }
 
                 // Write the pixels to the texture
-                unsigned int x = glyph.textureRect.left + padding;
-                unsigned int y = glyph.textureRect.top + padding;
-                unsigned int w = glyph.textureRect.width - 2 * padding;
-                unsigned int h = glyph.textureRect.height - 2 * padding;
+                unsigned int x = glyph.textureRect.left;
+                unsigned int y = glyph.textureRect.top;
+                unsigned int w = glyph.textureRect.width;
+                unsigned int h = glyph.textureRect.height;
                 page.texture.update(&m_pixelBuffer[0], w, h, x, y);
             }
 
@@ -580,7 +626,7 @@ namespace odfaeg
             if (!row)
             {
                 int rowHeight = height + height / 10;
-                while (page.nextRow + rowHeight >= page.texture.getSize().y)
+                while ((page.nextRow + rowHeight >= page.texture.getSize().y) || (width >= page.texture.getSize().x))
                 {
                     // Not enough space: resize the texture if possible
                     unsigned int textureWidth  = page.texture.getSize().x;
@@ -628,7 +674,23 @@ namespace odfaeg
 
             if (currentSize != characterSize)
             {
-                return FT_Set_Pixel_Sizes(face, 0, characterSize) == 0;
+                FT_Error result = FT_Set_Pixel_Sizes(face, 0, characterSize);
+
+                if (result == FT_Err_Invalid_Pixel_Size)
+                {
+                    // In the case of bitmap fonts, resizing can
+                    // fail if the requested size is not available
+                    if (!FT_IS_SCALABLE(face))
+                    {
+                        err() << "Failed to set bitmap font size to " << characterSize << std::endl;
+                        err() << "Available sizes are: ";
+                        for (int i = 0; i < face->num_fixed_sizes; ++i)
+                            err() << face->available_sizes[i].height << " ";
+                        err() << std::endl;
+                    }
+                }
+
+                return result == FT_Err_Ok;
             }
             else
             {
@@ -642,7 +704,7 @@ namespace odfaeg
         nextRow(3)
         {
             // Make sure that the texture is initialized by default
-            Image image;
+            sf::Image image;
             image.create(128, 128, Color(255, 255, 255, 0));
 
             // Reserve a 2x2 white square for texturing underlines
@@ -656,4 +718,3 @@ namespace odfaeg
         }
     }
 } // namespace sf
-

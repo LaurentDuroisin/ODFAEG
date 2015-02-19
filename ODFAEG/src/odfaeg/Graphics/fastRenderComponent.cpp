@@ -6,7 +6,7 @@ using namespace std;
 namespace odfaeg {
     namespace graphic {
         FastRenderComponent::FastRenderComponent (RenderWindow& window, int layer, std::string expression, bool useThread) :
-            Component(math::Vec3f(window.getView().getPosition().x, window.getView().getPosition().y, layer),
+            HeavyComponent(math::Vec3f(window.getView().getPosition().x, window.getView().getPosition().y, layer),
                           math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0),
                           math::Vec3f(window.getView().getSize().x + window.getView().getSize().x * 0.5f, window.getView().getPosition().y + window.getView().getSize().y * 0.5f, layer), useThread),
             view(window.getView()),
@@ -239,15 +239,23 @@ namespace odfaeg {
                     depthBufferGenerator->bindAttribute(2, "vertex_texCoord0");
 
                 }*/
+                /*core::FastDelegate<bool> signal (&FastRenderComponent::needToUpdate, this);
+                core::FastDelegate<void> slot (&FastRenderComponent::drawNextFrame, this);
+                core::Command cmd(signal, slot);
+                getListener().connect("UPDATE", cmd);*/
                 mvpBuffer = 0;
                 backgroundColor = sf::Color::Transparent;
             }
+        }
+        bool FastRenderComponent::needToUpdate() {
+            return update;
         }
         void FastRenderComponent::changeVisibleEntities(Entity* toRemove, Entity* toAdd, EntityManager* em) {
             bool removed;
             em->removeAnimatedVisibleEntity(toRemove, visibleEntities, view, removed);
             if (removed) {
                 em->insertAnimatedVisibleEntity(toAdd, visibleEntities, view);
+                loadEntitiesOnComponent(visibleEntities);
                 update = true;
             }
         }
@@ -291,6 +299,7 @@ namespace odfaeg {
                 m_instances = batcher.getInstances();
             }
             this->visibleEntities = vEntities;
+            update = true;
             return true;
         }
         void FastRenderComponent::setView(View view) {
@@ -302,11 +311,8 @@ namespace odfaeg {
             this->expression = expression;
         }
         void FastRenderComponent::drawNextFrame() {
-
-            if (update) {
-                loadEntitiesOnComponent(visibleEntities);
-                update = false;
-            }
+            //std::cout<<"draw next frame"<<std::endl;
+            update = false;
             currentStates.blendMode = sf::BlendAlpha;
             if (Shader::isAvailable()) {
                 if (Shader::getShadingLanguageVersionMajor() >= 3 && Shader::getShadingLanguageVersionMinor() >= 3) {

@@ -55,6 +55,12 @@ namespace odfaeg {
                 bool onIntersects (BaseInterface& interface) {
                     return interface.intersects(*this);
                 }
+                bool onIntersects (BaseInterface& interface, math::Ray& ray, bool segment) {
+                    return interface.intersects(ray, segment);
+                }
+                bool onIntersects (BaseInterface& interface, math::Ray& ray, math::Vec3f& near, math::Vec3f& far) {
+                    return interface.intersectsWhere(ray, near, far);
+                }
                 bool intersects(BoundingVolume &bv);
                 bool intersects (BoundingSphere &bs);
                 /** \fn bool intersects (BoundingEllipsoid &be)
@@ -86,7 +92,7 @@ namespace odfaeg {
                 *   \param the Segment to test with.
                 *   \return the result of the collision test.
                 */
-                bool intersects (math::Ray& ray);
+                bool intersects (math::Ray& ray, bool segment);
                 bool intersectsWhere (math::Ray &ray, math::Vec3f& i1, math::Vec3f& i2);
                 /** \fn bool isPointInside (Vec2f point)
                 *   \brief test if a point is in the bounding box.

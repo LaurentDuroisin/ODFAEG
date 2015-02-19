@@ -24,6 +24,7 @@ namespace odfaeg {
                     break;
                 case TEXT_ENTERED :
                     startEvent.type = sf::Event::TextEntered;
+                    startEvent.text.unicode = 0;
                     break;
                 case MOUSE_WHEEL_MOVED :
                     startEvent.type = sf::Event::MouseWheelMoved;
@@ -138,6 +139,8 @@ namespace odfaeg {
             if (!leaf) {
                 return comparator(this, std::ref(*leftChild), std::ref(*rightChild));
             } else {
+                /*if (startEvent.type == sf::Event::TextEntered)
+                    std::cout<<"text entered : "<<startEvent.text.unicode<<std::endl;*/
                 //std::cout<<"triggered"<<std::endl;
 
                 if (type == KEY_HELD_DOWN && !is_not) {
@@ -162,12 +165,15 @@ namespace odfaeg {
                         else
                             return !Command::equalEvent(events[i], startEvent);
                     } else {*/
-
                         if (!is_not && Command::equalEvent(events[i], startEvent) && !pressed) {
-                            pressed = true;
+                            if (events[i].type == sf::Event::KeyPressed && startEvent.type == sf::Event::KeyPressed
+                                || events[i].type == sf::Event::MouseButtonPressed && startEvent.type == sf::Event::MouseButtonPressed)
+                                pressed = true;
                             return true;
                         } else if (is_not && !Command::equalEvent(events[i], startEvent) && !pressed) {
-                            pressed = true;
+                            if (events[i].type == sf::Event::KeyPressed && startEvent.type == sf::Event::KeyPressed
+                                || events[i].type == sf::Event::MouseButtonPressed && startEvent.type == sf::Event::MouseButtonPressed)
+                                pressed = true;
                             return true;
                         }
                     //}

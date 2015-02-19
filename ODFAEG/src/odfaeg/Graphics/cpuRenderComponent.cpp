@@ -107,12 +107,12 @@ namespace odfaeg {
                                    }
                                 }
                             }
-                            winFrameBuffer.create(size.x, size.y, &frameBuffer[0]);
-                            fbTexture.loadFromImage(winFrameBuffer);
                         }
                     }
                 }
              }
+             winFrameBuffer.create(size.x, size.y, &frameBuffer[0]);
+             fbTexture.loadFromImage(winFrameBuffer);
         }
         void CPURenderComponent::drawNextFrame() {
             for (unsigned int i = 0; i < m_instances.size(); i++) {

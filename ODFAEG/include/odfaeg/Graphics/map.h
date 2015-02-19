@@ -119,6 +119,7 @@ class ODFAEG_GRAPHICS_API Map : public EntityManager {
         * \return if the entity has been successfully removed.
         */
         bool removeEntity (Entity *entity);
+        bool deleteEntity(Entity* entity);
         /**
         * \fn int getNbCasesPerRow ();
         * \brief get the number of cases per row.
@@ -231,6 +232,7 @@ class ODFAEG_GRAPHICS_API Map : public EntityManager {
         */
         bool collide(Entity *entity);
         bool collide(Entity* entity, math::Vec3f position);
+        bool collide(Entity* entity, math::Ray ray);
         /**
         * \fn computeIntersectionsWithWalls()
         * \brief check the intersections between the light and the walls.
@@ -356,6 +358,7 @@ class ODFAEG_GRAPHICS_API Map : public EntityManager {
         Shader* perPixLightingShader, *perPixShadowShader, *buildShadowMapShader,
         *buildNormalMapShader; /**> The shaders used to generate the lightmap and the final normal map.*/
         bool updateComponents;
+        float diagSize;
 };
 }
 }

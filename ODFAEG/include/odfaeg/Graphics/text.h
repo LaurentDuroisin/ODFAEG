@@ -266,7 +266,7 @@ namespace odfaeg
             /// \return Global bounding rectangle of the entity
             ///
             ////////////////////////////////////////////////////////////
-            sf::FloatRect getGlobalBounds() const;
+            sf::FloatRect getGlobalBounds();
 
         private :
 

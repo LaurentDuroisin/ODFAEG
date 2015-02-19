@@ -1,5 +1,6 @@
 #include "../../../include/odfaeg/Network/client.h"
 #include "../../../include/odfaeg/Network/network.h"
+#include "../../../include/odfaeg/Core/application.h"
 namespace odfaeg {
     namespace network {
         using namespace sf;
@@ -135,9 +136,16 @@ namespace odfaeg {
                             if (address == srvAddress) {
                                 string message;
                                 packet>>message;
-                                if (message == "Ping") {
+                                if (message == "PING") {
                                     packet.clear();
-                                    packet<<"Pong";
+                                    message = "PONG";
+                                    packet<<message;
+                                    Network::sendUdpPacket(packet);
+                                } else if (message == "GET_TIME") {
+                                    packet.clear();
+                                    sf::Int64 time = core::Application::getTimeClk().getElapsedTime().asMicroseconds();
+                                    message = "SET_TIME*"+core::conversionLongString(time);
+                                    packet<<message;
                                     Network::sendUdpPacket(packet);
                                 } else {
                                     Network::addResponse(message);
