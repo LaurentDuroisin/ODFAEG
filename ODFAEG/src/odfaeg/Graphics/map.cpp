@@ -127,8 +127,6 @@ namespace odfaeg {
                      "uniform vec3 resolution;"
                      "uniform vec4 lightColor;"
                      "uniform vec4 lightPos;"
-                     "uniform float maxM;"
-                     "uniform float maxP;"
                      "in mat4 projMat;"
                      "void main () { "
                          "vec2 position = vec2 (gl_FragCoord.xy / resolution.xy);"
@@ -138,7 +136,7 @@ namespace odfaeg {
                          "float radius = lightPos.w;"
                          "vec3 pixPos = vec3 (gl_FragCoord.x, gl_FragCoord.y, -bump.w * (gl_DepthRange.far - gl_DepthRange.near));"
                          "vec4 lightMapColor = texture2D(lightMap, position);"
-                         "vec3 viewPos = vec3(resolution.x * 0.5f, resolution.y * 0.5f, 1);"
+                         "vec3 viewPos = vec3(resolution.x * 0.5f, resolution.y * 0.5f, 0);"
                          "float z = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
                          "if (z >= bump.w) {"
                              "vec4 specularColor = vec4(0, 0, 0, 0);"
@@ -147,9 +145,9 @@ namespace odfaeg {
                              "vec3 pixToView = pixPos - viewPos;"
                              "float normalLength = dot(bump.xyz, vertexToLight);"
                              "vec3 lightReflect = vertexToLight + 2 * (bump.xyz * normalLength - vertexToLight);"
-                             "float m = specularInfos.r * maxM;"
-                             "float p = specularInfos.g * maxP;"
-                             "float specularFactor = dot(pixToView, lightReflect);"
+                             "float m = specularInfos.r;"
+                             "float p = specularInfos.g;"
+                             "float specularFactor = dot(normalize(pixToView), normalize(lightReflect));"
                              "specularFactor = pow (specularFactor, p);"
                              "if (specularFactor > 0) {"
                                  "specularColor = vec4(lightColor.rgb, 1) * m * specularFactor;"
@@ -242,8 +240,6 @@ namespace odfaeg {
                 buildNormalMapShader->setParameter("texture", Shader::CurrentTexture);
                 perPixLightingShader->setParameter("resolution", resolution.x, resolution.y, resolution.z);
                 perPixLightingShader->setParameter("lightMap",lightMap->getTexture());
-                perPixLightingShader->setParameter("maxM",Material::getMaxSpecularIntensity());
-                perPixLightingShader->setParameter("maxP",Material::getMaxSpecularPower());
                 buildShadowMapShader->setParameter("texture", Shader::CurrentTexture);
                 perPixShadowShader->setParameter("stencilBuffer", stencilBuffer->getTexture());
                 perPixShadowShader->setParameter("texture", Shader::CurrentTexture);
@@ -935,19 +931,20 @@ namespace odfaeg {
                                     } else {
                                         buildShadowMapShader->setParameter("haveTexture", 0);
                                     }
-                                    math::Vec3f shadowCenter, shadowScale(1.f, 1.f, 1.f), shadowRotationAxis;
+                                    math::Vec3f shadowOrigin, shadowCenter, shadowScale(1.f, 1.f, 1.f), shadowRotationAxis;
                                     float shadowRotationAngle = 0;
                                     if (entities[k]->getParent() != nullptr && entities[k]->getParent()->isModel()) {
                                         shadowCenter = static_cast<Model*>(entities[k]->getParent())->getShadowCenter();
                                         shadowScale = static_cast<Model*>(entities[k]->getParent())->getShadowScale();
                                         shadowRotationAxis = static_cast<Model*>(entities[k]->getParent())->getShadowRotationAxis();
                                         shadowRotationAngle = static_cast<Model*>(entities[k]->getParent())->getShadowRotationAngle();
+                                        shadowOrigin = static_cast<Model*>(entities[k]->getParent())->getShadowOrigin();
                                     }
                                     TransformMatrix tm;
-                                    tm.setOrigin(entities[k]->getPosition());
+                                    tm.setOrigin(shadowOrigin);
                                     tm.setScale(shadowScale);
                                     tm.setRotation(shadowRotationAxis, shadowRotationAngle);
-                                    tm.setTranslation(entities[k]->getPosition() + shadowCenter);
+                                    tm.setTranslation(shadowOrigin + shadowCenter);
                                     tm.update();
                                     buildShadowMapShader->setParameter("shadowProjMat", tm.getMatrix().transpose());
                                     stencilBuffer->draw(*entities[k], states);

@@ -263,6 +263,8 @@ namespace odfaeg {
             /** \fn ~Application()
             *   \brief destructor : stop the application and destroy the window if any.
             */
+            virtual void onDisconnected(network::User* user) {
+            }
             ~Application() {
                 stop();
             }

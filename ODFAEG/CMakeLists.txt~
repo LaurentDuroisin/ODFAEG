@@ -12,7 +12,7 @@ endmacro()
 # set a default build type if none was provided
 # this has to be done before the project() instruction!
 ODFAEG_set_option(CMAKE_BUILD_TYPE Release STRING "Choose the type of build (Debug or Release)")
-set(CMAKE_CXX_FLAGS "-std=c++14 ${CMAKE_CXX_FLAGS} -O3")
+set(CMAKE_CXX_FLAGS "-std=c++14 ${CMAKE_CXX_FLAGS} -fexpensive-optimizations")
 add_definitions(-DGLEW_STATIC)
 # project name
 project(ODFAEG)

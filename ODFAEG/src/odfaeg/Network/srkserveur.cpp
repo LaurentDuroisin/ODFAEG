@@ -59,7 +59,7 @@ namespace odfaeg {
                 if (Network::getTimeBtw2PingsClk().getElapsedTime().asMicroseconds() >= Network::getTimeBtw2Pings()) {
                     for (it = clients.begin(); it != clients.end();it++) {
                         TcpSocket& client = **it;
-                        User* user = Network::getUser(client.getRemoteAddress());
+                        User* user = Network::getUser(client);
                         if (user != nullptr && user->getRemotePortUDP()) {
                             Packet packet;
                             packet<<"Ping";
@@ -85,9 +85,9 @@ namespace odfaeg {
                     for (it = clients.begin(); it != clients.end();it++) {
                         TcpSocket& client = **it;
                         if (selector.isReady(client)) {
-                            bool pbKeyRsaSend = Network::hasPbKeyRsa(client.getRemoteAddress());
-                            bool pbKeySend = Network::hasPbKey(client.getRemoteAddress());
-                            User* user = Network::getUser(client.getRemoteAddress());
+                            bool pbKeyRsaSend = Network::hasPbKeyRsa(client);
+                            bool pbKeySend = Network::hasPbKey(client);
+                            User* user = Network::getUser(client);
                             if (pbKeyRsaSend == pbKeySend && user != nullptr && (!user->isUsingSecuredConnexion()
                                 || !user->getRemotePortUDP())) {
                                 Packet packet;
@@ -105,7 +105,7 @@ namespace odfaeg {
                                         Network::addRequest (user, request);
                                     }
                                 } else {
-                                    Network::removeUser(client.getRemoteAddress());
+                                    Network::removeUser(client);
                                     selector.remove(client);
                                     it = clients.erase(it);
                                     delete *it;
@@ -122,7 +122,7 @@ namespace odfaeg {
                                          Network::sendPbKey(*user);
                                          pbKeySend = true;
                                     } else {
-                                        Network::removeUser(client.getRemoteAddress());
+                                        Network::removeUser(client);
                                         selector.remove(client);
                                         it = clients.erase(it);
                                         delete *it;
@@ -137,7 +137,7 @@ namespace odfaeg {
                                     packet>>request;
                                     Network::addRequest (user, request);
                                 } else {
-                                    Network::removeUser(client.getRemoteAddress());
+                                    Network::removeUser(client);
                                     selector.remove(client);
                                     it = clients.erase(it);
                                     delete *it;
@@ -153,7 +153,7 @@ namespace odfaeg {
                         short unsigned int port;
                         if (udpSocket.receive(packet, sender, port) == Socket::Done) {
                             packet>>request;
-                            User* user = Network::getUser(sender);
+                            User* user = Network::getUser(sender, port);
                             if (user != nullptr) {
                                 if (request == "Pong") {
                                     user->addPingTime(user->getPingClock().getElapsedTime().asMicroseconds() * 0.5f);
@@ -175,7 +175,7 @@ namespace odfaeg {
                     lock_guard<recursive_mutex> locker (rec_mutex);
                     for (it = clients.begin(); it != clients.end();it++) {
                         TcpSocket& client = **it;
-                        User* user = Network::getUser(client.getRemoteAddress());
+                        User* user = Network::getUser(client);
                         if (user != nullptr && user->getRemotePortUDP()) {
                             Packet packet;
                             packet<<"PING";
@@ -189,7 +189,7 @@ namespace odfaeg {
                     lock_guard<recursive_mutex> locker (rec_mutex);
                     for (it = clients.begin(); it != clients.end();it++) {
                         TcpSocket& client = **it;
-                        User* user = Network::getUser(client.getRemoteAddress());
+                        User* user = Network::getUser(client);
                         if (user != nullptr && user->getRemotePortUDP()) {
                             Packet packet;
                             packet<<"GET_TIME";
@@ -215,9 +215,9 @@ namespace odfaeg {
                     for (it = clients.begin(); it != clients.end();it++) {
                         TcpSocket& client = **it;
                         if (selector.isReady(client)) {
-                            bool pbKeyRsaSend = Network::hasPbKeyRsa(client.getRemoteAddress());
-                            bool pbKeySend = Network::hasPbKey(client.getRemoteAddress());
-                            User* user = Network::getUser(client.getRemoteAddress());
+                            bool pbKeyRsaSend = Network::hasPbKeyRsa(client);
+                            bool pbKeySend = Network::hasPbKey(client);
+                            User* user = Network::getUser(client);
                             if (pbKeyRsaSend == pbKeySend &&  user != nullptr &&
                                 (!user->getRemotePortUDP() || !user->isUsingSecuredConnexion())) {
                                 Packet packet;
@@ -235,13 +235,12 @@ namespace odfaeg {
                                         Network::addRequest (user, request);
                                     }
                                 } else {
-                                    Network::removeUser(client.getRemoteAddress());
+                                    Network::removeUser(client);
                                     selector.remove(client);
                                     it = clients.erase(it);
                                     delete *it;
                                     it--;
                                 }
-
                             }
                             if (pbKeyRsaSend && !pbKeySend && user != nullptr && user->isUsingSecuredConnexion()) {
                                 EncryptedPacket packet;
@@ -252,7 +251,7 @@ namespace odfaeg {
                                          Network::sendPbKey(*user);
                                          pbKeySend = true;
                                     } else {
-                                        Network::removeUser(client.getRemoteAddress());
+                                        Network::removeUser(client);
                                         selector.remove(client);
                                         it = clients.erase(it);
                                         delete *it;
@@ -267,7 +266,7 @@ namespace odfaeg {
                                     packet>>request;
                                     Network::addRequest (user, request);
                                 } else {
-                                    Network::removeUser(client.getRemoteAddress());
+                                    Network::removeUser(client);
                                     selector.remove(client);
                                     it = clients.erase(it);
                                     delete *it;
@@ -283,7 +282,7 @@ namespace odfaeg {
                         short unsigned int port;
                         if (udpSocket.receive(packet, sender, port) == Socket::Done) {
                             packet>>request;
-                            User* user = Network::getUser(sender);
+                            User* user = Network::getUser(sender, port);
                             if (user != nullptr) {
                                 std::vector<std::string> infos = core::split(request, "*");
                                 if (infos[0] == "PONG") {

@@ -22,25 +22,15 @@ namespace odfaeg {
             core::Listener& getListener() {
                 return listener;
             }
-            void setEventContextActivated(bool activateEventContext) {
-                this->activateEventContext = activateEventContext;
-                onEventContextActivated(activateEventContext);
-            }
-            bool isEventContextActivated() {
-                return activateEventContext;
-            }
-            void setVisible (bool visible) {
-                this->visible = visible;
-                onVisibilityChanged(visible);
-            }
-            bool isVisible() {
-                return visible;
-            }
+            void setEventContextActivated(bool activateEventContext);
+            bool isEventContextActivated();
+            void setVisible (bool visible);
+            bool isVisible();
             int getId() {
                 return id;
             }
-            virtual void onVisibilityChanged(bool visible) {}
-            virtual void onEventContextActivated(bool activate) {}
+            virtual void onVisibilityChanged(bool visible);
+            virtual void onEventContextActivated(bool activate);
         private :
             core::Listener listener;
             bool activateEventContext;

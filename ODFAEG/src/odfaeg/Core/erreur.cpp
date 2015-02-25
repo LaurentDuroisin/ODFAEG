@@ -1,7 +1,7 @@
 #include "../../../include/odfaeg/Core/erreur.h"
 namespace odfaeg {
     namespace core {
-        Erreur::Erreur(int numero=0, const std::string &phrase="", int niveau=0) throw()
+        Erreur::Erreur(int numero, const std::string &phrase, int niveau) throw()
                  :m_numero(numero),m_phrase(phrase),m_niveau(niveau)
         {}
 

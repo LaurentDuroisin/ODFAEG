@@ -21,6 +21,7 @@ namespace odfaeg {
             frameBuffer->create(resolution.x, resolution.y,window.getSettings());
             frameBuffer->setView(window.getView());
             depthBuffer->setView(window.getView());
+            specularTexture->setView(window.getView());
             frameBuffer->clear(sf::Color::Transparent);
             depthBuffer->clear(sf::Color::Transparent);
             specularTexture->clear(sf::Color::Transparent);
@@ -151,8 +152,8 @@ namespace odfaeg {
                             "vec4 pixel = (haveTexture==1) ? gl_Color * texture2D(texture, gl_TexCoord[0].xy) : gl_Color;"
                             "float z = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
                             "if(z >= color.z && pixel.a >= color.a) {"
-                                "float intensity = (maxM != 0) ? m / maxM : 0.f;"
-                                "float power = (maxP != 0) ? p / maxP : 0.f;"
+                                "float intensity = (maxM != 0.f) ? m / maxM : 0.f;"
+                                "float power = (maxP != 0.f) ? p / maxP : 0.f;"
                                 "gl_FragColor = vec4(intensity, power, z, pixel.a);"
                             "} else {"
                                 "gl_FragColor = color;"
@@ -268,6 +269,7 @@ namespace odfaeg {
         void FastRenderComponent::clear() {
              frameBuffer->clear(backgroundColor);
              depthBuffer->clear(sf::Color::Transparent);
+             specularTexture->clear(sf::Color::Transparent);
         }
         Tile& FastRenderComponent::getFrameBufferTile () {
             return *frameBufferTile;
@@ -306,6 +308,7 @@ namespace odfaeg {
             this->view = view;
             frameBuffer->setView(view);
             depthBuffer->setView(view);
+            specularTexture->setView(view);
         }
         void FastRenderComponent::setExpression(std::string expression) {
             this->expression = expression;
@@ -388,7 +391,6 @@ namespace odfaeg {
                         specularTextureGenerator->setParameter("m", specularIntensity);
                         specularTextureGenerator->setParameter("p", specularPower);
                         if (currentStates.texture != nullptr) {
-
                             depthBufferGenerator->setParameter("haveTexture", 1.f);
                             frameBufferGenerator->setParameter("haveTexture", 1.f);
                             specularTextureGenerator->setParameter("haveTexture", 1.f);

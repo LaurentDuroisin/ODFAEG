@@ -62,13 +62,14 @@ namespace odfaeg {
                 * \param the ip address of the user.
                 * \return a pointer to the user (null if the user isn't connected)
                 */
-                static User* getUser(sf::IpAddress address);
+                static User* getUser(sf::TcpSocket& socket);
+                static User* getUser(sf::IpAddress address, short unsigned int remoteUDPPort);
                 /**
                 * \fn void removeUser(sf::IpAddress address)
                 * \brief remove a user from the network.
                 * \param address : the ip address of the user to remove.
                 */
-                static void removeUser(sf::IpAddress address);
+                static void removeUser(sf::TcpSocket& tcpSocket);
                 /**
                 * \fn void sendPbKeyRsa(User& user)
                 * \brief send the public key to the user for the rsa encryption.
@@ -126,12 +127,12 @@ namespace odfaeg {
                 * \fn std::string getLastResponse ()
                 * \brief get the last response received by the server.
                 */
-                static std::string getLastResponse ();
+                static std::string getLastResponse (sf::Time timeOut = sf::seconds(5.f));
                 /**
                 * \fn std::string getLastRequest ()
                 * \brief get the last request received by a client.
                 */
-                static std::string getLastRequest (User **user = nullptr);
+                static std::string getLastRequest (User **user = nullptr, sf::Time timeOut = sf::seconds(5.f));
                 /**
                 * \fn void setPbKey(std::string pbKey)
                 * \brief set the public key for rsa encryption.
@@ -150,14 +151,14 @@ namespace odfaeg {
                 * \param address : the ip address of the user.
                 * \return if the user have the public key. (for aes encryption)
                 */
-                static bool hasPbKey(sf::IpAddress address);
+                static bool hasPbKey(sf::TcpSocket& socket);
                 /**
                 * \fn bool hasPbKeyRsa(sf::IpAddress address)
                 * \brief if the user have the public key. (for rsa encryption)
                 * \param address : the ip address of the user.
                 * \return if the user have the public key. (for aes encryption)
                 */
-                static bool hasPbKeyRsa(sf::IpAddress address);
+                static bool hasPbKeyRsa(sf::TcpSocket& socket);
                 /**
                 * \fn bool getResponse(std::string tag, std::string &response)
                 * \brief get a response with the given tag.
@@ -171,7 +172,7 @@ namespace odfaeg {
                 * \param tag : the tag.
                 * \return response.
                 */
-                static std::string waitForLastResponse(std::string tag);
+                static std::string waitForLastResponse(std::string tag, sf::Time timeOut = sf::seconds(5.f));
                 /**
                 * \fn SrkClient& getCliInstance ()
                 * \brief return an instance of the client.
@@ -229,9 +230,7 @@ namespace odfaeg {
                     return timeBtw2Sync;
                 }
             private :
-                static sf::Time timeOut; /**>Time out.*/
                 static sf::Clock timeoutClk; /**>clock.*/
-                static int timeout;
                 static SrkClient &cli; /**>The client.*/
                 static SrkServer &srv; /**>The server.*/
                 static std::vector<std::string> responses; /**> responses.*/

@@ -14,8 +14,11 @@ MyAppli::MyAppli(sf::VideoMode wm, std::string title) : Application (wm, title, 
 
     fpsCounter = 0;
     addClock(sf::Clock(), "FPS");
-    day = false;
+    day = true;
     sf::Listener::setUpVector(0.f, 0.f, 1.f);
+}
+void MyAppli::actionPerformed(gui::Button* button) {
+    std::cout<<"clicked on the button!"<<std::endl;
 }
 void MyAppli::keyHeldDown (sf::Keyboard::Key key) {
     //BoundingRectangle rect (pos.x, pos.y, getView().getSize().x, getView().getSize().y);
@@ -101,19 +104,26 @@ void MyAppli::onLoad() {
     pfire.setAudioStream(stream2);
     cache.addResourceManager(tm, "TextureManager");
     cache.addResourceManager(sm, "SoundManager");
+    FontManager<> fm;
+    fm.fromFileWithAlias("fonts/FreeSerif.ttf", "FreeSerif");
+    cache.addResourceManager(fm, "FontManager");
 }
 void MyAppli::onInit () {
     if (day)
         g2d::AmbientLight::getAmbientLight().setColor(sf::Color::White);
     TextureManager<> &tm = cache.resourceManager<Texture, std::string>("TextureManager");
+    FontManager<> &fm = cache.resourceManager<Font, std::string>("FontManager");
     Vec2f pos (getView().getPosition().x - getView().getSize().x * 0.5f, getView().getPosition().y - getView().getSize().y * 0.5f);
     BoundingBox bx (pos.x, pos.y, 0, getView().getSize().x, getView().getSize().y, 0);
     theMap = new Map(&getRenderComponentManager(), "Map test", 100, 50);
+    BaseChangementMatrix bm;
+    bm.set2DIsoMatrix();
+    theMap->setBaseChangementMatrix(bm);
     World::addEntityManager(theMap);
     World::setCurrentEntityManager("Map test");
-    eu = new EntitiesUpdater(true);
+    eu = new EntitiesUpdater(false);
     World::addEntitiesUpdater(eu);
-    au = new AnimUpdater(true);
+    au = new AnimUpdater(false);
     au->setInterval(sf::seconds(0.01f));
     World::addAnimUpdater(au);
     tiles.push_back(new Tile(tm.getResourceByAlias("GRASS"), Vec3f(0, 0, 0), Vec3f(120, 60, 0),sf::IntRect(0, 0, 100, 50)));
@@ -246,11 +256,15 @@ void MyAppli::onInit () {
     View view = getView();
     //view.rotate(0, 0, 20);
     FastRenderComponent *frc1 = new FastRenderComponent(getRenderWindow(),0, "E_BIGTILE", false);
-    FastRenderComponent *frc2 = new FastRenderComponent(getRenderWindow(),1, "E_WALL+E_DECOR+E_ANIMATION+E_CARACTER", false);
+    FastRenderComponent *frc2 = new FastRenderComponent(getRenderWindow(),0, "E_WALL+E_DECOR+E_ANIMATION+E_CARACTER", false);
+    button = new gui::Button(Vec3f(0, 230, 0),Vec3f(100, 50, 0),fm.getResourceByAlias("FreeSerif"), "Test",getRenderWindow());
+    button->addActionListener(this);
     frc1->setView(view);
     frc2->setView(view);
-    getRenderComponentManager().addRenderComponent(frc1);
-    getRenderComponentManager().addRenderComponent(frc2);
+    getRenderComponentManager().addComponent(frc1);
+    getRenderComponentManager().addComponent(frc2);
+    getRenderComponentManager().addComponent(button);
+
     caracter = new Caracter("Sorrok", "Nagi", "M", "Map test", "Brain", "Green", "White","Normal","Novice", 1);
     std::string path = "tilesets/vlad_sword.png";
     cache.resourceManager<Texture, std::string>("TextureManager").fromFileWithAlias(path, "VLADSWORD");
@@ -301,7 +315,7 @@ void MyAppli::onInit () {
     getListener().connect("MoveAction", moveAction);
     if (!day)
         g2d::AmbientLight::getAmbientLight().setColor(sf::Color(0, 0, 255));
-    Command mouseInsideAction(FastDelegate<bool>(&MyAppli::mouseInside,this, sf::Vector2f(-1, -1)), FastDelegate<void>(&MyAppli::onMouseInside, this, sf::Vector2f(-1,-1)));
+    Command mouseInsideAction(a5, FastDelegate<bool>(&MyAppli::mouseInside,this, sf::Vector2f(-1, -1)), FastDelegate<void>(&MyAppli::onMouseInside, this, sf::Vector2f(-1,-1)));
     getListener().connect("MouseInside",mouseInsideAction);
     Command leftMouseButtonPressedAction (a5, FastDelegate<void>(&MyAppli::leftMouseButtonPressed, this, sf::Vector2f(-1, -1)));
     getListener().connect("LeftMouseButtonPressedAction", leftMouseButtonPressedAction);
@@ -383,6 +397,7 @@ void MyAppli::onDisplay(RenderWindow* window) {
     //getView().rotate(0, 0, 0);
     Entity& lightMap = World::getLightMap("E_PONCTUAL_LIGHT", 2, 1);
     window->draw(lightMap, sf::BlendMultiply);
+    View view = getView();
     /*Entity& normalMap = theMap->getNormalMapTile();
     window->draw(normalMap);*/
     /*std::vector<Vec2f> segments = caracter->getPath();
@@ -448,12 +463,14 @@ void MyAppli::onUpdate (sf::Event& event) {
         previousKey = event.key.code;
         actualKey = sf::Keyboard::Key::Unknown;
     }
-    /*if (event.type == sf::Event::MouseMoved) {
-    Vector2f mousePos = Vector2f(event.mouseMove.x, event.mouseMove.y);
-    InputSystem::getListener().setCommandParams("MouseInside", this, this, mousePos);
-    }*/
+    if (event.type == sf::Event::MouseMoved) {
+        sf::Vector2f mousePos = sf::Vector2f(event.mouseMove.x, event.mouseMove.y);
+        getListener().setCommandSigParams("MouseInside", this, mousePos);
+        getListener().setCommandSlotParams("MouseInside", this, mousePos);
+    }
     if (event.type == sf::Event::MouseButtonPressed) {
         sf::Vector2f mousePos (event.mouseButton.x, event.mouseButton.y);
+
         getListener().setCommandSlotParams("LeftMouseButtonPressedAction", this, mousePos);
     }
 }
@@ -464,19 +481,23 @@ void MyAppli::onExec () {
             player.play(true);
         }
         if (caracter->isMovingFromKeyboard()) {
+            Vec2f actualPos = Vec2f(caracter->getCenter().x, caracter->getCenter().y);
             World::moveEntity(caracter, caracter->getDir().x * t * caracter->getSpeed(), caracter->getDir().y * t * caracter->getSpeed(),caracter->getDir().y * t * caracter->getSpeed());
-            if (World::collide(caracter)) {
+            Vec2f newPos =  Vec2f(caracter->getCenter().x, caracter->getCenter().y);
+            Ray r (actualPos, newPos);
+            if (World::collide(caracter, r)) {
                 World::moveEntity(caracter, -caracter->getDir().x * t * caracter->getSpeed(), -caracter->getDir().y * t * caracter->getSpeed(),-caracter->getDir().y * t * caracter->getSpeed());
             }
             for (unsigned int i = 0; i < getRenderComponentManager().getNbComponents(); i++) {
-                View view = getRenderComponentManager().getRenderComponent(i)->getView();
-                Vec3f d = caracter->getCenter() - view.getPosition();
-                view.move(d.x, d.y, d.y);
-                getRenderComponentManager().getRenderComponent(i)->setView(view);
+                if (getRenderComponentManager().getRenderComponent(i) != nullptr) {
+                    View view = getRenderComponentManager().getRenderComponent(i)->getView();
+                    Vec3f d = caracter->getCenter() - view.getPosition();
+                    view.move(d.x, d.y, d.y);
+                    getRenderComponentManager().getRenderComponent(i)->setView(view);
+                }
             }
             Vec3f d = caracter->getCenter() - getView().getPosition();
             getView().move(d.x, d.y, d.y);
-            Vec2f actualPos = Vec2f(caracter->getCenter().x, caracter->getCenter().y);
             sf::Listener::setPosition(actualPos.x, actualPos.y, 0);
             World::update();
         } else {
@@ -488,9 +509,11 @@ void MyAppli::onExec () {
             if (dir != caracter->getDir())
                 caracter->setDir(dir);
             for (unsigned int i = 0; i < getRenderComponentManager().getNbComponents(); i++) {
-                View view = getRenderComponentManager().getRenderComponent(i)->getView();
-                view.move(d.x, d.y, d.y);
-                getRenderComponentManager().getRenderComponent(i)->setView(view);
+                if (getRenderComponentManager().getRenderComponent(i) != nullptr) {
+                    View view = getRenderComponentManager().getRenderComponent(i)->getView();
+                    view.move(d.x, d.y, d.y);
+                    getRenderComponentManager().getRenderComponent(i)->setView(view);
+                }
             }
             getView().move(d.x, d.y, d.y);
             actualPos = Vec2f(caracter->getCenter().x, caracter->getCenter().y);

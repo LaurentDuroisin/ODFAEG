@@ -95,7 +95,6 @@
 		<Unit filename="include/odfaeg/Core/timer.h" />
 		<Unit filename="include/odfaeg/Core/utilities.h" />
 		<Unit filename="include/odfaeg/Core/variant.h" />
-		<Unit filename="include/odfaeg/Core/world.h" />
 		<Unit filename="include/odfaeg/Graphics/2D/ambientLight.h" />
 		<Unit filename="include/odfaeg/Graphics/2D/decor.h" />
 		<Unit filename="include/odfaeg/Graphics/2D/directionnalLight.h" />
@@ -104,6 +103,11 @@
 		<Unit filename="include/odfaeg/Graphics/2D/shadowWall.h" />
 		<Unit filename="include/odfaeg/Graphics/2D/wall.h" />
 		<Unit filename="include/odfaeg/Graphics/3D/cube.h" />
+		<Unit filename="include/odfaeg/Graphics/GUI/actionListener.hpp" />
+		<Unit filename="include/odfaeg/Graphics/GUI/button.hpp" />
+		<Unit filename="include/odfaeg/Graphics/GUI/focusListener.hpp" />
+		<Unit filename="include/odfaeg/Graphics/GUI/optionPane.hpp" />
+		<Unit filename="include/odfaeg/Graphics/GUI/textArea.hpp" />
 		<Unit filename="include/odfaeg/Graphics/anim.h" />
 		<Unit filename="include/odfaeg/Graphics/animatedEntity.h" />
 		<Unit filename="include/odfaeg/Graphics/animationUpdater.h" />
@@ -125,7 +129,9 @@
 		<Unit filename="include/odfaeg/Graphics/fastRenderComponentManager.h" />
 		<Unit filename="include/odfaeg/Graphics/font.h" />
 		<Unit filename="include/odfaeg/Graphics/gridMap.h" />
+		<Unit filename="include/odfaeg/Graphics/heavyComponent.h" />
 		<Unit filename="include/odfaeg/Graphics/light.h" />
+		<Unit filename="include/odfaeg/Graphics/lightComponent.h" />
 		<Unit filename="include/odfaeg/Graphics/map.h" />
 		<Unit filename="include/odfaeg/Graphics/model.h" />
 		<Unit filename="include/odfaeg/Graphics/projMatrix.h" />
@@ -182,6 +188,7 @@
 		<Unit filename="include/odfaeg/Physics/boundingPolyhedron.h" />
 		<Unit filename="include/odfaeg/Physics/boundingSphere.h" />
 		<Unit filename="include/odfaeg/Physics/boundingVolume.h" />
+		<Unit filename="include/odfaeg/Physics/collisionResultSet.hpp" />
 		<Unit filename="include/odfaeg/Physics/emissionInterface.h" />
 		<Unit filename="include/odfaeg/Physics/emmiters.h" />
 		<Unit filename="include/odfaeg/Physics/orientedBoundingBox.h" />
@@ -227,6 +234,9 @@
 		<Unit filename="src/odfaeg/Graphics/2D/shadowWall.cpp" />
 		<Unit filename="src/odfaeg/Graphics/2D/wall.cpp" />
 		<Unit filename="src/odfaeg/Graphics/3D/cube.cpp" />
+		<Unit filename="src/odfaeg/Graphics/GUI/button.cpp" />
+		<Unit filename="src/odfaeg/Graphics/GUI/optionPane.cpp" />
+		<Unit filename="src/odfaeg/Graphics/GUI/textArea.cpp" />
 		<Unit filename="src/odfaeg/Graphics/GlDebug.cpp" />
 		<Unit filename="src/odfaeg/Graphics/GlDebug.hpp" />
 		<Unit filename="src/odfaeg/Graphics/animation.cpp" />
@@ -235,6 +245,7 @@
 		<Unit filename="src/odfaeg/Graphics/billBoard.cpp" />
 		<Unit filename="src/odfaeg/Graphics/cellMap.cpp" />
 		<Unit filename="src/odfaeg/Graphics/circleShape.cpp" />
+		<Unit filename="src/odfaeg/Graphics/component.cpp" />
 		<Unit filename="src/odfaeg/Graphics/convexShape.cpp" />
 		<Unit filename="src/odfaeg/Graphics/cpuRenderComponent.cpp" />
 		<Unit filename="src/odfaeg/Graphics/entity.cpp" />

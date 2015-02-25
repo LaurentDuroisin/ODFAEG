@@ -110,6 +110,7 @@ namespace odfaeg {
                     shadow = new ShadowTile(*light, this);
                 shadow->setParent(this);
                 addChild(shadow);
+                shadowOrigin = math::Vec3f(tile->getPosition().x, tile->getPosition().y, 0);
             }
             void Wall::createShadow(Light& light) {
                 Shadow* shadow;
@@ -184,6 +185,7 @@ namespace odfaeg {
                     tm.setTranslation(math::Vec3f(t.x - getPoints()[i]->x, t.y - getPoints()[i]->y, 0));
                     *getPoints()[i] = tm.transform(*getPoints()[i]);
                 }
+                shadowOrigin += math::Vec3f(t.x, t.y, 0);
             }
             int Wall::getEntityId () {
                 return getChildren()[0]->getId();
@@ -223,6 +225,12 @@ namespace odfaeg {
             }
             float Wall::getShadowRotationAngle() {
                 return shadowRotationAngle;
+            }
+            void Wall::setShadowOrigin(math::Vec3f origin) {
+                shadowOrigin = origin;
+            }
+            math::Vec3f Wall::getShadowOrigin() {
+                return shadowOrigin;
             }
             bool Wall::selectable () const {
                 return true;

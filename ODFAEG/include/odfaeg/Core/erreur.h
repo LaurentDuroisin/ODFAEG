@@ -25,7 +25,7 @@ namespace odfaeg {
                 * \param const std::string& phrase : the message of the error.
                 * \param int niveau : return the level of the error.
                 */
-                Erreur(int numero, const std::string &phrase, int niveau) throw();
+                Erreur(int numero=0, const std::string &phrase="", int niveau=0) throw();
                 /**
                 * \fn virtual const char* what() const throw
                 * \brief return the message of the error.

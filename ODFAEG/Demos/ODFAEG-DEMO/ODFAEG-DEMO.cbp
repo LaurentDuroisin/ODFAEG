@@ -62,6 +62,7 @@
 			<Add library="GL" />
 			<Add library="ssl" />
 			<Add library="crypto" />
+			<Add library="../../../../../usr/lib/x86_64-linux-gnu/libfreetype.so" />
 			<Add directory="../../../../../usr/local/lib" />
 			<Add directory="../../../../../usr/lib/x86_64-linux-gnu" />
 		</Linker>

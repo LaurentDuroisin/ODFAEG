@@ -54,7 +54,7 @@ namespace odfaeg {
             * \return std::vector<Entity*> the visible entities.
             */
             virtual std::vector<Entity*> getVisibleEntities (std::string expression)  = 0;
-
+            virtual std::vector<Entity*> getEntitiesInBox(physic::BoundingBox rect, std::string expression) = 0;
             /**
             * \fn bool collide (Entity* entity)
             * \brief virtual function to redefine if an entity can be in collision with another one.
@@ -152,6 +152,7 @@ namespace odfaeg {
             virtual void insertAnimatedVisibleEntity (Entity* toAdd, std::vector<Entity*>& entities, View& view) = 0;
             virtual bool removeEntity(Entity* entity) = 0;
             virtual bool deleteEntity(Entity* entity) = 0;
+            virtual Entity* getEntity(int id) = 0;
             std::string getName() {
                 return name;
             }

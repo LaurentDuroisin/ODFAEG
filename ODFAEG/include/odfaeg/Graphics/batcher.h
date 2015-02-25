@@ -193,6 +193,15 @@ namespace odfaeg {
                 ar(color.g);
                 ar(color.b);
                 ar(color.a);
+                ar(specularIntensity);
+                ar(specularPower);
+                if (ar.isInputArchive()) {
+                    onLoad();
+                }
+            }
+            void onLoad() {
+                maxSpecularIntensity = (specularIntensity > maxSpecularIntensity) ? specularIntensity : maxSpecularIntensity;
+                maxSpecularPower = (specularPower > maxSpecularPower) ? specularPower : maxSpecularPower;
             }
         };
         /**

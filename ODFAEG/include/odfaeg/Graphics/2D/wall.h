@@ -138,19 +138,22 @@ namespace odfaeg {
                         ar(shadowScale);
                         ar(shadowRotationAxis);
                         ar(shadowRotationAngle);
+                        ar(shadowOrigin);
                     }
                     void setShadowScale(math::Vec3f shadowScale);
                     void setShadowRotation(float angle, math::Vec3f axis = math::Vec3f::zAxis);
                     math::Vec3f getShadowRotationAxis();
                     float getShadowRotationAngle();
                     math::Vec3f getShadowScale();
+                    void setShadowOrigin(math::Vec3f origin);
+                    math::Vec3f getShadowOrigin();
                     /**
                     * \fn virtual ~Wall ();
                     * \brief destructor.
                     */
                     virtual ~Wall ();
                 private :
-                    math::Vec3f shadowCenter, shadowScale, shadowRotationAxis; /**> shadowCenter : the center of the shadow.*/
+                    math::Vec3f shadowCenter, shadowScale, shadowRotationAxis, shadowOrigin; /**> shadowCenter : the center of the shadow.*/
                     float shadowRotationAngle;
                     int type, height; /**> type and the height : the type of the wall.*/
                     Shadow::SHADOW_TYPE shadowType; /**> shadowType the type of the wall.*/

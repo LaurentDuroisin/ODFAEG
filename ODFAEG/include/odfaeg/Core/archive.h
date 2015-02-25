@@ -168,7 +168,7 @@ namespace odfaeg {
             }
             template <typename E,
             class... D,
-            class = typename std::enable_if<!std::is_fundamental<D>::value>::type,
+            class = typename std::enable_if<!std::is_fundamental<E>::value>::type,
             class = typename std::enable_if<std::is_enum<E>::value>::type>
             void operator() (E* data, D...) {
                 if (data != nullptr) {

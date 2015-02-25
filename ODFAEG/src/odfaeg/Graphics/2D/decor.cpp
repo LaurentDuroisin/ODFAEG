@@ -20,6 +20,7 @@ namespace odfaeg {
                 shadow->setParent(this);
                 t->setParent(this);
                 this->shadowType = shadowType;
+                shadowOrigin = math::Vec3f(t->getPosition().x, t->getPosition().y, 0) + getSize();
             }
             void Decor::createShadow(Light& light) {
                 Shadow* shadow;
@@ -56,6 +57,15 @@ namespace odfaeg {
             }
             float Decor::getShadowRotationAngle() {
                 return shadowRotationAngle;
+            }
+            void Decor::setShadowOrigin(math::Vec3f origin) {
+                shadowOrigin = origin;
+            }
+            math::Vec3f Decor::getShadowOrigin() {
+                return shadowOrigin;
+            }
+            void Decor::onMove(math::Vec3f &t) {
+                Entity::onMove(t);
             }
             bool Decor::operator==(Entity &other) {
                 if (other.getType() != "E_DECOR")

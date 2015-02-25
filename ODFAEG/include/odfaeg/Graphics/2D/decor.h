@@ -61,6 +61,7 @@ namespace odfaeg {
                     ar(shadowScale);
                     ar(shadowRotationAxis);
                     ar(shadowRotationAngle);
+                    ar(shadowOrigin);
                 }
                 /** \fn bool isAnimated
                 *   \brief return false because the class is not a class of an animated entity.
@@ -122,9 +123,12 @@ namespace odfaeg {
                 math::Vec3f getShadowRotationAxis();
                 float getShadowRotationAngle();
                 math::Vec3f getShadowScale();
+                void setShadowOrigin(math::Vec3f origin);
+                math::Vec3f getShadowOrigin();
+                void onMove(math::Vec3f& t);
             private:
                 int height; /**> The height of the entity*/
-                math::Vec3f shadowCenter, shadowScale, shadowRotationAxis; /**> The center of the shadow of the entity.*/
+                math::Vec3f shadowCenter, shadowScale, shadowRotationAxis, shadowOrigin; /**> The center of the shadow of the entity.*/
                 float shadowRotationAngle;
                 Shadow::SHADOW_TYPE shadowType; /** The type of the shadow of the entity.*/
             };

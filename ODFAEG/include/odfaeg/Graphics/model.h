@@ -46,6 +46,8 @@ public :
     virtual void setShadowRotation(float angle, math::Vec3f axis) = 0;
     virtual float getShadowRotationAngle() = 0;
     virtual math::Vec3f getShadowRotationAxis() = 0;
+    virtual void setShadowOrigin(math::Vec3f shadowOrigin) = 0;
+    virtual math::Vec3f getShadowOrigin() = 0;
     /**
     * \fn int getHeight()
     * \brief virtual function to redefine to get the height of the model.

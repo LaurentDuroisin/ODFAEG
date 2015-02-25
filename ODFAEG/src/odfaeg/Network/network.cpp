@@ -1,4 +1,5 @@
 #include "../../../include/odfaeg/Network/network.h"
+#include "../../../include/odfaeg/Core/application.h"
 namespace odfaeg {
     namespace network {
         using namespace sf;
@@ -13,7 +14,6 @@ namespace odfaeg {
         std::vector<std::pair<User*, std::string>> Network::requests = std::vector<std::pair<User*, std::string>>();
         std::vector<User*> Network::users = std::vector<User*>();
         vector<string> Network::responses = vector<string>();
-        Time Network::timeOut = seconds(3.f);
         bool Network::startCli (int portTCP, int portUDP, IpAddress address, bool useThread, bool useSecuredConnexion) {
 
             if (srv.isRunning()) {
@@ -40,7 +40,12 @@ namespace odfaeg {
         }
         void Network::sendTcpPacket (Packet &packet) {
             if(cli.isRunning()) {
-               cli.sendTCPPacket(packet);
+               if (cli.isUsingThread()) {
+                   std::lock_guard<std::recursive_mutex> locker(rec_mutex);
+                   cli.sendTCPPacket(packet);
+               } else {
+                   cli.sendTCPPacket(packet);
+               }
             } else if (srv.isRunning()) {
                for (unsigned int i = 0; i < users.size(); i++) {
                     users[i]->sendTcpPacket(packet);
@@ -49,7 +54,12 @@ namespace odfaeg {
         }
         void Network::sendUdpPacket(Packet &packet) {
            if(cli.isRunning()) {
-               cli.sendUDPPacket(packet);
+               if (cli.isUsingThread()) {
+                   std::lock_guard<std::recursive_mutex> locker(rec_mutex);
+                   cli.sendUDPPacket(packet);
+               } else {
+                   cli.sendUDPPacket(packet);
+               }
            } else if (srv.isRunning()) {
                for (unsigned int i = 0; i < users.size(); i++) {
                     users[i]->sendUdpPacket(packet);
@@ -79,7 +89,7 @@ namespace odfaeg {
             }
             return false;
         }
-        std::string Network::getLastRequest(User** user) {
+        std::string Network::getLastRequest(User** user, sf::Time timeOut) {
             std::string request="";
             if (srv.isUsingThread()) {
                 std::lock_guard<std::recursive_mutex> locker(rec_mutex);
@@ -108,17 +118,17 @@ namespace odfaeg {
             }
             return request;
         }
-        bool Network::hasPbKey(IpAddress address) {
+        bool Network::hasPbKey(TcpSocket& socket) {
             for (unsigned int i = 0; i < users.size(); i++) {
-                if (users[i]->getIpAddress() == address) {
+                if (&users[i]->getTcpSocket() == &socket) {
                     return users[i]->hPbKey();
                 }
             }
             return false;
         }
-        bool Network::hasPbKeyRsa(IpAddress address) {
+        bool Network::hasPbKeyRsa(TcpSocket& socket) {
             for (unsigned int i = 0; i < users.size(); i++) {
-                if (users[i]->getIpAddress() == address) {
+                if (&users[i]->getTcpSocket() == &socket) {
                     return users[i]->hPbKeyRsa();
                 }
             }
@@ -130,7 +140,7 @@ namespace odfaeg {
         bool Network::hasRequest() {
             return requests.size() != 0;
         }
-        string Network::getLastResponse () {
+        string Network::getLastResponse (sf::Time timeOut) {
             string response = "";
             if (cli.isUsingThread()) {
                 std::lock_guard<std::recursive_mutex> locker(rec_mutex);
@@ -170,22 +180,26 @@ namespace odfaeg {
                 users.push_back(user);
             }
         }
-        void Network::removeUser(IpAddress address) {
+        void Network::removeUser(sf::TcpSocket& socket) {
             if (srv.isUsingThread()) {
                 std::lock_guard<std::recursive_mutex> locker(rec_mutex);
                 std::vector<User*>::iterator it;
                 for (it = users.begin(); it != users.end();) {
-                    if ((*it)->getIpAddress() == address)
+                    if (&(*it)->getTcpSocket() == &socket) {
+                        if (core::Application::app != nullptr)
+                            core::Application::app->onDisconnected(*it);
                         it = users.erase(it);
-                    else
+                    } else
                         it++;
                 }
             } else {
                 std::vector<User*>::iterator it;
                 for (it = users.begin(); it != users.end();) {
-                    if ((*it)->getIpAddress() == address)
+                    if (&(*it)->getTcpSocket() == &socket) {
+                        if (core::Application::app != nullptr)
+                            core::Application::app->onDisconnected(*it);
                         it = users.erase(it);
-                    else
+                    } else
                         it++;
                 }
             }
@@ -226,25 +240,41 @@ namespace odfaeg {
                 user.setHasPbKey(true);
             }
         }
-
-        User* Network::getUser(IpAddress address) {
+        User* Network::getUser(sf::TcpSocket& socket) {
             if (srv.isUsingThread()) {
                 std::lock_guard<std::recursive_mutex> locker(rec_mutex);
                 for (unsigned int i = 0; i < users.size(); i++) {
-                    if (users[i]->getIpAddress() == address) {
+                    if (&users[i]->getTcpSocket() == &socket) {
                         return users[i];
                     }
                 }
             } else {
                 for (unsigned int i = 0; i < users.size(); i++) {
-                    if (users[i]->getIpAddress() == address) {
+                    if (&users[i]->getTcpSocket() == &socket) {
                         return users[i];
                     }
                 }
             }
             return nullptr;
         }
-        string Network::waitForLastResponse(string tag) {
+        User* Network::getUser(IpAddress address, short unsigned int remoteUDPPort) {
+            if (srv.isUsingThread()) {
+                std::lock_guard<std::recursive_mutex> locker(rec_mutex);
+                for (unsigned int i = 0; i < users.size(); i++) {
+                    if (users[i]->getIpAddress() == address && users[i]->getRemotePortUDP() == remoteUDPPort) {
+                        return users[i];
+                    }
+                }
+            } else {
+                for (unsigned int i = 0; i < users.size(); i++) {
+                    if (users[i]->getIpAddress() == address && users[i]->getRemotePortUDP() == remoteUDPPort) {
+                        return users[i];
+                    }
+                }
+            }
+            return nullptr;
+        }
+        string Network::waitForLastResponse(string tag, sf::Time timeOut) {
             string response = "";
             if (cli.isUsingThread()) {
                 std::lock_guard<std::recursive_mutex> locker(rec_mutex);

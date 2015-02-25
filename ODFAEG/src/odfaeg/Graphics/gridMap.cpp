@@ -272,30 +272,34 @@ namespace odfaeg {
             return cells;
         }
 
-        vector<Entity*> GridMap::getEntitiesInBox(physic::BoundingBox bx) {
-
+        vector<Entity*> GridMap::getEntitiesInBox(physic::BoundingBox box) {
             vector<Entity*> entities;
-            std::vector<CellMap*> cases = getCasesInBox(bx);
-            for (unsigned int i = 0; i < cases.size(); i++) {
-                CellMap *cell = cases[i];
-                if (cell != nullptr && cell->getCellVolume()->intersects(bx)) {
-                    for (unsigned int n = 0; n < cell->getEntitiesInside().size(); n++) {
-                        Entity* entity = cell->getEntityInside(n);
-                        physic::BoundingBox bx2 (entity->getPosition().x, entity->getPosition().y, entity->getPosition().z, entity->getSize().x, entity->getSize().y, entity->getSize().z);
-
-                        if(bx.intersects(bx2)) {
-                            bool contains = false;
-                            for (unsigned int i = 0; i < entities.size(); i++) {
-                                if (entities[i] == entity)
+            int x = box.getPosition().x;
+            int y = box.getPosition().y;
+            int z = box.getPosition().z;
+            int endX = box.getPosition().x + box.getWidth();
+            int endY = box.getPosition().y + box.getHeight();
+            int endZ = box.getDepth();
+            physic::BoundingBox bx (x, y, z, endX-bx.getPosition().x, endY-bx.getPosition().y, endZ);
+            for (int i = x; i <= endX; i+=offsetX) {
+                for (int j = y; j <= endY; j+=offsetY) {
+                    math::Vec3f point(i, j, 0);
+                    CellMap* cell = getGridCellAt(point);
+                    if (cell != nullptr) {
+                        for (unsigned int n = 0; n < cell->getEntitiesInside().size(); n++) {
+                           Entity* entity = cell->getEntityInside(n);
+                           physic::BoundingBox bx2 = entity->getGlobalBounds();
+                           bool contains = false;
+                           for (unsigned int k = 0; k < entities.size() && !contains; k++) {
+                                if (entities[k] == entity)
                                     contains = true;
-                            }
-                            if (!contains)
-                                entities.push_back(entity);
+                           }
+                           if (!contains && bx.intersects(bx2))
+                            entities.push_back(entity);
                         }
                     }
                 }
             }
-            return entities;
         }
 
         vector<Entity*> GridMap::getEntities () {
