@@ -21,7 +21,7 @@
 #include "odfaeg/Core/actionMap.h"
 #include "odfaeg/Graphics/entitiesUpdater.h"
 #include "odfaeg/Graphics/animationUpdater.h"
-#include "caracter.h"
+#include "hero.h"
 #include "monster.h"
 #include "odfaeg/Network/network.h"
 #include <fstream>
@@ -32,7 +32,7 @@ private :
     odfaeg::graphic::AnimUpdater *au;
     bool running;
     odfaeg::graphic::g2d::Wall *w;
-    Caracter* caracter;
+    Hero* hero;
     Monster* monster;
     sf::Keyboard::Key actualKey, previousKey;
     std::vector<odfaeg::graphic::Tile*> tiles;
@@ -41,7 +41,6 @@ private :
     odfaeg::graphic::g2d::PonctualLight* light2;
     odfaeg::core::ResourceCache<> cache;
     sf::Time timeBtwnTwoReq = sf::seconds(1.f);
-    std::pair<odfaeg::math::Vec2f, odfaeg::math::Vec2f> interpolation;
     sf::Int64 ping;
 public :
     MyAppli(sf::VideoMode wm, std::string title);

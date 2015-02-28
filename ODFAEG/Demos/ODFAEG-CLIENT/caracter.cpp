@@ -5,20 +5,12 @@ using namespace odfaeg::core;
 using namespace odfaeg::graphic;
 using namespace odfaeg::physic;
 using namespace odfaeg::math;
-Caracter::Caracter (string factionName, string pseudo, string sex, string currentMapName, string hairColor,
-    string eyesColor, string skinColor, string faceType, string classs, int level) : AnimatedEntity (Vec3f(-25, -50, 0), Vec3f (50, 100, 0), Vec3f(25, 50, 0), "E_CARACTER") {
+Caracter::Caracter (std::string type, std::string name, string currentMapName, string classs, int level) : AnimatedEntity (Vec3f(-25, -50, 0), Vec3f (50, 100, 0), Vec3f(25, 50, 0), type) {
     currentAnimIndex = 0;
-    this->factionName = factionName;
-    this->pseudo = pseudo;
-    this->sex = sex;
+    this->name = name;
     this->currentMapName = currentMapName;
-    this->hairColor = hairColor;
-    this->eyesColor = eyesColor;
-    this->faceType = faceType;
-    this->skinColor = skinColor;
     this->classs = classs;
     this->level = level;
-    currentPointIndex = 0;
     speed = 0.0001f;
     moving = false;
     dir = Vec2f(0, 1);
@@ -27,10 +19,8 @@ Caracter::Caracter (string factionName, string pseudo, string sex, string curren
     range = 50;
     attackSpeed = 1.f;
     attack = 10;
-    fightingMode = attacking = moveFromKeyboard = false;
+    fightingMode = attacking;
     alive = true;
-    xp = 0;
-    xpReqForNextLevel = 1500;
     regenHpSpeed = 1.f;
     regenHpAmount = 1;
 }
@@ -51,26 +41,6 @@ sf::Time Caracter::getTimeOfLastHpRegen() {
 }
 void Caracter::setLevel(int level) {
     this->level = level;
-}
-void Caracter::setCurrentXp(int xp) {
-    this->xp = xp;
-}
-void Caracter::setXpReqForNextLevel(int xpReqForNextLevel) {
-    this->xpReqForNextLevel = xpReqForNextLevel;
-}
-void Caracter::up (int xp) {
-    this->xp += xp;
-    if (this->xp >= xpReqForNextLevel) {
-        level++;
-        this->xp = this->xp - xpReqForNextLevel;
-        xpReqForNextLevel *= 2;
-    }
-}
-int Caracter::getCurrentXp () {
-    return xp;
-}
-int Caracter::getXpReqForNextLevel () {
-    return xpReqForNextLevel;
 }
 void Caracter::setSpeed(float speed) {
     this->speed = speed;
@@ -213,12 +183,6 @@ Anim* Caracter::getAnimation(unsigned int index) {
         return anims[index];
     return NULL;
 }
-unsigned int Caracter::getCurrentPathIndex() {
-    return currentPointIndex;
-}
-void Caracter::setCurrentPathIndex (unsigned int currentPointIndex) {
-    this->currentPointIndex = currentPointIndex;
-}
 void Caracter::setMaxLife(int life) {
     this->maxLife = maxLife;
 }
@@ -237,11 +201,8 @@ void Caracter::onDraw(RenderTarget &target, RenderStates states) const {
 Entity* Caracter::getCurrentEntity() const {
     return anims[currentAnimIndex]->getCurrentEntity();
 }
-void Caracter::setIsMovingFromKeyboard(bool b) {
-    moveFromKeyboard = b;
-}
-bool Caracter::isMovingFromKeyboard() {
-    return moveFromKeyboard;
+sf::Clock& Caracter::getClkTransfertTime() {
+    return clockTransfertTime;
 }
 Caracter::~Caracter() {
 }

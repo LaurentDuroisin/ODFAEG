@@ -11,14 +11,13 @@ MyAppli::MyAppli(sf::VideoMode wm, std::string title) : Application (wm, title, 
     actualKey = sf::Keyboard::Key::Unknown;
     previousKey = sf::Keyboard::Key::Unknown;
     getView().move(0, 300, 0);
-
     fpsCounter = 0;
     addClock(sf::Clock(), "FPS");
-    day = true;
+    day = false;
     sf::Listener::setUpVector(0.f, 0.f, 1.f);
 }
-void MyAppli::actionPerformed(gui::Button* button) {
-    std::cout<<"clicked on the button!"<<std::endl;
+void MyAppli::gaignedFocus(gui::TextArea* textArea) {
+    std::cout<<"gaigned focus"<<std::endl;
 }
 void MyAppli::keyHeldDown (sf::Keyboard::Key key) {
     //BoundingRectangle rect (pos.x, pos.y, getView().getSize().x, getView().getSize().y);
@@ -207,6 +206,8 @@ void MyAppli::onInit () {
         //std::cout<<bb->getPosition()<<" "<<bb->getSize()<<std::endl;
         decor->setCollisionVolume(bb);
         decor->setShadowCenter(Vec3f(0, 500, 0));
+        thouse->getFaces()[0]->getMaterial().setSpecularPower(10);
+        thouse->getFaces()[0]->getMaterial().setSpecularIntensity(100);
         World::addEntity(decor);
         Anim* fire = new Anim(0.1f, Vec3f(0, 100, 150), Vec3f(100, 100, 0), 0);
         Tile* tf1 = new Tile(tm.getResourceByAlias("FIRE1"), Vec3f(0, 100, 150), Vec3f(100, 100, 0), sf::IntRect(0, 0, 150, 200));
@@ -257,13 +258,19 @@ void MyAppli::onInit () {
     //view.rotate(0, 0, 20);
     FastRenderComponent *frc1 = new FastRenderComponent(getRenderWindow(),0, "E_BIGTILE", false);
     FastRenderComponent *frc2 = new FastRenderComponent(getRenderWindow(),0, "E_WALL+E_DECOR+E_ANIMATION+E_CARACTER", false);
-    button = new gui::Button(Vec3f(0, 230, 0),Vec3f(100, 50, 0),fm.getResourceByAlias("FreeSerif"), "Test",getRenderWindow());
-    button->addActionListener(this);
+    gui::TextArea* textArea = new gui::TextArea(Vec3f(350, 275, 0),Vec3f(100, 50, 0),fm.getResourceByAlias("FreeSerif"), "Test",getRenderWindow());
+    textArea->addFocusListener(this);
+    textArea->setVisible(false);
+    textArea->setEventContextActivated(false);
     frc1->setView(view);
     frc2->setView(view);
+    op = new gui::OptionPane(Vec2f(200, 175), Vec2f(400, 200), fm.getResourceByAlias("FreeSerif"), "Test",gui::OptionPane::TYPE::CONFIRMATION_DIALOG);
+    op->setVisible(false);
+    op->setEventContextActivated(false);
     getRenderComponentManager().addComponent(frc1);
     getRenderComponentManager().addComponent(frc2);
-    getRenderComponentManager().addComponent(button);
+    getRenderComponentManager().addComponent(textArea);
+    getRenderComponentManager().addComponent(op);
 
     caracter = new Caracter("Sorrok", "Nagi", "M", "Map test", "Brain", "Green", "White","Normal","Novice", 1);
     std::string path = "tilesets/vlad_sword.png";
@@ -390,13 +397,13 @@ void MyAppli::onRender(FastRenderComponentManager *cm) {
     //draw(lights, BlendMultiply);
 }
 void MyAppli::onDisplay(RenderWindow* window) {
-    Entity& shadowMap = World::getShadowMap("E_WALL+E_DECOR+E_ANIMATION+E_CARACTER", 2, 1);
-    window->draw(shadowMap, sf::BlendMultiply);
+    Entity* shadowMap = World::getShadowMap("E_WALL+E_DECOR+E_ANIMATION+E_CARACTER", 2, 1);
+    window->draw(*shadowMap, sf::BlendMultiply);
     //getView().rotate(0, 0, 20);
     window->draw(ps);
     //getView().rotate(0, 0, 0);
-    Entity& lightMap = World::getLightMap("E_PONCTUAL_LIGHT", 2, 1);
-    window->draw(lightMap, sf::BlendMultiply);
+    Entity* lightMap = World::getLightMap("E_PONCTUAL_LIGHT", 2, 1);
+    window->draw(*lightMap, sf::BlendMultiply);
     View view = getView();
     /*Entity& normalMap = theMap->getNormalMapTile();
     window->draw(normalMap);*/

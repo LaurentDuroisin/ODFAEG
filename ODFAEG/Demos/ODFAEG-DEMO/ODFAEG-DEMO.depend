@@ -1,7 +1,6 @@
 # depslib dependency file v1.0
-1423210296 source:/home/laurent/Développement/Projets-c++/ODFAEG-DEMO/main.cpp
+1424076926 source:/home/laurent/Développement/Projets-c++/ODFAEG-DEMO/main.cpp
 	"application.h"
-	<SDL2/SDL.h>
 
 1418284114 /usr/local/include/odfaeg/Core/fastDelegate.h
 	<functional>
@@ -30,7 +29,7 @@
 
 1398331548 /usr/local/include/odfaeg/config.hpp
 
-1418284058 /usr/local/include/odfaeg/Core/erreur.h
+1424858150 /usr/local/include/odfaeg/Core/erreur.h
 	<exception>
 	<string>
 	"export.hpp"
@@ -47,7 +46,7 @@
 
 1410635553 /usr/local/include/odfaeg/Core/serialization.impl
 
-1418721168 /usr/local/include/odfaeg/Core/archive.h
+1424878135 /usr/local/include/odfaeg/Core/archive.h
 	<vector>
 	<map>
 	<iostream>
@@ -180,15 +179,16 @@
 1398338968 /usr/local/include/odfaeg/Graphics/export.hpp
 	"../config.hpp"
 
-1418812128 /usr/local/include/odfaeg/Physics/boundingBox.h
+1423558946 /usr/local/include/odfaeg/Physics/boundingBox.h
 	"../Math/vec2f.h"
 	"../Math/ray.h"
 	<climits>
 	"boundingVolume.h"
 	"../Math/computer.h"
 
-1418299052 /usr/local/include/odfaeg/Physics/boundingVolume.h
+1423559393 /usr/local/include/odfaeg/Physics/boundingVolume.h
 	"../Math/vec4.h"
+	"../Math/ray.h"
 	<string>
 	<iostream>
 
@@ -223,7 +223,7 @@
 	<string>
 	"../../../include/odfaeg/Graphics/export.hpp"
 
-1418285724 /usr/local/include/odfaeg/Core/state.h
+1424858731 /usr/local/include/odfaeg/Core/state.h
 	<vector>
 	"erreur.h"
 	<sstream>
@@ -250,7 +250,7 @@
 	<SFML/Graphics/PrimitiveType.hpp>
 	"shader.h"
 
-1421756304 /usr/local/include/odfaeg/Graphics/view.h
+1423416858 /usr/local/include/odfaeg/Graphics/view.h
 	<SFML/Graphics/Rect.hpp>
 	"../Math/vec4.h"
 	"projMatrix.h"
@@ -272,7 +272,7 @@
 	"vec2f.h"
 	"export.hpp"
 
-1420528744 /usr/local/include/odfaeg/Graphics/viewMatrix.h
+1423416211 /usr/local/include/odfaeg/Graphics/viewMatrix.h
 	"../Math/vec4.h"
 	"../Math/vec2f.h"
 	"../Math/matrix4.h"
@@ -319,7 +319,7 @@
 
 1414585118 /usr/local/include/odfaeg/Graphics/2D/selectable.h
 
-1422962380 /home/laurent/Développement/Projets-c++/ODFAEG-DEMO/application.h
+1423922711 /home/laurent/Développement/Projets-c++/ODFAEG-DEMO/application.h
 	<iostream>
 	<string>
 	<vector>
@@ -343,10 +343,11 @@
 	"odfaeg/Graphics/billBoard.h"
 	"odfaeg/Physics/emmiters.h"
 	"odfaeg/Audio/player.h"
-	"odfaeg/Graphics/GUI/button.hpp"
+	"odfaeg/Graphics/GUI/textArea.hpp"
+	"odfaeg/Graphics/GUI/optionPane.hpp"
 	<fstream>
 
-1423217325 /usr/local/include/odfaeg/Core/application.h
+1424851582 /usr/local/include/odfaeg/Core/application.h
 	"resourceCache.h"
 	"../Graphics/renderWindow.h"
 	"../Graphics/renderStates.h"
@@ -384,7 +385,7 @@
 	"listener.h"
 	"export.hpp"
 
-1418284134 /usr/local/include/odfaeg/Core/listener.h
+1423744008 /usr/local/include/odfaeg/Core/listener.h
 	"erreur.h"
 	"command.h"
 	<thread>
@@ -415,12 +416,13 @@
 
 1417252977 /usr/local/include/odfaeg/Core/actionMap.tpp
 
-1423217356 /usr/local/include/odfaeg/Graphics/fastRenderComponentManager.h
+1424075453 /usr/local/include/odfaeg/Graphics/fastRenderComponentManager.h
 	"renderTexture.h"
 	"renderWindow.h"
 	"shader.h"
 	"../Graphics/tile.h"
-	"../../../include/odfaeg/Graphics/fastRenderComponent.h"
+	"../../../include/odfaeg/Graphics/heavyComponent.h"
+	"../../../include/odfaeg/Graphics/lightComponent.h"
 
 1418120688 /usr/local/include/odfaeg/Graphics/renderTexture.h
 	<SFML/Graphics/Export.hpp>
@@ -478,7 +480,7 @@
 	"entity.h"
 	"../Physics/boundingPolyhedron.h"
 
-1421513272 /usr/local/include/odfaeg/Physics/boundingPolyhedron.h
+1423559481 /usr/local/include/odfaeg/Physics/boundingPolyhedron.h
 	<vector>
 	"../Math/vec2f.h"
 	"../Math/vec4.h"
@@ -546,7 +548,7 @@
 	"../../Math/computer.h"
 	"gridMap.tpp"
 
-1422090785 /usr/local/include/odfaeg/Graphics/2D/wall.h
+1424787452 /usr/local/include/odfaeg/Graphics/2D/wall.h
 	"../../Math/maths.h"
 	"../../Math/matrix2.h"
 	"shadowWall.h"
@@ -578,7 +580,7 @@
 1414573079 /usr/local/include/odfaeg/Graphics/2D/model.h
 	"shadow.h"
 
-1422090870 /usr/local/include/odfaeg/Graphics/2D/decor.h
+1424787440 /usr/local/include/odfaeg/Graphics/2D/decor.h
 	<SFML/Graphics.hpp>
 	"../tile.h"
 	"shadowTile.h"
@@ -610,10 +612,11 @@
 	"../entity.h"
 	"light.h"
 
-1418812652 /usr/local/include/odfaeg/Physics/boundingSphere.h
+1423559639 /usr/local/include/odfaeg/Physics/boundingSphere.h
 	"../Math/vec2f.h"
 	"../Math/ray.h"
 	"boundingVolume.h"
+	"collisionResultSet.hpp"
 
 1417785220 /usr/local/include/odfaeg/Core/entitiesUpdater.h
 	"entitySystem.h"
@@ -631,7 +634,7 @@
 1417876475 /usr/local/include/odfaeg/Graphics/2D/tGround.h
 	"../../../../include/odfaeg/Graphics/2D/tile.h"
 
-1418284556 /usr/local/include/odfaeg/Core/variant.h
+1424858631 /usr/local/include/odfaeg/Core/variant.h
 	<cassert>
 	<functional>
 	<new>
@@ -648,7 +651,7 @@
 1418287148 /usr/local/include/odfaeg/Math/plane.h
 	"vec4.h"
 
-1418308726 /usr/local/include/odfaeg/Network/network.h
+1424870303 /usr/local/include/odfaeg/Network/network.h
 	<SFML/Network.hpp>
 	"client.h"
 	"user.h"
@@ -710,21 +713,21 @@
 	"export.hpp"
 	<string.h>
 
-1418308888 /usr/local/include/odfaeg/Network/user.h
+1424870576 /usr/local/include/odfaeg/Network/user.h
 	<SFML/Network.hpp>
 	"../Core/utilities.h"
 	"export.hpp"
 	<mutex>
 	<condition_variable>
 
-1418308794 /usr/local/include/odfaeg/Network/srkserveur.h
+1423297857 /usr/local/include/odfaeg/Network/srkserveur.h
 	<SFML/Network.hpp>
 	<thread>
 	<vector>
 	"encryptedPacket.h"
 	"export.hpp"
 
-1422355811 /usr/local/include/odfaeg/Graphics/entity.h
+1423563615 /usr/local/include/odfaeg/Graphics/entity.h
 	"transformable.h"
 	"drawable.h"
 	"../Core/state.h"
@@ -735,7 +738,7 @@
 	"../Core/serialization.h"
 	<vector>
 
-1423206027 /usr/local/include/odfaeg/Graphics/entityManager.h
+1424691752 /usr/local/include/odfaeg/Graphics/entityManager.h
 	"../Core/utilities.h"
 	"../Physics/boundingBox.h"
 	"entity.h"
@@ -751,7 +754,7 @@
 
 1418029145 /usr/local/include/odfaeg/Core/factory.impl
 
-1418285380 /usr/local/include/odfaeg/Core/resourceManager.h
+1423575445 /usr/local/include/odfaeg/Core/resourceManager.h
 	<map>
 	<string>
 	<stdexcept>
@@ -766,7 +769,7 @@
 
 1417971103 /usr/local/include/odfaeg/Core/any.impl
 
-1419445064 /usr/local/include/odfaeg/Graphics/batcher.h
+1424790000 /usr/local/include/odfaeg/Graphics/batcher.h
 	"vertexArray.h"
 	<map>
 
@@ -780,16 +783,16 @@
 
 1418120732 /usr/local/include/odfaeg/Graphics/selectable.h
 
-1422957977 /usr/local/include/odfaeg/Graphics/fastRenderComponent.h
+1423910505 /usr/local/include/odfaeg/Graphics/fastRenderComponent.h
 	"renderWindow.h"
 	"renderTexture.h"
 	"tile.h"
 	<thread>
 	<condition_variable>
 	"entityManager.h"
-	"component.h"
+	"heavyComponent.h"
 
-1418285210 /usr/local/include/odfaeg/Core/command.h
+1423742527 /usr/local/include/odfaeg/Core/command.h
 	"action.h"
 	"fastDelegate.h"
 	"command.tpp"
@@ -805,7 +808,7 @@
 	<SFML/Graphics.hpp>
 	"export.hpp"
 
-1420826194 /usr/local/include/odfaeg/Graphics/model.h
+1424786898 /usr/local/include/odfaeg/Graphics/model.h
 	"shadow.h"
 
 1418289748 /usr/local/include/odfaeg/Graphics/shadow.h
@@ -820,7 +823,7 @@
 	"animatedEntity.h"
 	<SFML/System.hpp>
 
-1423205899 /usr/local/include/odfaeg/Graphics/map.h
+1423561062 /usr/local/include/odfaeg/Graphics/map.h
 	"gridMap.h"
 	"animatedEntity.h"
 	"2D/wall.h"
@@ -834,7 +837,7 @@
 	"renderTexture.h"
 	"entityManager.h"
 
-1422094669 /usr/local/include/odfaeg/Graphics/gridMap.h
+1423574870 /usr/local/include/odfaeg/Graphics/gridMap.h
 	<vector>
 	"tile.h"
 	"../Physics/boundingBox.h"
@@ -857,19 +860,20 @@
 	"../Core/timer.h"
 	"export.hpp"
 
-1423210194 source:/home/laurent/Développement/Projets-c++/ODFAEG-DEMO/application.cpp
+1424788998 source:/home/laurent/Développement/Projets-c++/ODFAEG-DEMO/application.cpp
 	"application.h"
 	"odfaeg/Math/distributions.h"
 
-1422962106 /usr/local/include/odfaeg/Graphics/component.h
+1424532357 /usr/local/include/odfaeg/Graphics/component.h
 	"drawable.h"
 	"transformable.h"
 	"../Core/listener.h"
 
-1418287438 /usr/local/include/odfaeg/Math/ray.h
+1423510029 /usr/local/include/odfaeg/Math/ray.h
 	"../Math/vec4.h"
+	"../Math/matrix4.h"
 
-1418285134 /usr/local/include/odfaeg/Core/command.tpp
+1423731810 /usr/local/include/odfaeg/Core/command.tpp
 
 1419620636 /usr/local/include/odfaeg/Graphics/billBoard.h
 	"entity.h"
@@ -1471,7 +1475,7 @@
 	<string>
 	<iostream>
 
-1423205969 /usr/local/include/odfaeg/Graphics/world.h
+1424691714 /usr/local/include/odfaeg/Graphics/world.h
 	<SFML/Graphics.hpp>
 	"../Graphics/entityManager.h"
 	"../Core/entitySystem.h"
@@ -1481,11 +1485,12 @@
 	"../Graphics/entityManager.h"
 	<cstdarg>
 
-1422098288 /usr/local/include/odfaeg/Physics/collisionResultSet.hpp
+1423420748 /usr/local/include/odfaeg/Physics/collisionResultSet.hpp
 	<vector>
+	"../Math/vec4.h"
 
-1422975359 /usr/local/include/odfaeg/Graphics/GUI/button.hpp
-	"../component.h"
+1423911087 /usr/local/include/odfaeg/Graphics/GUI/button.hpp
+	"../lightComponent.h"
 	"../renderWindow.h"
 	"../rectangleShape.h"
 	"../text.h"
@@ -1515,4 +1520,27 @@
 	<vector>
 
 1422884284 /usr/local/include/odfaeg/Graphics/GUI/actionListener.hpp
+
+1423923326 /usr/local/include/odfaeg/Graphics/GUI/textArea.hpp
+	"../lightComponent.h"
+	"../renderWindow.h"
+	"../rectangleShape.h"
+	"../text.h"
+	"../font.h"
+	"focusListener.hpp"
+
+1423728827 /usr/local/include/odfaeg/Graphics/GUI/focusListener.hpp
+
+1423988553 /usr/local/include/odfaeg/Graphics/heavyComponent.h
+	"component.h"
+	"entity.h"
+
+1423988400 /usr/local/include/odfaeg/Graphics/lightComponent.h
+	"component.h"
+
+1423988219 /usr/local/include/odfaeg/Graphics/GUI/optionPane.hpp
+	"../lightComponent.h"
+	"button.hpp"
+
+1423922904 /usr/local/include/odfaeg/Graphics/GUI/optionPaneListener.hpp
 

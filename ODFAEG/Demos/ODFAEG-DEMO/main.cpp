@@ -1,61 +1,44 @@
 #include "application.h"
-#include <SDL2/SDL.h>
 using namespace odfaeg::core;
 using namespace odfaeg::math;
 using namespace odfaeg::physic;
 using namespace odfaeg::graphic;
 using namespace odfaeg::audio;
 
-/*void renderingThread(sf::RenderWindow* window)
-{
-    // the rendering loop
-    while (window->isOpen())
-    {
-        // draw...
-
-        // end the current frame
-        window->display();
-    }
-}*/
-
-class ButtonEventTest : public gui::ActionListener {
-    void actionPerformed(gui::Button* button) {
-        std::cout<<"clicked on the button!"<<std::endl;
-    }
-};
 int main()
 {
-    // create the window (remember: it's safer to create it in the main thread due to OS limitations)
-    //RenderWindow window(sf::VideoMode(800, 600), "OpenGL");
+    /*sf::RenderWindow window(sf::VideoMode(800, 600), "OpenGL");
+    sf::RenderWindow window1(sf::VideoMode(500, 100), "test");
+    sf::RenderWindow window2(sf::VideoMode(500, 100), "test2");
 
-    // deactivate its OpenGL context
-    //window.setActive(false);
+    bool once = true;
 
-    // launch the rendering thread
-    /*sf::Thread thread(&renderingThread, &window);
-    thread.launch();*/
-    //Batcher batcher;
-    // the event/logic/whatever loop
-    /*Font font;
-    font.loadFromFile("fonts/FreeSerif.ttf");
-    gui::Button button(Vec3f(100, 100, 0), Vec3f(100, 50, 0), &font, "Test", window);
-    button.addActionListener(new ButtonEventTest());
-    window.getView().move(window.getSize().x * 0.5f, window.getSize().y * 0.5f, 0);
     while (window.isOpen())
     {
         sf::Event event;
         while(window.pollEvent(event)) {
-              button.getListener().pushEvent(event);
-              if (event.type == sf::Event::Closed)
-                    window.close();
+            if (event.type == sf::Event::Closed)
+                window.close();
         }
-        button.getListener().processEvents();
+        while(window1.pollEvent(event)) {
+            if (event.type == sf::Event::Closed)
+                window1.close();
+        }
+        while(window2.pollEvent(event)) {
+            if (event.type == sf::Event::Closed)
+                window2.close();
+        }
+
+        if (once) {
+            window1.setVisible(false);
+            window2.setVisible(false);
+            once = false;
+        }
+
         window.clear();
-        window.draw(button);
         window.display();
     }
     return 0;*/
-
     EXPORT_CLASS_GUID(BoundingVolumeBoundingBox, BoundingVolume, BoundingBox)
     EXPORT_CLASS_GUID(EntityTile, Entity, Tile)
     EXPORT_CLASS_GUID(EntityTile, Entity, BigTile)

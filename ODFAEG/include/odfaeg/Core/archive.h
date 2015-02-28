@@ -838,23 +838,23 @@ namespace odfaeg {
                       class = typename std::enable_if<!sizeof...(D)>::type>
             void operator() (O*& object, D...) {
                 long long int id;
-                std::string typeName;
                 buffer>>id;
                 char space;
                 buffer.get(space);
                 if (id != -1) {
-                    getline(buffer, typeName);
                     std::map<long long int, unsigned long long int>::iterator it = adresses.find(id);
                     if (it != adresses.end()) {
                         object = reinterpret_cast<O*>(it->second);
                     } else {
+                        std::string typeName;
+                        getline(buffer, typeName);
                         if (typeName == "BaseType") {
                             object = new O();
                             object->vtserialize(*this);
                             std::pair<long long int, unsigned long long int> newAddress (id, reinterpret_cast<unsigned long long int>(object));
                             adresses.insert(newAddress);
                         } else {
-                            object = O::allocate(typeName);
+                            object = dynamic_cast<O*>(O::allocate(typeName));
                             object->key.register_object(object);
                             object->key.serialize_object("serialize", "ITextArchive", *this);
                             std::pair<long long int, unsigned long long int> newAddress (id, reinterpret_cast<unsigned long long int>(object));
@@ -881,18 +881,18 @@ namespace odfaeg {
                       class = typename std::enable_if<std::is_abstract<O>::value>::type,
                       class = typename std::enable_if<!sizeof...(D)>::type>
             void operator() (O*& object, D...) {
-                std::string typeName;
                 long long int id;
                 buffer>>id;
                 char space;
                 buffer.get(space);
                 if (id != -1) {
-                    getline(buffer, typeName);
                     std::map<long long int, unsigned long long int>::iterator it = adresses.find(id);
                     if (it != adresses.end()) {
                         object = reinterpret_cast<O*>(it->second);
                     } else {
-                        object = O::allocate(typeName);
+                        std::string typeName;
+                        getline(buffer, typeName);
+                        object = dynamic_cast<O*>(O::allocate(typeName));
                         object->key.register_object(object);
                         object->key.serialize_object("serialize", "ITextArchive", *this);
                         std::pair<long long int, unsigned long long int> newAddress (id, reinterpret_cast<unsigned long long int>(object));

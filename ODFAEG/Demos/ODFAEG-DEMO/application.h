@@ -25,9 +25,10 @@
 #include "odfaeg/Graphics/billBoard.h"
 #include "odfaeg/Physics/emmiters.h"
 #include "odfaeg/Audio/player.h"
-#include "odfaeg/Graphics/GUI/button.hpp"
+#include "odfaeg/Graphics/GUI/textArea.hpp"
+#include "odfaeg/Graphics/GUI/optionPane.hpp"
 #include <fstream>
-class MyAppli : public odfaeg::core::Application, public odfaeg::graphic::gui::ActionListener {
+class MyAppli : public odfaeg::core::Application, public odfaeg::graphic::gui::FocusListener {
 private :
     const float speed = 0.2f;
     odfaeg::graphic::EntitiesUpdater *eu;
@@ -48,10 +49,10 @@ private :
     odfaeg::physic::ParticleSystem ps;
     odfaeg::audio::Player player;
     odfaeg::audio::Player pfire;
-    odfaeg::graphic::gui::Button* button;
+    odfaeg::graphic::gui::OptionPane* op;
 public :
     MyAppli(sf::VideoMode wm, std::string title);
-    void actionPerformed(odfaeg::graphic::gui::Button* button);
+    void gaignedFocus(odfaeg::graphic::gui::TextArea* textArea);
     void keyHeldDown (sf::Keyboard::Key key);
     void leftMouseButtonPressed(sf::Vector2f mousePos);
     bool mouseInside (sf::Vector2f mousePos);

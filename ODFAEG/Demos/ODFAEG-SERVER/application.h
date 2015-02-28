@@ -22,7 +22,7 @@
 #include "odfaeg/Graphics/entitiesUpdater.h"
 #include "odfaeg/Graphics/animationUpdater.h"
 #include "odfaeg/Network/network.h"
-#include "caracter.h"
+#include "hero.h"
 #include "monster.h"
 #include <fstream>
 class MyAppli : public odfaeg::core::Application {

@@ -429,6 +429,7 @@ namespace odfaeg {
             FastDelegateImpl(F&& f, ArgU&&... arg)
                 : func(std::forward<F>(f))
                 , param(std::forward<ArgU>(arg)...)
+                , tmpParam(std::forward<ArgU>(arg)...)
             {}
             /** \fn std::unique_ptr<Delegate<R>> clone() const
             *   \brief make a copy of the delegate.
@@ -441,6 +442,7 @@ namespace odfaeg {
             *   \return the value returned by the std::function.
             */
             void bind(FUN_PARAM) {
+              param = tmpParam;
               bindParams(FWD_PARAM);
             }
             R operator()(FUN_PARAM)
@@ -451,7 +453,10 @@ namespace odfaeg {
             */
             template<class... ArgU>
             void setParams(ArgU&&... arg)
-            { param=std::make_tuple(std::forward<ArgU>(arg)...); }
+            {
+                param=std::make_tuple(std::forward<ArgU>(arg)...);
+                tmpParam=std::make_tuple(std::forward<ArgU>(arg)...);
+            }
 
         private:
             /** \fn R call(std::index_sequence<I...>)
@@ -475,6 +480,7 @@ namespace odfaeg {
             { return func(std::get<I>(param).get(std::forward<ArgU>(args)...)...); }
             DynamicFunction<R(ArgT&...)> func; /**> a functor whith hold the pointer to a callback function.*/
             std::tuple<RefVal<ArgT>...> param; /**> the wrapped values of the parameters to pass to the callback's function.*/
+            std::tuple<RefVal<ArgT>...> tmpParam;
         };
         /**
         *  \file  fastDelegate.h

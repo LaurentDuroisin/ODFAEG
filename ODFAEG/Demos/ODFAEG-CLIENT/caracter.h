@@ -13,8 +13,7 @@ public :
     Caracter() : AnimatedEntity(odfaeg::math::Vec3f(0, 0, 0), odfaeg::math::Vec3f(0, 0, 0), odfaeg::math::Vec3f(0, 0, 0),"E_CARACTER") {
         currentAnimIndex = 0;
     }
-    Caracter (std::string factionName, std::string pseudo, std::string sex, std::string currentMapName, std::string hairColor,
-    std::string eyesColor, std::string skinColor, std::string faceType, std::string classs, int level);
+    Caracter (std::string type, std::string name, std::string currentMapName, std::string classs, int level);
     bool isMovable() const {
         return true;
     }
@@ -36,9 +35,7 @@ public :
     odfaeg::graphic::Anim* getAnimation(unsigned int index);
     unsigned int getCurrentPathIndex ();
     void setCurrentPathIndex (unsigned int index);
-    bool isMonster() {
-        return false;
-    }
+    virtual bool isMonster() = 0;
     void setRange(int range);
     int getRange();
     void setLife(int life);
@@ -73,42 +70,38 @@ public :
     Entity* getCurrentEntity() const;
     void onDraw(odfaeg::graphic::RenderTarget&, odfaeg::graphic::RenderStates) const;
     void onMove(odfaeg::math::Vec3f& t);
-    void setIsMovingFromKeyboard(bool b);
-    bool isMovingFromKeyboard();
+    virtual void setIsMovingFromKeyboard(bool b) {}
+    virtual bool isMovingFromKeyboard() = 0;
+    sf::Clock& getClkTransfertTime();
     template <typename Archive>
     void vtserialize(Archive & ar) {
         Entity::vtserialize(ar);
-        ar(factionName);
-        ar(pseudo);
-        ar(sex);
-        ar(currentMapName);
-        ar(hairColor);
-        ar(eyesColor);
-        ar(skinColor);
-        ar(faceType);
+        ar(name);
         ar(classs);
         ar(level);
         ar(speed);
+        ar(path);
+        ar(attack);
+        ar(range);
+        ar(attackSpeed);
+        ar(regenHpSpeed);
+        ar(alive);
+        ar(regenHpAmount);
     }
-    void setPathChanged (bool pathChanged) {
-        this->pathChanged = pathChanged;
-    }
-    bool isPathChanged() {
-        return pathChanged;
-    }
+    std::pair<odfaeg::math::Vec2f, odfaeg::math::Vec2f> interpolation;
     virtual ~Caracter();
     private :
-    std::string factionName, pseudo, sex, currentMapName, hairColor, eyesColor, skinColor, faceType, classs;
-    int level, currentPointIndex, attack, range;
-    float attackSpeed, regenHpSpeed, speed, pathChanged;
-    bool moving, alive, moveFromKeyboard;
+    std::string name, currentMapName, classs;
+    int level, attack, range;
+    float attackSpeed, regenHpSpeed, speed;
+    bool moving, alive;
     odfaeg::math::Vec2f dir;
     std::vector<odfaeg::math::Vec2f> path;
     std::vector<odfaeg::graphic::Anim*> anims;
     int currentAnimIndex;
-    int life, maxLife, xp, xpReqForNextLevel, regenHpAmount;
+    int life, maxLife, regenHpAmount;
     bool attacking, fightingMode;
-    sf::Clock clockAtkSpeed, clockRegenHp;
+    sf::Clock clockAtkSpeed, clockRegenHp, clockTransfertTime;
 };
 #endif
 

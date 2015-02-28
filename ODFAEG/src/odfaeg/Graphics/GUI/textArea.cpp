@@ -14,7 +14,7 @@ namespace odfaeg {
                 rect = RectangleShape(size);
                 rect.setOutlineThickness(5.f);
                 rect.setOutlineColor(sf::Color::Black);
-                core::FastDelegate<void> slot(&TextArea::onTextEntered, this, '0');
+                core::FastDelegate<void> slot(&TextArea::onTextEntered, this, core::ph<0, char>());
                 core::Action a (core::Action::TEXT_ENTERED);
                 core::Command cmd(a, slot);
                 getListener().connect("CTEXTENTERED", cmd);
@@ -53,7 +53,7 @@ namespace odfaeg {
             }
             void TextArea::onUpdate(sf::Event& event) {
                 if (event.type == sf::Event::TextEntered) {
-                    getListener().setCommandSlotParams("CTEXTENTERED", this, static_cast<char>(event.text.unicode));
+                    getListener().bindCommandSlotParams("CTEXTENTERED", static_cast<char>(event.text.unicode));
                 }
             }
             void TextArea::onTextEntered(char caracter) {

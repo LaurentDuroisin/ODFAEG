@@ -1,8 +1,6 @@
-// *** ADDED BY HEADER FIXUP ***
+#ifndef CARACTER_HPP
+#define CARACTER_HPP
 #include <vector>
-// *** END ***
-#ifndef CARACTER
-#define CARACTER
 #include "odfaeg/Math/vec2f.h"
 #include "odfaeg/Graphics/anim.h"
 #include "odfaeg/Graphics/tile.h"
@@ -11,8 +9,7 @@
 class Caracter : public odfaeg::graphic::AnimatedEntity {
 public :
     Caracter() : AnimatedEntity(odfaeg::math::Vec3f(0, 0, 0), odfaeg::math::Vec3f(0, 0, 0), odfaeg::math::Vec3f(0, 0, 0),"E_CARACTER") {}
-    Caracter (std::string factionName, std::string pseudo, std::string sex, std::string currentMapName, std::string hairColor,
-    std::string eyesColor, std::string skinColor, std::string faceType, std::string classs, int level);
+    Caracter (std::string type, std::string name, std::string currentMapName, std::string classs, int level);
     bool isMovable() const {
         return true;
     }
@@ -33,9 +30,6 @@ public :
     odfaeg::graphic::Anim* getAnimation(unsigned int index);
     unsigned int getCurrentPathIndex ();
     void setCurrentPathIndex (unsigned int index);
-    bool isMonster() {
-        return false;
-    }
     void setRange(int range);
     int getRange();
     void setLife(int life);
@@ -54,50 +48,44 @@ public :
     void setAlive(bool b);
     bool isAlive();
     void setAttacking(bool b);
-    void setCurrentXp(int xp);
-    void setXpReqForNextLevel(int xpReqForNextLevel);
     void setLevel (int level);
     sf::Time getTimeOfLastAttack();
     sf::Time getTimeOfLastHpRegen();
     void attackFocusedMonster();
-    void up (int xp);
-    int getCurrentXp ();
-    int getXpReqForNextLevel ();
     float getRegenHpSpeed();
     void setRegenHpSpeed(float regenHpSpeed);
     int getRegenHpAmount();
     void setRegenHpAmount(int regenHpAmount);
     Entity* getCurrentEntity() const;
-    void onDraw(odfaeg::graphic::RenderTarget&, odfaeg::graphic::RenderStates) const;
+    void onDraw(odfaeg::graphic::RenderTarget&, odfaeg::graphic::RenderStates);
     void onMove(odfaeg::math::Vec3f& t);
-    void setIsMovingFromKeyboard(bool b);
-    bool isMovingFromKeyboard();
+    virtual void setIsMovingFromKeyboard(bool b) {}
+    virtual bool isMovingFromKeyboard() = 0;
     template <typename Archive>
     void vtserialize(Archive & ar) {
         Entity::vtserialize(ar);
-        ar(factionName);
-        ar(pseudo);
-        ar(sex);
+        ar(name);
         ar(currentMapName);
-        ar(hairColor);
-        ar(eyesColor);
-        ar(skinColor);
-        ar(faceType);
-        ar(classs);
         ar(level);
         ar(speed);
+        ar(alive);
+        ar(maxLife);
+        ar(regenHpAmount);
+        ar(attack);
+        ar(range);
     }
+    virtual bool isMonster() = 0;
     virtual ~Caracter();
-    private :
-    std::string factionName, pseudo, sex, currentMapName, hairColor, eyesColor, skinColor, faceType, classs;
-    int level, currentPointIndex, attack, range;
+private :
+    std::string name, currentMapName, classs;
+    int level, attack, range;
     float attackSpeed, regenHpSpeed, speed;
     bool moving, alive, moveFromKeyboard;
     odfaeg::math::Vec2f dir;
     std::vector<odfaeg::math::Vec2f> path;
     std::vector<odfaeg::graphic::Anim*> anims;
     int currentAnimIndex;
-    int life, maxLife, xp, xpReqForNextLevel, regenHpAmount;
+    int life, maxLife, regenHpAmount;
     bool attacking, fightingMode;
     sf::Clock clockAtkSpeed, clockRegenHp;
 };

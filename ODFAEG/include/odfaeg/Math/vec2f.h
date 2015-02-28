@@ -203,6 +203,11 @@ namespace odfaeg {
             *   \param &vec2 : the vector.
             *   \return the final output stream.
             */
+            template <typename Archive>
+            void serialize (Archive &ar) {
+                ar(x);
+                ar(y);
+            }
             friend std::ostream& operator<< (std::ostream &out, const Vec2f &vec2);
             static const Vec2f xAxis;
             static const Vec2f yAxis;
