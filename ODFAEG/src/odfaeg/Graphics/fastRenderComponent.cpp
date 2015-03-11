@@ -204,9 +204,9 @@ namespace odfaeg {
                             "vec4 colors[2];"
                             "colors[1] = pixel * pixel.a + color * (1 - pixel.a);"
                             "colors[1].a = pixel.a + color.a * (1 - pixel.a);"
-                            "colors[0] = color * depth.g + pixel * (1 - depth.g);"
+                            "colors[0] = color * depth.a + pixel * (1 - depth.a);"
                             "colors[0].a = color.a + pixel.a * (1 - color.a);"
-                            "bool b = (z >= depth.r);"
+                            "bool b = (z >= depth.b);"
                             "gl_FragColor = colors[int(b)];"
                         "}";
                         const std::string bumpGenFragShader =
