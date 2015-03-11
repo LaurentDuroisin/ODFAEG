@@ -67,7 +67,7 @@ namespace odfaeg {
         }
         void FastRenderComponentManager::updateComponents() {
             for (unsigned int i = 0; i < components.size(); i++) {
-                if (components[i]->isEventContextActivated()) {
+                if (components[i]->isEventContextActivated() && !components[i]->getListener().isUsingThread()) {
                     components[i]->getListener().processEvents();
                 }
             }

@@ -85,38 +85,25 @@ namespace odfaeg {
         }
         //Test if the bounding box intersects with the specified bounding polyhedron.
         bool BoundingBox::intersects (BoundingPolyhedron &bp) {
-            std::array<math::Vec3f, 6> hi;
-            hi[0] = math::Vec3f(width * 0.5f, 0, 0);
-            hi[1] = math::Vec3f(0, height * 0.5f, 0);
-            hi[2] = math::Vec3f(0, 0, depth * 0.5f);
-            hi[3] = math::Vec3f(-width * 0.5f, 0, 0);
-            hi[4] = math::Vec3f(0, -height * 0.5f, 0);
-            hi[5] = math::Vec3f(0, 0, -depth * 0.5f);
-            std::vector<math::Vec3f> normals;
-            std::vector<math::Vec3f> bissectors;
-            bissectors = bp.get3DBissectors();
-            normals = bp.get3DNormals();
-            float distMin1 = 0, distMin2 = 0;
-            int faceIndex1 = 0, faceIndex2 = 0;
-            int ptIndex1 = math::Computer::checkNearestVertexFromShape(points, bissectors, distMin1, faceIndex2);
-            int ptIndex2 = math::Computer::checkNearestVertexFromShape(bp.getPoints(), hi, distMin2, faceIndex1);
-            if (distMin1 < distMin2) {
-                math::Vec3f bpn = (bissectors[faceIndex2] - bp.getCenter()).projOnVector(normals[faceIndex2]);
-                math::Vec3f d = points[ptIndex1] - bp.getCenter();
-                float p = d.projOnAxis(bpn);
-                if (p * p > bpn.magnSquared()) {
-                    return false;
-                }
-                return true;
+            /*if (depth == 0) {
+                BoundingPolyhedron bbp(Vec3f(x, y, z), Vec3f(x + width, y, z), Vec3f(x + width, y + height, z), true);
+                bbp.addTriangle(Vec3f(x + width, y + height, z), Vec3f(x, y+height,z), Vec3f(x, y, z));
+                return bp.intersects(bbp);
             } else {
-                math::Vec3f bpn = hi[faceIndex1];
-                math::Vec3f d = bp.getPoints()[ptIndex2] - center;
-                float p = d.projOnAxis(bpn);
-                if (p * p > bpn.magnSquared()) {
-                    return false;
-                }
-                return true;
-            }
+                BoundingPolyhedron bbp(Vec3f(x, y, z), Vec3f(x + width, y, z), Vec3f(x + width, y + height, z), false);
+                bbp.addTriangle(Vec3f(x + width, y + height, z), Vec3f(x, y+height, z), Vec3f(x, y, z));
+                bbp.addTriangle(Vec3f(x, y, z+depth), Vec3f(x + width, y, z+depth), Vec3f(x + width, y + height, z+depth));
+                bbp.addTriangle(Vec3f(x + width, y + height, z+depth), Vec3f(x, y+height, z+depth), Vec3f(x, y, z+depth));
+                bbp.addTriangle(Vec3f(x, y+height, z), Vec3f(x+width, y+height, z),Vec3f(x+width, y+height, z+depth));
+                bbp.addTriangle(Vec3f(x+width, y+height, z+depth), Vec3f(x, y+height, z+depth),Vec3f(x, y+height, z));
+                bbp.addTriangle(Vec3f(x, y,z), Vec3f(x+width, y, z),Vec3f(x+width, y, z+depth));
+                bbp.addTriangle(Vec3f(x+width, y, z+depth), Vec3f(x, y, z+depth),Vec3f(x, y, z));
+                bbp.addTriangle(Vec3f(x, y, z), Vec3f(x, y+height, z), Vec3f(x, y+height, z + depth));
+                bbp.addTriangle(Vec3f(x, y+height, z+depth), Vec3f(x, y, z+depth), Vec3f(x, y, z));
+                bbp.addTriangle(Vec3f(x+width, y, z), Vec3f(x+width, y+height, z), Vec3f(x+width, y+height, z + depth));
+                bbp.addTriangle(Vec3f(x+width, y+height, z+depth), Vec3f(x+width, y, z+depth), Vec3f(x+width, y, z));
+                return bbp.intersects(bp);
+            }*/
         }
         //Test if a point is inside our box.
         bool BoundingBox::isPointInside (math::Vec3f point) {

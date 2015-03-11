@@ -4,6 +4,7 @@
 #include "../Math/ray.h"
 #include "boundingVolume.h"
 #include "../Math/matrix4.h"
+#include "../Math/triangle.h"
 /**
   *\namespace odfaeg
   * the namespace of the Opensource Development Framework Adapted for Every Games.

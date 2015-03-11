@@ -32,7 +32,7 @@ namespace odfaeg {
             /**\fn BoundingPolyhedron()
             * \brief Default constructor : construct a bounding polyhedron. (with no points)
             */
-            BoundingPolyhedron (math::Vec3f p1, math::Vec3f p2, math::Vec3f p3);
+            BoundingPolyhedron (math::Vec3f p1, math::Vec3f p2, math::Vec3f p3, bool flat);
              /**\fn ~BoundingPolyhedron()
             * \brief destructor : delete all the points of the bounding polyhedron.
             */
@@ -40,7 +40,7 @@ namespace odfaeg {
             /**\fn void addPoint(math::Vec3f *p)
             *  \param add a point to a polyhedron.
             */
-            void addPoint(math::Vec3f p);
+            void addTriangle(math::Vec3f p1, math::Vec3f p2, math::Vec3f p3);
             /**\fn Vec2f getPoint(unsigned int index)
             *  \brief get the point of the polyhedron with the given index.
             *(0 = the index of the first point added, 1 = the index of the second, etc...
@@ -128,29 +128,31 @@ namespace odfaeg {
             template <typename Archive>
             void vtserialize(Archive & ar) {
                 ar(points);
-                ar(normals3D);
-                ar(normals2D);
-                ar(bissectors2D);
-                ar(bissectors3D);
+                ar(faceNormals);
+                ar(edgeNormals);
+                ar(edgeBissectors);
+                ar(faceBissectors);
                 ar(center);
                 ar(size);
             }
             void move(math::Vec3f t);
             void scale(math::Vec3f s);
             void rotate(float angle, math::Vec3f r);
+            bool isFlat();
             private :
+            void computeVectors();
             /**\fn void computeCenter()
             *  \brief recompute the center of the bounding polyhedron. (When we add or remove points.)
             *
             */
-            void computeVectors();
             std::vector<math::Vec3f> points; /**< The points of the polyhedron.*/
-            std::vector<math::Vec3f> normals3D; /**< The perpendicular normals to the faces of the polygon*/
-            std::vector<math::Vec3f> normals2D; /**< The perpendicular normals to the faces of the polygon*/
-            std::vector<math::Vec3f> bissectors2D; /**< The bissectors of the polygon*/
-            std::vector<math::Vec3f> bissectors3D;
+            std::vector<math::Vec3f> faceNormals; /**< The perpendicular normals to the faces of the polygon*/
+            std::vector<math::Vec3f> edgeNormals; /**< The perpendicular normals to the faces of the polygon*/
+            std::vector<math::Vec3f> edgeBissectors; /**< The bissectors of the polygon*/
+            std::vector<math::Vec3f> faceBissectors;
             math::Vec3f center; /**< The center of the bounding polyhedron.*/
             math::Vec3f size;
+            bool flat;
         };
     }
 }

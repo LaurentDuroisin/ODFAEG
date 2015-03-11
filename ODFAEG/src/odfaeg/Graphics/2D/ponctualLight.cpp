@@ -103,7 +103,7 @@ namespace odfaeg {
                         }
                     }
                 }
-                physic::BoundingPolyhedron bp (a, b, c);
+                physic::BoundingPolyhedron bp (a, b, c, true);
                 //Si il y a 2 intersection alors le segment intersecte le triangle complètement.
                 //Sinon l'extrêmité du segment est dans le triangle.
                 if (i1 != -1 && i2 != -1) {

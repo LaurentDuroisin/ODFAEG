@@ -92,6 +92,13 @@ namespace odfaeg {
             }
             return -1;
         }
+        int Ray::whichSide(Vec3f point) {
+            Vec3f v1 = dir;
+            Vec3f v2 = point - orig;
+            Vec3f v3 = v1.cross(v2);
+            Matrix3f m (v1.x, v1.y, v1.z, v2.x, v2.y, v2.z, v3.x, v3.y, v3.z);
+            return m.getDet();
+        }
     }
 }
 

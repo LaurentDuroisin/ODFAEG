@@ -376,101 +376,74 @@ namespace odfaeg {
                     max = min;
                     for (unsigned int i = 1; i < vertices.size(); i++) {
                         // NOTE: the axis must be normalized to get accurate projections
-                        //if (!axis.isNulVector() && !vertices[i].isNulVector()) {
-                            float p = vertices[i].projOnAxis(axis);
-                            if (p < min) {
-                                min = p;
-                            }
-                            if (p > max) {
-                                max = p;
-                            }
-                        //}
+                        float p = vertices[i].projOnAxis(axis);
+                        if (p < min) {
+                            min = p;
+                        }
+                        if (p > max) {
+                            max = p;
+                        }
                     }
                 }
                 return Vec2f(min, max);
             }
-            static unsigned int checkNearestVertexFromShape (std::vector<Vec3f> shape1, std::vector<Vec3f> shape2, float& distMin, unsigned int faceIndex) {
-                distMin = 0;
-                unsigned int ptIndex = 0;
-                faceIndex = 0;
-                for (unsigned int i = 0; i < shape1.size(); i++) {
-                    Vec3f p = shape1[i];
-                    Vec3f p2 = shape2[0];
-                    distMin = p.computeDistSquared(p2);
-                    for (unsigned int j = 1; j < shape2.size(); j++) {
-                        p2 = shape2[j];
-                        float dist = p.computeDistSquared(p2);
-                        if (dist < distMin) {
-                            distMin = dist;
+            static int checkNearestVertexFromShape (Vec3f center, std::vector<Vec3f> points, std::vector<Vec3f> edgeBissectors, std::vector<Vec3f> edgeNormals, std::vector<Vec3f> faceBissectors, std::vector<Vec3f> faceNormals, std::vector<Vec3f> vertices,
+                                                     float& distMin, int& ptIndex, int& edgeIndex, int& faceIndex) {
+                distMin = INT_MAX;
+                float nDistMin = INT_MAX;
+                edgeIndex = -1;
+                faceIndex = -1;
+                ptIndex = -1;
+                int index = -1;
+                for (unsigned int i = 0; i < edgeBissectors.size(); i++) {
+                    Vec3f p1 = edgeBissectors[i];
+                    Vec3f n = edgeNormals[i];
+                    for (unsigned int j = 0; j < vertices.size(); j++) {
+                        Vec3f p2 = vertices[j];
+                        float dist = p1.computeDistSquared(p2);
+                        float nDist = n.computeDistSquared(p2);
+                        Vec3f v1 = points[i] - center;
+                        Vec3f v2 = points[(i + 1 == points.size()) ? 0 : i + 1] - center;
+                        Vec3f n = v1.cross(v2);
+                        float a1 = v1.getAngleBetween(p2, n);
+                        float a2 = v2.getAngleBetween(p2, n);
+                        if (a1 == 0) {
                             ptIndex = i;
-                            faceIndex = j;
+                            return j;
+                        }
+                        if (a2 == 0) {
+                            ptIndex = (i + 1 == points.size()) ? 0 : i + 1;
+                            return j;
+                        }
+                        if (dist <= distMin && nDist <= nDistMin && (a1 > 0 && a2 < 0 || a1 < 0 && a2 > 0)) {
+                            distMin = dist;
+                            nDistMin = nDist;
+                            edgeIndex = i;
+                            index = j;
                         }
                     }
                 }
-                return ptIndex;
-            }
-            template <std::size_t N1, std::size_t N2>
-            static unsigned int checkNearestVertexFromShape (std::array<Vec3f, N1> shape1, std::array<Vec3f, N2> shape2, float& distMin, unsigned int faceIndex) {
-                distMin = 0;
-                unsigned int ptIndex = 0;
-                faceIndex = 0;
-                for (unsigned int i = 0; i < shape1.size(); i++) {
-                    Vec3f p = shape1[i];
-                    Vec3f p2 = shape2[0];
-                    distMin = p.computeDistSquared(p2);
-                    for (unsigned int j = 1; j < shape2.size(); j++) {
-                        p2 = shape2[j];
-                        float dist = p.computeDistSquared(p2);
-                        if (dist < distMin) {
+                distMin = INT_MAX;
+                nDistMin = INT_MAX;
+                for (unsigned int i = 0; i < faceBissectors.size(); i++) {
+                    Vec3f p1 = faceBissectors[i];
+                    Vec3f n = faceNormals[i];
+                    for (unsigned int j = 0; j < vertices.size(); j++) {
+                        Vec3f p2 = vertices[j];
+                        float dist = p1.computeDistSquared(p2);
+                        float nDist = n.computeDistSquared(p2);
+                        Plane plane1 (edgeNormals[i*3], edgeBissectors[i*3]);
+                        Plane plane2 (edgeNormals[i*3+1], edgeBissectors[i*3+1]);
+                        Plane plane3 (edgeNormals[i*3+2], edgeBissectors[i*3+2]);
+                        if (dist <= distMin && nDist <= nDistMin && plane1.whichSide(p2) <= 0 && plane2.whichSide(p2) <= 0 && plane3.whichSide(p2) <= 0) {
                             distMin = dist;
-                            ptIndex = i;
-                            faceIndex = j;
+                            faceIndex = i;
+                            nDistMin = nDist;
+                            index = j;
                         }
                     }
                 }
-                return ptIndex;
-            }
-            template <std::size_t N>
-            static unsigned int checkNearestVertexFromShape (std::array<Vec3f, N> shape1, std::vector<Vec3f> shape2, float& distMin, unsigned int faceIndex) {
-                distMin = 0;
-                unsigned int ptIndex = 0;
-                faceIndex = 0;
-                for (unsigned int i = 0; i < shape1.size(); i++) {
-                    Vec3f p = shape1[i];
-                    Vec3f p2 = shape2[0];
-                    distMin = p.computeDistSquared(p2);
-                    for (unsigned int j = 1; j < shape2.size(); j++) {
-                        p2 = shape2[j];
-                        float dist = p.computeDistSquared(p2);
-                        if (dist < distMin) {
-                            distMin = dist;
-                            ptIndex = i;
-                            faceIndex = j;
-                        }
-                    }
-                }
-                return ptIndex;
-            }
-            template <std::size_t N>
-            static unsigned int checkNearestVertexFromShape (std::vector<Vec3f> shape1, std::array<Vec3f, N> shape2, float& distMin, unsigned int faceIndex) {
-                distMin = 0;
-                unsigned int ptIndex = 0;
-                faceIndex = 0;
-                for (unsigned int i = 0; i < shape1.size(); i++) {
-                    Vec3f p = shape1[i];
-                    Vec3f p2 = shape2[0];
-                    distMin = p.computeDistSquared(p2);
-                    for (unsigned int j = 1; j < shape2.size(); j++) {
-                        p2 = shape2[j];
-                        float dist = p.computeDistSquared(p2);
-                        if (dist < distMin) {
-                            distMin = dist;
-                            ptIndex = i;
-                            faceIndex = j;
-                        }
-                    }
-                }
-                return ptIndex;
+                return index;
             }
             template <std::size_t N>
             static Vec2f projectShapeOnAxis(Vec3f axis, std::array<Vec3f, N> vertices) {

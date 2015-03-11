@@ -106,6 +106,7 @@ namespace odfaeg {
             * \return Entity& the light tile.
             */
             virtual Entity& getLightTile(std::string expression, int n, va_list args) = 0;
+            virtual Entity& getRefractionTile(std::string expression, int n, va_list args) = 0;
             /**
             * \fn void drawOnComponents(std::string expression, int layer, sf::BlendMode mode)
             * \brief virtual method to redefine to draw the visibles entities to a component.

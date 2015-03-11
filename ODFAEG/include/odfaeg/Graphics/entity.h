@@ -308,7 +308,6 @@ namespace odfaeg {
                 template <typename Archive>
                 void vtserialize(Archive & ar) {
                     /*if (!alreadySerialized) {
-                        std::cout<<"write parent"<<std::endl;
                         ar(parent);
                         alreadySerialized = true;
                     }*/

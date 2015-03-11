@@ -113,8 +113,8 @@ namespace odfaeg {
             for (unsigned int i = 0; i < 4; i++) {
                 v[i] = bm.changeOfBase(v[i]);
             }
-            physic::BoundingPolyhedron *bp = new physic::BoundingPolyhedron(v[0], v[1], v[2]);
-            bp->addPoint(v[3]);
+            physic::BoundingPolyhedron *bp = new physic::BoundingPolyhedron(v[0], v[1], v[2], true);
+            bp->addTriangle(v[1], v[2], v[3]);
             CellMap *cell = new CellMap(bp, coordsCaseP);
             int oldNbCasesPerRow = nbCasesPerRow;
 
@@ -362,23 +362,25 @@ namespace odfaeg {
         }
         bool GridMap::collideWithEntity(Entity* entity, math::Vec3f position) {
             CellMap* cell = getGridCellAt(position);
-            if (!cell->isPassable())
-                return true;
-            std::vector<CellMap*> neightbours = getNeightbours(entity,cell,true);
-            for (unsigned int i = 0; i < neightbours.size(); i++) {
-                if (!neightbours[i]->isPassable()) {
+            if (cell != nullptr) {
+                if (!cell->isPassable())
                     return true;
+                std::vector<CellMap*> neightbours = getNeightbours(entity,cell,true);
+                for (unsigned int i = 0; i < neightbours.size(); i++) {
+                    if (!neightbours[i]->isPassable()) {
+                        return true;
+                    }
                 }
-            }
-            if (entity->getCollisionVolume() != nullptr) {
-                math::Vec3f t = position - entity->getCollisionVolume()->getCenter();
-                std::unique_ptr<physic::BoundingVolume> cv = entity->getCollisionVolume()->clone();
-                cv->move(t);
-                for (unsigned int k = 0; k < cell->getEntitiesInside().size(); k++)  {
-                    if (cell->getEntitiesInside()[k]->getCollisionVolume() != nullptr && cell->getEntitiesInside()[k] != entity) {
-                        if (cv->intersects(*cell->getEntitiesInside()[k]->getCollisionVolume())) {
-                            if (cv->getChildren().size() == 0) {
-                                return true;
+                if (entity->getCollisionVolume() != nullptr) {
+                    math::Vec3f t = position - entity->getCollisionVolume()->getCenter();
+                    std::unique_ptr<physic::BoundingVolume> cv = entity->getCollisionVolume()->clone();
+                    cv->move(t);
+                    for (unsigned int k = 0; k < cell->getEntitiesInside().size(); k++)  {
+                        if (cell->getEntitiesInside()[k]->getCollisionVolume() != nullptr && cell->getEntitiesInside()[k] != entity) {
+                            if (cv->intersects(*cell->getEntitiesInside()[k]->getCollisionVolume())) {
+                                if (cv->getChildren().size() == 0) {
+                                    return true;
+                                }
                             }
                         }
                     }

@@ -22,15 +22,18 @@ namespace odfaeg {
                 lightMap = new RenderTexture();
                 stencilBuffer = new RenderTexture();
                 normalMap = new RenderTexture();
+                refractionMap = new RenderTexture();
                 shadowMap->create(frcm->getWindow().getSize().x, frcm->getWindow().getSize().y,frcm->getWindow().getSettings());
                 lightMap->create(frcm->getWindow().getSize().x, frcm->getWindow().getSize().y,frcm->getWindow().getSettings());
                 stencilBuffer->create(frcm->getWindow().getSize().x, frcm->getWindow().getSize().y,frcm->getWindow().getSettings());
                 normalMap->create(frcm->getWindow().getSize().x, frcm->getWindow().getSize().y,frcm->getWindow().getSettings());
+                refractionMap->create(frcm->getWindow().getSize().x, frcm->getWindow().getSize().y,frcm->getWindow().getSettings());
                 resolution = sf::Vector3i ((int) frcm->getWindow().getSize().x, (int) frcm->getWindow().getSize().y, frcm->getWindow().getView().getSize().z);
                 perPixLightingShader = new Shader();
                 buildShadowMapShader = new Shader();
                 perPixShadowShader = new Shader();
                 buildNormalMapShader = new Shader();
+                buildRefractionMapShader = new Shader();
                 if (Shader::getShadingLanguageVersionMajor() >= 3 && Shader::getShadingLanguageVersionMinor() >= 3) {
                     const std::string perPixLightingVertexShader =
                     "#version 330 core \n"
@@ -121,30 +124,47 @@ namespace odfaeg {
                     "}";
                      const std::string perPixLightingFragmentShader =
                      "#version 130 \n"
+                     "const vec2 size = vec2(2.0,0.0);"
+                     "const ivec3 off = ivec3(-1,0,1);"
                      "uniform sampler2D normalMap;"
                      "uniform sampler2D lightMap;"
                      "uniform sampler2D specularTexture;"
+                     "uniform sampler2D bumpMap;"
                      "uniform vec3 resolution;"
                      "uniform vec4 lightColor;"
                      "uniform vec4 lightPos;"
                      "in mat4 projMat;"
                      "void main () { "
                          "vec2 position = vec2 (gl_FragCoord.xy / resolution.xy);"
-                         "vec4 bump = texture2D(normalMap, position);"
+                         "vec4 normal = texture2D(normalMap, position);"
+                         "vec4 bump = texture2D(bumpMap, position);"
                          "vec4 specularInfos = texture2D(specularTexture, position);"
                          "vec3 sLightPos = vec3 (lightPos.x, lightPos.y, -lightPos.z * (gl_DepthRange.far - gl_DepthRange.near));"
                          "float radius = lightPos.w;"
-                         "vec3 pixPos = vec3 (gl_FragCoord.x, gl_FragCoord.y, -bump.w * (gl_DepthRange.far - gl_DepthRange.near));"
+                         "vec3 pixPos = vec3 (gl_FragCoord.x, gl_FragCoord.y, -normal.w * (gl_DepthRange.far - gl_DepthRange.near));"
                          "vec4 lightMapColor = texture2D(lightMap, position);"
                          "vec3 viewPos = vec3(resolution.x * 0.5f, resolution.y * 0.5f, 0);"
                          "float z = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
-                         "if (z >= bump.w) {"
+                         "vec3 vertexToLight = sLightPos - pixPos;"
+                         "if (bump.x != 0 && bump.y != 0 && bump.z != 0) {"
+                             "float s01 = textureOffset(normalMap, position, off.xy).z;"
+                             "float s21 = textureOffset(normalMap, position, off.zy).z;"
+                             "float s10 = textureOffset(normalMap, position, off.yx).z;"
+                             "float s12 = textureOffset(normalMap, position, off.yz).z;"
+                             "vec3 tmpNormal = (normal.xyz);"
+                             "vec3 tangeant = normalize (vec3(size.xy, s21 - s01));"
+                             "vec3 binomial = normalize (vec3(size.yx, s12 - s10));"
+                             "normal.x = dot(vertexToLight, tangeant);"
+                             "normal.y = dot(vertexToLight, binomial);"
+                             "normal.z = dot(vertexToLight, tmpNormal);"
+                             "normal.w = bump.w;"
+                         "}"
+                         "if (z >= normal.w) {"
                              "vec4 specularColor = vec4(0, 0, 0, 0);"
-                             "vec3 vertexToLight = sLightPos - pixPos;"
                              "float attenuation = 1.f - length(vertexToLight) / radius;"
                              "vec3 pixToView = pixPos - viewPos;"
-                             "float normalLength = dot(bump.xyz, vertexToLight);"
-                             "vec3 lightReflect = vertexToLight + 2 * (bump.xyz * normalLength - vertexToLight);"
+                             "float normalLength = dot(normal.xyz, vertexToLight);"
+                             "vec3 lightReflect = vertexToLight + 2 * (normal.xyz * normalLength - vertexToLight);"
                              "float m = specularInfos.r;"
                              "float p = specularInfos.g;"
                              "float specularFactor = dot(normalize(pixToView), normalize(lightReflect));"
@@ -152,9 +172,9 @@ namespace odfaeg {
                              "if (specularFactor > 0) {"
                                  "specularColor = vec4(lightColor.rgb, 1) * m * specularFactor;"
                              "}"
-                             "if (bump.x != 0 || bump.y != 0 || bump.z != 0 && vertexToLight.z > 0.f) {"
+                             "if (normal.x != 0 || normal.y != 0 || normal.z != 0 && vertexToLight.z > 0.f) {"
                                  "vec3 dirToLight = normalize(vertexToLight.xyz);"
-                                 "float nDotl = dot (dirToLight, bump.xyz);"
+                                 "float nDotl = dot (dirToLight, normal.xyz);"
                                  "attenuation *= nDotl;"
                              "}"
                              "gl_FragColor = vec4(lightColor.xyz, 1) * max(0.0f, attenuation) + specularColor;"
@@ -224,6 +244,35 @@ namespace odfaeg {
                     "       }"
                     "    }"
                     "}";
+                    const std::string buildRefractionMapVertexShader =
+                    "#version 130 \n"
+                    "out mat4 projMat;"
+                    "void main () {"
+                        "gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;"
+                        "gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;"
+                        "gl_FrontColor = gl_Color;"
+                        "projMat = gl_ProjectionMatrix;"
+                    "}";
+                    const std::string buildRefractionMapFragmentShader =
+                    "#version 130 \n"
+                    "uniform vec3 resolution;"
+                    "uniform sampler2D texture;"
+                    "uniform sampler2D refractionTexture;"
+                    "uniform sampler2D refractionBuffer;"
+                    "uniform float haveTexture;"
+                    "in mat4 projMat;"
+                    "void main() {"
+                        "vec2 position = vec2 (gl_FragCoord.xy / resolution.xy);"
+                        "vec4 color = (haveTexture == 1) ? texture2D(texture, gl_TexCoord[0].xy) * gl_Color : gl_Color;"
+                        "vec4 refraction = texture2D(refractionTexture, position);"
+                        "vec4 refractionBufferColor = texture2D(refractionBuffer, position);"
+                        "float z = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
+                        "if (refractionBufferColor.a == 0) {"
+                            "gl_FragColor = color * refraction.r;"
+                        "} else {"
+                            "gl_FragColor = refractionBufferColor;"
+                        "}"
+                    "}";
                     if (!buildNormalMapShader->loadFromMemory(buildNormalMapVertexShader, buildNormalMapFragmentShader)) {
                         throw core::Erreur(52, "Error, failed to load build normal map shader", 3);
                     }
@@ -236,6 +285,9 @@ namespace odfaeg {
                     if (!perPixLightingShader->loadFromMemory(perPixLightingVertexShader, perPixLightingFragmentShader)) {
                         throw core::Erreur(55, "Error, failed to load per pixel lighting shader", 3);
                     }
+                    if (!buildRefractionMapShader->loadFromMemory(buildRefractionMapVertexShader, buildRefractionMapFragmentShader)) {
+                        throw core::Erreur(56, "Error, failed to load per pixel lighting shader", 3);
+                    }
                 }
                 buildNormalMapShader->setParameter("texture", Shader::CurrentTexture);
                 perPixLightingShader->setParameter("resolution", resolution.x, resolution.y, resolution.z);
@@ -243,6 +295,9 @@ namespace odfaeg {
                 buildShadowMapShader->setParameter("texture", Shader::CurrentTexture);
                 perPixShadowShader->setParameter("stencilBuffer", stencilBuffer->getTexture());
                 perPixShadowShader->setParameter("texture", Shader::CurrentTexture);
+                buildRefractionMapShader->setParameter("texture", Shader::CurrentTexture);
+                buildRefractionMapShader->setParameter("resolution", resolution.x, resolution.y, resolution.z);
+                buildRefractionMapShader->setParameter("refractionBuffer", refractionMap->getTexture());
             }
         }
         void Map::generate_map(std::vector<Tile*> tGround, std::vector<Tile*> walls, math::Vec2f tileSize, physic::BoundingBox &rect, bool terrain3D) {
@@ -882,7 +937,6 @@ namespace odfaeg {
                 frc->draw(drawable, states);
             }
         }
-
         void Map::generateStencilBuffer(std::string expression, int n, va_list args) {
             if (Shader::isAvailable()) {
                 std::vector<Entity*> entities;
@@ -894,7 +948,7 @@ namespace odfaeg {
                 stencilBuffer->clear(sf::Color::Transparent);
                 RenderStates states;
                 states.shader = buildShadowMapShader;
-                states.blendMode = sf::BlendAdd;
+                states.blendMode = sf::BlendNone;
                 if (n != -1) {
                     std::vector<unsigned int> idsCompInt;
                     for (int c = 0; c < n; c++) {
@@ -958,7 +1012,7 @@ namespace odfaeg {
             }
         }
 
-        Tile& Map::getShadowTile(std::string expression, int n, va_list args) {
+        Entity& Map::getShadowTile(std::string expression, int n, va_list args) {
             std::vector<Entity*> entities;
             View view = frcm->getWindow().getView();
             physic::BoundingBox viewArea = view.getViewVolume();
@@ -1041,7 +1095,7 @@ namespace odfaeg {
             shadowTile = new Tile (&shadowMap->getTexture(),math::Vec3f(position.x, position.y, position.z), math::Vec3f(size.x, size.y, 0),sf::IntRect(0, 0, size.x, size.y));
             return *shadowTile;
         }
-        Tile& Map::getLightTile (std::string expression, int n, va_list args) {
+        Entity& Map::getLightTile (std::string expression, int n, va_list args) {
 
             std::vector<Entity*> lights = getVisibleEntities(expression);
             View view = frcm->getWindow().getView();
@@ -1083,6 +1137,7 @@ namespace odfaeg {
                                     normalMap->display();
                                     perPixLightingShader->setParameter("specularTexture", frcm->getRenderComponent(i)->getSpecularTexture());
                                     perPixLightingShader->setParameter("normalMap", normalMap->getTexture());
+                                    perPixLightingShader->setParameter("bumpMap", frcm->getRenderComponent(i)->getBumpTexture());
                                     states.shader = perPixLightingShader;
                                     states.blendMode = sf::BlendAdd;
                                     for (unsigned int j = 0; j < lights.size(); j++) {
@@ -1103,7 +1158,67 @@ namespace odfaeg {
             lightTile = new Tile (&lightMap->getTexture(), math::Vec3f(position.x, position.y, position.z), math::Vec3f(size.x, size.y, 0),sf::IntRect(0, 0, size.x, size.y));
             return *lightTile;
         }
+        Entity& Map::getRefractionTile (std::string expression, int n, va_list args) {
+            std::vector<Entity*> entities = getVisibleEntities(expression);
+            View view = frcm->getWindow().getView();
+            physic::BoundingBox viewArea = view.getViewVolume();
+            math::Vec3f position (viewArea.getPosition().x,viewArea.getPosition().y, view.getPosition().z);
+            math::Vec3f size (viewArea.getWidth(), viewArea.getHeight(), 0);
+            refractionMap->clear(sf::Color::Black);
+            refractionMap->setView(frcm->getWindow().getView());
+            RenderStates states;
+            states.shader = buildRefractionMapShader;
+            if (Shader::isAvailable()) {
+                if (n != -1) {
+                       std::vector<unsigned int> idsCompInt;
+                       for (int c = 0; c < n; c++) {
+                           int j = va_arg(args, int);
+                           if (j < n)
+                               idsCompInt.push_back(j);
+                       }
+                       for (unsigned int i = 0; i < frcm->getNbComponents(); i++) {
+                            if (frcm->getRenderComponent(i) != nullptr) {
+                                bool find = false;
+                                for (unsigned int k = 0; k < idsCompInt.size(); k++)
+                                    if (idsCompInt[k] == i)
+                                        find = true;
+                                if (find) {
+                                    View view = frcm->getRenderComponent(i)->getView();
+                                    math::Vec3f forward = view.getForward();
+                                    view.lookAt(-forward.x, -forward.y, -forward.z);
+                                    refractionMap->setView(view);
+                                    for (unsigned int k = 0; k < entities.size(); k++) {
+                                        if (entities[k]->getFaces().size() > 0) {
+                                            if (entities[k]->getFaces()[0]->getMaterial().getTexture() != nullptr) {
+                                                perPixShadowShader->setParameter("haveTexture", 1);
+                                            } else {
+                                                perPixShadowShader->setParameter("haveTexture", 0);
+                                            }
+                                        }
+                                        refractionMap->draw(*entities[k], states);
+                                    }
+                                    refractionMap->setView(frcm->getRenderComponent(i)->getView());
+                                    buildRefractionMapShader->setParameter("refractionTexture",frcm->getRenderComponent(i)->getRefractionTexture());
+                                    for (unsigned int k = 0; k < entities.size(); k++) {
+                                        if (entities[k]->getFaces().size() > 0) {
+                                            if (entities[k]->getFaces()[0]->getMaterial().getTexture() != nullptr) {
+                                                perPixShadowShader->setParameter("haveTexture", 1);
+                                            } else {
+                                                perPixShadowShader->setParameter("haveTexture", 0);
+                                            }
+                                        }
+                                        refractionMap->draw(*entities[k], states);
+                                    }
 
+                                }
+                            }
+                       }
+                }
+            }
+            refractionMap->display();
+            refractionTile = new Tile (&refractionMap->getTexture(), math::Vec3f(position.x, position.y, position.z), math::Vec3f(size.x, size.y, 0),sf::IntRect(0, 0, size.x, size.y));
+            return *refractionTile;
+        }
         BaseChangementMatrix Map::getBaseChangementMatrix() {
             return gridMap->getBaseChangementMatrix();
         }
@@ -1118,6 +1233,8 @@ namespace odfaeg {
             delete stencilBufferTile;
             delete perPixLightingShader;
             delete perPixShadowShader;
+            delete refractionMap;
+            delete buildRefractionMapShader;
         }
     }
 }

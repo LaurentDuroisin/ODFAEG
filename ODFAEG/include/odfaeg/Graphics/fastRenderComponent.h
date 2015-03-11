@@ -117,6 +117,8 @@ namespace odfaeg {
             * \brief get the frame buffer tile.
             * \return the tile.
             */
+            const Texture& getBumpTexture();
+            const Texture& getRefractionTexture();
             Tile& getFrameBufferTile ();
             /**
             * \fn getDepthBufferTile ()
@@ -133,9 +135,13 @@ namespace odfaeg {
             RenderTexture *frameBuffer; /**> the frame buffer.*/
             RenderTexture *depthBuffer; /**> the depth buffer.*/
             RenderTexture *specularTexture; /**> specular components.*/
+            RenderTexture *bumpTexture;
+            RenderTexture *refractionTexture;
             Shader* depthBufferGenerator; /**> the shader to generate the depth buffer.*/
             Shader* frameBufferGenerator; /**> the shader to generate the frame buffer.*/
             Shader* specularTextureGenerator;
+            Shader* bumpTextureGenerator;
+            Shader* refractionTextureGenerator;
             RenderStates currentStates; /**> the current render states.*/
             View view; /**> the view of the component.*/
             Tile* frameBufferTile, *depthBufferTile; /**> the frame, depth and normal buffer.*/

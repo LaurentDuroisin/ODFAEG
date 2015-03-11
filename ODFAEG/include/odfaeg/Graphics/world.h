@@ -108,6 +108,14 @@ namespace odfaeg {
                     }
                     return nullptr;
                 }
+                static graphic::Entity* getReflectionMap(std::string expression, int n...) {
+                    if (currentEntityManager != nullptr) {
+                        va_list args;
+                        va_start(args, n);
+                        return &currentEntityManager->getRefractionTile(expression, n, args);
+                    }
+                    return nullptr;
+                }
                 /** \fn getVisibleEntities (std::string expression)
                 *   \brief get the visible entities of the given types.
                 *   \param the types of the entities to get.

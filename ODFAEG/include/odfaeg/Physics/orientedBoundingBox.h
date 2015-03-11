@@ -178,6 +178,7 @@ namespace odfaeg {
                 void move(math::Vec3f t);
                 void scale(math::Vec3f s);
                 void rotate(float angle, math::Vec3f r);
+                bool isFlat();
             private :
                 int x, y, z, width, height, depth; /**< the x position of the bounding box*/
                 /**< the y position of the bounding box*/
@@ -190,6 +191,7 @@ namespace odfaeg {
                 /**< the third edge of the bounding box*/
                 math::Vec3f center; /**< the center of the bounding box*/
                 std::array<math::Vec3f, 8> points;
+                bool flat;
         };
     }
 }

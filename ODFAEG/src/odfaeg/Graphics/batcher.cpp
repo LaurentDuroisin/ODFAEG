@@ -17,6 +17,31 @@ namespace odfaeg {
                 this->rect = rect;
                 this->texId = texId;
             }
+            void Material::TextureInfo::setTexId(std::string texId) {
+                this->texId = texId;
+            }
+            std::string Material::TextureInfo::getTexId() const {
+                return texId;
+            }
+            bool Material::TextureInfo::operator== (TextureInfo& info) {
+                return texture == info.texture;
+            }
+            bool Material::TextureInfo::operator!= (TextureInfo& info) {
+                return texture != info.texture;
+            }
+            const Texture* Material::TextureInfo::getTexture() const {
+                return texture;
+            }
+            sf::IntRect Material::TextureInfo::getTexRect() const {
+                return rect;
+            }
+            Material::Material() {
+                color = sf::Color::White;
+                specularIntensity = 0;
+                specularPower = 0;
+                refractionFactor = 0;
+                bumpTexture = nullptr;
+            }
             float Material::getMaxSpecularIntensity() {
                 return maxSpecularIntensity;
             }
@@ -45,29 +70,17 @@ namespace odfaeg {
                     maxSpecularPower = specularPower;
                 this->specularPower = specularPower;
             }
-
-            void Material::TextureInfo::setTexId(std::string texId) {
-                this->texId = texId;
+            void Material::setBumpTexture(const Texture* bumpTexture) {
+                this->bumpTexture = bumpTexture;
             }
-            std::string Material::TextureInfo::getTexId() const {
-                return texId;
+            const Texture* Material::getBumpTexture() {
+                return bumpTexture;
             }
-            bool Material::TextureInfo::operator== (TextureInfo& info) {
-                return texture == info.texture;
+            void Material::setRefractionFactor(float refractionFactor) {
+                this->refractionFactor = refractionFactor;
             }
-            bool Material::TextureInfo::operator!= (TextureInfo& info) {
-                return texture != info.texture;
-            }
-            const Texture* Material::TextureInfo::getTexture() const {
-                return texture;
-            }
-            sf::IntRect Material::TextureInfo::getTexRect() const {
-                return rect;
-            }
-            Material::Material() {
-                color = sf::Color::White;
-                specularIntensity = 0;
-                specularPower = 0;
+            float Material::getRefractionFactor() {
+                return refractionFactor;
             }
             int Material::getNbTextures () {
                 return texInfos.size();
@@ -106,7 +119,11 @@ namespace odfaeg {
                 return color == material.color;
             }
             bool Material::operator== (const Material& material) {
-                return useSameTextures(material) && hasSameColor(material);
+                return useSameTextures(material) && hasSameColor(material)
+                       && specularIntensity == material.specularIntensity
+                       && specularPower == material.specularPower
+                       && bumpTexture == material.bumpTexture
+                       && refractionFactor == material.refractionFactor;
             }
             bool Material::operator!= (Material& material) {
                 return !useSameTextures(material) || !hasSameColor(material);

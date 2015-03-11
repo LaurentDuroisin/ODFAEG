@@ -1,7 +1,7 @@
 #ifndef ODFAEG_RAY_HPP
 #define ODFAEG_RAY_HPP
 #include "../Math/vec4.h"
-#include "../Math/matrix4.h"
+#include "../Math/matrix3.h"
 /**
   *\namespace odfaeg
   * the namespace of the Opensource Development Framework Adapted for Every Games.
@@ -118,6 +118,7 @@ namespace odfaeg {
                     ar(ext);
                     ar(dir);
                 }
+                int whichSide(Vec3f point);
         };
     }
 }

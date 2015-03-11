@@ -5839,7 +5839,7 @@
 1423297100 source:/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Core/application.cpp
 	"../../../include/odfaeg/Core/application.h"
 
-1424851582 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/application.h
+1426072382 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/application.h
 	"resourceCache.h"
 	"../Graphics/renderWindow.h"
 	"../Graphics/renderStates.h"
@@ -6046,7 +6046,7 @@
 	"../entity.h"
 	"selectable.h"
 
-1420550190 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/computer.h
+1426063941 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/computer.h
 	"matrix3.h"
 	"vec4.h"
 	<limits.h>
@@ -6067,7 +6067,7 @@
 	"../../Core/serialization.h"
 	<vector>
 
-1422362841 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/transformable.h
+1425402132 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/transformable.h
 	"transformMatrix.h"
 	"../Physics/boundingBox.h"
 
@@ -6166,7 +6166,7 @@
 	"entity.h"
 	"../Physics/boundingPolyhedron.h"
 
-1423559481 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Physics/boundingPolyhedron.h
+1425541455 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Physics/boundingPolyhedron.h
 	<vector>
 	"../Math/vec2f.h"
 	"../Math/vec4.h"
@@ -6390,7 +6390,7 @@
 1417715153 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/2D/tGround.h
 	"../../../../include/odfaeg/Graphics/2D/tile.h"
 
-1422357958 source:/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/2D/ponctualLight.cpp
+1425492978 source:/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/2D/ponctualLight.cpp
 	"../../../../include/odfaeg/Graphics/2D/ponctualLight.h"
 	"../../../../include/odfaeg/Graphics/transformMatrix.h"
 	"../../../../include/odfaeg/Physics/boundingPolyhedron.h"
@@ -6716,7 +6716,7 @@
 1398341388 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Network/export.hpp
 	"../config.hpp"
 
-1423300228 source:/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Network/client.cpp
+1425325655 source:/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Network/client.cpp
 	"../../../include/odfaeg/Network/client.h"
 	"../../../include/odfaeg/Network/network.h"
 	"../../../include/odfaeg/Core/application.h"
@@ -6786,7 +6786,7 @@
 	"../../../include/odfaeg/Network/encryptedPacket.h"
 	"../../../include/odfaeg/Network/network.h"
 
-1424870407 source:/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Network/network.cpp
+1425316459 source:/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Network/network.cpp
 	"../../../include/odfaeg/Network/network.h"
 	"../../../include/odfaeg/Core/application.h"
 
@@ -6795,7 +6795,7 @@
 	<stdlib.h>
 	<iostream>
 
-1424870541 source:/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Network/srkserveur.cpp
+1425325481 source:/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Network/srkserveur.cpp
 	"../../../include/odfaeg/Network/srkserveur.h"
 	"../../../include/odfaeg/Network/network.h"
 	"../../../include/odfaeg/Core/application.h"
@@ -6804,7 +6804,7 @@
 	"../../../include/odfaeg/Network/symEncPacket.h"
 	<climits>
 
-1424870564 source:/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Network/user.cpp
+1425327075 source:/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Network/user.cpp
 	"../../../include/odfaeg/Network/user.h"
 	"../../../include/odfaeg/Core/singleton.h"
 	"../../../include/odfaeg/Network/network.h"
@@ -6831,7 +6831,7 @@
 	<SFML/System/Vector3.hpp>
 	<SFML/Graphics/Color.hpp>
 
-1423473340 source:/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Physics/boundingBox.cpp
+1425546678 source:/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Physics/boundingBox.cpp
 	"../../../include/odfaeg/Physics/boundingBox.h"
 	"../../../include/odfaeg/Physics/boundingSphere.h"
 	"../../../include/odfaeg/Physics/boundingEllipsoid.h"
@@ -6839,13 +6839,14 @@
 	"../../../include/odfaeg/Physics/boundingPolyhedron.h"
 	"../../../include/odfaeg/Graphics/transformMatrix.h"
 
-1423559653 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Physics/boundingEllipsoid.h
+1425493442 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Physics/boundingEllipsoid.h
 	"../Math/vec2f.h"
 	"../Math/ray.h"
 	"boundingVolume.h"
 	"../Math/matrix4.h"
+	"../Math/triangle.h"
 
-1423559753 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Physics/orientedBoundingBox.h
+1425543889 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Physics/orientedBoundingBox.h
 	"../Math/vec2f.h"
 	"../Math/ray.h"
 	"boundingVolume.h"
@@ -6859,7 +6860,7 @@
 	"../../../include/odfaeg/Physics/boundingPolyhedron.h"
 	"../../../include/odfaeg/Graphics/transformMatrix.h"
 
-1423559521 source:/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Physics/boundingPolyhedron.cpp
+1426064117 source:/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Physics/boundingPolyhedron.cpp
 	"../../../include/odfaeg/Physics/boundingPolyhedron.h"
 	"../../../include/odfaeg/Physics/boundingSphere.h"
 	"../../../include/odfaeg/Physics/boundingEllipsoid.h"
@@ -6890,7 +6891,7 @@
 	<SFML/System/Vector2.hpp>
 	<SFML/Graphics/Color.hpp>
 
-1423559770 source:/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Physics/orientedBoundingBox.cpp
+1425546766 source:/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Physics/orientedBoundingBox.cpp
 	"../../../include/odfaeg/Physics/boundingBox.h"
 	"../../../include/odfaeg/Physics/boundingSphere.h"
 	"../../../include/odfaeg/Physics/boundingEllipsoid.h"
@@ -7285,7 +7286,7 @@
 
 1417423936 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/2D/gridMap.tpp
 
-1418287148 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/plane.h
+1425830227 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/plane.h
 	"vec4.h"
 
 1424858631 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/variant.h
@@ -7300,10 +7301,10 @@
 	<type_traits>
 	<cstdlib>
 
-1423574923 source:/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/entity.cpp
+1425141823 source:/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/entity.cpp
 	"../../../include/odfaeg/Graphics/entity.h"
 
-1423563615 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/entity.h
+1425142186 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/entity.h
 	"transformable.h"
 	"drawable.h"
 	"../Core/state.h"
@@ -7314,7 +7315,7 @@
 	"../Core/serialization.h"
 	<vector>
 
-1424691752 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/entityManager.h
+1425644944 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/entityManager.h
 	"../Core/utilities.h"
 	"../Physics/boundingBox.h"
 	"entity.h"
@@ -7361,7 +7362,7 @@
 
 1417967116 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/command.impl
 
-1424790000 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/batcher.h
+1425630966 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/batcher.h
 	"vertexArray.h"
 	<map>
 
@@ -7379,7 +7380,7 @@
 
 1418120732 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/selectable.h
 
-1423910505 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/fastRenderComponent.h
+1425631289 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/fastRenderComponent.h
 	"renderWindow.h"
 	"renderTexture.h"
 	"tile.h"
@@ -7393,7 +7394,7 @@
 
 1418118560 source:/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Core/entitySystem.cpp
 
-1423561062 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/map.h
+1425645201 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/map.h
 	"gridMap.h"
 	"animatedEntity.h"
 	"2D/wall.h"
@@ -7432,15 +7433,15 @@
 	"entity.h"
 	"light.h"
 
-1423651137 source:/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/batcher.cpp
+1425630932 source:/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/batcher.cpp
 	"../../../include/odfaeg/Graphics/batcher.h"
 
-1424790139 source:/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/fastRenderComponent.cpp
+1425919145 source:/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/fastRenderComponent.cpp
 	"../../../include/odfaeg/Graphics/fastRenderComponent.h"
 	"glCheck.h"
 	<memory.h>
 
-1424791167 source:/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/map.cpp
+1425915687 source:/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/map.cpp
 	"../../../include/odfaeg/Graphics/map.h"
 	"../../../include/odfaeg/Graphics/rectangleShape.h"
 	"../../../include/odfaeg/Physics/boundingEllipsoid.h"
@@ -7509,7 +7510,7 @@
 	"../Graphics/world.h"
 	"export.hpp"
 
-1424590694 source:/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/gridMap.cpp
+1425493024 source:/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/gridMap.cpp
 	"../../../include/odfaeg/Graphics/gridMap.h"
 
 1424532357 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/component.h
@@ -7519,11 +7520,11 @@
 
 1423731810 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/command.tpp
 
-1423510029 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/ray.h
+1425493293 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/ray.h
 	"../Math/vec4.h"
-	"../Math/matrix4.h"
+	"../Math/matrix3.h"
 
-1423510416 source:/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Math/ray.cpp
+1425493182 source:/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Math/ray.cpp
 	"../../../include/odfaeg/Math/ray.h"
 
 1419801598 source:/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/billBoard.cpp
@@ -7631,7 +7632,7 @@
 	"../Physics/boundingPolyhedron.h"
 	"tile.h"
 
-1424691714 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/world.h
+1425645163 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/world.h
 	<SFML/Graphics.hpp>
 	"../Graphics/entityManager.h"
 	"../Core/entitySystem.h"
@@ -7668,14 +7669,14 @@
 
 1422884284 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/GUI/actionListener.hpp
 
-1423988553 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/heavyComponent.h
+1425635228 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/heavyComponent.h
 	"component.h"
 	"entity.h"
 
 1423988342 source:/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/optionPane.cpp
 	"../../../../include/odfaeg/Graphics/GUI/optionPane.hpp"
 
-1423923342 source:/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/textArea.cpp
+1425135062 source:/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/textArea.cpp
 	"../../../../include/odfaeg/Graphics/GUI/textArea.hpp"
 
 1423923326 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/GUI/textArea.hpp
@@ -7697,4 +7698,7 @@
 
 1424860202 source:/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/component.cpp
 	"../../../include/odfaeg/Graphics/component.h"
+
+1425830423 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/triangle.h
+	"plane.h"
 

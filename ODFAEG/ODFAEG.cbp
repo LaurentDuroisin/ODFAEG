@@ -171,6 +171,7 @@
 		<Unit filename="include/odfaeg/Math/ray.h" />
 		<Unit filename="include/odfaeg/Math/segment.h" />
 		<Unit filename="include/odfaeg/Math/transformMatrix.h" />
+		<Unit filename="include/odfaeg/Math/triangle.h" />
 		<Unit filename="include/odfaeg/Math/vec2f.h" />
 		<Unit filename="include/odfaeg/Math/vec4.h" />
 		<Unit filename="include/odfaeg/Network/aes.h" />

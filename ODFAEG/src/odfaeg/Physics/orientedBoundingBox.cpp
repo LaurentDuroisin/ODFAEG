@@ -71,6 +71,7 @@ namespace odfaeg {
             depth = bz.magnitude();
             bz = bz.normalize();
             center = math::Vec3f (x + width * 0.5f, y + height * 0.5f, z + depth * 0.5f);
+            flat = false;
         }
         OrientedBoundingBox::OrientedBoundingBox(math::Vec3f p1, math::Vec3f p2, math::Vec3f p3, math::Vec3f p4) {
             std::array<math::Vec3f, 4> corners;
@@ -98,6 +99,7 @@ namespace odfaeg {
             depth = bz.magnitude();
             bz = bz.normalize();
             center = math::Vec3f (x + width * 0.5f, y + height * 0.5f, z + depth * 0.5f);
+            flat = true;
         }
         bool OrientedBoundingBox::intersects(BoundingSphere &bs) {
             return bs.intersects(*this);
@@ -191,38 +193,28 @@ namespace odfaeg {
             return true;
         }
         bool OrientedBoundingBox::intersects (BoundingBox &bx) {
-            std::array<math::Vec3f, 6> bissectors1 = {-this->bx * width * 0.5f,
-            -this->by * height * 0.5f,
-            -this->bz * depth * 0.5f,
-            this->bx * width * 0.5f,
-            this->by * height * 0.5f,
-            this->bz * depth * 0.5f};
-            std::array<math::Vec3f, 6> bissectors2 = {math::Vec3f(-bx.getWidth() * 0.5f, 0, 0),
-            math::Vec3f(0, -bx.getHeight() * 0.5f,0),
-            math::Vec3f(0, 0, -bx.getDepth() * 0.5f),
-            math::Vec3f(bx.getCenter().x + bx.getWidth() * 0.5f, 0, 0),
-            math::Vec3f(0, bx.getHeight() * 0.5f, 0),
-            math::Vec3f(0, 0, bx.getDepth() * 0.5f)};
-            unsigned int ptIndex1 = 0, ptIndex2 = 0, faceIndex1 = 0, faceIndex2 = 0;
-            float distMin1, distMin2;
-            ptIndex1 = math::Computer::checkNearestVertexFromShape(points, bissectors2,distMin1,faceIndex2);
-            ptIndex2 = math::Computer::checkNearestVertexFromShape(bx.getVertices(), bissectors1,distMin2,faceIndex1);
-            if (distMin1 < distMin2) {
-                math::Vec3f d = points[ptIndex1] - bx.getCenter();
-                float p = d.projOnAxis(bissectors2[faceIndex2]);
-                if (p * p > bissectors2[faceIndex2].magnSquared())
-                    return false;
-                return true;
+            /*if (depth == 0 && bx.getDepth() == 0) {
+                BoundingPolyhedron bbp(Vec3f(x, y, z), Vec3f(x + width, y, z), Vec3f(x + width, y + height, z), true);
+                bbp.addTriangle(Vec3f(x + width, y + height, z), Vec3f(x, y+height,z), Vec3f(x, y, z));
+                return bp.intersects(bbp);
             } else {
-                math::Vec3f d = bx.getVertices()[ptIndex2] - center;
-                float p = d.projOnAxis(bissectors1[faceIndex1]);
-                if (p * p > bissectors1[faceIndex1].magnSquared())
-                    return false;
-                return true;
-            }
+                BoundingPolyhedron bbp(Vec3f(x, y, z), Vec3f(x + width, y, z), Vec3f(x + width, y + height, z), false);
+                bbp.addTriangle(Vec3f(x + width, y + height, z), Vec3f(x, y+height, z), Vec3f(x, y, z));
+                bbp.addTriangle(Vec3f(x, y, z+depth), Vec3f(x + width, y, z+depth), Vec3f(x + width, y + height, z+depth));
+                bbp.addTriangle(Vec3f(x + width, y + height, z+depth), Vec3f(x, y+height, z+depth), Vec3f(x, y, z+depth));
+                bbp.addTriangle(Vec3f(x, y+height, z), Vec3f(x+width, y+height, z),Vec3f(x+width, y+height, z+depth));
+                bbp.addTriangle(Vec3f(x+width, y+height, z+depth), Vec3f(x, y+height, z+depth),Vec3f(x, y+height, z));
+                bbp.addTriangle(Vec3f(x, y,z), Vec3f(x+width, y, z),Vec3f(x+width, y, z+depth));
+                bbp.addTriangle(Vec3f(x+width, y, z+depth), Vec3f(x, y, z+depth),Vec3f(x, y, z));
+                bbp.addTriangle(Vec3f(x, y, z), Vec3f(x, y+height, z), Vec3f(x, y+height, z + depth));
+                bbp.addTriangle(Vec3f(x, y+height, z+depth), Vec3f(x, y, z+depth), Vec3f(x, y, z));
+                bbp.addTriangle(Vec3f(x+width, y, z), Vec3f(x+width, y+height, z), Vec3f(x+width, y+height, z + depth));
+                bbp.addTriangle(Vec3f(x+width, y+height, z+depth), Vec3f(x+width, y, z+depth), Vec3f(x+width, y, z));
+                return bbp.intersects(bp);
+            }*/
         }
         bool OrientedBoundingBox::intersects (OrientedBoundingBox &obx) {
-            std::array<math::Vec3f, 6> bi1;
+           /* std::array<math::Vec3f, 6> bi1;
             bi1[0] = bx * width * 0.5f;
             bi1[1] = by * height * 0.5f;
             bi1[2] = bz * depth * 0.5f;
@@ -256,10 +248,10 @@ namespace odfaeg {
                     return false;
                 }
                 return true;
-            }
+            }*/
         }
         bool OrientedBoundingBox::intersects (BoundingPolyhedron &bp) {
-            std::array<math::Vec3f, 6> bi;
+            /*std::array<math::Vec3f, 6> bi;
             bi[0] = bx * width * 0.5f;
             bi[1] = by * height * 0.5f;
             bi[2] = bz * depth * 0.5f;
@@ -290,7 +282,7 @@ namespace odfaeg {
                     return false;
                 }
                 return true;
-            }
+            }*/
         }
 
         math::Vec3f OrientedBoundingBox::getCenter() {
@@ -434,6 +426,9 @@ namespace odfaeg {
             width = extends[0][1] - extends[0][0];
             height = extends[1][1] - extends[1][0];
             depth = extends[2][1] - extends[2][0];
+        }
+        bool OrientedBoundingBox::isFlat() {
+            return flat;
         }
     }
 }

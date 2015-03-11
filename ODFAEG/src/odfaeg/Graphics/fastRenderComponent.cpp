@@ -16,22 +16,31 @@ namespace odfaeg {
             depthBuffer = new RenderTexture();
             frameBuffer = new RenderTexture();
             specularTexture = new RenderTexture();
-            specularTexture->create(resolution.x, resolution.y,window.getSettings());
+            bumpTexture = new RenderTexture();
+            refractionTexture = new RenderTexture();
             depthBuffer->create(resolution.x, resolution.y,window.getSettings());
             frameBuffer->create(resolution.x, resolution.y,window.getSettings());
+            specularTexture->create(resolution.x, resolution.y,window.getSettings());
+            bumpTexture->create(resolution.x, resolution.y,window.getSettings());
+            refractionTexture->create(resolution.x, resolution.y,window.getSettings());
             frameBuffer->setView(window.getView());
             depthBuffer->setView(window.getView());
             specularTexture->setView(window.getView());
+            bumpTexture->setView(window.getView());
+            refractionTexture->setView(window.getView());
             frameBuffer->clear(sf::Color::Transparent);
             depthBuffer->clear(sf::Color::Transparent);
             specularTexture->clear(sf::Color::Transparent);
+            bumpTexture->clear(sf::Color::Transparent);
+            refractionTexture->clear(sf::Color::Transparent);
             frameBufferTile = new Tile(&frameBuffer->getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
             depthBufferTile = new Tile(&depthBuffer->getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
             if (Shader::isAvailable()) {
-
                 frameBufferGenerator = new Shader();
                 depthBufferGenerator = new Shader();
                 specularTextureGenerator = new Shader();
+                bumpTextureGenerator = new Shader();
+                refractionTextureGenerator = new Shader();
                 //With modern openg, we need to use another vertex shader.
                 //GLSL 3 is not supported by all the drivers so we use GLSL 1.
                 if (Shader::getShadingLanguageVersionMajor() >= 3 && Shader::getShadingLanguageVersionMinor() >= 3) {
@@ -175,13 +184,8 @@ namespace odfaeg {
                             "vec4 colors[2];"
                             "colors[1] = vec4(z, pixel.a, z, pixel.a);"
                             "colors[0] = vec4(z, pixel.a, color.b, color.a);"
-                            "bool b = (z >= color.z && pixel.a >= color.a);"
+                            "bool b = (z >= color.z && pixel.a != 0 && pixel.a >= color.a);"
                             "gl_FragColor = colors[int(b)];"
-                            "/*if (z >= color.z && pixel.a >= color.a) {"
-                                "gl_FragColor = vec4(z, pixel.a, z, pixel.a);"
-                            "} else {"
-                                "gl_FragColor = vec4(z, pixel.a, color.b, color.a);"
-                            "}*/"
                         "}";
                         const std::string frameBufferGenFragShader =
                         "#version 130 \n"
@@ -197,19 +201,46 @@ namespace odfaeg {
                             "vec4 color = texture2D(frameBuffer, position);"
                             "vec4 pixel = (haveTexture==1) ? gl_Color * texture2D(texture, gl_TexCoord[0].xy) : gl_Color;"
                             "float z = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
-                            "/*vec4 colors[2];"
+                            "vec4 colors[2];"
                             "colors[1] = pixel * pixel.a + color * (1 - pixel.a);"
                             "colors[1].a = pixel.a + color.a * (1 - pixel.a);"
                             "colors[0] = color * depth.g + pixel * (1 - depth.g);"
                             "colors[0].a = color.a + pixel.a * (1 - color.a);"
-                            "colors[1] = pixel;"
-                            "colors[0] = color;"
-                            "bool b = (z >= depth.z);"
-                            "gl_FragColor = colors[int(b)];*/"
-                            "if (z >= depth.z) {"
-                                "gl_FragColor = pixel;"
+                            "bool b = (z >= depth.r);"
+                            "gl_FragColor = colors[int(b)];"
+                        "}";
+                        const std::string bumpGenFragShader =
+                        "#version 130 \n"
+                        "uniform sampler2D bumpTexture;"
+                        "uniform sampler2D texture;"
+                        "uniform vec3 resolution;"
+                        "uniform float haveTexture;"
+                        "in mat4 projMat;"
+                        "void main() {"
+                            "vec2 position = ( gl_FragCoord.xy / resolution.xy );"
+                            "vec4 bump1 = texture2D(bumpTexture, position);"
+                            "vec4 bump2 = (haveTexture==1) ? texture2D(texture, gl_TexCoord[0].xy) : vec4(0, 0, 0, 0);"
+                            "float z = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
+                            "if (z >= bump1.a) {"
+                                "gl_FragColor = vec4(bump2.xyz, z);"
                             "} else {"
-                                "gl_FragColor = color;"
+                                "gl_FragColor = bump1;"
+                            "}"
+                        "}";
+                        const std::string refractionGenFragShader =
+                        "#version 130 \n"
+                        "uniform sampler2D refractionTexture;"
+                        "uniform vec3 resolution;"
+                        "uniform float refractionFactor;"
+                        "in mat4 projMat;"
+                        "void main() {"
+                            "vec2 position = ( gl_FragCoord.xy / resolution.xy );"
+                            "vec4 refraction = texture2D(refractionTexture, position);"
+                            "float z = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
+                            "if (z >= refraction.a) {"
+                                "gl_FragColor = vec4(refractionFactor, 0, 0, z);"
+                            "} else {"
+                                "gl_FragColor = refraction;"
                             "}"
                         "}";
                         if (!depthBufferGenerator->loadFromMemory(vertexShader, depthGenFragShader))
@@ -218,6 +249,10 @@ namespace odfaeg {
                             throw core::Erreur(51, "Failed to load frame buffer generator shader", 0);
                         if (!specularTextureGenerator->loadFromMemory(vertexShader, specularGenFragShader))
                             throw core::Erreur(52, "Failed to load specular texture generator shader", 0);
+                        if (!bumpTextureGenerator->loadFromMemory(vertexShader, bumpGenFragShader))
+                            throw core::Erreur(53, "Failed to load bump texture generator shader", 0);
+                        if (!refractionTextureGenerator->loadFromMemory(vertexShader, refractionGenFragShader))
+                            throw core::Erreur(54, "Failed to load refraction texture generator shader", 0);
                 }
                 frameBufferGenerator->setParameter("resolution",resolution.x, resolution.y, resolution.z);
                 frameBufferGenerator->setParameter("depthBuffer", depthBuffer->getTexture());
@@ -231,6 +266,11 @@ namespace odfaeg {
                 specularTextureGenerator->setParameter("texture",Shader::CurrentTexture);
                 specularTextureGenerator->setParameter("maxM", Material::getMaxSpecularIntensity());
                 specularTextureGenerator->setParameter("maxP", Material::getMaxSpecularPower());
+                bumpTextureGenerator->setParameter("resolution",resolution.x, resolution.y, resolution.z);
+                bumpTextureGenerator->setParameter("bumpTexture",bumpTexture->getTexture());
+                bumpTextureGenerator->setParameter("texture",Shader::CurrentTexture);
+                refractionTextureGenerator->setParameter("resolution",resolution.x, resolution.y, resolution.z);
+                refractionTextureGenerator->setParameter("bumpTexture",bumpTexture->getTexture());
                 /*if (window.getSettings().majorVersion >= 3) {
                     frameBufferGenerator->bindAttribute(0, "vertex_position");
                     depthBufferGenerator->bindAttribute(0, "vertex_position");
@@ -270,6 +310,8 @@ namespace odfaeg {
              frameBuffer->clear(backgroundColor);
              depthBuffer->clear(sf::Color::Transparent);
              specularTexture->clear(sf::Color::Transparent);
+             bumpTexture->clear(sf::Color::Transparent);
+             refractionTexture->clear(sf::Color::Transparent);
         }
         Tile& FastRenderComponent::getFrameBufferTile () {
             return *frameBufferTile;
@@ -309,14 +351,16 @@ namespace odfaeg {
             frameBuffer->setView(view);
             depthBuffer->setView(view);
             specularTexture->setView(view);
+            bumpTexture->setView(view);
+            refractionTexture->setView(view);
         }
         void FastRenderComponent::setExpression(std::string expression) {
             this->expression = expression;
         }
         void FastRenderComponent::drawNextFrame() {
-            //std::cout<<"draw next frame"<<std::endl;
             update = false;
-            currentStates.blendMode = sf::BlendAlpha;
+            clear();
+            currentStates.blendMode = sf::BlendNone;
             if (Shader::isAvailable()) {
                 if (Shader::getShadingLanguageVersionMajor() >= 3 && Shader::getShadingLanguageVersionMinor() >= 3) {
                     std::vector<float> instancesMVP;
@@ -388,40 +432,53 @@ namespace odfaeg {
                         currentStates.texture = m_instances[i]->getMaterial().getTexture();
                         float specularIntensity = m_instances[i]->getMaterial().getSpecularIntensity();
                         float specularPower = m_instances[i]->getMaterial().getSpecularPower();
+                        float refractionFactor = m_instances[i]->getMaterial().getRefractionFactor();
                         specularTextureGenerator->setParameter("m", specularIntensity);
                         specularTextureGenerator->setParameter("p", specularPower);
+                        refractionTextureGenerator->setParameter("refractionFactor", refractionFactor);
                         if (currentStates.texture != nullptr) {
                             depthBufferGenerator->setParameter("haveTexture", 1.f);
                             frameBufferGenerator->setParameter("haveTexture", 1.f);
                             specularTextureGenerator->setParameter("haveTexture", 1.f);
                         } else {
-
                             depthBufferGenerator->setParameter("haveTexture", 0.f);
                             frameBufferGenerator->setParameter("haveTexture", 0.f);
                             specularTextureGenerator->setParameter("haveTexture", 0.f);
                         }
-                        VertexArray& va = m_instances[i]->getVertexArray();
+                        /*VertexArray& va = m_instances[i]->getVertexArray();
                         currentStates.shader = frameBufferGenerator;
                         frameBuffer->draw(va, currentStates);
                         currentStates.shader = depthBufferGenerator;
                         depthBuffer->draw(va, currentStates);
                         currentStates.shader = specularTextureGenerator;
                         specularTexture->draw(va, currentStates);
+                        currentStates.shader = bumpTextureGenerator;
+                        currentStates.texture = m_instances[i]->getMaterial().getBumpTexture();
+                        if (currentStates.texture != nullptr) {
+                            bumpTextureGenerator->setParameter("haveTexture", 0.f);
+                        } else {
+                            bumpTextureGenerator->setParameter("haveTexture", 1.f);
+                        }
+                        bumpTexture->draw(va, currentStates);
+                        currentStates.shader = refractionTextureGenerator;
+                        refractionTexture->draw(va, currentStates);
                         /*for (unsigned int j = 0; j < va.getVertexCount(); j++) {
                             std::cout<<va[j].position.x<<" "<<va[j].position.y<<" "<<va[j].position.z<<std::endl;
                         }*/
-                        /*for (unsigned int j = 0; j < m_instances[i]->getVertexArrays().size(); j++) {
+                        for (unsigned int j = 0; j < m_instances[i]->getVertexArrays().size(); j++) {
                             //currentStates.transform = m_instances[i]->getTransforms()[j].get();
                             currentStates.shader = frameBufferGenerator;
                             frameBuffer->draw(*m_instances[i]->getVertexArrays()[j], currentStates);
                             currentStates.shader = depthBufferGenerator;
                             depthBuffer->draw(*m_instances[i]->getVertexArrays()[j], currentStates);
-                        }*/
+                        }
                     }
                 }
                 depthBuffer->display();
                 frameBuffer->display();
                 specularTexture->display();
+                bumpTexture->display();
+                refractionTexture->display();
             } else {
                 for (unsigned int i = 0; i < visibleEntities.size(); i++) {
                     for (unsigned int j = 0; j < visibleEntities[i]->getFaces().size(); j++) {
@@ -450,6 +507,12 @@ namespace odfaeg {
         int FastRenderComponent::getLayer() {
             return getPosition().z;
         }
+        const Texture& FastRenderComponent::getBumpTexture() {
+            return bumpTexture->getTexture();
+        }
+        const Texture& FastRenderComponent::getRefractionTexture() {
+            return refractionTexture->getTexture();
+        }
         FastRenderComponent::~FastRenderComponent() {
             delete frameBuffer;
             delete frameBufferGenerator;
@@ -459,6 +522,10 @@ namespace odfaeg {
             delete depthBufferTile;
             delete specularTexture;
             delete specularTextureGenerator;
+            delete bumpTexture;
+            delete bumpTextureGenerator;
+            delete refractionTexture;
+            delete refractionTextureGenerator;
             GLuint mvp = reinterpret_cast<GLuint>(mvpBuffer);
             glCheck(glDeleteBuffers(1, &mvp));
         }

@@ -36,6 +36,8 @@ namespace odfaeg {
             * \return the texture with the specular components.
             */
             virtual const Texture& getSpecularTexture() = 0;
+            virtual const Texture& getRefractionTexture() = 0;
+            virtual const Texture& getBumpTexture() = 0;
             virtual Tile& getFrameBufferTile() = 0;
             virtual Tile& getDepthBufferTile() = 0;
         };

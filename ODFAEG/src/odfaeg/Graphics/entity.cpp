@@ -3,7 +3,6 @@ namespace odfaeg {
     namespace graphic {
         int Entity::nbEntities = 0;
         int Entity::nbEntitiesTypes = 0;
-
         std::map<int, std::string>* Entity::types = initTypes();
         Entity::Entity (math::Vec3f position, math::Vec3f size, math::Vec3f origin, std::string sType, Entity *parent) :
             Transformable (position, size, origin), Drawable(), entityState("Entity State", nullptr) {

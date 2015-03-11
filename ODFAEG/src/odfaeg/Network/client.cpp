@@ -91,13 +91,13 @@ namespace odfaeg {
         }
         void SrkClient::sendTCPPacket(Packet &packet) {
             //if (useThread)
-                lock_guard<recursive_mutex> locker(rec_mutex);
+                //lock_guard<recursive_mutex> locker(rec_mutex);
             if(clientTCP.send(packet) != Socket::Done)
                 cout<<"Erreur!"<<endl;
         }
         void SrkClient::sendUDPPacket(Packet &packet) {
             //if (useThread)
-                lock_guard<recursive_mutex> locker(rec_mutex);
+                //lock_guard<recursive_mutex> locker(rec_mutex);
             if(clientUDP.send(packet, srvAddress, remotePortUDP) != Socket::Done)
                 cout<<"Erreur!"<<endl;
         }
@@ -108,7 +108,7 @@ namespace odfaeg {
             if (running) {
                 short unsigned int port;
                 IpAddress address;
-                if (selector.wait(milliseconds(100))) {
+                if (selector.wait(milliseconds(10))) {
                      if (selector.isReady(clientTCP)) {
                         if (useSecuredConnexion) {
                             SymEncPacket packet;
@@ -150,10 +150,7 @@ namespace odfaeg {
                                 } else {
                                     Network::addResponse(message);
                                 }
-                            } else {
-                                cout<<"This message don't provide from the server."<<endl;
                             }
-
                         }
                     }
                 }
@@ -192,11 +189,18 @@ namespace odfaeg {
                             if (address == srvAddress) {
                                 string message;
                                 packet>>message;
-                                if (message == "Ping") {
+
+                                if (message == "PING") {
                                     packet.clear();
-                                    packet<<"Pong";
+                                    packet<<"PONG";
+                                    Network::sendUdpPacket(packet);
+                                } else if (message == "GET_TIME") {
+                                    std::cout<<"GET TIME"<<std::endl;
+                                    packet.clear();
+                                    packet<<"SET_TIME*"+core::conversionLongString(core::Application::getTimeClk().getElapsedTime().asMicroseconds());
                                     Network::sendUdpPacket(packet);
                                 } else {
+                                    std::cout<<"message : "<<message<<std::endl;
                                     Network::addResponse(message);
                                 }
                             } else {

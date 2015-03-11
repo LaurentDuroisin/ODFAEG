@@ -75,12 +75,13 @@ namespace odfaeg {
                     if (window != nullptr && window->isOpen()) {
                         render();
                         update();
-                        if (network::Network::getCliInstance().isRunning() && !network::Network::getCliInstance().isUsingThread()) {
-                            network::Network::getCliInstance().checkMessages();
-                        }
-                        if (network::Network::getSrvInstance().isRunning() && !network::Network::getSrvInstance().isUsingThread()) {
-                            network::Network::getSrvInstance().checkMessages();
-                        }
+                    }
+                    if (network::Network::getCliInstance().isRunning() && !network::Network::getCliInstance().isUsingThread()) {
+                        network::Network::getCliInstance().checkMessages();
+                    }
+                    if (network::Network::getSrvInstance().isRunning() && !network::Network::getSrvInstance().isUsingThread()) {
+
+                        network::Network::getSrvInstance().checkMessages();
                     }
                     onExec();
                     getClock("LoopTime").restart();
@@ -268,7 +269,7 @@ namespace odfaeg {
             ~Application() {
                 stop();
             }
-            static sf::Clock getTimeClk() {
+            static sf::Clock& getTimeClk() {
                 return timeClk;
             }
             /** > a pointer to the current odfaeg application*/
