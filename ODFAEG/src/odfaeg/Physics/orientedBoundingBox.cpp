@@ -101,13 +101,13 @@ namespace odfaeg {
             center = math::Vec3f (x + width * 0.5f, y + height * 0.5f, z + depth * 0.5f);
             flat = true;
         }
-        bool OrientedBoundingBox::intersects(BoundingSphere &bs) {
-            return bs.intersects(*this);
+        bool OrientedBoundingBox::intersects(BoundingSphere &bs, CollisionResultSet::Info& info) {
+            return bs.intersects(*this, info);
         }
-        bool OrientedBoundingBox::intersects(BoundingEllipsoid &be) {
-            return be.intersects(*this);
+        bool OrientedBoundingBox::intersects(BoundingEllipsoid &be, CollisionResultSet::Info& info) {
+            return be.intersects(*this, info);
         }
-        bool OrientedBoundingBox::intersects (math::Ray& ray, bool segment) {
+        bool OrientedBoundingBox::intersects (math::Ray& ray, bool segment, CollisionResultSet::Info& info) {
             float tFar = INT_MAX;
             float tNear = -INT_MAX;
             int hi[3];
@@ -147,7 +147,7 @@ namespace odfaeg {
             }
             return true;
         }
-        bool OrientedBoundingBox::intersectsWhere (math::Ray& ray, math::Vec3f& i1, math::Vec3f& i2) {
+        bool OrientedBoundingBox::intersectsWhere (math::Ray& ray, math::Vec3f& i1, math::Vec3f& i2, CollisionResultSet::Info& info) {
             float tFar = INT_MAX;
             float tNear = -INT_MAX;
             int hi[3];
@@ -192,7 +192,7 @@ namespace odfaeg {
             i2 = ray.getOrig() + ray.getDir() * tFar;
             return true;
         }
-        bool OrientedBoundingBox::intersects (BoundingBox &bx) {
+        bool OrientedBoundingBox::intersects (BoundingBox &bx, CollisionResultSet::Info& info) {
             /*if (depth == 0 && bx.getDepth() == 0) {
                 BoundingPolyhedron bbp(Vec3f(x, y, z), Vec3f(x + width, y, z), Vec3f(x + width, y + height, z), true);
                 bbp.addTriangle(Vec3f(x + width, y + height, z), Vec3f(x, y+height,z), Vec3f(x, y, z));
@@ -213,7 +213,7 @@ namespace odfaeg {
                 return bbp.intersects(bp);
             }*/
         }
-        bool OrientedBoundingBox::intersects (OrientedBoundingBox &obx) {
+        bool OrientedBoundingBox::intersects (OrientedBoundingBox &obx, CollisionResultSet::Info& info) {
            /* std::array<math::Vec3f, 6> bi1;
             bi1[0] = bx * width * 0.5f;
             bi1[1] = by * height * 0.5f;
@@ -250,7 +250,7 @@ namespace odfaeg {
                 return true;
             }*/
         }
-        bool OrientedBoundingBox::intersects (BoundingPolyhedron &bp) {
+        bool OrientedBoundingBox::intersects (BoundingPolyhedron &bp, CollisionResultSet::Info& info) {
             /*std::array<math::Vec3f, 6> bi;
             bi[0] = bx * width * 0.5f;
             bi[1] = by * height * 0.5f;

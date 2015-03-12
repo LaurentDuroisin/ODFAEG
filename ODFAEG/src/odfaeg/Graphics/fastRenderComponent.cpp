@@ -184,7 +184,7 @@ namespace odfaeg {
                             "vec4 colors[2];"
                             "colors[1] = vec4(z, pixel.a, z, pixel.a);"
                             "colors[0] = vec4(z, pixel.a, color.b, color.a);"
-                            "bool b = (z >= color.z && pixel.a != 0 && pixel.a >= color.a);"
+                            "bool b = (z >= color.z && pixel.a != 0);"
                             "gl_FragColor = colors[int(b)];"
                         "}";
                         const std::string frameBufferGenFragShader =

@@ -9,31 +9,42 @@ namespace odfaeg {
     namespace physic {
         class CollisionResultSet {
             public :
-            static void pushCollisionEntity(graphic::Entity* entity) {
-                entities.push_back(entity);
-            }
-            static graphic::Entity* popCollisionEntity() {
-                graphic::Entity* entity = nullptr;
-                if (entities.size() > 0) {
-                    entity = entities.back();
-                    entities.pop_back();
+            struct Info {
+                Info() {
+                    entity = nullptr;
+                    nearestVertexIndex1 = -1;
+                    nearestPtIndex1 = -1;
+                    nearestEdgeIndex1 = -1;
+                    nearestFaceIndex1 = -1;
+                    nearestVertexIndex2 = -1;
+                    nearestPtIndex2 = -1;
+                    nearestEdgeIndex2 = -1;
+                    nearestFaceIndex2 = -1;
                 }
-                return entity;
-            }
-            static void pushCollisionMTU(math::Vec3f mtu) {
-                mtus.push_back(mtu);
-            }
-            static math::Vec3f popCollisionMTU () {
                 math::Vec3f mtu;
-                if (mtus.size() > 0) {
-                    mtu = mtus.back();
-                    mtus.pop_back();
+                graphic::Entity* entity;
+                int nearestVertexIndex1;
+                int nearestPtIndex1;
+                int nearestEdgeIndex1;
+                int nearestFaceIndex1;
+                int nearestVertexIndex2;
+                int nearestPtIndex2;
+                int nearestEdgeIndex2;
+                int nearestFaceIndex2;
+            };
+            static void pushCollisionInfo(Info info) {
+                infos.push_back(info);
+            }
+            static Info popCollisionInfo() {
+                Info info;
+                if (infos.size() > 0) {
+                    info = infos.back();
+                    infos.pop_back();
                 }
-                return mtu;
+                return info;
             }
             private :
-            static std::vector<graphic::Entity*> entities;
-            static std::vector<math::Vec3f> mtus;
+            static std::vector<Info> infos;
         };
     }
 }

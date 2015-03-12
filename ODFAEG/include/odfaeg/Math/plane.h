@@ -34,8 +34,9 @@ namespace odfaeg {
                 float d = n.dot2(r.getDir());
                 if (d == 0) {
                     i = -1;
-                    if (whichSide(r.getOrig()) == 0)
+                    if (whichSide(r.getOrig()) == 0) {
                         return true;
+                    }
                     return false;
                 }
                 i = n.dot2(p - r.getOrig()) / d;

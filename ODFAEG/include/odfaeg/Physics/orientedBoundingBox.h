@@ -46,38 +46,38 @@ namespace odfaeg {
                 *  \return the result of the collision test.
                 */
                 OrientedBoundingBox (math::Vec3f p1, math::Vec3f p2, math::Vec3f p3, math::Vec3f p4);
-                bool intersects (BoundingSphere &bs);
+                bool intersects (BoundingSphere &bs, CollisionResultSet::Info& info);
                 /**\fn bool intersects (BoundingEllipsoid &be)
                 *  \brief check if the oriented bounding box collides with a bounding ellipsoid.
                 *  \param the bounding ellips to test with.
                 *  \return the result of the collision test.
                 */
-                bool intersects (BoundingEllipsoid &be);
+                bool intersects (BoundingEllipsoid &be, CollisionResultSet::Info& info);
                 /**\fn bool intersects (BoundingBox &br)
                 *  \brief check if the oriented bounding box collides with a bounding box.
                 *  \param the bounding box to test with.
                 *  \return the result of the collision test.
                 */
-                bool intersects (BoundingBox &bx);
+                bool intersects (BoundingBox &bx, CollisionResultSet::Info& info);
                 /**\fn bool intersects (OrientedBoundingBox &other)
                 *  \brief check if the oriented bounding box collides with another.
                 *  \param the other oriented bounding box to test with.
                 *  \return the result of the collision test.
                 */
-                bool intersects (OrientedBoundingBox &other);
+                bool intersects (OrientedBoundingBox &other, CollisionResultSet::Info& info);
                 /**\fn bool intersects (BoundingPolyhedron &bp)
                 *  \brief check if the oriented bounding box collides with a bounding polyhedrin.
                 *  \param the bounding polyhedron to test with.
                 *  \return the result of the collision test.
                 */
-                bool intersects (BoundingPolyhedron &bp);
+                bool intersects (BoundingPolyhedron &bp, CollisionResultSet::Info& info);
                 /**\fn bool intersects (Ray &ray)
                 *  \brief check if the oriented bounding box collides with a segment.
                 *  \param the bounding polygon to test with.
                 *  \return the result of the collision test.
                 */
-                bool intersects (math::Ray &ray, bool segment);
-                bool intersectsWhere(math::Ray& ray, math::Vec3f& i1, math::Vec3f& i2);
+                bool intersects (math::Ray &ray, bool segment, CollisionResultSet::Info& info);
+                bool intersectsWhere(math::Ray& ray, math::Vec3f& i1, math::Vec3f& i2, CollisionResultSet::Info& info);
                 /**\fn bool isPointInside (math::Vec3f point)
                 *  \brief check if the point is inside the oriented bounding box.
                 *  \param the point to test in.
@@ -160,14 +160,14 @@ namespace odfaeg {
                     *this = other;
                     return *this;
                 }
-                bool onIntersects(BaseInterface &interface) {
-                    return interface.intersects(*this);
+                bool onIntersects(BaseInterface &interface, CollisionResultSet::Info& info) {
+                    return interface.intersects(*this, info);
                 }
-                bool onIntersects(BaseInterface &interface, math::Ray& ray, bool segment) {
-                    return interface.intersects(ray, segment);
+                bool onIntersects(BaseInterface &interface, math::Ray& ray, bool segment, CollisionResultSet::Info& info) {
+                    return interface.intersects(ray, segment, info);
                 }
-                bool onIntersects(BaseInterface& interface, math::Ray& ray, math::Vec3f &near, math::Vec3f& far) {
-                    return interface.intersectsWhere(ray, near, far);
+                bool onIntersects(BaseInterface& interface, math::Ray& ray, math::Vec3f &near, math::Vec3f& far, CollisionResultSet::Info& info) {
+                    return interface.intersectsWhere(ray, near, far, info);
                 }
                 std::unique_ptr<BoundingVolume> clone() {
                     return std::make_unique<OrientedBoundingBox>(*this);

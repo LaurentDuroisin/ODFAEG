@@ -208,7 +208,8 @@ namespace odfaeg
             BoundingBox bx (x, y, z, endX, endY, endZ);
             BoundingBox bx2 = mVertices.getBounds();
             bx2.setSize(bx2.getSize().x, bx2.getSize().y, endZ);
-            if (bx.intersects(bx2)) {
+            CollisionResultSet::Info info;
+            if (bx.intersects(bx2, info)) {
                 // Draw the vertex array with our texture
                 states.texture = mTexture;
                 target.draw(mVertices, states);

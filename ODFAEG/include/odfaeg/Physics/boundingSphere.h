@@ -40,40 +40,40 @@ namespace odfaeg {
                  * \param the other bounding sphere to test with.
                  * \return the result of the collision test.
                  */
-                bool onIntersects (BaseInterface& interface) {
-                    return interface.intersects(*this);
+                bool onIntersects (BaseInterface& interface, CollisionResultSet::Info& info) {
+                    return interface.intersects(*this, info);
                 }
-                bool onIntersects (BaseInterface& interface, math::Ray& ray, bool segment) {
-                    return interface.intersects(ray, segment);
+                bool onIntersects (BaseInterface& interface, math::Ray& ray, bool segment, CollisionResultSet::Info& info) {
+                    return interface.intersects(ray, segment, info);
                 }
-                bool onIntersects (BaseInterface& interface, math::Ray& ray, math::Vec3f& near, math::Vec3f& far) {
-                    return interface.intersectsWhere(ray, near, far);
+                bool onIntersects (BaseInterface& interface, math::Ray& ray, math::Vec3f& near, math::Vec3f& far, CollisionResultSet::Info& info) {
+                    return interface.intersectsWhere(ray, near, far, info);
                 }
-                bool intersects (BoundingSphere &other);
+                bool intersects (BoundingSphere &other, CollisionResultSet::Info& info);
                 /** \fn bool intersects (BoundingEllipsoid &be)
                  *  \brief check if the bounding sphere is in collision with a bounding ellipsoid.
                  *  \param the bouding ellipsoid to test with.
                  *  \return the result of the collision test.
                  */
-                bool intersects (BoundingEllipsoid &be);
+                bool intersects (BoundingEllipsoid &be, CollisionResultSet::Info& info);
                 /** \fn bool intersects (BoundingBox &br)
                  *  \brief check if the bounding sphere is in collision with a bounding box.
                  *  \param the bounding box to test with.
                  *  \return the result of the collision test.
                  */
-                bool intersects (BoundingBox &obr);
+                bool intersects (BoundingBox &obr, CollisionResultSet::Info& info);
                 /**\fn bool intersects (OrientedBoundingRectangle &obr)
                 *  \brief check if the bounding sphere is in collision with an oriented bounding box.
                 *  \param the oriented bounding box to test with.
                 *  \return the result of the collision test.
                 */
-                bool intersects (OrientedBoundingBox &obr);
+                bool intersects (OrientedBoundingBox &obr, CollisionResultSet::Info& info);
                 /**\fn bool intersects (BoundingPolygon &bp)
                 *  \brief check if the bounding sphere is in collision with a bounding polyhedron.
                 *  \param the bounding polyhedron to test with.
                 *  \return the result of the collision test.
                 */
-                bool intersects (BoundingPolyhedron &bp);
+                bool intersects (BoundingPolyhedron &bp, CollisionResultSet::Info& info);
                 /** \fn bool isPointInside (Vec2f &point)
                  *  \brief check if a point is inside the sphere.
                  *  \param the point to test in.
@@ -85,7 +85,7 @@ namespace odfaeg {
                  *  \param the ray to test with.
                  *  \return the result of the collision test.
                  */
-                bool intersects (math::Ray& ray, bool segment);
+                bool intersects (math::Ray& ray, bool segment, CollisionResultSet::Info& info);
                 /** \fn bool intersects (Segment &ray, Vec2f &near, Vec2f &far)
                  *  \brief check if a ray interects the sphere and get the points of the intersection.
                  *  \param the ray to test with.
@@ -93,7 +93,7 @@ namespace odfaeg {
                  *  \param the vector to store the farest point of the intersection. (from the ray"s origin)
                  *  \return the result of the collision test.
                  */
-                bool intersectsWhere (math::Ray &ray, math::Vec3f &near, math::Vec3f &far);
+                bool intersectsWhere (math::Ray &ray, math::Vec3f &near, math::Vec3f &far, CollisionResultSet::Info& info);
                 /** \fn Vec2f getCenter()
                 *   \return the center of the bounding sphere.
                 */

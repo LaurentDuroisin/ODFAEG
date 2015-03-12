@@ -36,21 +36,24 @@ namespace odfaeg {
             points[5] = math::Vec3f(x + width, y, z + depth);
             points[6] = math::Vec3f(x + width, y + height, z + depth);
             points[7] = math::Vec3f(x, y + height, z + depth);
+            flat = (depth == 0) ? true : false;
         }
-        bool BoundingBox::intersects (BoundingVolume& bv) {
+        bool BoundingBox::intersects (BoundingVolume& bv, CollisionResultSet::Info& info) {
             return false;
         }
         //Test if the box intersects the specified sphere.
-        bool BoundingBox::intersects (BoundingSphere &bs) {
-            return bs.intersects(*this);
+        bool BoundingBox::intersects (BoundingSphere &bs, CollisionResultSet::Info& info) {
+            return bs.intersects(*this, info);
         }
         //Test if the box intersects the specified ellipsoid.
-        bool BoundingBox::intersects (BoundingEllipsoid &be) {
-            return be.intersects(*this);
+        bool BoundingBox::intersects (BoundingEllipsoid &be, CollisionResultSet::Info& info) {
+            return be.intersects(*this, info);
+        }
+        bool BoundingBox::isFlat() {
+            return flat;
         }
         //Test if the box intersects another.
-        bool BoundingBox::intersects (BoundingBox &other) {
-
+        bool BoundingBox::intersects (BoundingBox &other, CollisionResultSet::Info& info) {
             int hx1 = width * 0.5;
             int hy1 = height * 0.5;
             int hz1 = depth * 0.5;
@@ -80,30 +83,30 @@ namespace odfaeg {
             return true;
         }
         //Test if an the box intersects with the specified oriented bounding box.
-        bool BoundingBox::intersects(OrientedBoundingBox &obx) {
-            return obx.intersects(*this);
+        bool BoundingBox::intersects(OrientedBoundingBox &obx, CollisionResultSet::Info& info) {
+            return obx.intersects(*this, info);
         }
         //Test if the bounding box intersects with the specified bounding polyhedron.
-        bool BoundingBox::intersects (BoundingPolyhedron &bp) {
-            /*if (depth == 0) {
-                BoundingPolyhedron bbp(Vec3f(x, y, z), Vec3f(x + width, y, z), Vec3f(x + width, y + height, z), true);
-                bbp.addTriangle(Vec3f(x + width, y + height, z), Vec3f(x, y+height,z), Vec3f(x, y, z));
-                return bp.intersects(bbp);
+        bool BoundingBox::intersects (BoundingPolyhedron &bp, CollisionResultSet::Info& info) {
+            if (flat) {
+                BoundingPolyhedron bbp(math::Vec3f(x, y, z), math::Vec3f(x + width, y, z), math::Vec3f(x + width, y + height, z), true);
+                bbp.addTriangle(math::Vec3f(x + width, y + height, z), math::Vec3f(x, y+height,z), math::Vec3f(x, y, z));
+                return bp.intersects(bbp, info);
             } else {
-                BoundingPolyhedron bbp(Vec3f(x, y, z), Vec3f(x + width, y, z), Vec3f(x + width, y + height, z), false);
-                bbp.addTriangle(Vec3f(x + width, y + height, z), Vec3f(x, y+height, z), Vec3f(x, y, z));
-                bbp.addTriangle(Vec3f(x, y, z+depth), Vec3f(x + width, y, z+depth), Vec3f(x + width, y + height, z+depth));
-                bbp.addTriangle(Vec3f(x + width, y + height, z+depth), Vec3f(x, y+height, z+depth), Vec3f(x, y, z+depth));
-                bbp.addTriangle(Vec3f(x, y+height, z), Vec3f(x+width, y+height, z),Vec3f(x+width, y+height, z+depth));
-                bbp.addTriangle(Vec3f(x+width, y+height, z+depth), Vec3f(x, y+height, z+depth),Vec3f(x, y+height, z));
-                bbp.addTriangle(Vec3f(x, y,z), Vec3f(x+width, y, z),Vec3f(x+width, y, z+depth));
-                bbp.addTriangle(Vec3f(x+width, y, z+depth), Vec3f(x, y, z+depth),Vec3f(x, y, z));
-                bbp.addTriangle(Vec3f(x, y, z), Vec3f(x, y+height, z), Vec3f(x, y+height, z + depth));
-                bbp.addTriangle(Vec3f(x, y+height, z+depth), Vec3f(x, y, z+depth), Vec3f(x, y, z));
-                bbp.addTriangle(Vec3f(x+width, y, z), Vec3f(x+width, y+height, z), Vec3f(x+width, y+height, z + depth));
-                bbp.addTriangle(Vec3f(x+width, y+height, z+depth), Vec3f(x+width, y, z+depth), Vec3f(x+width, y, z));
-                return bbp.intersects(bp);
-            }*/
+                BoundingPolyhedron bbp(math::Vec3f(x, y, z), math::Vec3f(x + width, y, z), math::Vec3f(x + width, y + height, z), false);
+                bbp.addTriangle(math::Vec3f(x + width, y + height, z), math::Vec3f(x, y+height, z), math::Vec3f(x, y, z));
+                bbp.addTriangle(math::Vec3f(x, y, z+depth), math::Vec3f(x + width, y, z+depth), math::Vec3f(x + width, y + height, z+depth));
+                bbp.addTriangle(math::Vec3f(x + width, y + height, z+depth), math::Vec3f(x, y+height, z+depth), math::Vec3f(x, y, z+depth));
+                bbp.addTriangle(math::Vec3f(x, y+height, z), math::Vec3f(x+width, y+height, z),math::Vec3f(x+width, y+height, z+depth));
+                bbp.addTriangle(math::Vec3f(x+width, y+height, z+depth), math::Vec3f(x, y+height, z+depth),math::Vec3f(x, y+height, z));
+                bbp.addTriangle(math::Vec3f(x, y,z), math::Vec3f(x+width, y, z),math::Vec3f(x+width, y, z+depth));
+                bbp.addTriangle(math::Vec3f(x+width, y, z+depth), math::Vec3f(x, y, z+depth),math::Vec3f(x, y, z));
+                bbp.addTriangle(math::Vec3f(x, y, z), math::Vec3f(x, y+height, z), math::Vec3f(x, y+height, z + depth));
+                bbp.addTriangle(math::Vec3f(x, y+height, z+depth), math::Vec3f(x, y, z+depth), math::Vec3f(x, y, z));
+                bbp.addTriangle(math::Vec3f(x+width, y, z), math::Vec3f(x+width, y+height, z), math::Vec3f(x+width, y+height, z + depth));
+                bbp.addTriangle(math::Vec3f(x+width, y+height, z+depth), math::Vec3f(x+width, y, z+depth), math::Vec3f(x+width, y, z));
+                return bbp.intersects(bp, info);
+            }
         }
         //Test if a point is inside our box.
         bool BoundingBox::isPointInside (math::Vec3f point) {
@@ -117,7 +120,7 @@ namespace odfaeg {
             //If one of the point is on one of the x, y or z medians, the point is inside the box.
             return (point.x >= minX && point.x <= maxX && point.y >= minY && point.y <= maxY && point.z >= minZ && point.z <= maxZ);
         }
-        bool BoundingBox::intersects (math::Ray &ray, bool segment) {
+        bool BoundingBox::intersects (math::Ray &ray, bool segment, CollisionResultSet::Info& info) {
             float tFar = INT_MAX;
             float tNear = -INT_MAX;
 
@@ -163,7 +166,7 @@ namespace odfaeg {
             return true;
 
         }
-        bool BoundingBox::intersectsWhere (math::Ray &ray, math::Vec3f& i1, math::Vec3f& i2) {
+        bool BoundingBox::intersectsWhere (math::Ray &ray, math::Vec3f& i1, math::Vec3f& i2, CollisionResultSet::Info& info) {
             float tFar = INT_MAX;
             float tNear = -INT_MAX;
 

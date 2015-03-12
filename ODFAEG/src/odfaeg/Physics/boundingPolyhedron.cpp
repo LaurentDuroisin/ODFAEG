@@ -9,13 +9,16 @@ namespace odfaeg {
         BoundingPolyhedron::BoundingPolyhedron() {
             flat = true;
         }
+        void BoundingPolyhedron::setFlat (bool flat) {
+            this->flat = flat;
+        }
         BoundingPolyhedron::BoundingPolyhedron (math::Vec3f p1, math::Vec3f p2, math::Vec3f p3, bool flat) {
             this->flat = flat;
             points.push_back(p1);
             points.push_back(p2);
             points.push_back(p3);
         }
-        bool BoundingPolyhedron::intersects(math::Ray& ray, bool segment) {
+        bool BoundingPolyhedron::intersects(math::Ray& ray, bool segment, CollisionResultSet::Info& info) {
             for (unsigned int i = 0; i < points.size(); i+=3) {
                    math::Triangle t (points[i], points[i+1], points[i+2]);
                    if(t.intersects(ray))
@@ -23,7 +26,7 @@ namespace odfaeg {
             }
             return false;
         }
-        bool BoundingPolyhedron::intersectsWhere(math::Ray& ray, math::Vec3f& i1, math::Vec3f& i2) {
+        bool BoundingPolyhedron::intersectsWhere(math::Ray& ray, math::Vec3f& i1, math::Vec3f& i2, CollisionResultSet::Info& info) {
             for (unsigned int i = 0; i < points.size(); i+=3) {
                    math::Triangle t (points[i], points[i+1], points[i+2]);
                    if(t.intersectsWhere(ray, i1, i2))
@@ -39,35 +42,47 @@ namespace odfaeg {
             std::array<std::array<float, 2>, 3> store = math::Computer::getExtends(points);
             size = math::Vec3f(store[0][1] - store[0][0], store[1][1] - store[1][0], store[2][1] - store[2][0]);
         }
-        bool BoundingPolyhedron::intersects (BoundingSphere &bs) {
-            return bs.intersects (*this);
+        bool BoundingPolyhedron::intersects (BoundingSphere &bs, CollisionResultSet::Info& info) {
+            return bs.intersects (*this, info);
         }
-        bool BoundingPolyhedron::intersects (BoundingEllipsoid &be) {
-            return be.intersects (*this);
+        bool BoundingPolyhedron::intersects (BoundingEllipsoid &be, CollisionResultSet::Info& info) {
+            return be.intersects (*this, info);
         }
-        bool BoundingPolyhedron::intersects (BoundingBox& bx) {
-            return bx.intersects (*this);
+        bool BoundingPolyhedron::intersects (BoundingBox& bx, CollisionResultSet::Info& info) {
+            return bx.intersects (*this, info);
         }
-        bool BoundingPolyhedron::intersects (OrientedBoundingBox &obx) {
-            return obx.intersects (*this);
+        bool BoundingPolyhedron::intersects (OrientedBoundingBox &obx, CollisionResultSet::Info& info) {
+            return obx.intersects (*this, info);
         }
-        bool BoundingPolyhedron::intersects (BoundingPolyhedron &bp) {
+        bool BoundingPolyhedron::intersects (BoundingPolyhedron &bp, CollisionResultSet::Info& info) {
             float distMin1, distMin2;
-            int index1, index2;
+            int ptIndex1, ptIndex2;
             int edgeIndex1, edgeIndex2;
             int faceIndex1, faceIndex2;
             /* Check the nearest vertex of the polygon 2 from the regions of polygon 2 and give the distance and
             *  return the point or the face's bissector of the region.
             */
-            int ptIndex1 = math::Computer::checkNearestVertexFromShape(center, points, edgeBissectors, edgeNormals, faceBissectors, faceNormals, bp.points, distMin1, index1, edgeIndex1, faceIndex1);
+            int vertexIndex1 = math::Computer::checkNearestVertexFromShape(center, points, edgeBissectors, edgeNormals, faceBissectors, faceNormals, bp.points, distMin1, ptIndex1, edgeIndex1, faceIndex1);
+            info.nearestVertexIndex1 = vertexIndex1;
+            info.nearestPtIndex1 = ptIndex1;
+            info.nearestEdgeIndex1 = edgeIndex1;
+            info.nearestFaceIndex1 = faceIndex1;
             /* Check the nearest vertex of the polygon 1 from the regions of polygon 2 and give the distance and
             *  return the point or face's bissector of the region.
             */
-            int ptIndex2 = math::Computer::checkNearestVertexFromShape(bp.center, bp.points, bp.edgeBissectors, bp.edgeNormals, bp.faceBissectors, faceNormals, points, distMin2, index2, edgeIndex1, faceIndex1);
-            if (index1 != -1)
-                return (points[index1] - center).magnSquared() >= (bp.points[ptIndex1] - center).magnSquared();
-            if (index2 != -1)
-                return (points[index2] - center).magnSquared() >= (bp.points[ptIndex2] - center).magnSquared();
+            int vertexIndex2 = math::Computer::checkNearestVertexFromShape(bp.center, bp.points, bp.edgeBissectors, bp.edgeNormals, bp.faceBissectors, faceNormals, points, distMin2, ptIndex2, edgeIndex2, faceIndex2);
+            info.nearestVertexIndex2 = vertexIndex2;
+            info.nearestPtIndex2 = ptIndex2;
+            info.nearestEdgeIndex2 = edgeIndex2;
+            info.nearestFaceIndex2 = faceIndex2;
+            if (ptIndex1 != -1) {
+                std::cout<<ptIndex1<<std::endl;
+                return (points[ptIndex1] - center).magnSquared() >= (bp.points[vertexIndex1] - center).magnSquared();
+            }
+            if (ptIndex2 != -1) {
+                std::cout<<ptIndex1<<std::endl;
+                return (points[ptIndex2] - center).magnSquared() >= (bp.points[vertexIndex2] - center).magnSquared();
+            }
             if (flat && bp.flat) {
                 if (faceIndex1 != -1 && faceIndex2 != -1)  {
                     math::Triangle t1(points[faceIndex1*3], points[faceIndex1*3+1], points[faceIndex1*3+2]);
@@ -92,7 +107,7 @@ namespace odfaeg {
                 if (distMin1 < distMin2) {
                     if (faceIndex1 != -1) {
                         math::Vec3f bpn = (faceBissectors[faceIndex1] - center).projOnVector(faceNormals[faceIndex1]);
-                        math::Vec3f d = points[ptIndex1] - center;
+                        math::Vec3f d = points[vertexIndex1] - center;
                         float p = d.projOnAxis(bpn);
                         if (p * p > bpn.magnSquared()) {
                             return false;
@@ -100,18 +115,18 @@ namespace odfaeg {
                         return true;
                     }
                     math::Vec3f bpn = (edgeBissectors[edgeIndex1] - center).projOnVector(edgeNormals[edgeIndex1]);
-                    math::Vec3f d = points[ptIndex1] - center;
+                    math::Vec3f d = points[vertexIndex1] - center;
                     float p = d.projOnAxis(bpn);
                     return p * p > bpn.magnSquared();
                 }
                 if (faceIndex2 != -1) {
                     math::Vec3f bpn = (faceBissectors[faceIndex2] - center).projOnVector(faceNormals[faceIndex2]);
-                    math::Vec3f d = points[ptIndex2] - center;
+                    math::Vec3f d = points[vertexIndex2] - center;
                     float p = d.projOnAxis(bpn);
                     return p * p > bpn.magnSquared();
                 }
                 math::Vec3f bpn = (edgeBissectors[edgeIndex2] - center).projOnVector(edgeNormals[edgeIndex2]);
-                math::Vec3f d = points[ptIndex2] - center;
+                math::Vec3f d = points[vertexIndex2] - center;
                 float p = d.projOnAxis(bpn);
                 return p * p > bpn.magnSquared();
             }
@@ -220,42 +235,43 @@ namespace odfaeg {
                 math::Vec3f c = points[i+2];
                 math::Vec3f bissector = (a + b + c) / 3;
                 math::Vec3f v1 = b - a;
-                math::Vec3f v2 = c - a;
-                math::Vec3f n = v1.cross(v2);
-                if (n.dot2(bissector - center) < 0)
-                    n = -n;
+                math::Vec3f v2 = c - b;
+                math::Vec3f v3 = c - a;
+                math::Vec3f fn = v1.cross(v2).normalize();
+                if (fn.dot2(bissector - center) > 0)
+                    fn = -fn;
                 faceBissectors.push_back(bissector);
-                faceNormals.push_back(n);
+                faceNormals.push_back(fn);
                 bissector = (a + b) * 0.5f;
-                n = n.cross(b - a);
-                if (n.dot2(bissector - center) < 0)
-                    n = -n;
+                math::Vec3f e1n = v1.cross(fn).normalize();
+                if (e1n.dot2(bissector - center) < 0)
+                    e1n = -e1n;
                 edgeBissectors.push_back(bissector);
-                edgeNormals.push_back(n);
+                edgeNormals.push_back(e1n);
                 bissector = (b + c) * 0.5f;
-                n = n.cross(c - b);
-                if (n.dot2(bissector - center) < 0)
-                    n = -n;
+                math::Vec3f e2n = v2.cross(fn).normalize();
+                if (e2n.dot2(bissector - center) < 0)
+                    e2n = -e2n;
                 edgeBissectors.push_back(bissector);
-                edgeNormals.push_back(n);
+                edgeNormals.push_back(e2n);
                 bissector = (c + a) * 0.5f;
-                n = n.cross(a - c);
-                if (n.dot2(bissector - center) < 0)
-                    n = -n;
+                math::Vec3f e3n = v3.cross(fn).normalize();
+                if (e3n.dot2(bissector - center) < 0)
+                    e3n = -e3n;
                 edgeBissectors.push_back(bissector);
-                edgeNormals.push_back(n);
+                edgeNormals.push_back(e3n);
             }
         }
-        std::vector<math::Vec3f> BoundingPolyhedron::get3DNormals() {
+        std::vector<math::Vec3f> BoundingPolyhedron::getFaceNormals() {
             return faceNormals;
         }
-        std::vector<math::Vec3f> BoundingPolyhedron::get2DNormals() {
+        std::vector<math::Vec3f> BoundingPolyhedron::getEdgeNormals() {
             return edgeNormals;
         }
-        std::vector<math::Vec3f> BoundingPolyhedron::get3DBissectors() {
+        std::vector<math::Vec3f> BoundingPolyhedron::getFaceBissectors() {
             return faceBissectors;
         }
-        std::vector<math::Vec3f> BoundingPolyhedron::get2DBissectors() {
+        std::vector<math::Vec3f> BoundingPolyhedron::getEdgeBissectors() {
             return edgeBissectors;
         }
         std::vector<math::Vec3f> BoundingPolyhedron::getPoints() {

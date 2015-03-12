@@ -389,24 +389,24 @@ namespace odfaeg {
             }
             static int checkNearestVertexFromShape (Vec3f center, std::vector<Vec3f> points, std::vector<Vec3f> edgeBissectors, std::vector<Vec3f> edgeNormals, std::vector<Vec3f> faceBissectors, std::vector<Vec3f> faceNormals, std::vector<Vec3f> vertices,
                                                      float& distMin, int& ptIndex, int& edgeIndex, int& faceIndex) {
-                distMin = INT_MAX;
-                float nDistMin = INT_MAX;
+                distMin = std::numeric_limits<float>::max();
+                float nDistMin = std::numeric_limits<float>::max();
                 edgeIndex = -1;
                 faceIndex = -1;
                 ptIndex = -1;
                 int index = -1;
                 for (unsigned int i = 0; i < edgeBissectors.size(); i++) {
-                    Vec3f p1 = edgeBissectors[i];
+                    Vec3f p1 = edgeBissectors[i] - center;
                     Vec3f n = edgeNormals[i];
                     for (unsigned int j = 0; j < vertices.size(); j++) {
-                        Vec3f p2 = vertices[j];
+                        Vec3f p2 = vertices[j] - center;
                         float dist = p1.computeDistSquared(p2);
                         float nDist = n.computeDistSquared(p2);
                         Vec3f v1 = points[i] - center;
                         Vec3f v2 = points[(i + 1 == points.size()) ? 0 : i + 1] - center;
                         Vec3f n = v1.cross(v2);
-                        float a1 = v1.getAngleBetween(p2, n);
-                        float a2 = v2.getAngleBetween(p2, n);
+                        float a1 = p2.getAngleBetween(v1, n);
+                        float a2 = p2.getAngleBetween(v2, n);
                         if (a1 == 0) {
                             ptIndex = i;
                             return j;
@@ -423,8 +423,8 @@ namespace odfaeg {
                         }
                     }
                 }
-                distMin = INT_MAX;
-                nDistMin = INT_MAX;
+                distMin = std::numeric_limits<float>::max();
+                nDistMin = std::numeric_limits<float>::max();
                 for (unsigned int i = 0; i < faceBissectors.size(); i++) {
                     Vec3f p1 = faceBissectors[i];
                     Vec3f n = faceNormals[i];

@@ -587,9 +587,10 @@ namespace odfaeg {
 
                     for (unsigned int i = 0; i < children.size(); i++) {
                         if (!containsVisibleEntity(children[i])) {
+                            physic::CollisionResultSet::Info info;
                             physic::BoundingBox bx2  = children[i]->getGlobalBounds();
                             //std::cout<<"view volume : "<<bx2.getPosition()<<" "<<bx2.getWidth()<<" "<<bx2.getHeight()<<" "<<bx2.getDepth()<<std::endl;
-                            if (bx.intersects(bx2)) {
+                            if (bx.intersects(bx2, info)) {
                                 it->second.push_back(children[i]);
                             }
                         }
@@ -643,7 +644,8 @@ namespace odfaeg {
             if (children.size() != 0) {
                 for (unsigned int i = 0; i < children.size(); i++) {
                     physic::BoundingBox bx2 = children[i]->getGlobalBounds();
-                    if (bx.intersects(bx2)) {
+                    physic::CollisionResultSet::Info info;
+                    if (bx.intersects(bx2, info)) {
                         for (it2 = it->second.begin(); it2 != it->second.end();) {
                             if (*it2 == children[i]) {
                                 it2 = it->second.erase(it2);
@@ -655,7 +657,8 @@ namespace odfaeg {
                 }
             } else {
                 physic::BoundingBox bx2 = toRemove->getGlobalBounds();
-                if (bx.intersects(bx2)) {
+                physic::CollisionResultSet::Info info;
+                if (bx.intersects(bx2, info)) {
                     for (it2 = it->second.begin(); it2 != it->second.end();) {
                         if (*it2 == toRemove) {
                             it2 = it->second.erase(it2);
@@ -690,7 +693,8 @@ namespace odfaeg {
                 if (children.size() != 0) {
                     for (unsigned int i = 0; i < children.size(); i++) {
                         physic::BoundingBox bx2 = children[i]->getGlobalBounds();
-                        if (bx.intersects(bx2)) {
+                        physic::CollisionResultSet::Info info;
+                        if (bx.intersects(bx2, info)) {
                             for (it2 = entities.begin(); it2 != entities.end();) {
                                 if (*it2 == children[i]) {
                                     removed = true;
@@ -703,7 +707,8 @@ namespace odfaeg {
                     }
                 } else {
                     physic::BoundingBox bx2 = toRemove->getGlobalBounds();
-                    if (bx.intersects(bx2)) {
+                    physic::CollisionResultSet::Info info;
+                    if (bx.intersects(bx2, info)) {
                         for (it2 = entities.begin(); it2 != entities.end();) {
                             if (*it2 == toRemove) {
                                 removed = true;
@@ -908,7 +913,8 @@ namespace odfaeg {
 
                     for (unsigned int s = 0; s < decor->getSegments().size(); s++) {
                         math::Ray ray = *decor->getSegments()[s];
-                        if (bc.intersects(ray, true)) {
+                        physic::CollisionResultSet::Info info;
+                        if (bc.intersects(ray, true, info)) {
                             int size = light->getTris().size();
                             for (int n = 0; n < size; n++) {
                                 light->checkInterTri(n, ray);

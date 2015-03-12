@@ -4,6 +4,7 @@
 #include "../Math/ray.h"
 #include <string>
 #include <iostream>
+#include "collisionResultSet.hpp"
 /**
   *\namespace odfaeg
   * the namespace of the Opensource Development Framework Adapted for Every Games.
@@ -29,16 +30,16 @@ namespace odfaeg {
         class BoundingPolyhedron;
         class BaseInterface {
              public :
-             virtual bool onIntersects(BaseInterface& other) = 0;
-             virtual bool onIntersects(BaseInterface& bi, math::Ray& ray, bool segment) = 0;
-             virtual bool onIntersects(BaseInterface& bi, math::Ray& ray, math::Vec3f& near, math::Vec3f& far) = 0;
-             virtual bool intersects (BoundingBox &bb) = 0;
-             virtual bool intersects (BoundingSphere &bs) = 0;
-             virtual bool intersects (BoundingEllipsoid &be) = 0;
-             virtual bool intersects (OrientedBoundingBox &ob) = 0;
-             virtual bool intersects (BoundingPolyhedron &bp) = 0;
-             virtual bool intersects (math::Ray& ray, bool segment) = 0;
-             virtual bool intersectsWhere (math::Ray& ray, math::Vec3f& near, math::Vec3f& far) = 0;
+             virtual bool onIntersects(BaseInterface& other, CollisionResultSet::Info& infos) = 0;
+             virtual bool onIntersects(BaseInterface& bi, math::Ray& ray, bool segment, CollisionResultSet::Info& infos) = 0;
+             virtual bool onIntersects(BaseInterface& bi, math::Ray& ray, math::Vec3f& near, math::Vec3f& far, CollisionResultSet::Info& infos) = 0;
+             virtual bool intersects (BoundingBox &bb, CollisionResultSet::Info& infos) = 0;
+             virtual bool intersects (BoundingSphere &bs, CollisionResultSet::Info& infos) = 0;
+             virtual bool intersects (BoundingEllipsoid &be, CollisionResultSet::Info& infos) = 0;
+             virtual bool intersects (OrientedBoundingBox &ob, CollisionResultSet::Info& infos) = 0;
+             virtual bool intersects (BoundingPolyhedron &bp, CollisionResultSet::Info& infos) = 0;
+             virtual bool intersects (math::Ray& ray, bool segment, CollisionResultSet::Info& infos) = 0;
+             virtual bool intersectsWhere (math::Ray& ray, math::Vec3f& near, math::Vec3f& far, CollisionResultSet::Info& infos) = 0;
              std::vector<BoundingVolume*> getChildren() {
                 std::vector<BoundingVolume*> raws;
                 for (unsigned int i = 0; i < children.size(); i++) {
@@ -56,27 +57,27 @@ namespace odfaeg {
             void addChild(BoundingVolume* bv) {
                 children.push_back(bv->clone());
             }
-            bool intersects(BaseInterface& other) {
+            bool intersects(BaseInterface& other, CollisionResultSet::Info& info) {
                 std::vector<BoundingVolume*> tmpChildren = getChildren();
                 std::vector<BoundingVolume*> tmpOtherChildren = other.getChildren();
                 if (tmpChildren.size() == 0 && tmpOtherChildren.size() == 0) {
-                    return onIntersects(other);
+                    return onIntersects(other, info);
                 }  else if (tmpChildren.size() == 0 && tmpOtherChildren.size() != 0) {
 
                       for (unsigned int i = 0; i < tmpOtherChildren.size(); i++) {
-                          if (onIntersects(*tmpOtherChildren[i]))
+                          if (onIntersects(*tmpOtherChildren[i], info))
                                 return true;
                       }
                 } else {
 
                     for (unsigned int i = 0; i < tmpChildren.size(); i++) {
                         if (tmpOtherChildren.size() == 0) {
-                            if (tmpChildren[i]->onIntersects(other))
+                            if (tmpChildren[i]->onIntersects(other, info))
                                     return true;
 
                         } else {
                             for (unsigned j = 0; j < tmpOtherChildren.size(); j++) {
-                                 if (tmpChildren[i]->onIntersects(*tmpOtherChildren[j]))
+                                 if (tmpChildren[i]->onIntersects(*tmpOtherChildren[j], info))
                                         return true;
                             }
                         }
@@ -84,11 +85,11 @@ namespace odfaeg {
                 }
                 return false;
             }
-            bool intersects(math::Ray& ray, bool segment) {
-                return onIntersects(*this, ray, segment);
+            bool intersects(math::Ray& ray, bool segment, CollisionResultSet::Info& info) {
+                return onIntersects(*this, ray, segment, info);
             }
-            bool intersectsWhere(math::Ray& ray, math::Vec3f near, math::Vec3f& far) {
-                return onIntersects(*this, ray, near, far);
+            bool intersectsWhere(math::Ray& ray, math::Vec3f near, math::Vec3f& far, CollisionResultSet::Info& info) {
+                return onIntersects(*this, ray, near, far, info);
             }
             virtual math::Vec3f getPosition() = 0;
             virtual math::Vec3f getSize() = 0;

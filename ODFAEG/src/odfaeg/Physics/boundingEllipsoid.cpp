@@ -20,67 +20,67 @@ namespace odfaeg {
             tm.update();
             scale = tm.getMatrix();
         }
-        bool BoundingEllipsoid::intersects(BoundingSphere &bs) {
+        bool BoundingEllipsoid::intersects(BoundingSphere &bs, CollisionResultSet::Info& info) {
             //We do the same for check the collision with a circle, except taht the circle have only 1 ray.
             //The equation for the circle is then a bit different.
             math::Ray r(bs.getCenter(), center);
             math::Vec3f near, far;
-            if (!intersectsWhere(r, near, far))
+            if (!intersectsWhere(r, near, far, info))
                 return false;
             math::Vec3f d = far - center;
             return (center.computeDistSquared(bs.getCenter()) - bs.getRadius() * bs.getRadius() - d.magnSquared()) <= 0;
         }
-        bool BoundingEllipsoid::intersects(BoundingEllipsoid &be) {
+        bool BoundingEllipsoid::intersects(BoundingEllipsoid &be, CollisionResultSet::Info& info) {
              //The distance between the 2 centers.
              math::Ray r1(center, be.getCenter());
              math::Ray r2(be.getCenter(), center);
              math::Vec3f near1, near2, far1, far2;
-             if (!intersectsWhere(r1, near1, far1))
+             if (!intersectsWhere(r1, near1, far1, info))
                 return false;
-             if (!be.intersectsWhere(r2, near2, far2))
+             if (!be.intersectsWhere(r2, near2, far2, info))
                 return false;
              math::Vec3f d1 = far1 - center;
              math::Vec3f d2 = far2 - be.getCenter();
              return (center.computeDistSquared(be.getCenter()) - d1.magnSquared() - d2.magnSquared()) <= 0;
         }
-        bool BoundingEllipsoid::intersects(BoundingBox &bx) {
+        bool BoundingEllipsoid::intersects(BoundingBox &bx, CollisionResultSet::Info& info) {
              math::Ray r1(center, bx.getCenter());
              math::Ray r2(bx.getCenter(), center);
              math::Vec3f near1, near2, far1, far2;
-             if (!intersectsWhere(r1, near1, far1))
+             if (!intersectsWhere(r1, near1, far1, info))
                 return false;
-             if (!bx.intersectsWhere(r2, near2, far2))
+             if (!bx.intersectsWhere(r2, near2, far2, info))
                 return false;
              math::Vec3f d1 = far1 - center;
              math::Vec3f d2 = far2 - bx.getCenter();
              return (center.computeDistSquared(bx.getCenter()) - d1.magnSquared() - d2.magnSquared()) <= 0;
         }
-        bool BoundingEllipsoid::intersects(OrientedBoundingBox &obx) {
+        bool BoundingEllipsoid::intersects(OrientedBoundingBox &obx, CollisionResultSet::Info& info) {
              //The line between the two centers.
              math::Ray r1(center, obx.getCenter());
              math::Ray r2(obx.getCenter(), center);
              math::Vec3f near1, near2, far1, far2;
-             if (!intersectsWhere(r1, near1, far1))
+             if (!intersectsWhere(r1, near1, far1, info))
                 return false;
-             if (!obx.intersectsWhere(r2, near2, far2))
+             if (!obx.intersectsWhere(r2, near2, far2, info))
                 return false;
              math::Vec3f d1 = far1 - center;
              math::Vec3f d2 = far2 - obx.getCenter();
              return (center.computeDistSquared(obx.getCenter()) - d1.magnSquared() - d2.magnSquared()) <= 0;
         }
-        bool BoundingEllipsoid::intersects(BoundingPolyhedron &bp) {
+        bool BoundingEllipsoid::intersects(BoundingPolyhedron &bp, CollisionResultSet::Info& info) {
              math::Ray r1(center, bp.getCenter());
              math::Ray r2(bp.getCenter(), center);
              math::Vec3f near1, near2, far1, far2;
-             if (!intersectsWhere(r1, near1, far1))
+             if (!intersectsWhere(r1, near1, far1, info))
                 return false;
-             if (!bp.intersectsWhere(r2, near2, far2))
+             if (!bp.intersectsWhere(r2, near2, far2, info))
                 return false;
              math::Vec3f d1 = far1 - center;
              math::Vec3f d2 = far2 - bp.getCenter();
              return (center.computeDistSquared(bp.getCenter()) - d1.magnSquared() -d2.magnSquared()) <= 0;
         }
-        bool BoundingEllipsoid::intersects (math::Ray &r, bool segment) {
+        bool BoundingEllipsoid::intersects (math::Ray &r, bool segment, CollisionResultSet::Info& info) {
             math::Matrix4f transform = scale * rotation * translation;
             math::Matrix4f invTransform = transform.inverse();
             math::Vec3f orig = invTransform * r.getOrig();
@@ -88,11 +88,11 @@ namespace odfaeg {
             math::Ray tRay (orig, ext);
             math::Vec3f mtu;
             BoundingSphere bs(math::Vec3f(0, 0, 0), 1);
-            if (!bs.intersects(tRay, segment))
+            if (!bs.intersects(tRay, segment, info))
                 return false;
             return false;
         }
-        bool BoundingEllipsoid::intersectsWhere(math::Ray& r, math::Vec3f& near, math::Vec3f& far) {
+        bool BoundingEllipsoid::intersectsWhere(math::Ray& r, math::Vec3f& near, math::Vec3f& far, CollisionResultSet::Info& info) {
             math::Matrix4f transform = scale * rotation * translation;
             math::Matrix4f invTransform = transform.inverse();
             math::Vec3f orig = invTransform * r.getOrig();
@@ -100,7 +100,7 @@ namespace odfaeg {
             math::Ray tRay (orig, ext);
             math::Vec3f i1, i2;
             BoundingSphere bs(math::Vec3f(0, 0, 0), 1);
-            if (!bs.intersectsWhere(tRay, i1, i2))
+            if (!bs.intersectsWhere(tRay, i1, i2, info))
                 return false;
             near = transform * i1;
             far = transform * i2;
@@ -108,7 +108,8 @@ namespace odfaeg {
         }
         bool BoundingEllipsoid::isPointInside (math::Vec3f point) {
             math::Ray r (center, point);
-            if (!intersects(r, false))
+            CollisionResultSet::Info info;
+            if (!intersects(r, false, info))
                 return false;
             return true;
         }

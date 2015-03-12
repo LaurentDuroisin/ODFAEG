@@ -294,7 +294,8 @@ namespace odfaeg {
                                 if (entities[k] == entity)
                                     contains = true;
                            }
-                           if (!contains && bx.intersects(bx2))
+                           physic::CollisionResultSet::Info info;
+                           if (!contains && bx.intersects(bx2, info))
                             entities.push_back(entity);
                         }
                     }
@@ -377,7 +378,10 @@ namespace odfaeg {
                     cv->move(t);
                     for (unsigned int k = 0; k < cell->getEntitiesInside().size(); k++)  {
                         if (cell->getEntitiesInside()[k]->getCollisionVolume() != nullptr && cell->getEntitiesInside()[k] != entity) {
-                            if (cv->intersects(*cell->getEntitiesInside()[k]->getCollisionVolume())) {
+                            physic::CollisionResultSet::Info info;
+                            if (cv->intersects(*cell->getEntitiesInside()[k]->getCollisionVolume(), info)) {
+                                info.entity = cell->getEntitiesInside()[k];
+                                physic::CollisionResultSet::pushCollisionInfo(info);
                                 if (cv->getChildren().size() == 0) {
                                     return true;
                                 }
@@ -400,10 +404,11 @@ namespace odfaeg {
                     Entity* entity2 = cells[i]->getEntitiesInside()[j];
                     if (entity2 != entity) {
                         physic::BoundingVolume* bv2 = entity2->getCollisionVolume();
-
+                        physic::CollisionResultSet::Info info;
                         if (bv1 != nullptr && bv2 != nullptr) {
-                            if (bv1->intersects(*bv2)) {
-                                physic::CollisionResultSet::pushCollisionEntity(entity2);
+                            if (bv1->intersects(*bv2, info)) {
+                                info.entity = entity2;
+                                physic::CollisionResultSet::pushCollisionInfo(info);
                                 return true;
                             }
                         }
@@ -451,7 +456,8 @@ namespace odfaeg {
                                     cv->move(t);
                                     for (unsigned int k = 0; k < neightbour->getEntitiesInside().size() && !collide; k++) {
                                         if (neightbour->getEntitiesInside()[k]->getCollisionVolume() != nullptr && neightbour->getEntitiesInside()[k] != entity) {
-                                            if (cv->intersects(*neightbour->getEntitiesInside()[k]->getCollisionVolume())) {
+                                            physic::CollisionResultSet::Info info;
+                                            if (cv->intersects(*neightbour->getEntitiesInside()[k]->getCollisionVolume(), info)) {
                                                 if (cv->getChildren().size() == 0) {
                                                     collide = true;
                                                 }

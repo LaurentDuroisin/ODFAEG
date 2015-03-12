@@ -52,48 +52,48 @@ namespace odfaeg {
                 *   \param the bounding sphere to test with.
                 *   \return the result of the collision test.
                 */
-                bool onIntersects (BaseInterface& interface) {
-                    return interface.intersects(*this);
+                bool onIntersects (BaseInterface& interface, CollisionResultSet::Info& info) {
+                    return interface.intersects(*this, info);
                 }
-                bool onIntersects (BaseInterface& interface, math::Ray& ray, bool segment) {
-                    return interface.intersects(ray, segment);
+                bool onIntersects (BaseInterface& interface, math::Ray& ray, bool segment, CollisionResultSet::Info& info) {
+                    return interface.intersects(ray, segment, info);
                 }
-                bool onIntersects (BaseInterface& interface, math::Ray& ray, math::Vec3f& near, math::Vec3f& far) {
-                    return interface.intersectsWhere(ray, near, far);
+                bool onIntersects (BaseInterface& interface, math::Ray& ray, math::Vec3f& near, math::Vec3f& far, CollisionResultSet::Info& info) {
+                    return interface.intersectsWhere(ray, near, far, info);
                 }
-                bool intersects(BoundingVolume &bv);
-                bool intersects (BoundingSphere &bs);
+                bool intersects(BoundingVolume &bv, CollisionResultSet::Info& info);
+                bool intersects (BoundingSphere &bs, CollisionResultSet::Info& info);
                 /** \fn bool intersects (BoundingEllipsoid &be)
                 *   \brief test if a bounding ellipsoid collides with the bounding box.
                 *   \param the bounding ellipsoid to test with.
                 *   \return the result of the collision test.
                 */
-                bool intersects (BoundingEllipsoid &bc);
+                bool intersects (BoundingEllipsoid &bc, CollisionResultSet::Info& info);
                 /** \fn bool intersects (BoundingBox &br)
                 *   \brief test if an other bounding box collides with the bounding box.
                 *   \param the other bounding box to test with.
                 *   \return the result of the collision test.
                 */
-                bool intersects (BoundingBox &bx);
+                bool intersects (BoundingBox &bx, CollisionResultSet::Info& info);
                 /** \fn bool intersects (OrientedBoundingBox &br)
                 *   \brief test if an oriented bounding sphere collides with the bounding box.
                 *   \param the oriented bounding box to test with.
                 *   \return the result of the collision test.
                 */
-                bool intersects (OrientedBoundingBox &obx);
+                bool intersects (OrientedBoundingBox &obx, CollisionResultSet::Info& info);
                 /** \fn bool intersects (BoundingPolyhedron &bp)
                 *   \brief test if a bounding polyhedron collides with the bounding box.
                 *   \param the bounding polyhedron to test with.
                 *   \return the result of the collision test.
                 */
-                bool intersects (BoundingPolyhedron &bp);
+                bool intersects (BoundingPolyhedron &bp, CollisionResultSet::Info& info);
                 /** \fn bool intersects (Ray &ray)
                 *   \brief test if a ray collides with the bounding box.
                 *   \param the Segment to test with.
                 *   \return the result of the collision test.
                 */
-                bool intersects (math::Ray& ray, bool segment);
-                bool intersectsWhere (math::Ray &ray, math::Vec3f& i1, math::Vec3f& i2);
+                bool intersects (math::Ray& ray, bool segment, CollisionResultSet::Info& info);
+                bool intersectsWhere (math::Ray &ray, math::Vec3f& i1, math::Vec3f& i2, CollisionResultSet::Info& info);
                 /** \fn bool isPointInside (Vec2f point)
                 *   \brief test if a point is in the bounding box.
                 *   \param the point to test in.
@@ -167,8 +167,10 @@ namespace odfaeg {
                     return std::make_unique<BoundingBox>(*this);
                 }
                 std::array<math::Vec3f, 8> getVertices();
+                bool isFlat();
             private :
                 std::array<math::Vec3f, 8> points;
+                bool flat;
                 int x, y, z, width, height, depth; /**< the x position of the bounding box */
                 /**< the y position of the bounding box */
                 /**< the z position of the bounding box */

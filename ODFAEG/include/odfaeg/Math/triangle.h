@@ -148,14 +148,14 @@ namespace odfaeg {
             Ray r5 (other.p2, other.p3);
             Ray r6 (other.p3, other.p1);
             float i;
-            Plane pl1 (other.p1.cross(other.p2), other.p1);
-            Plane pl2 (p1.cross(p2), p1);
-            if (((pl1.intersects(r1, i) && i >= 0 && i <= 1)
-                || (pl1.intersects(r2, i) && i >= 0 && i <= 1)
-                || (pl1.intersects(r3, i) && i >= 0 && i <= 1))
-                && ((pl2.intersects(r4, i) && i >= 0 && i <= 1)
-                || (pl2.intersects(r5, i) && i >= 0 && i <= 1)
-                || (pl2.intersects(r6, i) && i >= 0 && i <= 1)))
+            Plane pl1 = (!other.p1.isNulVector()) ? Plane(other.p1.cross(other.p2), other.p1) : Plane(other.p2.cross(other.p3), other.p2);
+            Plane pl2 = (!p1.isNulVector()) ? Plane (p1.cross(p2), p1) : Plane (p2.cross(p3), p2);
+            if (((pl1.intersects(r1, i) && i <= 1)
+                || (pl1.intersects(r2, i) && i <= 1)
+                || (pl1.intersects(r3, i) && i <= 1))
+                && ((pl2.intersects(r4, i) && i <= 1)
+                || (pl2.intersects(r5, i) && i <= 1)
+                || (pl2.intersects(r6, i) && i <= 1)))
                return true;
             return false;
         }
