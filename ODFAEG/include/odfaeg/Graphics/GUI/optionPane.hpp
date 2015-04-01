@@ -22,7 +22,8 @@ namespace odfaeg {
                 void onNoOption();
                 void onYesOption();
                 void onEnter();
-                void update();
+                void checkSubWindowEvents();
+                void pushEvent(sf::Event event);
                 ~OptionPane();
             private :
                 sf::Color backgroundColor;

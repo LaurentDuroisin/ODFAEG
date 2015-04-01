@@ -42,8 +42,8 @@ namespace odfaeg {
         }
         void VertexArray::addIndex(unsigned int index) {
             m_indexes.push_back(index);
-            /*if (!needToUpdateVBOBuffer)
-                    needToUpdateVBOBuffer = true;*/
+            if (!needToUpdateVBOBuffer)
+                    needToUpdateVBOBuffer = true;
         }
         std::vector<unsigned int> VertexArray::getBaseIndexes() {
             return m_baseIndexes;
@@ -177,7 +177,7 @@ namespace odfaeg {
         {
             if (!m_vertices.empty()) {
 
-                /*if (GLEW_ARB_vertex_buffer_object) {
+                if (GLEW_ARB_vertex_buffer_object) {
                     if (needToUpdateVBOBuffer) {
                         if (vboVertexBuffer == 0) {
                             GLuint vbo;
@@ -189,7 +189,6 @@ namespace odfaeg {
                             glCheck(glBufferData(GL_ARRAY_BUFFER_ARB, m_vertices.size() * sizeof(Vertex), &m_vertices[0], GL_DYNAMIC_DRAW));
                             glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
                         } else {
-                            //std::cout<<"update VBO"<<std::endl;
                             GLvoid *pos_vbo = nullptr;
                             glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboVertexBuffer));
                             pos_vbo = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
@@ -246,7 +245,7 @@ namespace odfaeg {
                     states.vertexBufferId = vboVertexBuffer;
                     states.normalBufferId = vboNormalBuffer;
                     states.indexBufferId = vboIndexBuffer;
-                }*/
+                }
                 oldVerticesSize = m_vertices.size();
                 target.draw(&m_vertices[0], m_vertices.size(), m_primitiveType, states, &m_normals[0], m_normals.size(),&m_indexes[0], m_indexes.size(),
                             &m_numIndexes[0], m_numIndexes.size(), &m_baseVertices[0], m_baseVertices.size(),&m_baseIndexes[0],m_baseIndexes.size());

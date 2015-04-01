@@ -195,12 +195,10 @@ namespace odfaeg {
                                     packet<<"PONG";
                                     Network::sendUdpPacket(packet);
                                 } else if (message == "GET_TIME") {
-                                    std::cout<<"GET TIME"<<std::endl;
                                     packet.clear();
                                     packet<<"SET_TIME*"+core::conversionLongString(core::Application::getTimeClk().getElapsedTime().asMicroseconds());
                                     Network::sendUdpPacket(packet);
                                 } else {
-                                    std::cout<<"message : "<<message<<std::endl;
                                     Network::addResponse(message);
                                 }
                             } else {

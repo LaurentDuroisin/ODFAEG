@@ -66,7 +66,7 @@ namespace odfaeg {
             }
             void PonctualLight::onDraw(RenderTarget &target, RenderStates states) {
                 for (unsigned int i = 0; i < triangles.size(); i++) {
-                     triangles[i]->transform(getTransform());
+                     states.transform = getTransform();
                      target.draw(*triangles[i], states);
                 }
             }

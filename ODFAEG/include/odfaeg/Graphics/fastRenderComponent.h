@@ -127,7 +127,9 @@ namespace odfaeg {
             */
             Tile& getDepthBufferTile();
             void changeVisibleEntities(Entity* toRemove, Entity* toAdd, EntityManager* em);
+            void pushEvent(sf::Event event);
             private :
+            std::vector<std::pair<std::reference_wrapper<Drawable>, RenderStates>> drawables;
             Batcher batcher; /**> A group of faces using the same materials and primitive type.*/
             sf::Color backgroundColor; /**> The background color.*/
             std::vector<Instance*> m_instances; /**> Instances to draw. (Instanced rendering.) */
@@ -142,6 +144,7 @@ namespace odfaeg {
             Shader* specularTextureGenerator;
             Shader* bumpTextureGenerator;
             Shader* refractionTextureGenerator;
+            Shader* simpleShader;
             RenderStates currentStates; /**> the current render states.*/
             View view; /**> the view of the component.*/
             Tile* frameBufferTile, *depthBufferTile; /**> the frame, depth and normal buffer.*/

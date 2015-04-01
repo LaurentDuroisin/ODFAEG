@@ -9,7 +9,8 @@ namespace odfaeg {
                 Component (position, size, origin, useThread) {
 
             }
-            virtual void update() {}
+            virtual void checkSubWindowEvents() = 0;
+            virtual ~LightComponent() {}
         };
     }
 }

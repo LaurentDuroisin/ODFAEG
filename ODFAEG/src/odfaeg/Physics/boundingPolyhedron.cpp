@@ -62,7 +62,7 @@ namespace odfaeg {
             /* Check the nearest vertex of the polygon 2 from the regions of polygon 2 and give the distance and
             *  return the point or the face's bissector of the region.
             */
-            int vertexIndex1 = math::Computer::checkNearestVertexFromShape(center, points, edgeBissectors, edgeNormals, faceBissectors, faceNormals, bp.points, distMin1, ptIndex1, edgeIndex1, faceIndex1);
+            int vertexIndex1 = math::Computer::checkNearestVertexFromShape(center, points, edgeBissectors, edgeNormals, faceBissectors, faceNormals, bp.points, distMin1, ptIndex1, edgeIndex1, faceIndex1, 3);
             info.nearestVertexIndex1 = vertexIndex1;
             info.nearestPtIndex1 = ptIndex1;
             info.nearestEdgeIndex1 = edgeIndex1;
@@ -70,17 +70,15 @@ namespace odfaeg {
             /* Check the nearest vertex of the polygon 1 from the regions of polygon 2 and give the distance and
             *  return the point or face's bissector of the region.
             */
-            int vertexIndex2 = math::Computer::checkNearestVertexFromShape(bp.center, bp.points, bp.edgeBissectors, bp.edgeNormals, bp.faceBissectors, faceNormals, points, distMin2, ptIndex2, edgeIndex2, faceIndex2);
+            int vertexIndex2 = math::Computer::checkNearestVertexFromShape(bp.center, bp.points, bp.edgeBissectors, bp.edgeNormals, bp.faceBissectors, faceNormals, points, distMin2, ptIndex2, edgeIndex2, faceIndex2, 3);
             info.nearestVertexIndex2 = vertexIndex2;
             info.nearestPtIndex2 = ptIndex2;
             info.nearestEdgeIndex2 = edgeIndex2;
             info.nearestFaceIndex2 = faceIndex2;
             if (ptIndex1 != -1) {
-                std::cout<<ptIndex1<<std::endl;
                 return (points[ptIndex1] - center).magnSquared() >= (bp.points[vertexIndex1] - center).magnSquared();
             }
             if (ptIndex2 != -1) {
-                std::cout<<ptIndex1<<std::endl;
                 return (points[ptIndex2] - center).magnSquared() >= (bp.points[vertexIndex2] - center).magnSquared();
             }
             if (flat && bp.flat) {
@@ -91,12 +89,12 @@ namespace odfaeg {
                 }
                 if (faceIndex1 != -1 && faceIndex2 == -1) {
                     math::Triangle t(points[faceIndex1*3], points[faceIndex1*3+1], points[faceIndex1*3+2]);
-                    math::Ray r1 (points[edgeIndex2], points[(edgeIndex2 % 3 == 2) ? edgeIndex2 - 2 : edgeIndex2 + 1]);
-                    math::Ray r2 (points[(edgeIndex2 % 3 == 2) ? edgeIndex2 - 2 : edgeIndex2 + 1], points[edgeIndex2]);
+                    math::Ray r1 (bp.points[edgeIndex2], bp.points[(edgeIndex2 % 3 == 2) ? edgeIndex2 - 2 : edgeIndex2 + 1]);
+                    math::Ray r2 (bp.points[(edgeIndex2 % 3 == 2) ? edgeIndex2 - 2 : edgeIndex2 + 1], bp.points[edgeIndex2]);
                     return (t.intersects(r1) && t.intersects(r2));
                 }
                 if (faceIndex1 == -1 && faceIndex2 != -1) {
-                    math::Triangle t(points[faceIndex2*3], points[faceIndex2*3+1], points[faceIndex2*3+2]);
+                    math::Triangle t(bp.points[faceIndex2*3], bp.points[faceIndex2*3+1], bp.points[faceIndex2*3+2]);
                     math::Ray r1 (points[edgeIndex1], points[(edgeIndex1 % 3 == 2) ? edgeIndex1 - 2 : edgeIndex1 + 1]);
                     math::Ray r2 (points[(edgeIndex1 % 3 == 2) ? edgeIndex1 - 2 : edgeIndex1 + 1], points[edgeIndex1]);
                     return (t.intersects(r1) && t.intersects(r2));
@@ -193,7 +191,7 @@ namespace odfaeg {
             int edgeIndex, faceIndex;
             std::vector<math::Vec3f> vertices = {point};
             //Check the nearest face from the point.
-            int ptIndex = math::Computer::checkNearestVertexFromShape(center, points, edgeBissectors, edgeNormals, faceBissectors, faceNormals, vertices, distMin, index,edgeIndex, faceIndex);
+            int ptIndex = math::Computer::checkNearestVertexFromShape(center, points, edgeBissectors, edgeNormals, faceBissectors, faceNormals, vertices, distMin, index,edgeIndex, faceIndex, 3);
             if (index != -1) {
                 return (points[index] - center).magnSquared() >= (vertices[ptIndex] - center).magnSquared();
             }
@@ -238,7 +236,7 @@ namespace odfaeg {
                 math::Vec3f v2 = c - b;
                 math::Vec3f v3 = c - a;
                 math::Vec3f fn = v1.cross(v2).normalize();
-                if (fn.dot2(bissector - center) > 0)
+                if (fn.dot2(bissector - center) < 0)
                     fn = -fn;
                 faceBissectors.push_back(bissector);
                 faceNormals.push_back(fn);

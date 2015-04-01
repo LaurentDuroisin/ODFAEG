@@ -169,6 +169,7 @@ namespace odfaeg {
                             if (events[i].type == sf::Event::KeyPressed && startEvent.type == sf::Event::KeyPressed
                                 || events[i].type == sf::Event::MouseButtonPressed && startEvent.type == sf::Event::MouseButtonPressed)
                                 pressed = true;
+
                             return true;
                         } else if (is_not && !Command::equalEvent(events[i], startEvent) && !pressed) {
                             if (events[i].type == sf::Event::KeyPressed && startEvent.type == sf::Event::KeyPressed

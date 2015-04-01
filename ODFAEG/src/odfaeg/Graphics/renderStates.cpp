@@ -11,8 +11,7 @@ namespace odfaeg {
         texture  (nullptr),
         shader   (nullptr),
         vertexBufferId(0),
-        normalBufferId(0),
-        gpuTransform(false)
+        normalBufferId(0)
         {
         }
 
@@ -25,8 +24,7 @@ namespace odfaeg {
         texture  (nullptr),
         shader   (nullptr),
         vertexBufferId(0),
-        normalBufferId(0),
-        gpuTransform(false)
+        normalBufferId(0)
         {
         }
 
@@ -38,8 +36,7 @@ namespace odfaeg {
         texture  (nullptr),
         shader   (nullptr),
         vertexBufferId(0),
-        normalBufferId(0),
-        gpuTransform(false)
+        normalBufferId(0)
         {
         }
 
@@ -51,8 +48,7 @@ namespace odfaeg {
         texture  (theTexture),
         shader   (nullptr),
         vertexBufferId(0),
-        normalBufferId(0),
-        gpuTransform(false)
+        normalBufferId(0)
         {
         }
 
@@ -64,8 +60,7 @@ namespace odfaeg {
         texture  (nullptr),
         shader   (theShader),
         vertexBufferId(0),
-        normalBufferId(0),
-        gpuTransform(false)
+        normalBufferId(0)
         {
         }
 
@@ -78,8 +73,7 @@ namespace odfaeg {
         texture  (theTexture),
         shader   (theShader),
         vertexBufferId(0),
-        normalBufferId(0),
-        gpuTransform(false)
+        normalBufferId(0)
         {
         }
     }

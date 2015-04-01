@@ -22,7 +22,6 @@ public :
     }
     bool operator== (Entity& other);
     void addAnimation (odfaeg::graphic::Anim *anim);
-    odfaeg::math::Vec2f getPosition ();
     odfaeg::graphic::Tile& getCurrentTile();
     void setMoving(bool b);
     bool isMoving ();

@@ -152,9 +152,11 @@ namespace odfaeg {
                     ar(width);
                     ar(height);
                     ar(depth);
-                    ar(bx);
-                    ar(by);
-                    ar(bz);
+                    ar(points);
+                    ar(edgeNormals);
+                    ar(edgeBissectors);
+                    ar(faceNormals);
+                    ar(faceBissectors);
                 }
                 const OrientedBoundingBox& operator= (const OrientedBoundingBox& other) {
                     *this = other;
@@ -172,25 +174,33 @@ namespace odfaeg {
                 std::unique_ptr<BoundingVolume> clone() {
                     return std::make_unique<OrientedBoundingBox>(*this);
                 }
-                std::array<math::Vec3f, 8> getVertices() {
+                std::vector<math::Vec3f> getVertices() {
                     return points;
                 }
+                std::vector<math::Vec3f> getEdgeNormals();
+                std::vector<math::Vec3f> getEdgeBissectors();
+                std::vector<math::Vec3f> getFaceBissectors();
+                std::vector<math::Vec3f> getFaceNormals();
                 void move(math::Vec3f t);
                 void scale(math::Vec3f s);
                 void rotate(float angle, math::Vec3f r);
                 bool isFlat();
             private :
+                void computeVectors();
                 int x, y, z, width, height, depth; /**< the x position of the bounding box*/
                 /**< the y position of the bounding box*/
                 /**< the z position of the bounding box*/
                 /**< the width of the bounding box*/
                 /**< the height of the bounding box*/
                 /**< the depth position of the bounding box*/
-                math::Vec3f bx, by, bz; /**< the first edge of the bounding box*/
                 /**< the second edge of the bounding box*/
                 /**< the third edge of the bounding box*/
                 math::Vec3f center; /**< the center of the bounding box*/
-                std::array<math::Vec3f, 8> points;
+                std::vector<math::Vec3f> points;
+                std::vector<math::Vec3f> edgeNormals;
+                std::vector<math::Vec3f> faceNormals;
+                std::vector<math::Vec3f> edgeBissectors;
+                std::vector<math::Vec3f> faceBissectors;
                 bool flat;
         };
     }

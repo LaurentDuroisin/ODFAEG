@@ -31,6 +31,7 @@ set(LIBRARY_OUTPUT_PATH "${PROJECT_BINARY_DIR}/lib")
 # add the modules subdirectories
 add_subdirectory(Core)
 add_subdirectory(Math)
+add_subdirectory(Window)
 add_subdirectory(Physics)
 add_subdirectory(Graphics)
 add_subdirectory(Network)

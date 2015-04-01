@@ -39,12 +39,12 @@
 			<Add option="-std=c++14" />
 		</Compiler>
 		<Linker>
-			<Add library="../../../../../usr/local/lib/libodfaeg-network-s.a" />
-			<Add library="../../../../../usr/local/lib/libodfaeg-audio-s.a" />
-			<Add library="../../../../../usr/local/lib/libodfaeg-graphics-s.a" />
-			<Add library="../../../../../usr/local/lib/libodfaeg-physics-s.a" />
-			<Add library="../../../../../usr/local/lib/libodfaeg-math-s.a" />
-			<Add library="../../../../../usr/local/lib/libodfaeg-core-s.a" />
+			<Add library="../../../../../usr/local/lib/libodfaeg-network-s-d.a" />
+			<Add library="../../../../../usr/local/lib/libodfaeg-audio-s-d.a" />
+			<Add library="../../../../../usr/local/lib/libodfaeg-graphics-s-d.a" />
+			<Add library="../../../../../usr/local/lib/libodfaeg-physics-s-d.a" />
+			<Add library="../../../../../usr/local/lib/libodfaeg-math-s-d.a" />
+			<Add library="../../../../../usr/local/lib/libodfaeg-core-s-d.a" />
 			<Add library="../../../../../usr/local/lib/libsfml-network.so" />
 			<Add library="../../../../../usr/local/lib/libsfml-audio.so" />
 			<Add library="../../../../../usr/local/lib/libsfml-graphics.so" />
@@ -56,7 +56,6 @@
 			<Add library="../../../../../usr/lib/x86_64-linux-gnu/libpthread.so" />
 			<Add library="../../../../../usr/lib/x86_64-linux-gnu/libGLEW.a" />
 		</Linker>
-		<Unit filename="../ODFAEG/include/odfaeg/Physics/collisionResultSet.hpp" />
 		<Unit filename="application.cpp" />
 		<Unit filename="application.h" />
 		<Unit filename="main.cpp" />

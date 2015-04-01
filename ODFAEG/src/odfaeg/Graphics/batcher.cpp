@@ -164,7 +164,7 @@ namespace odfaeg {
                 numInstances = 0;
             }
             void Instance::addVertexArray(VertexArray *va, TransformMatrix& tm, unsigned int baseVertex, unsigned int baseIndex) {
-                if (Shader::getShadingLanguageVersionMajor() >= 3 && Shader::getShadingLanguageVersionMinor() >= 3) {
+                if (Shader::getShadingLanguageVersionMajor() >= 4 && Shader::getShadingLanguageVersionMinor() >= 2) {
                     unsigned int numIndexes = va->getIndexes().size();
                     for (unsigned int i = 0; i < va->getVertexCount(); i++) {
                         m_vertices.append((*va)[i]);
@@ -232,10 +232,10 @@ namespace odfaeg {
                     Instance* instance = new Instance(face->getMaterial(), face->getVertexArray().getPrimitiveType());
                     instance->addVertexArray(&face->getVertexArray(),face->getTransformMatrix(), numVertices,numIndexes);
                     instances.push_back(instance);
-                    if (Shader::getShadingLanguageVersionMajor() >= 3 && Shader::getShadingLanguageVersionMinor() >= 3)
+                    if (Shader::getShadingLanguageVersionMajor() >= 4 && Shader::getShadingLanguageVersionMinor() >= 2)
                         numIndexes += instance->getVertexArray().getBaseIndexes().back();
                 }
-                if (Shader::getShadingLanguageVersionMajor() >= 3 && Shader::getShadingLanguageVersionMinor() >= 3)
+                if (Shader::getShadingLanguageVersionMajor() >= 4 && Shader::getShadingLanguageVersionMinor() >= 2)
                     numVertices += face->getVertexArray().getVertexCount();
             }
             std::vector<Instance*> Batcher::getInstances() {

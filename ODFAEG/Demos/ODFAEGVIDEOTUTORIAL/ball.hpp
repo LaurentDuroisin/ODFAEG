@@ -2,6 +2,8 @@
 #define PONG_BALL_HPP
 #include "odfaeg/Physics/boundingSphere.h"
 #include "odfaeg/Graphics/entity.h"
+#include "odfaeg/Network/user.h"
+#include "odfaeg/Network/symEncPacket.h"
 class Ball : public odfaeg::graphic::Entity {
 public :
     Ball();
@@ -12,8 +14,8 @@ public :
     struct Historic {
         sf::Int64 time;
         odfaeg::math::Vec2f pos;
-        odfaeg::math::Vec2f dir;
     };
+    Ball::Historic getHistoric();
     void onMove(odfaeg::math::Vec3f& t);
     bool isLeaf() const {
         return true;
@@ -36,7 +38,16 @@ public :
     bool isShadow() const {
         return false;
     }
+    void registerBallStates(Historic historic) {
+        this->historic = historic;
+    }
+    void setPartyId(int partyId);
+    int partyId();
+    Historic ballStates() {
+        return historic;
+    }
 private :
+    int m_partyId;
     Historic historic;
     odfaeg::math::Vec2f m_dir;
     float m_speed;

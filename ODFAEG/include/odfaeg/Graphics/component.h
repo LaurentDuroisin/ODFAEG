@@ -15,9 +15,7 @@ namespace odfaeg {
                 nbComponents++;
             }
             virtual void clear() = 0;
-            void pushEvent(sf::Event event) {
-                listener.pushEvent(event);
-            }
+            virtual void pushEvent(sf::Event event) = 0;
             virtual void onUpdate(sf::Event& event) {}
             core::Listener& getListener() {
                 return listener;

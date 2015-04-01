@@ -13,6 +13,7 @@ MyAppli::MyAppli(sf::VideoMode wm, std::string title) : Application (wm, title, 
     addClock(clock1, "RequestTime");
     hero = nullptr;
     monster = nullptr;
+    received = false;
 }
 void MyAppli::keyHeldDown (sf::Keyboard::Key key) {
     //BoundingRectangle rect (pos.x, pos.y, getView().getSize().x, getView().getSize().y);
@@ -27,14 +28,9 @@ void MyAppli::keyHeldDown (sf::Keyboard::Key key) {
             SymEncPacket packet;
             packet<<message;
             Network::sendTcpPacket(packet);
-            message = "GETCARPOS";
-            packet.clear();
-            packet<<message;
-            hero->getClkTransfertTime().restart();
-            getClock("RequestTime").restart();
-            Network::sendTcpPacket(packet);
             hero->setMoving(true);
             hero->setIsMovingFromKeyboard(true);
+            received = false;
         }
     } else if (actualKey != sf::Keyboard::Key::Unknown && key == sf::Keyboard::Key::Q) {
         if (!hero->isMoving()) {
@@ -47,14 +43,9 @@ void MyAppli::keyHeldDown (sf::Keyboard::Key key) {
             SymEncPacket packet;
             packet<<message;
             Network::sendTcpPacket(packet);
-            message = "GETCARPOS";
-            packet.clear();
-            packet<<message;
-            hero->getClkTransfertTime().restart();
-            getClock("RequestTime").restart();
-            Network::sendTcpPacket(packet);
             hero->setMoving(true);
             hero->setIsMovingFromKeyboard(true);
+            received = false;
         }
     } else if (actualKey != sf::Keyboard::Key::Unknown && actualKey == sf::Keyboard::Key::S) {
         if (!hero->isMoving()) {
@@ -67,14 +58,9 @@ void MyAppli::keyHeldDown (sf::Keyboard::Key key) {
             SymEncPacket packet;
             packet<<message;
             Network::sendTcpPacket(packet);
-            message = "GETCARPOS";
-            packet.clear();
-            packet<<message;
-            hero->getClkTransfertTime().restart();
-            getClock("RequestTime").restart();
-            Network::sendTcpPacket(packet);
             hero->setMoving(true);
             hero->setIsMovingFromKeyboard(true);
+            received = false;
         }
     } else if (actualKey != sf::Keyboard::Key::Unknown && key == sf::Keyboard::Key::D) {
         if (!hero->isMoving()) {
@@ -87,14 +73,9 @@ void MyAppli::keyHeldDown (sf::Keyboard::Key key) {
             SymEncPacket packet;
             packet<<message;
             Network::sendTcpPacket(packet);
-            message = "GETCARPOS";
-            packet.clear();
-            packet<<message;
-            hero->getClkTransfertTime().restart();
-            getClock("RequestTime").restart();
-            Network::sendTcpPacket(packet);
             hero->setIsMovingFromKeyboard(true);
             hero->setMoving(true);
+            received = false;
         }
     }
 }
@@ -108,15 +89,20 @@ void MyAppli::leftMouseButtonPressed(sf::Vector2f mousePos) {
         caracter->setIsMovingFromKeyboard(false);
         caracter->setMoving(true);
     }*/
-    std::string message = "MOVEFROMPATH*"+conversionIntString(hero->getId())+"*"+conversionFloatString(finalPos.x)+"*"+conversionFloatString(finalPos.y);
+    std::string message = "MOVEFROMPATH*"+conversionIntString(hero->getId())+"*"+conversionIntString(finalPos.x)+"*"+conversionIntString(finalPos.y)+"*"+conversionLongString(Application::getTimeClk().getElapsedTime().asMicroseconds());
     SymEncPacket packet;
     packet<<message;
     Network::sendTcpPacket(packet);
-    message = "GETCARPOS";
-    packet.clear();
+    received = false;
+}
+void MyAppli::rightMouseButtonPressed(sf::Vector2f mousePos) {
+    Vec3f finalPos (mousePos.x, getRenderWindow().getSize().y - mousePos.y, 0);
+    finalPos = getRenderWindow().mapPixelToCoords(finalPos);
+    finalPos = Vec3f(finalPos.x, finalPos.y, 0);
+    int id = hero->getId();
+    std::string message = "SELECT_MONSTER*"+conversionIntString(id)+"*"+conversionFloatString(finalPos.x)+"*"+conversionFloatString(finalPos.y)+"*"+conversionLongString(Application::getTimeClk().getElapsedTime().asMicroseconds());
+    SymEncPacket packet;
     packet<<message;
-    hero->getClkTransfertTime().restart();
-    getClock("RequestTime").restart();
     Network::sendTcpPacket(packet);
 }
 bool MyAppli::mouseInside (sf::Vector2f mousePos) {
@@ -141,7 +127,7 @@ void MyAppli::onLoad() {
     //shader.loadFromFile("Shaders/SimpleVertexShader.vertexshader", "Shaders/SimpleFragmentShader.fragmentshader");
 }
 void MyAppli::onInit () {
-    Network::startCli(10'000, 10'001,sf::IpAddress::LocalHost, true);
+    Network::startCli(10'000, 10'001,sf::IpAddress::LocalHost);
     TextureManager<> &tm = cache.resourceManager<Texture, std::string>("TextureManager");
     Vec2f pos (getView().getPosition().x - getView().getSize().x * 0.5f, getView().getPosition().y - getView().getSize().y * 0.5f);
     BoundingBox bx (pos.x, pos.y, 0, getView().getSize().x, getView().getSize().y, 0);
@@ -228,10 +214,30 @@ void MyAppli::onInit () {
     int textRectX = 0, textRectY = 0, textRectWidth = 50, textRectHeight = 100;
     int textWidth = text->getSize().x;
     Vec3f tmpCenter = hero->getCenter();
-    hero->setCenter(Vec3f(0, 0, 0));
-    for (unsigned int i = 0; i < 64; i+=8) {
+    hero->setCenter(Vec3f(-25, -50, 0));
+    for (unsigned int i = 0; i <= 56; i+=8) {
         Anim* animation = new Anim(0.1f, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), 0);
         for (unsigned int j = 0; j < 8; j++) {
+            sf::IntRect textRect (textRectX, textRectY, textRectWidth, textRectHeight);
+            Tile *tile = new Tile(text, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), textRect);
+            tile->getFaces()[0]->getMaterial().setTexId("VLADSWORD");
+            g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight(), 100, Shadow::SHADOW_TYPE::SHADOW_TILE);
+            frame->setShadowCenter(Vec3f(0, 100, 0));
+            //decor->setShadowCenter(Vec2f(80, 130));
+            //decor->changeGravityCenter(Vec3f(50, 50, 0));
+            textRectX += textRectWidth;
+            if (textRectX + textRectWidth > textWidth) {
+                textRectX = 0;
+                textRectY += textRectHeight;
+            }
+            animation->addEntity(frame);
+        }
+        hero->addAnimation(animation);
+        au->addAnim(animation);
+    }
+    for (unsigned int i = 0; i <= 88; i+= 8) {
+        Anim* animation = new Anim(0.1f, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), 0);
+        for (unsigned int j = 0; j < 11; j++) {
             sf::IntRect textRect (textRectX, textRectY, textRectWidth, textRectHeight);
             Tile *tile = new Tile(text, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), textRect);
             tile->getFaces()[0]->getMaterial().setTexId("VLADSWORD");
@@ -257,20 +263,39 @@ void MyAppli::onInit () {
     World::addEntity(hero);
     Network::sendTcpPacket(packet);
     response = Network::waitForLastResponse("MONSTERSINFOS", sf::seconds(10.f));
-    std::istringstream iss2(response);
-    ITextArchive ia2(iss2);
-    ia2(monster);
+    iss.clear();
+    iss.str(response);
+    ia(monster);
     path = "tilesets/ogro.png";
     //for (unsigned int n = 0; n < monsters.size(); n++) {
         tmpCenter = monster->getCenter();
-        monster->setCenter(Vec3f(0, 0, 0));
+        monster->setCenter(Vec3f(-25, -50, 0));
         cache.resourceManager<Texture, std::string>("TextureManager").fromFileWithAlias(path, "OGRO");
         text = cache.resourceManager<Texture, std::string>("TextureManager").getResourceByPath(path);
         textRectX = 0, textRectY = 0, textRectWidth = 50, textRectHeight = 100;
         textWidth = text->getSize().x;
-        for (unsigned int i = 0; i < 64; i+=8) {
+        for (unsigned int i = 0; i <= 56; i+=8) {
             Anim* animation = new Anim(0.1f, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), 0);
             for (unsigned int j = 0; j < 8; j++) {
+                sf::IntRect textRect (textRectX, textRectY, textRectWidth, textRectHeight);
+                Tile *tile = new Tile(text, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), textRect);
+                tile->getFaces()[0]->getMaterial().setTexId("OGRO");
+                g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight(), 100, Shadow::SHADOW_TYPE::SHADOW_TILE);
+                frame->setShadowCenter(Vec3f(0, 100, 0));
+                //decor->changeGravityCenter(Vec3f(50, 50, 0));
+                textRectX += textRectWidth;
+                if (textRectX + textRectWidth > textWidth) {
+                    textRectX = 0;
+                    textRectY += textRectHeight;
+                }
+                animation->addEntity(frame);
+            }
+            monster->addAnimation(animation);
+            au->addAnim(animation);
+        }
+        for (unsigned int i = 0; i <= 80; i++) {
+            Anim* animation = new Anim(0.1f, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), 0);
+            for (unsigned int j = 0; j < 10; j++) {
                 sf::IntRect textRect (textRectX, textRectY, textRectWidth, textRectHeight);
                 Tile *tile = new Tile(text, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), textRect);
                 tile->getFaces()[0]->getMaterial().setTexId("OGRO");
@@ -317,6 +342,12 @@ void MyAppli::onInit () {
     getListener().connect("MouseInside",mouseInsideAction);
     Command leftMouseButtonPressedAction (a5, FastDelegate<void>(&MyAppli::leftMouseButtonPressed, this, sf::Vector2f(-1, -1)));
     getListener().connect("LeftMouseButtonPressedAction", leftMouseButtonPressedAction);
+    packet.clear();
+    packet<<"GETCARPOS";
+    hero->getClkTransfertTime().restart();
+    getClock("RequestTime").restart();
+    Network::sendTcpPacket(packet);
+    received = false;
 }
 void MyAppli::onRender(FastRenderComponentManager *cm) {
     /* std::vector<Vec3f> path = caracter->getPath();
@@ -464,8 +495,33 @@ void MyAppli::onExec () {
         packet<<request;
         Network::sendUdpPacket(packet);
         getClock("RequestTime").restart();
+        received = false;
     }
     std::string response;
+    if (Network::getResponse("STOPCARMOVE", response)) {
+        std::vector<std::string> infos = split(response, "*");
+        int id = conversionStringInt(infos[0]);
+        Vec3f newPos (conversionStringFloat(infos[1]), conversionStringFloat(infos[2]), 0);
+        Caracter* caracter = static_cast<Caracter*>(World::getEntity(id));
+        Vec3f actualPos = Vec3f(caracter->getCenter().x, caracter->getCenter().y, 0);
+        if (hero->getId() == id) {
+            for (unsigned int i = 0; i < getRenderComponentManager().getNbComponents(); i++) {
+                View view = getRenderComponentManager().getRenderComponent(i)->getView();
+                Vec3f d = newPos - view.getPosition();
+                view.move(d.x, d.y, d.y);
+                getRenderComponentManager().getRenderComponent(i)->setView(view);
+            }
+            Vec3f d = newPos - getView().getPosition();
+            getView().move(d.x, d.y, d.y);
+        }
+        Vec3f d = newPos - actualPos;
+        World::moveEntity(caracter, d.x, d.y, d.y);
+        caracter->setMoving(false);
+        World::update();
+    }
+    if (Network::getResponse("MONSTERONMOUSE", response)) {
+        std::cout<<"monster on mouse!"<<std::endl;
+    }
     if (Network::getResponse("NEWPATH", response)) {
         std::vector<std::string> infos = split(response, "*");
         std::vector<Vec2f> path;
@@ -490,33 +546,36 @@ void MyAppli::onExec () {
     }
     if (Network::getResponse("NEWPOS", response)) {
         std::vector<std::string> infos = split(response, "*");
-        int id = conversionStringInt(infos[0]);
-        ping = conversionStringLong(infos[1]);
-        Caracter* caracter = static_cast<Caracter*>(World::getEntity(id));
-        Vec3f actualPos = Vec3f(caracter->getCenter().x, caracter->getCenter().y, 0);
-        Vec3f newPos (conversionStringFloat(infos[2]), conversionStringFloat(infos[3]), 0);
-        Vec3f d = newPos - actualPos;
-        if (id == hero->getId()) {
-            for (unsigned int i = 0; i < getRenderComponentManager().getNbComponents(); i++) {
-                View view = getRenderComponentManager().getRenderComponent(i)->getView();
-                view.move(d.x, d.y, d.y);
-                getRenderComponentManager().getRenderComponent(i)->setView(view);
+        if (infos.size() == 4) {
+            int id = conversionStringInt(infos[0]);
+            ping = conversionStringLong(infos[1]);
+            Caracter* caracter = static_cast<Caracter*>(World::getEntity(id));
+            Vec3f actualPos = Vec3f(caracter->getCenter().x, caracter->getCenter().y, 0);
+            Vec3f newPos (conversionStringFloat(infos[2]), conversionStringFloat(infos[3]), 0);
+            Vec3f d = newPos - actualPos;
+            if (id == hero->getId()) {
+                for (unsigned int i = 0; i < getRenderComponentManager().getNbComponents(); i++) {
+                    View view = getRenderComponentManager().getRenderComponent(i)->getView();
+                    view.move(d.x, d.y, d.y);
+                    getRenderComponentManager().getRenderComponent(i)->setView(view);
+                }
+                getView().move (d.x, d.y, d.y);
             }
-            getView().move (d.x, d.y, d.y);
-        }
-        World::moveEntity(caracter, d.x, d.y, d.y);
-        World::update();
-        caracter->interpolation.first = Vec3f(caracter->getCenter().x, caracter->getCenter().y, 0);
-        if (caracter->isMoving()) {
-            if (caracter->isMovingFromKeyboard()) {
-                caracter->interpolation.second = caracter->interpolation.first + Vec3f(caracter->getDir().x,caracter->getDir().y,0)  * caracter->getSpeed() * (ping + timeBtwnTwoReq.asMicroseconds());
+            World::moveEntity(caracter, d.x, d.y, d.y);
+            World::update();
+            caracter->interpolation.first = Vec3f(caracter->getCenter().x, caracter->getCenter().y, 0);
+            if (caracter->isMoving()) {
+                if (caracter->isMovingFromKeyboard()) {
+                    caracter->interpolation.second = caracter->interpolation.first + Vec3f(caracter->getDir().x,caracter->getDir().y,0)  * caracter->getSpeed() * (ping + timeBtwnTwoReq.asMicroseconds());
+                } else {
+                    caracter->interpolation.second = Computer::getPosOnPathFromTime(caracter->interpolation.first, caracter->getPath(),ping + timeBtwnTwoReq.asMicroseconds(),caracter->getSpeed());
+                }
             } else {
-                caracter->interpolation.second = Computer::getPosOnPathFromTime(caracter->interpolation.first, caracter->getPath(),ping + timeBtwnTwoReq.asMicroseconds(),caracter->getSpeed());
+                caracter->interpolation.second = caracter->interpolation.first;
             }
-        } else {
-            caracter->interpolation.second = caracter->interpolation.first;
+            caracter->getClkTransfertTime().restart();
         }
-        caracter->getClkTransfertTime().restart();
+
    } else {
        std::vector<Entity*> caracters = World::getEntities("E_MONSTER+E_HERO");
        for (unsigned int i = 0; i < caracters.size(); i++) {
@@ -545,7 +604,7 @@ void MyAppli::onExec () {
                     sf::Int64 elapsedTime = caracter->getClkTransfertTime().getElapsedTime().asMicroseconds();
                     Vec3f newPos = caracter->interpolation.first + (caracter->interpolation.second - caracter->interpolation.first) * ((float) elapsedTime / (float) (ping + timeBtwnTwoReq.asMicroseconds()));
                     Vec3f d = newPos - actualPos;
-                    if (newPos.computeDist(caracter->getPath()[caracter->getPath().size() - 1]) <= 1) {
+                    if (newPos.computeDist(caracter->getPath()[caracter->getPath().size() - 1]) <= PATH_ERROR_MARGIN) {
                         caracter->setMoving(false);
                         newPos = caracter->getPath()[caracter->getPath().size() - 1];
                     }

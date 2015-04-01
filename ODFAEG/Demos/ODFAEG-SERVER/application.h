@@ -36,9 +36,7 @@ private :
     std::vector<odfaeg::graphic::Tile*> walls;
     odfaeg::graphic::Map* theMap;
     odfaeg::graphic::g2d::PonctualLight* light2;
-    sf::Int64 sync_time;
-    sf::Time timeBtwnTwoSync = sf::seconds(1);
-    sf::Int64 last_srv_time;
+    static const unsigned int PATH_ERROR_MARGIN = 2;
 public :
     MyAppli();
     void onLoad();

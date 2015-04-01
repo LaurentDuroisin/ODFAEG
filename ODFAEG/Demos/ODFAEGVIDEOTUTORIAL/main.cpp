@@ -1,5 +1,5 @@
 #include "pong.hpp"
-int main (char* agrc[], int argv) {
+int main (int argv, char* argc[]) {
     Pong pong;
     return pong.exec();
 }

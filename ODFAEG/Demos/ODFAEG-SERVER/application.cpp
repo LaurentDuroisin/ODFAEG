@@ -11,7 +11,7 @@ void MyAppli::onLoad() {
     //shader.loadFromFile("Shaders/SimpleVertexShader.vertexshader", "Shaders/SimpleFragmentShader.fragmentshader");
 }
 void MyAppli::onInit () {
-    Network::startSrv(10'000, 10'001, true);
+    Network::startSrv(10'000, 10'001);
     theMap = new Map(nullptr, "Map test", 100, 50);
     BaseChangementMatrix bcm;
     bcm.set2DIsoMatrix();
@@ -84,15 +84,13 @@ void MyAppli::onInit () {
     //getView().move(d.x * 0.5f, d.y * 0.5f, 0);
     World::addEntity(caracter);
     //World::computeIntersectionsWithWalls();
-    BoundingPolyhedron monsterZone;
     std::array<Vec3f, 4> pts;
     pts[0] = Vec3f(100, 200, 0);
     pts[1] = Vec3f(300, 200, 0);
     pts[2] = Vec3f(100, 400, 0);
     pts[3] = Vec3f(300, 400, 0);
-    for (unsigned int i = 0; i < pts.size(); i++) {
-        monsterZone.addPoint(pts[i]);
-    }
+    BoundingPolyhedron monsterZone(pts[0], pts[2], pts[3], true);
+    monsterZone.addTriangle(pts[2], pts[0], pts[3]);
     Monster* monster = new Monster("Ogro", "Orc","MapTest",1,monsterZone);
     Vec3f pos = monster->respawn();
     monster->setCenter(pos);
@@ -126,27 +124,137 @@ void MyAppli::onExec () {
             hero->setDir(Vec2f(dir.x, dir.y));
             hero->setMoving(true);
             hero->setIsMovingFromKeyboard(true);
+            hero->setAttacking(false);
+            std::vector<Entity*> caracters = World::getEntities("E_MONSTER+E_HERO");
+            for (unsigned int i = 0; i < caracters.size(); i++) {
+                Caracter* caracter = static_cast<Caracter*> (caracters[i]);
+                if (caracter->isMoving()) {
+                    if (caracter->isMovingFromKeyboard()) {
+                        Vec3f actualPos = Vec3f(caracter->getCenter().x, caracter->getCenter().y, 0);
+                        sf::Int64 transferTime = user->getPingAvg();
+                        Vec3f newPos = actualPos + Vec3f(caracter->getDir().x, caracter->getDir().y, 0) * caracter->getSpeed() *  transferTime;
+                        Ray ray(actualPos, newPos);
+                        if (World::collide(caracter, ray)) {
+                            newPos = actualPos;
+                        }
+                        std::string response = "NEWPOS"+conversionIntString(caracter->getId())+"*"+conversionLongString(transferTime)+"*"+conversionFloatString(newPos.x)+"*"+conversionFloatString(newPos.y);
+                        SymEncPacket packet;
+                        packet<<response;
+                        user->sendTcpPacket(packet);
+                    } else {
+                        sf::Int64 transferTime = user->getPingAvg();
+                        Vec3f actualPos = Vec3f(caracter->getCenter().x, caracter->getCenter().y, 0);
+                        Vec3f newPos = Computer::getPosOnPathFromTime(actualPos, caracter->getPath(), transferTime, caracter->getSpeed());
+                        if (newPos.computeDist(caracter->getPath()[caracter->getPath().size() - 1]) <= PATH_ERROR_MARGIN) {
+                            newPos = caracter->getPath()[caracter->getPath().size() - 1];
+                        }
+                        std::string response = "NEWPOS"+conversionIntString(caracter->getId())+"*"+conversionLongString(transferTime)+"*"+conversionFloatString(newPos.x)+"*"+conversionFloatString(newPos.y);
+                        SymEncPacket packet;
+                        packet<<response;
+                        user->sendTcpPacket(packet);
+                    }
+                } else {
+                    sf::Int64 transferTime = user->getPingAvg();
+                    Vec3f newPos = caracter->getCenter();
+                    std::string response = "NEWPOS"+conversionIntString(caracter->getId())+"*"+conversionLongString(transferTime)+"*"+conversionFloatString(newPos.x)+"*"+conversionFloatString(newPos.y);
+                    SymEncPacket packet;
+                    packet<<response;
+                    user->sendTcpPacket(packet);
+                }
+            }
         //Update the caracter states for a mouse move and update it's position from the transfer time.
         } else if (request == "MOVEFROMPATH") {
             int id = conversionStringInt(infos[1]);
             Hero* hero = static_cast<Hero*> (World::getEntity(id));
             Vec3f fPos (conversionStringInt(infos[2]), conversionStringInt(infos[3]), 0);
-            std::vector<Vec2f> path = World::getPath(hero, fPos);
-            hero->setPath(path);
-            hero->setMoving(true);
-            hero->setIsMovingFromKeyboard(false);
-            SymEncPacket packet;
-            std::string response="";
-            int size = path.size();
-            response += "NEWPATH"+conversionIntString(size)+"*"+conversionIntString(hero->getId())+"*"+conversionFloatString(hero->getCenter().x)+"*"+conversionFloatString(hero->getCenter().y)+"*";
-            for (int i = 0; i < size; i++) {
-                response += conversionFloatString(path[i].x)+"*"+conversionFloatString(path[i].y);
-                if (i != size - 1)
-                    response += "*";
+            sf::Int64 last_cli_time = conversionStringLong(infos[4]);
+            sf::Int64 cli_time = user->getClientTime();
+            sf::Int64 elapsedTime = cli_time - last_cli_time;
+            std::vector<Entity*> monsters = World::getEntities("E_MONSTER");
+            bool isMonsterOnMouse = false;
+            for (unsigned int i = 0; i < monsters.size(); i++) {
+                Monster* monster = static_cast<Monster*>(monsters[i]);
+                BoundingBox bx = monster->getGlobalBounds();
+                sf::Int64 deltaTime = monster->getClkLastMove().getElapsedTime().asMicroseconds() - elapsedTime;
+                //std::cout<<"elapseTime : "<<elapsedTime<<std::endl<<"deltaTime : "<<deltaTime<<std::endl;
+                if (deltaTime < 0 || monster->isMoving()) {
+                    Vec2f pos = (monster->isMoving()) ?
+                                Computer::getPosOnPathFromTime(monster->getCenter(),monster->getPath(),elapsedTime,monster->getSpeed())
+                                : Computer::getPosOnPathFromTime(monster->getCenter(),monster->getPath(),deltaTime,monster->getSpeed());
+                    Vec2f d = pos - Vec2f(monster->getCenter().x, monster->getCenter().y);
+                    bx.move(Vec3f(d.x, d.y, 0));
+                }
+                bx.setPosition(bx.getPosition().x, bx.getPosition().y, 0);
+                if (bx.isPointInside(fPos)) {
+                    isMonsterOnMouse = true;
+                    int id = monster->getId();
+                    int nbMaxHp = monster->getMaxLife();
+                    int nbHpRem = monster->getLife();
+                    std::string name = monster->getName();
+                    SymEncPacket packet;
+                    std::string message = "MONSTERONMOUSE"+conversionIntString(id)+"*"+conversionIntString(nbHpRem)+"*"+conversionIntString(nbMaxHp)+"*"+name;
+                    packet<<message;
+                    Network::sendTcpPacket(packet);
+                }
             }
-            packet<<response;
-            Network::sendTcpPacket(packet);
+            std::vector<Vec2f> path = World::getPath(hero, fPos);
+            if (path.size() > 0 && !isMonsterOnMouse) {
+                hero->setPath(path);
+                hero->setMoving(true);
+                hero->setIsMovingFromKeyboard(false);
+                hero->setAttacking(false);
+                SymEncPacket packet;
+                std::string response="";
+                int size = path.size();
+                response += "NEWPATH"+conversionIntString(size)+"*"+conversionIntString(hero->getId())+"*"+conversionFloatString(hero->getCenter().x)+"*"+conversionFloatString(hero->getCenter().y)+"*";
+                for (int i = 0; i < size; i++) {
+                    response += conversionFloatString(path[i].x)+"*"+conversionFloatString(path[i].y);
+                    if (i != size - 1)
+                        response += "*";
+                }
+                packet<<response;
+                Network::sendTcpPacket(packet);
+                std::vector<Entity*> caracters = World::getEntities("E_MONSTER+E_HERO");
+                for (unsigned int i = 0; i < caracters.size(); i++) {
+                    Caracter* caracter = static_cast<Caracter*> (caracters[i]);
+                    if (caracter->isMoving()) {
+                        if (caracter->isMovingFromKeyboard()) {
+                            Vec3f actualPos = Vec3f(caracter->getCenter().x, caracter->getCenter().y, 0);
+                            sf::Int64 transferTime = user->getPingAvg();
+                            Vec3f newPos = actualPos + Vec3f(caracter->getDir().x, caracter->getDir().y, 0) * caracter->getSpeed() *  transferTime;
+                            Ray ray(actualPos, newPos);
+                            if (World::collide(caracter, ray)) {
+                                newPos = actualPos;
+                            }
+                            std::string response = "NEWPOS"+conversionIntString(caracter->getId())+"*"+conversionLongString(transferTime)+"*"+conversionFloatString(newPos.x)+"*"+conversionFloatString(newPos.y);
+                            SymEncPacket packet;
+                            packet<<response;
+                            user->sendTcpPacket(packet);
+                        } else {
+                            sf::Int64 transferTime = user->getPingAvg();
+                            Vec3f actualPos = Vec3f(caracter->getCenter().x, caracter->getCenter().y, 0);
+                            Vec3f newPos = Computer::getPosOnPathFromTime(actualPos, caracter->getPath(), transferTime, caracter->getSpeed());
+                            if (newPos.computeDist(caracter->getPath()[caracter->getPath().size() - 1]) <= PATH_ERROR_MARGIN) {
+                                newPos = caracter->getPath()[caracter->getPath().size() - 1];
+                            }
+                            std::string response = "NEWPOS"+conversionIntString(caracter->getId())+"*"+conversionLongString(transferTime)+"*"+conversionFloatString(newPos.x)+"*"+conversionFloatString(newPos.y);
+                            SymEncPacket packet;
+                            packet<<response;
+                            user->sendTcpPacket(packet);
+                        }
+                    } else {
+                        sf::Int64 transferTime = user->getPingAvg();
+                        Vec3f newPos = caracter->getCenter();
+                        std::string response = "NEWPOS"+conversionIntString(caracter->getId())+"*"+conversionLongString(transferTime)+"*"+conversionFloatString(newPos.x)+"*"+conversionFloatString(newPos.y);
+                        SymEncPacket packet;
+                        packet<<response;
+                        user->sendTcpPacket(packet);
+                    }
+                }
+            }
         //Update the path followed by the caracter. (For mouse movements)
+        } else if (request == "SELECT_MONSTER") {
+
         } else if (request == "GETCARPOS") {
             std::vector<Entity*> caracters = World::getEntities("E_MONSTER+E_HERO");
             for (unsigned int i = 0; i < caracters.size(); i++) {
@@ -168,7 +276,7 @@ void MyAppli::onExec () {
                         sf::Int64 transferTime = user->getPingAvg();
                         Vec3f actualPos = Vec3f(caracter->getCenter().x, caracter->getCenter().y, 0);
                         Vec3f newPos = Computer::getPosOnPathFromTime(actualPos, caracter->getPath(), transferTime, caracter->getSpeed());
-                        if (newPos.computeDist(caracter->getPath()[caracter->getPath().size() - 1]) <= 1) {
+                        if (newPos.computeDist(caracter->getPath()[caracter->getPath().size() - 1]) <= PATH_ERROR_MARGIN) {
                             newPos = caracter->getPath()[caracter->getPath().size() - 1];
                         }
                         std::string response = "NEWPOS"+conversionIntString(caracter->getId())+"*"+conversionLongString(transferTime)+"*"+conversionFloatString(newPos.x)+"*"+conversionFloatString(newPos.y);
@@ -229,10 +337,13 @@ void MyAppli::onExec () {
                 sf::Int64 elapsedTime = getClock("LoopTime").getElapsedTime().asMicroseconds();
                 Vec2f actualPos = caracter->getCenter();
                 Vec2f newPos = Computer::getPosOnPathFromTime(actualPos, caracter->getPath(), elapsedTime, caracter->getSpeed());
-                if (newPos.computeDist(caracter->getPath()[caracter->getPath().size() - 1]) <= 1) {
+                if (newPos.computeDist(caracter->getPath()[caracter->getPath().size() - 1]) <= PATH_ERROR_MARGIN) {
                     caracter->setMoving(false);
                     newPos = caracter->getPath()[caracter->getPath().size() - 1];
-
+                    std::string message = "STOPCARMOVE"+conversionIntString(caracter->getId())+"*"+conversionFloatString(newPos.x)+"*"+conversionFloatString(newPos.y);
+                    SymEncPacket packet;
+                    packet<<message;
+                    Network::sendTcpPacket(packet);
                 }
                 Vec2f d = newPos - actualPos;
                 Vec2f dir = d.normalize();

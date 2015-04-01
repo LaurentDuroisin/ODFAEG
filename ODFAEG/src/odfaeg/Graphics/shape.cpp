@@ -201,17 +201,16 @@ namespace odfaeg
         void Shape::draw(RenderTarget& target, RenderStates states)
         {
             states.transform = getTransform();
-
             // Render the inside
             states.texture = m_texture;
-            m_vertices.transform(getTransform());
-            m_outlineVertices.transform(getTransform());
+           /* m_vertices.transform(getTransform());
+            m_outlineVertices.transform(getTransform());*/
             target.draw(m_vertices, states);
 
             // Render the outline
             if (m_outlineThickness != 0)
             {
-                states.texture = NULL;
+                states.texture = nullptr;
                 target.draw(m_outlineVertices, states);
             }
         }

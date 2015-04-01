@@ -66,6 +66,9 @@ void MyAppli::keyHeldDown (sf::Keyboard::Key key) {
 void MyAppli::leftMouseButtonPressed(sf::Vector2f mousePos) {
     Vec2f mouse(mousePos.x, mousePos.y);
     Vec3f finalPos = getRenderWindow().mapPixelToCoords(Vec3f(mouse.x, getRenderWindow().getSize().y-mouse.y, 0));
+    std::cout<<mouse.x<<" "<<mouse.y<<std::endl;
+    point.clear();
+    point.append(Vertex(sf::Vector3f(finalPos.x, finalPos.y, finalPos.y), sf::Color(255, 0, 0)));
     std::vector<Vec2f> path = World::getPath(caracter, finalPos);
     if (path.size() > 0) {
         caracter->setPath(path);
@@ -140,7 +143,7 @@ void MyAppli::onInit () {
     walls[4]->getFaces()[0]->getMaterial().setTexId("WALLS");
     walls[5]->getFaces()[0]->getMaterial().setTexId("WALLS");
     std::ifstream ifs("FichierDeSerialisation");
-    if(ifs) {
+    /*if(ifs) {
         ITextArchive ia(ifs);
         std::vector<Entity*> entities;
         ia(entities);
@@ -194,7 +197,7 @@ void MyAppli::onInit () {
             }
         }
         ifs.close();
-    } else {
+    } else {*/
         BoundingBox mapZone(0, 0, 0, 1500, 1000, 0);
         World::generate_map(tiles, walls, Vec2f(100, 50), mapZone, false);
         Tile* thouse = new Tile(tm.getResourceByAlias("HOUSE"), Vec3f(0, 0, 0), Vec3f(250, 300, 0), sf::IntRect(0, 0, 250, 300));
@@ -237,7 +240,7 @@ void MyAppli::onInit () {
         w = new g2d::Wall(3, 80, walls[3],&g2d::AmbientLight::getAmbientLight(), Shadow::SHADOW_TYPE::SHADOW_TILE);
         w->setPosition(Vec3f(0, 130, 130 + w->getSize().y * 0.5f));
         World::addEntity(w);
-    }
+    //}
     ps.setTexture(*tm.getResourceByAlias("PARTICLE"));
     for (unsigned int i = 0; i < 10; i++) {
         ps.addTextureRect(sf::IntRect(i*10, 0, 10, 10));
@@ -256,8 +259,8 @@ void MyAppli::onInit () {
     ps.addEmitter(refEmitter(emitter));
     View view = getView();
     //view.rotate(0, 0, 20);
-    FastRenderComponent *frc1 = new FastRenderComponent(getRenderWindow(),0, "E_BIGTILE", false);
-    FastRenderComponent *frc2 = new FastRenderComponent(getRenderWindow(),0, "E_WALL+E_DECOR+E_ANIMATION+E_CARACTER", false);
+    FastRenderComponent *frc1 = new FastRenderComponent(getRenderWindow(),0, "E_BIGTILE");
+    FastRenderComponent *frc2 = new FastRenderComponent(getRenderWindow(),0, "E_WALL+E_DECOR+E_ANIMATION+E_CARACTER");
     gui::TextArea* textArea = new gui::TextArea(Vec3f(350, 275, 0),Vec3f(100, 50, 0),fm.getResourceByAlias("FreeSerif"), "Test",getRenderWindow());
     textArea->addFocusListener(this);
     textArea->setVisible(false);
@@ -265,6 +268,7 @@ void MyAppli::onInit () {
     frc1->setView(view);
     frc2->setView(view);
     op = new gui::OptionPane(Vec2f(200, 175), Vec2f(400, 200), fm.getResourceByAlias("FreeSerif"), "Test",gui::OptionPane::TYPE::CONFIRMATION_DIALOG);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     op->setVisible(false);
     op->setEventContextActivated(false);
     getRenderComponentManager().addComponent(frc1);
@@ -278,7 +282,8 @@ void MyAppli::onInit () {
     const Texture *text = cache.resourceManager<Texture, std::string>("TextureManager").getResourceByPath(path);
     int textRectX = 0, textRectY = 0, textRectWidth = 50, textRectHeight = 100;
     int textWidth = text->getSize().x;
-    for (unsigned int i = 0; i < 64; i+=8) {
+    caracter->setCenter(math::Vec3f(-25, -50, 0));
+    for (unsigned int i = 0; i <= 56; i+=8) {
         Anim* animation = new Anim(0.1f, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), 0);
         for (unsigned int j = 0; j < 8; j++) {
             sf::IntRect textRect (textRectX, textRectY, textRectWidth, textRectHeight);
@@ -286,8 +291,6 @@ void MyAppli::onInit () {
             tile->getFaces()[0]->getMaterial().setTexId("VLADSWORD");
             g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight(), 100, Shadow::SHADOW_TYPE::SHADOW_TILE);
             frame->setShadowCenter(Vec3f(0, 100, 100));
-            //decor->setShadowCenter(Vec2f(80, 130));
-            //decor->changeGravityCenter(Vec3f(50, 50, 0));
             textRectX += textRectWidth;
             if (textRectX + textRectWidth > textWidth) {
                 textRectX = 0;
@@ -337,17 +340,10 @@ void MyAppli::onInit () {
     sf::Listener::setPosition(caracter->getCenter().x, caracter->getCenter().y, 0);
 }
 void MyAppli::onRender(FastRenderComponentManager *cm) {
-    /* std::vector<Vec3f> path = caracter->getPath();
-    VertexArray m_vertices(sf::PrimitiveType::LinesStrip);
-    for (unsigned int i = 0; i < path.size(); i++) {
-    m_vertices.append(path[i]);
-    //glVertex2f(path[i+1].x, path[i+1].y);
-    }
-    getRenderWindow().draw(m_vertices);*/
-    /*Entity& shadows = World::getShadowMap<Entity>();
-    getRenderWindow().draw(shadows, BlendMode::BlendMultiply);*/
     // draw everything here...
     World::drawOnComponents("E_BIGTILE", 0);
+    /*Entity* shadowMap = World::getShadowMap("E_WALL+E_DECOR+E_ANIMATION+E_CARACTER", 2, 1);
+    World::drawOnComponents(*shadowMap,0,sf::BlendMultiply);*/
     World::drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_CARACTER", 1);
     fpsCounter++;
     if (getClock("FPS").getElapsedTime() >= sf::seconds(1.f)) {
@@ -355,57 +351,18 @@ void MyAppli::onRender(FastRenderComponentManager *cm) {
         fpsCounter = 0;
         getClock("FPS").restart();
     }
-
-    /*ConvexShape convexshape(4);
-    convexshape.setPoint(0, Vector3f(0, 0, 0));
-    convexshape.setPoint(1, Vector3f(100, 0, 0));
-    convexshape.setPoint(2, Vector3f(100, 50, 0));
-    convexshape.setPoint(3, Vector3f(0, 50, 0));
-    convexshape.setFillColor(sf::Color::Red);
-    //shape.setScale(Vec3f(2, 2, 0));
-    getRenderWindow().draw(convexshape);*/
-    /*CircleShape circle(20);
-    getRenderWindow().draw(circle);*/
-    /*RectangleShape rectangle(Vec3f(100, 100, 0));
-    getRenderWindow().draw(rectangle);*/
-    /*std::vector<ConvexShape*> cvs = theMap->getCollisionVolumes();
-    for (unsigned int i = 0; i < cvs.size(); i++)
-    getRenderWindow().draw(*cvs[i]);*/
-    /*Entity& lights = World::getLightMap<Entity>();
-    getRenderWindow().draw(lights, BlendMode::BlendMultiply);*/
-    //std::cout<<getRenderWindow().mapPixelToCoords(entities[0]->getPosition());
-    //getRenderWindow().draw(*tiles[0]);
-    /*Face face(Vec3f(0, 0, 0), Vec3f(120, 60, 0), Vec3f(60, 30, 0), sf::Quads, "E_FACE");
-    Vertex v1 (Vector3f(0, 0, 0),Color(255, 255, 255, 0), Vector2f(0, 0));
-    Vertex v2 (Vector3f(120, 0, 0),Color(255, 255, 255, 0), Vector2f(100, 0));
-    Vertex v3 (Vector3f(120, 60, 0),Color(255, 255, 255, 0), Vector2f(100, 50));
-    Vertex v4 (Vector3f(0, 60, 0),Color(255, 255, 255, 0), Vector2f(0, 50));
-    face.append(v1);
-    face.append(v2);
-    face.append(v3);
-    face.append(v4);
-    TextureManager<TEXTURES> &tm = getCache().resourceManager<Texture, TEXTURES>("TextureManager");
-    face.addTexture(IntRect(0, 0,100,50),tm.getResourceByAlias(GRASS));*/
-    //getComponentManager().draw(*tiles[0]);
-    //std::cout<<getRenderWindow().mapCoordsToPixel(tiles[0]->getPosition())<<std::endl;
-    //Entity& shadows = World::getShadowMap<Entity>();
-    //draw(shadows, sf::BlendMode::BlendMultiply);
-    /* for (unsigned int i = 0; i < entities.size(); i++) {
-    getRenderWindow().draw(*entities[i]);
-    }*/
-    //Entity& lights = World::getLightMap<Entity>();
-    //draw(lights, BlendMultiply);
 }
 void MyAppli::onDisplay(RenderWindow* window) {
-    Entity* shadowMap = World::getShadowMap("E_WALL+E_DECOR+E_ANIMATION+E_CARACTER", 2, 1);
-    window->draw(*shadowMap, sf::BlendMultiply);
+    /*Entity* shadowMap = World::getShadowMap("E_WALL+E_DECOR+E_ANIMATION+E_CARACTER", 2, 1);
+    window->draw(*shadowMap, sf::BlendMultiply);*/
     //getView().rotate(0, 0, 20);
     window->draw(ps);
     //getView().rotate(0, 0, 0);
     Entity* lightMap = World::getLightMap("E_PONCTUAL_LIGHT", 2, 1);
     window->draw(*lightMap, sf::BlendMultiply);
-    View view = getView();
-    /*Entity& normalMap = theMap->getNormalMapTile();
+    //window->draw(point);
+    /*View view = getView();
+    Entity& normalMap = theMap->getNormalMapTile();
     window->draw(normalMap);*/
     /*std::vector<Vec2f> segments = caracter->getPath();
     VertexArray va(sf::LinesStrip);
@@ -482,30 +439,30 @@ void MyAppli::onUpdate (sf::Event& event) {
     }
 }
 void MyAppli::onExec () {
-    sf::Int64 t = getClock("LoopTime").getElapsedTime().asMicroseconds() * caracter->getSpeed();
+    sf::Int64 t = getClock("LoopTime").getElapsedTime().asMicroseconds();
     if (caracter->isMoving()) {
         if (!player.isPlaying()) {
             player.play(true);
         }
         if (caracter->isMovingFromKeyboard()) {
-            Vec2f actualPos = Vec2f(caracter->getCenter().x, caracter->getCenter().y);
-            World::moveEntity(caracter, caracter->getDir().x * t * caracter->getSpeed(), caracter->getDir().y * t * caracter->getSpeed(),caracter->getDir().y * t * caracter->getSpeed());
-            Vec2f newPos =  Vec2f(caracter->getCenter().x, caracter->getCenter().y);
+            Vec3f actualPos = Vec3f(caracter->getCenter().x, caracter->getCenter().y, 0);
+            Vec3f newPos = actualPos +  Vec3f(caracter->getDir().x, caracter->getDir().y, 0) * caracter->getSpeed() * t;
             Ray r (actualPos, newPos);
             if (World::collide(caracter, r)) {
-                World::moveEntity(caracter, -caracter->getDir().x * t * caracter->getSpeed(), -caracter->getDir().y * t * caracter->getSpeed(),-caracter->getDir().y * t * caracter->getSpeed());
+                newPos = actualPos;
             }
             for (unsigned int i = 0; i < getRenderComponentManager().getNbComponents(); i++) {
                 if (getRenderComponentManager().getRenderComponent(i) != nullptr) {
                     View view = getRenderComponentManager().getRenderComponent(i)->getView();
-                    Vec3f d = caracter->getCenter() - view.getPosition();
+                    Vec3f d = newPos - view.getPosition();
                     view.move(d.x, d.y, d.y);
                     getRenderComponentManager().getRenderComponent(i)->setView(view);
                 }
             }
-            Vec3f d = caracter->getCenter() - getView().getPosition();
+            Vec3f d = newPos - getView().getPosition();
             getView().move(d.x, d.y, d.y);
-            sf::Listener::setPosition(actualPos.x, actualPos.y, 0);
+            World::moveEntity(caracter, d.x, d.y, d.y);
+            sf::Listener::setPosition(newPos.x, newPos.y, 0);
             World::update();
         } else {
             Vec3f actualPos = caracter->getCenter();

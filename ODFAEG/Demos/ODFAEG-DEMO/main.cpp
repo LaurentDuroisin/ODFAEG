@@ -1,42 +1,39 @@
 #include "application.h"
+#include "odfaeg/Window/x11Window.hpp"
 using namespace odfaeg::core;
 using namespace odfaeg::math;
 using namespace odfaeg::physic;
 using namespace odfaeg::graphic;
+using namespace odfaeg::window;
 using namespace odfaeg::audio;
-
-int main()
+int main(int argc, char* argv[])
 {
-    /*sf::RenderWindow window(sf::VideoMode(800, 600), "OpenGL");
-    sf::RenderWindow window1(sf::VideoMode(500, 100), "test");
-    sf::RenderWindow window2(sf::VideoMode(500, 100), "test2");
-
-    bool once = true;
-
-    while (window.isOpen())
-    {
-        sf::Event event;
-        while(window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed)
-                window.close();
-        }
-        while(window1.pollEvent(event)) {
-            if (event.type == sf::Event::Closed)
-                window1.close();
-        }
-        while(window2.pollEvent(event)) {
-            if (event.type == sf::Event::Closed)
-                window2.close();
-        }
-
-        if (once) {
-            window1.setVisible(false);
-            window2.setVisible(false);
-            once = false;
-        }
-
+    /*RenderWindow window (sf::VideoMode (800, 600), "Test", sf::Style::Default, sf::ContextSettings(0, 0, 4, 3, 3));
+    window.getView().move(400, 300, 0);
+    Texture tex;
+    RectangleShape rs(Vec3f(100, 100, 0));
+    rs.move(Vec3f(100, 100, 0));
+    tex.loadFromFile("tilesets/herbe.png");
+    Tile tile (&tex, Vec3f(0, 0, 0), Vec3f(100, 50, 0), sf::IntRect(0, 0, 100, 50));
+    //tile.setColor(sf::Color(255, 0, 0, 128));
+    Tile tile2 (&tex, Vec3f(10, 10, 0), Vec3f(100, 50, 0), sf::IntRect(0, 0, 100, 50));
+    //tile2.setColor(sf::Color(0, 255, 0, 128));
+    std::vector<Entity*> entities = {&tile, &tile2};
+    FastRenderComponent frc(window,0,"E_TILE",false);
+    frc.clear();
+    frc.loadEntitiesOnComponent(entities);
+    //frc.draw(rs);
+    frc.drawNextFrame();
+    while (window.isOpen()) {
         window.clear();
+        window.draw(frc);
         window.display();
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed) {
+                window.close();
+            }
+        }
     }
     return 0;*/
     EXPORT_CLASS_GUID(BoundingVolumeBoundingBox, BoundingVolume, BoundingBox)

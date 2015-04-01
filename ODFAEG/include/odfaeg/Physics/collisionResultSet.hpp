@@ -12,6 +12,8 @@ namespace odfaeg {
             struct Info {
                 Info() {
                     entity = nullptr;
+                    center = math::Vec3f(0, 0, 0);
+                    mtu = math::Vec3f(0, 0, 0);
                     nearestVertexIndex1 = -1;
                     nearestPtIndex1 = -1;
                     nearestEdgeIndex1 = -1;
@@ -21,7 +23,7 @@ namespace odfaeg {
                     nearestEdgeIndex2 = -1;
                     nearestFaceIndex2 = -1;
                 }
-                math::Vec3f mtu;
+                math::Vec3f mtu, center;
                 graphic::Entity* entity;
                 int nearestVertexIndex1;
                 int nearestPtIndex1;

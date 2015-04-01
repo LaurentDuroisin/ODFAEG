@@ -108,7 +108,7 @@ namespace odfaeg {
         void RenderWindow::onCreate()
         {
             priv::ensureGlewInit();
-            glewExperimental = GL_TRUE;
+            /*glewExperimental = GL_TRUE;
             GLenum status = glewInit();
             if (status == GLEW_OK)
             {
@@ -117,7 +117,7 @@ namespace odfaeg {
             else
             {
                 err() << "Failed to initialize GLEW, " << glewGetErrorString(status) << std::endl;
-            }
+            }*/
             if (getSettings().majorVersion >= 3 && getSettings().minorVersion >= 3 && vertexArrayId == 0) {
                 GLuint vao;
                 glCheck(glGenVertexArrays(1, &vao));

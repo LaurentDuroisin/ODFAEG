@@ -127,44 +127,47 @@ namespace odfaeg {
             return matrix;
         }
         void ViewMatrix::update() {
-            float a = math::Math::toRadians(angle);
-            math::Matrix4f transform;
-            transform.m11 = (zAxis.x * zAxis.x * (1 - math::Math::cosinus(a)) + math::Math::cosinus(a));
-            transform.m12 = (zAxis.x * zAxis.y * (1 - math::Math::cosinus(a)) - zAxis.z * math::Math::sinus(a));
-            transform.m13 = (zAxis.x * zAxis.z * (1 - math::Math::cosinus(a)) + zAxis.y * math::Math::sinus(a));
-            transform.m14 = 0;
-            transform.m21 = (zAxis.y * zAxis.x * (1 - math::Math::cosinus(a)) + zAxis.z * math::Math::sinus(a));
-            transform.m22 = (zAxis.y * zAxis.y * (1 - math::Math::cosinus(a)) + math::Math::cosinus(a));
-            transform.m23 = (zAxis.y * zAxis.z * (1 - math::Math::cosinus(a)) - zAxis.x * math::Math::sinus(a));
-            transform.m24 = 0;
-            transform.m31 = (zAxis.z * zAxis.x * (1 - math::Math::cosinus(a)) - zAxis.y * math::Math::sinus(a));
-            transform.m32 = (zAxis.z * zAxis.y * (1 - math::Math::cosinus(a)) + zAxis.x * math::Math::cosinus(a));
-            transform.m33 = (zAxis.z * zAxis.z * (1 - math::Math::cosinus(a)) + math::Math::cosinus(a));
-            transform.m34 = 0;
-            transform.m41 = 0;
-            transform.m42 = 0;
-            transform.m43 = 0;
-            transform.m44 = 1;
-            matrix4f.m11 = xAxis.x;
-            matrix4f.m12 = xAxis.y;
-            matrix4f.m13 = xAxis.z;
-            matrix4f.m14 = -xAxis.dot2(o3d) / s3d.x;
-            matrix4f.m21 = yAxis.x;
-            matrix4f.m22 = yAxis.y;
-            matrix4f.m23 = yAxis.z;
-            matrix4f.m24 = -yAxis.dot2(o3d) / s3d.y;
-            matrix4f.m31 = zAxis.x;
-            matrix4f.m32 = zAxis.y;
-            matrix4f.m33 = zAxis.z;
-            matrix4f.m34 = -zAxis.dot2(o3d) / s3d.z;
-            matrix4f.m41 = 0;
-            matrix4f.m42 = 0;
-            matrix4f.m43 = 0;
-            matrix4f.m44 = 1;
-            matrix4f = transform * matrix4f;
-            needToUpdate3D = false;
+            if (needToUpdate3D) {
+                float a = math::Math::toRadians(angle);
+                math::Matrix4f transform;
+                transform.m11 = (zAxis.x * zAxis.x * (1 - math::Math::cosinus(a)) + math::Math::cosinus(a));
+                transform.m12 = (zAxis.x * zAxis.y * (1 - math::Math::cosinus(a)) - zAxis.z * math::Math::sinus(a));
+                transform.m13 = (zAxis.x * zAxis.z * (1 - math::Math::cosinus(a)) + zAxis.y * math::Math::sinus(a));
+                transform.m14 = 0;
+                transform.m21 = (zAxis.y * zAxis.x * (1 - math::Math::cosinus(a)) + zAxis.z * math::Math::sinus(a));
+                transform.m22 = (zAxis.y * zAxis.y * (1 - math::Math::cosinus(a)) + math::Math::cosinus(a));
+                transform.m23 = (zAxis.y * zAxis.z * (1 - math::Math::cosinus(a)) - zAxis.x * math::Math::sinus(a));
+                transform.m24 = 0;
+                transform.m31 = (zAxis.z * zAxis.x * (1 - math::Math::cosinus(a)) - zAxis.y * math::Math::sinus(a));
+                transform.m32 = (zAxis.z * zAxis.y * (1 - math::Math::cosinus(a)) + zAxis.x * math::Math::cosinus(a));
+                transform.m33 = (zAxis.z * zAxis.z * (1 - math::Math::cosinus(a)) + math::Math::cosinus(a));
+                transform.m34 = 0;
+                transform.m41 = 0;
+                transform.m42 = 0;
+                transform.m43 = 0;
+                transform.m44 = 1;
+                matrix4f.m11 = xAxis.x;
+                matrix4f.m12 = xAxis.y;
+                matrix4f.m13 = xAxis.z;
+                matrix4f.m14 = -xAxis.dot2(o3d) / s3d.x;
+                matrix4f.m21 = yAxis.x;
+                matrix4f.m22 = yAxis.y;
+                matrix4f.m23 = yAxis.z;
+                matrix4f.m24 = -yAxis.dot2(o3d) / s3d.y;
+                matrix4f.m31 = zAxis.x;
+                matrix4f.m32 = zAxis.y;
+                matrix4f.m33 = zAxis.z;
+                matrix4f.m34 = -zAxis.dot2(o3d) / s3d.z;
+                matrix4f.m41 = 0;
+                matrix4f.m42 = 0;
+                matrix4f.m43 = 0;
+                matrix4f.m44 = 1;
+                matrix4f = transform * matrix4f;
+                needToUpdate3D = false;
+            }
         }
         math::Matrix4f ViewMatrix::getMatrix () {
+            update();
             return matrix4f;
         }
         math::Vec3f ViewMatrix::inverseTransform (const math::Vec3f vec3) {

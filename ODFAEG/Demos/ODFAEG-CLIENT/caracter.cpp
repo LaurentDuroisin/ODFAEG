@@ -59,7 +59,7 @@ void Caracter::setLife(int life) {
     clockRegenHp.restart();
 }
 int Caracter::getLife() {
-return life;
+    return life;
 }
 void Caracter::setRange(int range) {
     this->range = range;
@@ -163,9 +163,6 @@ void Caracter::setMoving (bool b) {
 }
 bool Caracter::isMoving () {
     return moving;
-}
-Vec2f Caracter::getPosition () {
-    return Vec2f(anims[currentAnimIndex]->getPosition().x, anims[currentAnimIndex]->getPosition().y);
 }
 void Caracter::setPath(vector<Vec2f> path) {
     this->path = path;

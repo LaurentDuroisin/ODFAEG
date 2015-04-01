@@ -4,19 +4,20 @@
 #include "ball.hpp"
 class Partie {
 public :
-    Partie (Player& p1, Player& p2);
+    Partie (Player& p1, Player& p2, Ball& ball);
     void start();
     void finished();
     bool isRunning();
-    unsigned int id();
     Player& player1();
     Player& player2();
+    Ball& ball();
+    int id();
 private :
-    unsigned int m_id;
     bool running;
-    Ball m_ball;
+    Ball& m_ball;
     Player& m_player1;
     Player& m_player2;
-    static unsigned int nbParties;
+    int m_id;
+    static int nbParties;
 };
 #endif // PONG_PARTIE_HPP

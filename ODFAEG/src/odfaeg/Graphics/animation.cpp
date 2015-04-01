@@ -4,7 +4,11 @@ namespace odfaeg {
         using namespace sf;
         using namespace std;
         Anim::Anim() : AnimatedEntity (math::Vec3f(0, 0, 0), math::Vec3f(0, 0, 0), math::Vec3f(0, 0, 0), "E_ANIMATION", nullptr) {
-
+            currentTile = 0;
+            running = false;
+            currentEntityChanged = false;
+            currentEntity = nullptr;
+            previousCurrentEntity = nullptr;
         }
         Anim::Anim (float fr, math::Vec3f position, math::Vec3f size, Entity *parent) : AnimatedEntity (position, size, size * 0.5f, "E_ANIMATION", parent) {
             this->fr = fr;

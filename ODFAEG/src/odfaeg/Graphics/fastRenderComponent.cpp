@@ -41,99 +41,125 @@ namespace odfaeg {
                 specularTextureGenerator = new Shader();
                 bumpTextureGenerator = new Shader();
                 refractionTextureGenerator = new Shader();
+                simpleShader = new Shader();
                 //With modern openg, we need to use another vertex shader.
                 //GLSL 3 is not supported by all the drivers so we use GLSL 1.
                 if (Shader::getShadingLanguageVersionMajor() >= 3 && Shader::getShadingLanguageVersionMinor() >= 3) {
-                    const std::string vertexShader =
-                    "#version 330 core \n"
-                    "layout(location = 0) in vec3 vertex_position;"
-                    "layout(location = 1) in vec4 vertex_color;"
-                    "layout(location = 2) in vec2 vertex_texCoords0;"
-                    "layout(location = 3) in vec3 vertex_normal;"
-                    "/*layout(location = 10) in mat4 mvp;*/"
-                    "uniform mat4 m;"
-                    "uniform mat4 v;"
+                    const std::string simpleVertexShader =
+                    "#version 330 core\n"
+                    "layout (location = 0) in vec4 position;"
+                    "layout (location = 1) in vec4 color;"
+                    "layout (location = 2) in vec2 uv;"
+                    "layout (location = 3) in vec3 normals;"
                     "uniform mat4 p;"
+                    "uniform mat4 v;"
+                    "uniform mat4 m;"
+                    "uniform mat4 t;"
+                    "uniform float haveTexture;"
+                    "out vec4 f_color;"
                     "out vec2 texCoords;"
-                    "out vec4 color;"
+                    "void main() {"
+                    "   gl_Position = p * v * m * position;"
+                    "   texCoords = (haveTexture == 1) ? (t * vec4(uv.xy, 0, 0)).xy : vec2(0, 0);"
+                    "   f_color = color;"
+                    "}";
+                    const std::string vertexShader =
+                    "#version 330 core\n"
+                    "layout (location = 0) in vec4 position;"
+                    "layout (location = 1) in vec4 color;"
+                    "layout (location = 2) in vec2 uv;"
+                    "layout (location = 3) in vec3 normals;"
+                    "uniform mat4 p;"
+                    "uniform mat4 v;"
+                    "uniform mat4 m;"
+                    "uniform mat4 t;"
+                    "uniform float haveTexture;"
+                    "out vec4 f_color;"
+                    "out vec2 texCoords;"
                     "out mat4 projMat;"
-                    "void main () {"
-                        "gl_Position = m * v * p * vertex_position.xyzw;"
-                        "texCoords = vertex_texCoords0;"
-                        "projMat = p;"
-                        "color = vertex_color;"
+                    "void main() {"
+                    "   gl_Position = p * v * m * position;"
+                    "   texCoords = (haveTexture == 1) ? (t * vec4(uv.xy, 0, 0)).xy : vec2(0, 0);"
+                    "   f_color = color;"
+                    "   projMat = p;"
+                    "}";
+                    const std::string simpleFragmentShader =
+                    "#version 330 core\n"
+                    "uniform sampler2D texSampler;"
+                    "uniform float haveTexture;"
+                    "in vec2 texCoords;"
+                    "in vec4 f_color;"
+                    "void main() {"
+                    "   gl_FragColor = (haveTexture == 1) ? f_color * texture (texSampler, texCoords) : f_color;"
                     "}";
                     const std::string depthGenFragShader =
                     "#version 330 core \n"
                     "layout(origin_upper_left, pixel_center_integer) in vec4 gl_FragCoord;"
                     "uniform sampler2D depthBuffer;"
-                    "uniform sampler2D texture;"
+                    "uniform sampler2D texSampler;"
                     "uniform vec3 resolution;"
+                    "uniform float haveTexture;"
                     "in vec2 texCoords;"
-                    "in vec4 color;"
-                    "out vec4 fragColor;"
+                    "in vec4 f_color;"
                     "in mat4 projMat;"
                     "void main () {"
                           "vec2 position = ( gl_FragCoord.xy / resolution.xy );"
-                          "vec4 depth = texture2D(depthBuffer, position);"
-                          "vec4 pixel = texture2D(texture, texCoords.xy);"
-                          "float z = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
-                          "/*if (z <= color.z && pixel.a >= color.a) {*/"
-                              "fragColor = vec4(0, 0,z, pixel.a);"
-                          "/*} else {"
-                              "fragColor = depth;"
-                          "}*/"
+                          "vec4 previous_depth_alpha = texture(depthBuffer, position);"
+                          "vec4 texel = texture(texSampler, texCoords.xy);"
+                          "vec4 colors[2];"
+                          "colors[1] = texel * f_color;"
+                          "colors[0] = f_color;"
+                          "bool b = (haveTexture == 1);"
+                          "float current_alpha = colors[int(b)].a;"
+                          "float current_depth = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
+                          "colors[1] = vec4(current_depth, current_alpha, current_depth, current_alpha);"
+                          "colors[0] = vec4(current_depth, current_alpha, previous_depth_alpha.z, previous_depth_alpha.a);"
+                          "b = (current_depth >= previous_depth_alpha.z && current_alpha != 0);"
+                          "gl_FragColor = colors[int(b)];"
                     "}";
                     const std::string frameBufferGenFragShader =
                     "#version 330 core \n"
                     "layout(origin_upper_left, pixel_center_integer) in vec4 gl_FragCoord;"
                     "uniform sampler2D depthBuffer;"
                     "uniform sampler2D frameBuffer;"
-                    "uniform sampler2D texture;"
+                    "uniform sampler2D texSampler;"
                     "uniform vec3 resolution;"
+                    "uniform float haveTexture;"
                     "in vec2 texCoords;"
-                    "in vec4 color;"
-                    "out vec4 fragColor;"
+                    "in vec4 f_color;"
                     "in mat4 projMat;"
                     "void main () {"
                         "vec2 position = ( gl_FragCoord.xy / resolution.xy );"
-                        "vec4 depth = texture2D(depthBuffer, position);"
-                        "vec4 fbColor = texture2D(frameBuffer, position);"
-                        "vec4 pixel = texture2D(texture, texCoords.xy);"
-                        "float z = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
-                        "if (z <= depth.z) {"
-                            "fragColor = pixel;"
-                        "} else {"
-                            "fragColor = fbColor;"
-                        "}"
+                        "vec4 previous_depth_alpha = texture(depthBuffer, position);"
+                        "vec4 previous_color = texture(frameBuffer, position);"
+                        "vec4 texel = texture(texSampler, texCoords.xy);"
+                        "vec4 colors[2];"
+                        "colors[1] = texel * f_color;"
+                        "colors[0] = f_color;"
+                        "bool b = (haveTexture == 1);"
+                        "vec4 current_color = colors[int(b)];"
+                        "float current_depth = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
+                        "colors[1] = current_color * current_color.a + previous_color * (1 - current_color.a);"
+                        "colors[1].a = current_color.a + previous_color.a * (1 - current_color.a);"
+                        "colors[0] = previous_color * previous_depth_alpha.a + current_color * (1 - previous_depth_alpha.a);"
+                        "colors[0].a = previous_color.a + previous_depth_alpha.a * (1 - previous_color.a);"
+                        "b = (current_depth >= previous_depth_alpha.z);"
+                        "gl_FragColor = colors[int(b)];"
                     "}";
-                const std::string normalMapGenFragShader =
-                    "#version 330 core \n"
-                    "layout(origin_upper_left, pixel_center_integer) in vec4 gl_FragCoord;"
-                    "const vec2 size = vec2(2.0,0.0);"
-                    "const ivec3 off = ivec3(-1,0,1);"
-                    "uniform sampler2D texture;"
-                    "in vec2 texCoords;"
-                    "in vec4 color;"
-                    "out vec4 fragColor;"
-                    "void main() {"
-                    "vec4 depth = texture2D(texture, texCoords[0].xy);"
-                    "if (pixel.r != 0 || pixel.g != 0 || pixel.b != 0 || pixel.a != 0) {"
-                        "float s01 = textureOffset(texture, texCoords.xy, off.xy).z;"
-                        "float s21 = textureOffset(texture, texCoords.xy, off.zy).z;"
-                        "float s10 = textureOffset(texture, texCoords.xy, off.yx).z;"
-                        "float s12 = textureOffset(texture, texCoords.xy, off.yz).z;"
-                        "vec3 va = normalize (vec3(size.xy, s21 - s01));"
-                        "vec3 vb = normalize (vec3(size.yx, s12 - s10));"
-                        "fragColor = vec4(cross(va, vb), depth.z);"
-                    "} else {"
-                        "fragColor = vec4(0, 0, 0, 0);"
-                    "}"
-                    "}";
+                    if (!simpleShader->loadFromMemory(simpleVertexShader, simpleFragmentShader))
+                        throw core::Erreur(49, "Failed to load simple shader", 0);
                     if (!depthBufferGenerator->loadFromMemory(vertexShader, depthGenFragShader))
                         throw core::Erreur(50, "Failed to load depth buffer generator shader", 0);
                     if (!frameBufferGenerator->loadFromMemory(vertexShader, frameBufferGenFragShader))
                         throw core::Erreur(51, "Failed to load frame buffer generator shader", 0);
+                    simpleShader->setParameter("texSampler", Shader::CurrentTexture);
+                    frameBufferGenerator->setParameter("resolution",resolution.x, resolution.y, resolution.z);
+                    frameBufferGenerator->setParameter("depthBuffer", depthBuffer->getTexture());
+                    frameBufferGenerator->setParameter("frameBuffer", frameBuffer->getTexture());
+                    frameBufferGenerator->setParameter("texSampler", Shader::CurrentTexture);
+                    depthBufferGenerator->setParameter("resolution",resolution.x, resolution.y, resolution.z);
+                    depthBufferGenerator->setParameter("depthBuffer", depthBuffer->getTexture());
+                    depthBufferGenerator->setParameter("texSampler", Shader::CurrentTexture);
                 } else {
                    const std::string  vertexShader =
                    "#version 130 \n"
@@ -168,23 +194,26 @@ namespace odfaeg {
                                 "gl_FragColor = color;"
                             "}"
                         "}";
-                   const std::string depthGenFragShader =
+                         const std::string depthGenFragShader =
                         "#version 130 \n"
                         "uniform sampler2D depthBuffer;"
-                        "uniform sampler2D heightMap;"
                         "uniform sampler2D texture;"
                         "uniform vec3 resolution;"
                         "uniform float haveTexture;"
                         "in mat4 projMat;"
                         "void main () {"
                             "vec2 position = ( gl_FragCoord.xy / resolution.xy );"
-                            "vec4 color = texture2D(depthBuffer, position);"
-                            "vec4 pixel = (haveTexture==1) ? gl_Color * texture2D(texture, gl_TexCoord[0].xy) : gl_Color;"
-                            "float z = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
+                            "vec4 previous_depth_alpha = texture2D(depthBuffer, position);"
+                            "vec4 texel = texture2D(texture, gl_TexCoord[0].xy);"
                             "vec4 colors[2];"
-                            "colors[1] = vec4(z, pixel.a, z, pixel.a);"
-                            "colors[0] = vec4(z, pixel.a, color.b, color.a);"
-                            "bool b = (z >= color.z && pixel.a != 0);"
+                            "colors[1] = texel * gl_Color;"
+                            "colors[0] = gl_Color;"
+                            "bool b = (haveTexture == 1);"
+                            "float current_alpha = colors[int(b)].a;"
+                            "float current_depth = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
+                            "colors[1] = vec4(current_depth, current_alpha, current_depth, current_alpha);"
+                            "colors[0] = vec4(current_depth, current_alpha, previous_depth_alpha.z, previous_depth_alpha.a);"
+                            "b = (current_depth >= previous_depth_alpha.z && current_alpha != 0);"
                             "gl_FragColor = colors[int(b)];"
                         "}";
                         const std::string frameBufferGenFragShader =
@@ -197,16 +226,20 @@ namespace odfaeg {
                         "in mat4 projMat;"
                         "void main () {"
                             "vec2 position = ( gl_FragCoord.xy / resolution.xy );"
-                            "vec4 depth = texture2D(depthBuffer, position);"
-                            "vec4 color = texture2D(frameBuffer, position);"
-                            "vec4 pixel = (haveTexture==1) ? gl_Color * texture2D(texture, gl_TexCoord[0].xy) : gl_Color;"
-                            "float z = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
+                            "vec4 previous_depth_alpha = texture2D(depthBuffer, position);"
+                            "vec4 previous_color = texture2D(frameBuffer, position);"
+                            "vec4 texel = texture2D(texture, gl_TexCoord[0].xy);"
                             "vec4 colors[2];"
-                            "colors[1] = pixel * pixel.a + color * (1 - pixel.a);"
-                            "colors[1].a = pixel.a + color.a * (1 - pixel.a);"
-                            "colors[0] = color * depth.a + pixel * (1 - depth.a);"
-                            "colors[0].a = color.a + pixel.a * (1 - color.a);"
-                            "bool b = (z >= depth.b);"
+                            "colors[1] = texel * gl_Color;"
+                            "colors[0] = gl_Color;"
+                            "bool b = (haveTexture == 1);"
+                            "vec4 current_color = colors[int(b)];"
+                            "float current_depth = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
+                            "colors[1] = current_color * current_color.a + previous_color * (1 - current_color.a);"
+                            "colors[1].a = current_color.a + previous_color.a * (1 - current_color.a);"
+                            "colors[0] = previous_color * previous_depth_alpha.a + current_color * (1 - previous_depth_alpha.a);"
+                            "colors[0].a = previous_color.a + previous_depth_alpha.a * (1 - previous_color.a);"
+                            "b = (current_depth >= previous_depth_alpha.z);"
                             "gl_FragColor = colors[int(b)];"
                         "}";
                         const std::string bumpGenFragShader =
@@ -271,22 +304,16 @@ namespace odfaeg {
                 bumpTextureGenerator->setParameter("texture",Shader::CurrentTexture);
                 refractionTextureGenerator->setParameter("resolution",resolution.x, resolution.y, resolution.z);
                 refractionTextureGenerator->setParameter("bumpTexture",bumpTexture->getTexture());
-                /*if (window.getSettings().majorVersion >= 3) {
-                    frameBufferGenerator->bindAttribute(0, "vertex_position");
-                    depthBufferGenerator->bindAttribute(0, "vertex_position");
-                    frameBufferGenerator->bindAttribute(1, "vertex_color");
-                    depthBufferGenerator->bindAttribute(1, "vertex_color");
-                    frameBufferGenerator->bindAttribute(2, "vertex_texCoord0");
-                    depthBufferGenerator->bindAttribute(2, "vertex_texCoord0");
-
-                }*/
-                /*core::FastDelegate<bool> signal (&FastRenderComponent::needToUpdate, this);
+                core::FastDelegate<bool> signal (&FastRenderComponent::needToUpdate, this);
                 core::FastDelegate<void> slot (&FastRenderComponent::drawNextFrame, this);
                 core::Command cmd(signal, slot);
-                getListener().connect("UPDATE", cmd);*/
+                getListener().connect("UPDATE", cmd);
                 mvpBuffer = 0;
                 backgroundColor = sf::Color::Transparent;
             }
+        }
+        void FastRenderComponent::pushEvent(sf::Event event) {
+            getListener().pushEvent(event);
         }
         bool FastRenderComponent::needToUpdate() {
             return update;
@@ -340,6 +367,7 @@ namespace odfaeg {
                         }
                     }
                 }
+                std::lock_guard<std::recursive_mutex> locker(rec_mutex);
                 m_instances = batcher.getInstances();
             }
             this->visibleEntities = vEntities;
@@ -355,16 +383,15 @@ namespace odfaeg {
             refractionTexture->setView(view);
         }
         void FastRenderComponent::setExpression(std::string expression) {
+            update = true;
             this->expression = expression;
         }
         void FastRenderComponent::drawNextFrame() {
             update = false;
-            clear();
             currentStates.blendMode = sf::BlendNone;
             if (Shader::isAvailable()) {
-                if (Shader::getShadingLanguageVersionMajor() >= 3 && Shader::getShadingLanguageVersionMinor() >= 3) {
-                    std::vector<float> instancesMVP;
-                    math::Matrix4f vmatrix = view.getViewMatrix().getMatrix().transpose();
+                if (Shader::getShadingLanguageVersionMajor() >= 4 && Shader::getShadingLanguageVersionMinor() >= 2) {
+                    /*math::Matrix4f vmatrix = view.getViewMatrix().getMatrix().transpose();
                     math::Matrix4f pmatrix = view.getProjMatrix().getMatrix().transpose();
                     frameBufferGenerator->setParameter("v", vmatrix);
                     frameBufferGenerator->setParameter("p", pmatrix);
@@ -372,7 +399,7 @@ namespace odfaeg {
                     depthBufferGenerator->setParameter("p", pmatrix);
 
                     for (unsigned int i = 0; i < m_instances.size(); i++) {
-                        instancesMVP.clear();
+                        std::vector<float> instancesMVP;
                         for (unsigned int j = 0; j < m_instances[i]->getTransforms().size(); j++) {
                             math::Matrix4f mmatrix = m_instances[i]->getTransforms()[j].get().getMatrix().transpose();
                             float* glMatrix = mmatrix.toGlMatrix();
@@ -406,37 +433,71 @@ namespace odfaeg {
                         currentStates.shader = depthBufferGenerator;
                         depthBuffer->draw(m_instances[i]->getVertexArray(), currentStates);
                         depthBuffer->display();
-                    }
-                    /*for (unsigned int i = 0; i < m_instances.size(); i++) {
-                        currentStates.texture = m_instances[i]->getMaterial().getTexture();
-                        for (unsigned int j = 0; j < m_instances[i]->getVertexArrays().size(); j++) {
-                            math::Matrix4f mmatrix = m_instances[i]->getTransforms()[j].get().getMatrix().transpose();
-                            math::Matrix4f vmatrix = view.getViewMatrix().getMatrix().transpose();
-                            math::Matrix4f pmatrix = view.getProjMatrix().getMatrix().transpose();
-                            frameBufferGenerator->setParameter("m", mmatrix);
-                            frameBufferGenerator->setParameter("v", vmatrix);
-                            frameBufferGenerator->setParameter("p", pmatrix);
-                            currentStates.shader = frameBufferGenerator;
-                            frameBuffer->draw(*m_instances[i]->getVertexArrays()[j], currentStates);
-                            frameBuffer->display();
-                            depthBufferGenerator->setParameter("m", mmatrix);
-                            depthBufferGenerator->setParameter("v", vmatrix);
-                            depthBufferGenerator->setParameter("p", mmatrix);
-                            currentStates.shader = depthBufferGenerator;
-                            depthBuffer->draw(*m_instances[i]->getVertexArrays()[j], currentStates);
-                            depthBuffer->display();
-                        }
                     }*/
-                } else {
+                } else if (Shader::getShadingLanguageVersionMajor() >= 3 && Shader::getShadingLanguageVersionMinor() >= 3) {
+                    math::Matrix4f vmatrix = view.getViewMatrix().getMatrix().transpose();
+                    math::Matrix4f pmatrix = view.getProjMatrix().getMatrix().transpose();
+                    frameBufferGenerator->setParameter("v", vmatrix);
+                    frameBufferGenerator->setParameter("p", pmatrix);
+                    depthBufferGenerator->setParameter("v", vmatrix);
+                    depthBufferGenerator->setParameter("p", pmatrix);
+                    simpleShader->setParameter("v", vmatrix);
+                    simpleShader->setParameter("p", pmatrix);
                     for (unsigned int i = 0; i < m_instances.size(); i++) {
                         currentStates.texture = m_instances[i]->getMaterial().getTexture();
+                        if (currentStates.texture != nullptr) {
+                            math::Matrix4f tmatrix = m_instances[i]->getMaterial().getTexture()->getTextureMatrix().transpose();
+                            frameBufferGenerator->setParameter("t", tmatrix);
+                            depthBufferGenerator->setParameter("t", tmatrix);
+                            frameBufferGenerator->setParameter("haveTexture", 1.f);
+                            depthBufferGenerator->setParameter("haveTexture", 1.f);
+                        } else {
+                            math::Matrix4f tmatrix;
+                            tmatrix.zero();
+                            frameBufferGenerator->setParameter("t", tmatrix);
+                            depthBufferGenerator->setParameter("t", tmatrix);
+                            frameBufferGenerator->setParameter("haveTexture", 0.f);
+                            depthBufferGenerator->setParameter("haveTexture", 0.f);
+                        }
+                        for (unsigned int j = 0; j < m_instances[i]->getVertexArrays().size(); j++) {
+                            currentStates.transform = m_instances[i]->getTransforms()[j].get();
+                            math::Matrix4f mmatrix = m_instances[i]->getTransforms()[j].get().getMatrix().transpose();
+                            frameBufferGenerator->setParameter("m", mmatrix);
+                            depthBufferGenerator->setParameter("m", mmatrix);
+                            currentStates.shader = frameBufferGenerator;
+                            frameBuffer->draw(*m_instances[i]->getVertexArrays()[j], currentStates);
+                            currentStates.shader = depthBufferGenerator;
+                            depthBuffer->draw(*m_instances[i]->getVertexArrays()[j], currentStates);
+                        }
+                        for (unsigned int i = 0; i < drawables.size(); i++) {
+                            if (drawables[i].second.texture != nullptr) {
+                                math::Matrix4f tmatrix = drawables[i].second.texture->getTextureMatrix().transpose();
+                                simpleShader->setParameter("t", tmatrix);
+                                simpleShader->setParameter("haveTexture", 1.f);
+                            } else {
+                                math::Matrix4f tmatrix;
+                                tmatrix.zero();
+                                simpleShader->setParameter("t", tmatrix);
+                                simpleShader->setParameter("haveTexture", 0.f);
+                            }
+                            math::Matrix4f mmatrix = drawables[i].second.transform.getMatrix().transpose();
+                            simpleShader->setParameter("m", mmatrix);
+                            drawables[i].second.shader = simpleShader;
+                            frameBuffer->draw(drawables[i].first.get(), drawables[i].second);
+                        }
+                        depthBuffer->display();
+                        frameBuffer->display();
+                    }
+                } else {
+                    for (unsigned int i = 0; i < m_instances.size(); i++) {
+                        std::lock_guard<std::recursive_mutex> locker(rec_mutex);
                         float specularIntensity = m_instances[i]->getMaterial().getSpecularIntensity();
                         float specularPower = m_instances[i]->getMaterial().getSpecularPower();
                         float refractionFactor = m_instances[i]->getMaterial().getRefractionFactor();
                         specularTextureGenerator->setParameter("m", specularIntensity);
                         specularTextureGenerator->setParameter("p", specularPower);
                         refractionTextureGenerator->setParameter("refractionFactor", refractionFactor);
-                        if (currentStates.texture != nullptr) {
+                        if (m_instances[i]->getMaterial().getTexture() != nullptr) {
                             depthBufferGenerator->setParameter("haveTexture", 1.f);
                             frameBufferGenerator->setParameter("haveTexture", 1.f);
                             specularTextureGenerator->setParameter("haveTexture", 1.f);
@@ -445,34 +506,28 @@ namespace odfaeg {
                             frameBufferGenerator->setParameter("haveTexture", 0.f);
                             specularTextureGenerator->setParameter("haveTexture", 0.f);
                         }
-                        /*VertexArray& va = m_instances[i]->getVertexArray();
-                        currentStates.shader = frameBufferGenerator;
-                        frameBuffer->draw(va, currentStates);
-                        currentStates.shader = depthBufferGenerator;
-                        depthBuffer->draw(va, currentStates);
-                        currentStates.shader = specularTextureGenerator;
-                        specularTexture->draw(va, currentStates);
-                        currentStates.shader = bumpTextureGenerator;
-                        currentStates.texture = m_instances[i]->getMaterial().getBumpTexture();
-                        if (currentStates.texture != nullptr) {
-                            bumpTextureGenerator->setParameter("haveTexture", 0.f);
-                        } else {
+                        if (m_instances[i]->getMaterial().getBumpTexture() != nullptr) {
                             bumpTextureGenerator->setParameter("haveTexture", 1.f);
+                        } else {
+                            bumpTextureGenerator->setParameter("haveTexture", 0.f);
                         }
-                        bumpTexture->draw(va, currentStates);
-                        currentStates.shader = refractionTextureGenerator;
-                        refractionTexture->draw(va, currentStates);
-                        /*for (unsigned int j = 0; j < va.getVertexCount(); j++) {
-                            std::cout<<va[j].position.x<<" "<<va[j].position.y<<" "<<va[j].position.z<<std::endl;
-                        }*/
                         for (unsigned int j = 0; j < m_instances[i]->getVertexArrays().size(); j++) {
-                            //currentStates.transform = m_instances[i]->getTransforms()[j].get();
+                            currentStates.texture = m_instances[i]->getMaterial().getTexture();
+                            currentStates.transform = m_instances[i]->getTransforms()[j].get();
                             currentStates.shader = frameBufferGenerator;
                             frameBuffer->draw(*m_instances[i]->getVertexArrays()[j], currentStates);
                             currentStates.shader = depthBufferGenerator;
                             depthBuffer->draw(*m_instances[i]->getVertexArrays()[j], currentStates);
+                            currentStates.shader = bumpTextureGenerator;
+                            currentStates.texture = m_instances[i]->getMaterial().getBumpTexture();
+                            bumpTexture->draw(*m_instances[i]->getVertexArrays()[j], currentStates);
+                            currentStates.shader = refractionTextureGenerator;
+                            refractionTexture->draw(*m_instances[i]->getVertexArrays()[j], currentStates);
                         }
                     }
+                }
+                for (unsigned int i = 0; i < drawables.size(); i++) {
+                    frameBuffer->draw(drawables[i].first.get(), drawables[i].second);
                 }
                 depthBuffer->display();
                 frameBuffer->display();
@@ -483,7 +538,6 @@ namespace odfaeg {
                 for (unsigned int i = 0; i < visibleEntities.size(); i++) {
                     for (unsigned int j = 0; j < visibleEntities[i]->getFaces().size(); j++) {
                         currentStates.texture = visibleEntities[i]->getFaces()[j]->getMaterial().getTexture();
-                        currentStates.transform = visibleEntities[i]->getTransform();
                         frameBuffer->draw(visibleEntities[i]->getFaces()[j]->getVertexArray(), currentStates);
                     }
                 }
@@ -493,12 +547,31 @@ namespace odfaeg {
             return visibleEntities;
         }
         void FastRenderComponent::draw(Drawable& drawable, RenderStates states) {
-            frameBuffer->draw(drawable, states);
-            frameBuffer->display();
+            update = true;
+            drawables.push_back(std::make_pair(std::ref(drawable), states));
         }
         void FastRenderComponent::draw(RenderTarget& target, RenderStates states) {
-            states.transform = getTransform();
-            target.draw(*frameBufferTile, states);
+            if (Shader::getShadingLanguageVersionMajor() >= 3 && Shader::getShadingLanguageVersionMinor() >= 3) {
+                frameBufferTile->setCenter(target.getView().getPosition());
+                frameBufferTile->setScale(math::Vec3f(1.f, -1.f, 1.f));
+                math::Matrix4f pmatrix = target.getView().getProjMatrix().getMatrix().transpose();
+                math::Matrix4f vmatrix = target.getView().getViewMatrix().getMatrix().transpose();
+                math::Matrix4f mmatrix = frameBufferTile->getTransform().getMatrix().transpose();
+                math::Matrix4f tmatrix = frameBuffer->getTexture().getTextureMatrix().transpose();
+                simpleShader->setParameter("p", pmatrix);
+                simpleShader->setParameter("v", vmatrix);
+                simpleShader->setParameter("m", mmatrix);
+                simpleShader->setParameter("t", tmatrix);
+                simpleShader->setParameter("haveTexture", 1.f);
+                states.shader = simpleShader;
+                states.transform = getTransform();
+                target.draw(*frameBufferTile, states);
+                drawables.clear();
+            } else {
+                frameBufferTile->setCenter(target.getView().getPosition());
+                target.draw(*frameBufferTile, states);
+                drawables.clear();
+            }
         }
 
         View& FastRenderComponent::getView() {
@@ -526,6 +599,7 @@ namespace odfaeg {
             delete bumpTextureGenerator;
             delete refractionTexture;
             delete refractionTextureGenerator;
+            delete simpleShader;
             GLuint mvp = reinterpret_cast<GLuint>(mvpBuffer);
             glCheck(glDeleteBuffers(1, &mvp));
         }

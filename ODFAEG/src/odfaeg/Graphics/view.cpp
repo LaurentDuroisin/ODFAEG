@@ -155,7 +155,7 @@ namespace odfaeg {
             matrix4f.m43 = 0;
             matrix4f.m44 = 1;
             matrix4f = (transform * matrix4f).inverse();
-            std::array<math::Vec3f, 8> vertices = viewVolume.getVertices();
+            std::vector<math::Vec3f> vertices = viewVolume.getVertices();
             for (unsigned int i = 0; i < vertices.size(); i++) {
                 vertices[i] = matrix4f * vertices[i];
             }

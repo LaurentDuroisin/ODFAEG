@@ -31,7 +31,8 @@
 #include "renderTextureImpl.h"
 #include <SFML/Window/Context.hpp>
 #include <SFML/Window/GlResource.hpp>
-
+#include <GL/glew.h>
+#include <SFML/OpenGL.hpp>
 
 namespace odfaeg {
     namespace graphic {
@@ -67,7 +68,6 @@ namespace odfaeg {
                 static bool isAvailable();
 
             private :
-
                 ////////////////////////////////////////////////////////////
                 /// \brief Create the render texture implementation
                 ///

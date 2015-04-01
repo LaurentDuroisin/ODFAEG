@@ -88,7 +88,7 @@ namespace odfaeg {
             bool intersects(math::Ray& ray, bool segment, CollisionResultSet::Info& info) {
                 return onIntersects(*this, ray, segment, info);
             }
-            bool intersectsWhere(math::Ray& ray, math::Vec3f near, math::Vec3f& far, CollisionResultSet::Info& info) {
+            bool intersectsWhere(math::Ray& ray, math::Vec3f& near, math::Vec3f& far, CollisionResultSet::Info& info) {
                 return onIntersects(*this, ray, near, far, info);
             }
             virtual math::Vec3f getPosition() = 0;

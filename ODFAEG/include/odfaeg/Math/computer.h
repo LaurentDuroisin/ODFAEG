@@ -365,8 +365,6 @@ namespace odfaeg {
                 return actualPos;
             }
             static bool overlap(Vec2f v1, Vec2f v2) {
-                /*std::cout<<v1.x<<" "<<v1.y<<" "<<v2.x<<" "<<v2.y<<std::endl;
-                std::cout<<((v1.y >= v2.x) || (v1.x >= v2.y))<<std::endl;*/
                 return (v1.y >= v2.x) || (v1.x >= v2.y);
             }
             static Vec2f projectShapeOnAxis(Vec3f axis, std::vector<Vec3f> vertices) {
@@ -388,7 +386,7 @@ namespace odfaeg {
                 return Vec2f(min, max);
             }
             static int checkNearestVertexFromShape (Vec3f center, std::vector<Vec3f> points, std::vector<Vec3f> edgeBissectors, std::vector<Vec3f> edgeNormals, std::vector<Vec3f> faceBissectors, std::vector<Vec3f> faceNormals, std::vector<Vec3f> vertices,
-                                                     float& distMin, int& ptIndex, int& edgeIndex, int& faceIndex) {
+                                                     float& distMin, int& ptIndex, int& edgeIndex, int& faceIndex, int nbEdgesPerFace) {
                 distMin = std::numeric_limits<float>::max();
                 float nDistMin = std::numeric_limits<float>::max();
                 edgeIndex = -1;
@@ -432,10 +430,13 @@ namespace odfaeg {
                         Vec3f p2 = vertices[j];
                         float dist = p1.computeDistSquared(p2);
                         float nDist = n.computeDistSquared(p2);
-                        Plane plane1 (edgeNormals[i*3], edgeBissectors[i*3]);
-                        Plane plane2 (edgeNormals[i*3+1], edgeBissectors[i*3+1]);
-                        Plane plane3 (edgeNormals[i*3+2], edgeBissectors[i*3+2]);
-                        if (dist <= distMin && nDist <= nDistMin && plane1.whichSide(p2) <= 0 && plane2.whichSide(p2) <= 0 && plane3.whichSide(p2) <= 0) {
+                        bool isInFaceRegion = true;
+                        for (unsigned int k = 0; k < nbEdgesPerFace && isInFaceRegion; k++) {
+                            Plane p (edgeNormals[i*nbEdgesPerFace+k], edgeBissectors[i*nbEdgesPerFace+k]);
+                            if (p.whichSide(p2) > 0)
+                                isInFaceRegion = false;
+                        }
+                        if (dist <= distMin && nDist <= nDistMin && isInFaceRegion) {
                             distMin = dist;
                             faceIndex = i;
                             nDistMin = nDist;

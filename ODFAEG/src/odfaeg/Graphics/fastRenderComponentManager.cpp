@@ -38,9 +38,10 @@ namespace odfaeg {
             defaultView.setCenter(math::Vec3f(window.getSize().x * 0.5f, window.getSize().y * 0.5f, 0));
             window.setView(defaultView);
             for (unsigned int i = 0; i < components.size(); i++) {
-                if (getRenderComponent(i) == nullptr && components[i]->isVisible()) {
-                    window.draw(*components[i]);
-                    static_cast<LightComponent*>(components[i])->update();
+                if (getRenderComponent(i) == nullptr) {
+                    static_cast<LightComponent*>(components[i])->checkSubWindowEvents();
+                    if (getGuiComponent(i)->isVisible())
+                        window.draw(*components[i]);
                 }
             }
             window.setView(view);

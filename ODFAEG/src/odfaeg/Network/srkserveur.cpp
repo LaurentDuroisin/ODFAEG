@@ -57,7 +57,6 @@ namespace odfaeg {
             if (running) {
                 vector<TcpSocket*>::iterator it;
                 if (Network::getTimeBtw2PingsClk().getElapsedTime().asMicroseconds() >= Network::getTimeBtw2Pings()) {
-                    lock_guard<recursive_mutex> locker (rec_mutex);
                     for (it = clients.begin(); it != clients.end();it++) {
                         TcpSocket& client = **it;
                         User* user = Network::getUser(client);
@@ -71,7 +70,6 @@ namespace odfaeg {
                     Network::getTimeBtw2PingsClk().restart();
                 }
                 if (Network::getTimeBtw2SyncClk().getElapsedTime().asMicroseconds() >= Network::getTimeBtw2Sync()) {
-                    lock_guard<recursive_mutex> locker (rec_mutex);
                     for (it = clients.begin(); it != clients.end();it++) {
                         TcpSocket& client = **it;
                         User* user = Network::getUser(client);

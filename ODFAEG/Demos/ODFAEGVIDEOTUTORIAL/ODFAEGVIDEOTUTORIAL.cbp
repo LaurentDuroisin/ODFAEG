@@ -55,6 +55,8 @@
 		</Linker>
 		<Unit filename="ball.cpp" />
 		<Unit filename="ball.hpp" />
+		<Unit filename="bar.cpp" />
+		<Unit filename="bar.hpp" />
 		<Unit filename="main.cpp" />
 		<Unit filename="partie.cpp" />
 		<Unit filename="partie.hpp" />

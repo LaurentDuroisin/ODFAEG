@@ -63,6 +63,11 @@ namespace odfaeg {
                     tmp_text.append(1, caracter);
                 text.setString(sf::String(tmp_text.c_str()));
             }
+            void TextArea::pushEvent (sf::Event event) {
+                getListener().pushEvent(event);
+            }
+            void TextArea::checkSubWindowEvents() {
+            }
         }
     }
 }

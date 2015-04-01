@@ -489,13 +489,18 @@ namespace odfaeg {
             }
         }
         math::Matrix4f Texture::getTextureMatrix() const {
-            math::Matrix4f m(1.f, 0.f, 0.f, 0.f,
+            math::Matrix4f matrix(1.f, 0.f, 0.f, 0.f,
                        0.f, 1.f, 0.f, 0.f,
                        0.f, 0.f, 1.f, 0.f,
                        0.f, 0.f, 0.f, 1.f);
-            m.m11 = 1.f / m_actualSize.x;
-            m.m22 = 1.f / m_actualSize.y;
-            return m;
+            matrix.m11 = 1.f / m_actualSize.x;
+            matrix.m22 = 1.f / m_actualSize.y;
+           /* if (m_pixelsFlipped)
+            {
+                matrix.m22 = -matrix.m22;
+                matrix.m42 = 1.f;
+            }*/
+            return matrix;
         }
         ////////////////////////////////////////////////////////////
         unsigned int Texture::getMaximumSize()

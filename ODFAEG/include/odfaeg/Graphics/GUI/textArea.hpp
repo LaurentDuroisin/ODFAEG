@@ -20,6 +20,8 @@ namespace odfaeg {
                 bool isMouseInTextArea();
                 void onTextEntered(char caracter);
                 void onUpdate(sf::Event& event);
+                void pushEvent(sf::Event event);
+                void checkSubWindowEvents();
                 std::string getText();
             private :
                 std::string tmp_text;

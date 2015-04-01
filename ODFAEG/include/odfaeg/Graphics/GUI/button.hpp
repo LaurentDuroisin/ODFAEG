@@ -19,6 +19,8 @@ namespace odfaeg {
                     std::string getText();
                     void addActionListener(ActionListener* al);
                     bool isMouseInButton();
+                    void pushEvent(sf::Event event);
+                    void checkSubWindowEvents();
                 private :
                     Text text;
                     RenderWindow& rw;

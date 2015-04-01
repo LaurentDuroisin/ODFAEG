@@ -42,10 +42,13 @@ private :
     odfaeg::core::ResourceCache<> cache;
     sf::Time timeBtwnTwoReq = sf::seconds(1.f);
     sf::Int64 ping;
+    bool received = false;
+    static const unsigned int PATH_ERROR_MARGIN = 2;
 public :
     MyAppli(sf::VideoMode wm, std::string title);
     void keyHeldDown (sf::Keyboard::Key key);
     void leftMouseButtonPressed(sf::Vector2f mousePos);
+    void rightMouseButtonPressed(sf::Vector2f mousePos);
     bool mouseInside (sf::Vector2f mousePos);
     void onMouseInside (sf::Vector2f mousePos);
     void onLoad();

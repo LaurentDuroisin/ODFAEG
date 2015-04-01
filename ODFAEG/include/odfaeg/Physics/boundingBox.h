@@ -161,15 +161,28 @@ namespace odfaeg {
                     ar(height);
                     ar(depth);
                     ar(center);
+                    ar(edgeBissectors);
+                    ar(faceBissectors);
+                    ar(edgeNormals);
+                    ar(faceNormals);
                 }
                 BoundingBox transform(graphic::TransformMatrix &tm);
                 std::unique_ptr<BoundingVolume> clone() {
                     return std::make_unique<BoundingBox>(*this);
                 }
-                std::array<math::Vec3f, 8> getVertices();
+                std::vector<math::Vec3f> getVertices();
+                std::vector<math::Vec3f> getFaceNormals();
+                std::vector<math::Vec3f> getEdgeNormals();
+                std::vector<math::Vec3f> getFaceBissectors();
+                std::vector<math::Vec3f> getEdgeBissectors();
                 bool isFlat();
             private :
-                std::array<math::Vec3f, 8> points;
+                void computeVectors();
+                std::vector<math::Vec3f> points;
+                std::vector<math::Vec3f> faceNormals;
+                std::vector<math::Vec3f> edgeNormals;
+                std::vector<math::Vec3f> faceBissectors;
+                std::vector<math::Vec3f> edgeBissectors;
                 bool flat;
                 int x, y, z, width, height, depth; /**< the x position of the bounding box */
                 /**< the y position of the bounding box */

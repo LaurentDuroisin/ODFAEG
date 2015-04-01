@@ -113,18 +113,16 @@ namespace odfaeg {
             *   \brief call the rendering functions used to render entities on components or on the window.
             */
             void render() {
-                //while (running) {
-                    //std::lock_guard<std::recursive_mutex> locker(rec_mutex);
-                    if (window != nullptr && window->isOpen()) {
-                        window->clear(clearColor);
-                        componentManager->clearComponents();
-                        onRender(componentManager.get());
-                        componentManager->drawRenderComponents();
-                        onDisplay(window.get());
-                        componentManager->drawGuiComponents();
-                        window->display();
-                    }
-                //}
+                if (window != nullptr && window->isOpen()) {
+                    window->clear(clearColor);
+                    onRender(componentManager.get());
+                    componentManager->clearComponents();
+                    componentManager->updateComponents();
+                    componentManager->drawRenderComponents();
+                    onDisplay(window.get());
+                    componentManager->drawGuiComponents();
+                    window->display();
+                }
             }
             void setEventContextActivated(bool eventContextActivated) {
                 this->eventContextActivated = eventContextActivated;
@@ -141,11 +139,7 @@ namespace odfaeg {
                     sf::Event event;
                     events.clear();
                     while (window->pollEvent(event)) {
-                        //if (event.type == sf::Event::KeyReleased || event.type == sf::Event::MouseButtonReleased) {
-                            //events.push_back(event);
-                        //} else {
-                            events.insert(events.begin(),event);
-                        //}
+                        events.insert(events.begin(),event);
                     }
                     if (events.size() > 0) {
                         while (events.size() != 0) {
@@ -154,15 +148,14 @@ namespace odfaeg {
                             if (eventContextActivated)
                                 listener->pushEvent(event);
                             for (unsigned int i = 0; i < componentManager->getNbComponents(); i++) {
+                                componentManager->getComponent(i)->onUpdate(event);
                                 if (componentManager->getComponent(i)->isEventContextActivated()) {
-                                    componentManager->getComponent(i)->onUpdate(event);
                                     componentManager->getComponent(i)->pushEvent(event);
                                 }
                             }
                             events.pop_back();
                         }
                     } else {
-                        componentManager->updateComponents();
                         if (eventContextActivated) {
                             listener->processEvents();
                         }

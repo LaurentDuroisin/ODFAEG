@@ -225,7 +225,6 @@ namespace odfaeg {
             return compile(&vertexShader[0], &fragmentShader[0]);
         }
 
-
         ////////////////////////////////////////////////////////////
         void Shader::setParameter(const std::string& name, float x)
         {
@@ -236,7 +235,7 @@ namespace odfaeg {
                     glCheck(glUseProgram(m_shaderProgram));
                     GLint location = glGetUniformLocation(m_shaderProgram, name.c_str());
                     if (location != -1) {
-                        glCheck(glUniform1f(m_shaderProgram, x));
+                        glCheck(glUniform1f(location, x));
                     }
                 } else {
                     // Enable program
@@ -265,7 +264,7 @@ namespace odfaeg {
                     glCheck(glUseProgram(m_shaderProgram));
                     GLint location = glGetUniformLocation(m_shaderProgram, name.c_str());
                     if (location != -1) {
-                        glCheck(glUniform2f(m_shaderProgram, x, y));
+                        glCheck(glUniform2f(location, x, y));
                     }
                 } else {
                     // Enable program
@@ -294,7 +293,7 @@ namespace odfaeg {
                     glCheck(glUseProgram(m_shaderProgram));
                     GLint location = glGetUniformLocation(m_shaderProgram, name.c_str());
                     if (location != -1) {
-                        glCheck(glUniform3f(m_shaderProgram, x, y, z));
+                        glCheck(glUniform3f(location, x, y, z));
                     }
                 } else {
                     // Enable program
@@ -324,7 +323,7 @@ namespace odfaeg {
                     glCheck(glUseProgram(m_shaderProgram));
                     GLint location = glGetUniformLocation(m_shaderProgram, name.c_str());
                     if (location != -1) {
-                        glCheck(glUniform4f(m_shaderProgram, x, y, z, w));
+                        glCheck(glUniform4f(location, x, y, z, w));
                     }
                 } else {
                     // Enable program

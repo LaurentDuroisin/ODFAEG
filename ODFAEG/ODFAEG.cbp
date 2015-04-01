@@ -141,7 +141,6 @@
 		<Unit filename="include/odfaeg/Graphics/renderTexture.h" />
 		<Unit filename="include/odfaeg/Graphics/renderWindow.h" />
 		<Unit filename="include/odfaeg/Graphics/sdlRenderWindow.hpp" />
-		<Unit filename="include/odfaeg/Graphics/sdlWindow.hpp" />
 		<Unit filename="include/odfaeg/Graphics/selectable.h" />
 		<Unit filename="include/odfaeg/Graphics/shader.h" />
 		<Unit filename="include/odfaeg/Graphics/shadow.h" />
@@ -195,20 +194,12 @@
 		<Unit filename="include/odfaeg/Physics/orientedBoundingBox.h" />
 		<Unit filename="include/odfaeg/Physics/particule.h" />
 		<Unit filename="include/odfaeg/Physics/particuleSystem.h" />
-		<Unit filename="include/odfaeg/Window/Context.hpp" />
-		<Unit filename="include/odfaeg/Window/ContextSettings.hpp" />
-		<Unit filename="include/odfaeg/Window/Event.hpp" />
-		<Unit filename="include/odfaeg/Window/Export.hpp" />
-		<Unit filename="include/odfaeg/Window/GlResource.hpp" />
-		<Unit filename="include/odfaeg/Window/Joystick.hpp" />
-		<Unit filename="include/odfaeg/Window/Keyboard.hpp" />
-		<Unit filename="include/odfaeg/Window/Linux/x11Window.hpp" />
-		<Unit filename="include/odfaeg/Window/Mouse.hpp" />
-		<Unit filename="include/odfaeg/Window/VideoMode.hpp" />
-		<Unit filename="include/odfaeg/Window/Window.hpp" />
-		<Unit filename="include/odfaeg/Window/WindowHandle.hpp" />
-		<Unit filename="include/odfaeg/Window/WindowStyle.hpp" />
-		<Unit filename="include/odfaeg/Window/sfmlwindow.hpp" />
+		<Unit filename="include/odfaeg/Window/iEvent.hpp" />
+		<Unit filename="include/odfaeg/Window/iWindow.hpp" />
+		<Unit filename="include/odfaeg/Window/sdlWindow.hpp" />
+		<Unit filename="include/odfaeg/Window/sdlWindowImpl.hpp" />
+		<Unit filename="include/odfaeg/Window/sfmlWindowImpl.hpp" />
+		<Unit filename="include/odfaeg/Window/x11Window.hpp" />
 		<Unit filename="include/odfaeg/config.hpp" />
 		<Unit filename="src/odfaeg/Audio/ALCheck.cpp" />
 		<Unit filename="src/odfaeg/Audio/ALCheck.hpp" />
@@ -271,7 +262,6 @@
 		<Unit filename="src/odfaeg/Graphics/renderTextureImplFBO.h" />
 		<Unit filename="src/odfaeg/Graphics/renderWindow.cpp" />
 		<Unit filename="src/odfaeg/Graphics/sdlRenderWindow.cpp" />
-		<Unit filename="src/odfaeg/Graphics/sdlWindow.cpp" />
 		<Unit filename="src/odfaeg/Graphics/shader.cpp" />
 		<Unit filename="src/odfaeg/Graphics/shadow.cpp" />
 		<Unit filename="src/odfaeg/Graphics/shape.cpp" />
@@ -332,13 +322,16 @@
 		<Unit filename="src/odfaeg/Window/Linux/InputImpl.hpp" />
 		<Unit filename="src/odfaeg/Window/Linux/JoystickImpl.hpp" />
 		<Unit filename="src/odfaeg/Window/Linux/WindowImplX11.hpp" />
-		<Unit filename="src/odfaeg/Window/Linux/x11Window.cpp" />
 		<Unit filename="src/odfaeg/Window/VideoModeImpl.hpp" />
 		<Unit filename="src/odfaeg/Window/Win32/InputImpl.hpp" />
 		<Unit filename="src/odfaeg/Window/Win32/JoystickImpl.hpp" />
 		<Unit filename="src/odfaeg/Window/Win32/WglContext.hpp" />
 		<Unit filename="src/odfaeg/Window/Win32/WindowImplWin32.hpp" />
 		<Unit filename="src/odfaeg/Window/WindowImpl.hpp" />
+		<Unit filename="src/odfaeg/Window/sdlWindow.cpp" />
+		<Unit filename="src/odfaeg/Window/sdlWindowImpl.cpp" />
+		<Unit filename="src/odfaeg/Window/sfmlWindowImpl.cpp" />
+		<Unit filename="src/odfaeg/Window/x11Window.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

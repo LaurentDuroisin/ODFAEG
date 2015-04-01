@@ -227,8 +227,7 @@ namespace odfaeg
             {
                 ensureGeometryUpdate();
                 states.transform = getTransform();
-                m_vertices.transform(getTransform());
-                //states.gpuTransform = true;
+                //m_vertices.transform(getTransform());
                 states.texture = &m_font->getTexture(m_characterSize);
                 target.draw(m_vertices, states);
             }

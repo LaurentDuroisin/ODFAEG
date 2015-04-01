@@ -10,10 +10,10 @@ namespace odfaeg {
 
         }
         Tile::Tile (const Tile& tile) : Entity (tile.getPosition(), tile.getSize(), tile.getSize() * 0.5f, "E_TILE"){
-            Vertex v1(sf::Vector3f(tile.getPosition().x, tile.getPosition().y, tile.getPosition().z));
-            Vertex v2(sf::Vector3f(tile.getPosition().x + tile.getSize().x, tile.getPosition().y, tile.getPosition().z));
-            Vertex v3(sf::Vector3f(tile.getPosition().x + tile.getSize().x, getPosition().y + tile.getSize().y, tile.getPosition().z));
-            Vertex v4(sf::Vector3f(tile.getPosition().x, tile.getPosition().y + tile.getSize().y, tile.getPosition().z));
+            Vertex v1(sf::Vector3f(0, 0, 0));
+            Vertex v2(sf::Vector3f(tile.getSize().x, 0, 0));
+            Vertex v3(sf::Vector3f(tile.getSize().x, tile.getSize().y, 0));
+            Vertex v4(sf::Vector3f(0, tile.getSize().y, 0));
             sf::IntRect subRect = tile.getFaces()[0]->getMaterial().getTexRect();
             v1.texCoords = sf::Vector2f(subRect.left, subRect.top);
             v2.texCoords = sf::Vector2f(subRect.left + subRect.width, subRect.top);
@@ -34,11 +34,11 @@ namespace odfaeg {
         }
         Tile::Tile (const Texture *image, math::Vec3f position, math::Vec3f size, sf::IntRect subRect, sf::Color color, Entity *parent)
         : Entity (position, size, size * 0.5f, "E_TILE") {
-            Face* face = new Face(sf::Quads,getTransform());
-            Vertex v1(sf::Vector3f(position.x, position.y, position.z));
-            Vertex v2(sf::Vector3f(position.x + size.x, position.y, position.z));
-            Vertex v3(sf::Vector3f(position.x + size.x, position.y + size.y, position.z));
-            Vertex v4(sf::Vector3f(position.x, position.y + size.y, position.z));
+            Face* face = new Face(sf::TrianglesFan,getTransform());
+            Vertex v1(sf::Vector3f(0, 0, 0));
+            Vertex v2(sf::Vector3f(size.x, 0, 0));
+            Vertex v3(sf::Vector3f(size.x, size.y, 0));
+            Vertex v4(sf::Vector3f(0, size.y, 0));
             v1.texCoords = sf::Vector2f(subRect.left, subRect.top);
             v2.texCoords = sf::Vector2f(subRect.left + subRect.width, subRect.top);
             v3.texCoords = sf::Vector2f(subRect.left + subRect.width, subRect.top + subRect.height);
@@ -104,7 +104,6 @@ namespace odfaeg {
         void Tile::onDraw(RenderTarget &target, RenderStates states) {
             states.texture = const_cast<Tile*>(this)->getFaces()[0]->getMaterial().getTexture();
             target.draw(const_cast<Tile*>(this)->getFaces()[0]->getVertexArray(), states);
-
         }
 
         void Tile::setColor (sf::Color color) {

@@ -16,7 +16,6 @@ namespace odfaeg {
         }
 
         void CellMap::addEntity (Entity *entity) {
-
             entityInside.push_back(entity);
         }
 

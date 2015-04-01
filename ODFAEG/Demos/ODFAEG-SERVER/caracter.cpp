@@ -147,6 +147,9 @@ int Caracter::getMaxLife() {
 int Caracter::getLevel() {
     return level;
 }
+std::string Caracter::getName() {
+    return name;
+}
 string Caracter::getClass () {
     return classs;
 }

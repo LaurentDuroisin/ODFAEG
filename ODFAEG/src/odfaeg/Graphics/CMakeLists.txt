@@ -94,9 +94,7 @@ set(SRC_GRAPHICS
 	${INCROOT}/tGround.h
 	${SRCROOT}/tGround.cpp
 	${INCROOT}/billBoard.h
-	${SRCROOT}/billBoard.cpp
-	${INCROOT}/sdlWindow.hpp
-	${SRCROOT}/sdlWindow.cpp
+	${SRCROOT}/billBoard.cpp	
 	${INCROOT}/sdlRenderWindow.hpp
 	${SRCROOT}/sdlRenderWindow.cpp
 	${INCROOT}/cpuRenderComponent.hpp

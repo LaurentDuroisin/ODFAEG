@@ -8,7 +8,9 @@ namespace odfaeg {
         //Ajoute une tile.
 
         GridMap::GridMap (int cellWidth, int cellHeight) {
-            nbCasesPerRow = minX = minY = maxX = maxY = 0;
+            nbCasesPerRow = 0;
+            minX = minY = std::numeric_limits<int>::max();
+            maxX = maxY = std::numeric_limits<int>::min();
             this->cellWidth = cellWidth;
             this->cellHeight = cellHeight;
             offsetX = cellWidth * 0.5f;
@@ -67,7 +69,6 @@ namespace odfaeg {
         }
 
         Entity* GridMap::getEntity (int id) {
-
             for (unsigned int i = 0; i < casesMap.size(); i++) {
                 CellMap *cm = casesMap[i];
                 if (cm != nullptr) {
@@ -93,7 +94,6 @@ namespace odfaeg {
                 deltaY = - cellHeight;
             else
                 deltaY = cellHeight;
-            int oldMinX = minX, oldMinY = minY;
             minX = (coordsCaseP.x < minX) ? coordsCaseP.x : minX;
             minY = (coordsCaseP.y < minY) ? coordsCaseP.y : minY;
             maxX = (coordsCaseP.x > maxX) ? coordsCaseP.x : maxX;
@@ -114,9 +114,8 @@ namespace odfaeg {
                 v[i] = bm.changeOfBase(v[i]);
             }
             physic::BoundingPolyhedron *bp = new physic::BoundingPolyhedron(v[0], v[1], v[2], true);
-            bp->addTriangle(v[1], v[2], v[3]);
+            bp->addTriangle(v[0], v[2], v[3]);
             CellMap *cell = new CellMap(bp, coordsCaseP);
-            int oldNbCasesPerRow = nbCasesPerRow;
 
             nbCasesPerRow = math::Math::abs(minX) + maxX + 1;
             int nbCasesPerCol = math::Math::abs(minY) + maxY + 1;
@@ -127,19 +126,16 @@ namespace odfaeg {
                 vector<CellMap*> tmpCasesMap = casesMap;
                 casesMap.clear();
                 casesMap.resize(newSize);
+                std::fill(casesMap.begin(), casesMap.end(), nullptr);
                 for (unsigned int i = 0; i < tmpCasesMap.size(); i++) {
                     if (tmpCasesMap[i] != nullptr) {
                         math::Vec2f coords = tmpCasesMap[i]->getCoords();
-
-                        int oldInd = (math::Math::abs(oldMinX) + coords.x)
-                                     + (math::Math::abs(oldMinY) + coords.y) * oldNbCasesPerRow;
                         int newInd = (math::Math::abs(minX) + coords.x)
                                      + (math::Math::abs(minY) + coords.y) * nbCasesPerRow;
-                        casesMap[newInd] = tmpCasesMap[oldInd];
+                        casesMap[newInd] = tmpCasesMap[i];
                     }
                 }
             }
-
             casesMap[indice] = cell;
         }
 
@@ -220,14 +216,9 @@ namespace odfaeg {
                 }
             }
             //Supprime les cases vides à la fin du vecteur.
-
-
-            int oldMinX = minX;
-            int oldMinY = minY;
             //On recherche les coordonnées de la case la plus petite.
             checkExts();
             //On cherche si il faut réduire la taille du vecteur. (En partant du début.)
-            int oldNbCasesPerRow = nbCasesPerRow;
             nbCasesPerRow = math::Math::abs(minX) + maxX + 1;
             int nbCasesPerCol = math::Math::abs(minY) + maxY + 1;
             unsigned int newSize = nbCasesPerCol * nbCasesPerRow;
@@ -236,12 +227,12 @@ namespace odfaeg {
                 vector<CellMap*> tmpCasesMap = casesMap;
                 casesMap.clear();
                 casesMap.resize(newSize);
+                std::fill(casesMap.begin(), casesMap.end(), nullptr);
                 for (unsigned int i = 0; i < tmpCasesMap.size(); i++) {
                     if (tmpCasesMap[i] != nullptr) {
                         math::Vec3f coords = tmpCasesMap[i]->getCoords();
-                        int oldInd = math::Math::abs(oldMinX) + coords.x + (math::Math::abs(oldMinY) + coords.y) * oldNbCasesPerRow;
                         int newInd = math::Math::abs(minX) + coords.x + (math::Math::abs(minY) + coords.y) * nbCasesPerRow;
-                        casesMap[newInd] = tmpCasesMap[oldInd];
+                        casesMap[newInd] = tmpCasesMap[i];
                     }
                 }
             }
@@ -337,9 +328,7 @@ namespace odfaeg {
         }
 
         math::Vec2f GridMap::getCoordinatesAt(math::Vec2f &point) {
-
             math::Vec2f p = bm.unchangeOfBase(point);
-
             if (cellWidth > 0)
                 p.x /= cellWidth;
             else
@@ -374,13 +363,14 @@ namespace odfaeg {
                 }
                 if (entity->getCollisionVolume() != nullptr) {
                     math::Vec3f t = position - entity->getCollisionVolume()->getCenter();
-                    std::unique_ptr<physic::BoundingVolume> cv = entity->getCollisionVolume()->clone();
+                    physic::BoundingVolume* cv = entity->getCollisionVolume()->clone().release();
                     cv->move(t);
                     for (unsigned int k = 0; k < cell->getEntitiesInside().size(); k++)  {
                         if (cell->getEntitiesInside()[k]->getCollisionVolume() != nullptr && cell->getEntitiesInside()[k] != entity) {
                             physic::CollisionResultSet::Info info;
                             if (cv->intersects(*cell->getEntitiesInside()[k]->getCollisionVolume(), info)) {
                                 info.entity = cell->getEntitiesInside()[k];
+                                info.center = cv->getCenter();
                                 physic::CollisionResultSet::pushCollisionInfo(info);
                                 if (cv->getChildren().size() == 0) {
                                     return true;
@@ -421,7 +411,8 @@ namespace odfaeg {
         }
 
         void GridMap::checkExts () {
-            minX = minY = maxX = maxY;
+            minX = minY = std::numeric_limits<int>::max();
+            maxX = maxY = std::numeric_limits<int>::min();
             for (unsigned int i = 0; i < casesMap.size(); i++) {
                 if (casesMap[i] != nullptr) {
                     math::Vec2f point = casesMap[i]->getCellVolume()->getCenter();

@@ -17,7 +17,7 @@ Caracter::Caracter (string factionName, string pseudo, string sex, string curren
     this->classs = classs;
     this->level = level;
     currentPointIndex = 0;
-    speed = 0.015f;
+    speed = 0.0001f;
     moving = false;
     dir = Vec2f(0, 1);
     this->life = 100;

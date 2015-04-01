@@ -58,6 +58,8 @@ set(SRC_GRAPHICS
 	${SRCROOT}/vertexArray.cpp
 	${INCROOT}/view.h
 	${SRCROOT}/view.cpp
+	${INCROOT}/component.h
+	${SRCROOT}/component.cpp
 	${INCROOT}/fastRenderComponentManager.h
 	${SRCROOT}/fastRenderComponentManager.cpp
 	${INCROOT}/vbo.h

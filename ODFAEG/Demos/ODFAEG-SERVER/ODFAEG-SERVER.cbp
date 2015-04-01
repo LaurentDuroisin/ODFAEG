@@ -62,6 +62,8 @@
 		<Unit filename="application.h" />
 		<Unit filename="caracter.cpp" />
 		<Unit filename="caracter.h" />
+		<Unit filename="hero.cpp" />
+		<Unit filename="hero.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="monster.cpp" />
 		<Unit filename="monster.h" />

@@ -213,6 +213,7 @@ namespace odfaeg {
             priv::RenderTextureImpl* m_impl;    ///< Platform/hardware specific implementation
             Texture                  m_texture; ///< Target texture to draw on
             bool useDepthTest;
+            unsigned int vertexArrayId;
         };
     }
 

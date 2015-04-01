@@ -35,6 +35,7 @@ namespace odfaeg {
                 text.setPosition(math::Vec3f(10, 10, position.z));
                 text.setSize(size);
                 backgroundColor = sf::Color::White;
+                rw.clear(backgroundColor);
             }
             void OptionPane::onVisibilityChanged(bool visible) {
                 rw.setVisible(visible);
@@ -57,7 +58,7 @@ namespace odfaeg {
                     rw.display();
                 }
             }
-            void OptionPane::update() {
+            void OptionPane::checkSubWindowEvents() {
                 sf::Event event;
                 while(rw.pollEvent(event)) {
                     if (event.type == sf::Event::Closed) {
@@ -87,6 +88,9 @@ namespace odfaeg {
             }
             void OptionPane::setText(std::string t) {
                 text.setString(sf::String(t.c_str()));
+            }
+            void OptionPane::pushEvent (sf::Event event) {
+
             }
             OptionPane::~OptionPane() {
                 rw.close();

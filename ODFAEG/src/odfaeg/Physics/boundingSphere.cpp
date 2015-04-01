@@ -28,19 +28,22 @@ namespace odfaeg {
             return be.intersects(*this, info);
         }
         bool BoundingSphere::intersects (BoundingBox &bx, CollisionResultSet::Info& info) {
-            math::Ray ray1(bx.getCenter(), center);
-            math::Ray ray2(center, bx.getCenter());
-            math::Vec3f near1, far1, near2, far2;
-            if (!bx.intersectsWhere(ray1, near1, far1, info)) {
-                return false;
-            }
-            if (!intersectsWhere(ray2, near2, far2, info)) {
-                return false;
-            }
-            math::Vec3f d = far1 - bx.getCenter();
-            math::Vec3f mtu = far2 - far1;
-            info.mtu = mtu;
-            return (center.computeDistSquared(bx.getCenter()) - radius * radius - d.magnSquared()) <= 0;
+            float dist;
+            int pIndex, eIndex, fIndex;
+            std::vector<math::Vec3f> point = {center};
+            int vIndex = math::Computer::checkNearestVertexFromShape(bx.getCenter(), bx.getVertices(), bx.getEdgeBissectors(), bx.getEdgeNormals(),
+                                                                     bx.getFaceBissectors(), bx.getFaceNormals(),point,dist,pIndex,eIndex,fIndex,4);
+            info.nearestVertexIndex1 = vIndex;
+            info.nearestPtIndex1 = pIndex;
+            info.nearestEdgeIndex1 = eIndex;
+            info.nearestFaceIndex1 = fIndex;
+            math::Vec3f v = center - bx.getCenter();
+            if (pIndex != -1)
+                return v.magnitude() <= radius + (bx.getVertices()[pIndex] - bx.getCenter()).magnitude();
+            math::Vec3f n = bx.getEdgeNormals()[eIndex];
+            float pn = math::Math::abs(v.projOnAxis(n));
+            info.mtu = n * (radius + (bx.getEdgeBissectors()[eIndex] - bx.getCenter()).magnitude() - pn);
+            return pn  <= radius  + (bx.getEdgeBissectors()[eIndex] - bx.getCenter()).magnitude();
         }
 
         bool BoundingSphere::intersects (OrientedBoundingBox &obx, CollisionResultSet::Info& info) {
@@ -91,7 +94,7 @@ namespace odfaeg {
         }
         bool BoundingSphere::intersectsWhere (math::Ray& r, math::Vec3f& near, math::Vec3f &far, CollisionResultSet::Info& info) {
             math::Vec3f p = r.getOrig();
-            math::Vec3f d = r.getDir();
+            math::Vec3f d = r.getDir().normalize();
             math::Vec3f c = center;
              // this is the vector from p to c
             math::Vec3f vpc = c - p;
@@ -106,7 +109,7 @@ namespace odfaeg {
                     return true;
                 } else {
                     // occurs when p is inside the sphere
-                    math::Vec3f pc = p + d.normalize() * c.projOnAxis(d);
+                    math::Vec3f pc = p + d * vpc.projOnAxis(d);
                     float dist = math::Math::sqrt(radius * radius - pc.computeDistSquared(c));
                     float di1 = dist - pc.computeDist(p);
                     near = p;
@@ -115,7 +118,7 @@ namespace odfaeg {
                 }
             } else {
                 // center of sphere projects on the ray
-                math::Vec3f pc = p + d.normalize() * c.projOnAxis(d);
+                math::Vec3f pc = p + d * vpc.projOnAxis(d);
                 if (c.computeDistSquared(pc) > radius * radius) {
                     // there is no intersection
                     return false;

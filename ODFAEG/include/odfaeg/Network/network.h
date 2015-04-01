@@ -223,7 +223,7 @@ namespace odfaeg {
                         return srv;
                     }
                 }
-                static sf::Clock getTimeBtw2SyncClk() {
+                static sf::Clock& getTimeBtw2SyncClk() {
                     return timeBtw2SyncClk;
                 }
                 static sf::Int64 getTimeBtw2Sync() {

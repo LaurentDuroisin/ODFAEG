@@ -102,13 +102,13 @@ namespace odfaeg {
         }
         void Entity::updateTransform() {
 
-            getTransform().update();
-            //std::cout<<"update : "<<std::endl;
-
-            for (unsigned int i = 0; i < faces.size(); i++) {
-                VertexArray& va = faces[i]->getVertexArray();
-                va.transform(getTransform());
-            }
+            /*getTransform().update();
+            if (!(RenderTarget::getMajorVersion() >= 3 && RenderTarget::getMinorVersion() >= 3)) {
+                for (unsigned int i = 0; i < faces.size(); i++) {
+                    VertexArray& va = faces[i]->getVertexArray();
+                    va.transform(getTransform());
+                }
+            }*/
         }
         //Return the children of the entities.
         std::vector<Entity*> Entity::getChildren() const {

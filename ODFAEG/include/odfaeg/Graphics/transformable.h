@@ -125,9 +125,8 @@ namespace odfaeg {
             * \param t : the translation vector.
             */
             void move (math::Vec3f t) {
-                m_position += t;
                 m_center += t;
-                math::Vec3f localT = m_position - getLocalBounds().getPosition();
+                m_position += t;
                 tm.setTranslation(m_center);
                 onMove(t);
             }
@@ -138,9 +137,10 @@ namespace odfaeg {
             */
             void setOrigin(math::Vec3f origin) {
                m_origin = origin;
-               m_center = m_position + origin;
-               tm.setOrigin(m_origin);
-               tm.setTranslation(m_center);
+               tm.setOrigin(origin);
+               physic::BoundingBox bounds = getGlobalBounds();
+               m_position = bounds.getPosition();
+               m_center = bounds.getCenter();
             }
             /**
             * \fn Vec3f getScale() const

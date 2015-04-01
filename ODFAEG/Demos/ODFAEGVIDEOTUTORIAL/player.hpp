@@ -1,18 +1,14 @@
 #ifndef PONG_PLAYER_HPP
 #define PONG_PLAYER_HPP
 #include "odfaeg/Network/user.h"
+#include "odfaeg/Network/symEncPacket.h"
 #include "odfaeg/Physics/boundingBox.h"
 #include "odfaeg/Graphics/entity.h"
 class Player : public odfaeg::graphic::Entity {
 public :
     Player(odfaeg::network::User& user, std::string pseudo, odfaeg::math::Vec2f position);
-    sf::IpAddress ipAddress();
     std::string pseudo();
-    void setLastSrvTime(sf::Int64 time);
-    sf::Int64 lastSrvTime();
-    void setSyncTime(sf::Int64 time);
-    sf::Int64 syncTime();
-    sf::Clock& timeSinceLastSync();
+    void setPartyId (int partyId);
     bool isLeaf() const {
         return true;
     }
@@ -40,13 +36,20 @@ public :
     bool isMoving();
     void setDir(odfaeg::math::Vec2f dir);
     odfaeg::math::Vec2f dir();
+    void setSpeed(float speed);
+    float speed();
+    odfaeg::network::User& user();
+    int partyId();
+    void increaseScore();
+    unsigned int score();
+    void resetScore();
 private :
+    unsigned int m_score;
+    int m_partyId;
     odfaeg::math::Vec2f m_dir;
     bool moving;
-    sf::Int64 m_lastSrvTime;
-    sf::Int64 m_syncTime;
     std::string m_pseudo;
     odfaeg::network::User& m_user;
-    sf::Clock m_timeSinceLastSync;
+    float m_speed;
 };
 #endif // PLAYER_HPP

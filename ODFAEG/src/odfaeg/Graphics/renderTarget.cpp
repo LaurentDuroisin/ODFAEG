@@ -154,7 +154,7 @@ namespace odfaeg {
                     applyCurrentView();
                 // Check if the vertex count is low enough so that we can pre-transform them
                 bool useVertexCache = (vertexCount <= StatesCache::VertexCacheSize);
-                if (useVertexCache /*&& !GLEW_ARB_vertex_buffer_object*/)
+                if (useVertexCache && !GLEW_ARB_vertex_buffer_object)
                 {
 
                     // Pre-transform the vertices and store them into the vertex cache
@@ -175,9 +175,7 @@ namespace odfaeg {
                 }
                 else
                 {
-                    TransformMatrix tm;
-                    if (states.gpuTransform)
-                        tm = states.transform;
+                    TransformMatrix tm = states.transform;
                     applyTransform(tm);
                 }
                 // Apply the blend mode
@@ -204,14 +202,14 @@ namespace odfaeg {
                         vertices = nullptr;
                 }
                 // Setup the pointers to the vertices' components
-                /*if (vertices && GLEW_ARB_vertex_buffer_object) {
+                if (vertices && GLEW_ARB_vertex_buffer_object) {
                     //In moddern opengl we need to use glVertexAttribPointer functions. (gl*Pointer is deprecated)
                     if (majorVersion >= 3 && minorVersion >= 3) {
                         glCheck(glBindBuffer(GL_ARRAY_BUFFER, states.vertexBufferId));
                         glCheck(glEnableVertexAttribArray(0));
                         glCheck(glVertexAttribPointer(0, 3,GL_FLOAT,GL_FALSE,sizeof(Vertex), (GLvoid*) 0));
                         glCheck(glEnableVertexAttribArray(1));
-                        glCheck(glVertexAttribPointer(1, 4,GL_UNSIGNED_BYTE,GL_FALSE,sizeof(Vertex),(GLvoid*) 12));
+                        glCheck(glVertexAttribPointer(1, 4,GL_UNSIGNED_BYTE,GL_TRUE,sizeof(Vertex),(GLvoid*) 12));
                         glCheck(glEnableVertexAttribArray(2));
                         glCheck(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) 16));
                         glCheck(glBindBuffer(GL_ARRAY_BUFFER, states.normalBufferId));
@@ -220,10 +218,9 @@ namespace odfaeg {
                         static const GLenum modes[] = {GL_POINTS, GL_LINES, GL_LINE_STRIP, GL_TRIANGLES,
                                                        GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_QUADS};
                         GLenum mode = modes[type];
-                        if (indexesCount == 0) {
+                        if (indexes == nullptr) {
                             glCheck(glDrawArrays(mode, 0, vertexCount));
-                        } else if (indexesCount > 0 && (numIndexesCount == 0 || baseVerticesCount == 0 || baseIndexesCount == 0)) {
-
+                        } else if (indexes != nullptr && (numIndexesCount == 0 || baseVerticesCount == 0 || baseIndexesCount == 0)) {
                             glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, states.indexBufferId));
                             glCheck(glDrawElements(mode, indexesCount,GL_UNSIGNED_INT,0));
                         } else {
@@ -254,6 +251,7 @@ namespace odfaeg {
                         glCheck(glDisableVertexAttribArray(1));
                         glCheck(glDisableVertexAttribArray(0));
                         glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                        glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
                         states.vertexBufferId = 0;
                         states.normalBufferId = 0;
                         states.indexBufferId = 0;
@@ -284,10 +282,11 @@ namespace odfaeg {
                         glCheck(glDisableClientState(GL_TEXTURE_COORD_ARRAY));
                         glCheck(glDisableClientState(GL_VERTEX_ARRAY));
                         glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                        glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
                         states.vertexBufferId = 0;
                         states.normalBufferId = 0;
                     }
-                } else*/ if (vertices) {
+                } else if (vertices) {
                     glCheck(glEnableClientState(GL_COLOR_ARRAY));
                     glCheck(glEnableClientState(GL_NORMAL_ARRAY));
                     glCheck(glEnableClientState(GL_TEXTURE_COORD_ARRAY));
@@ -361,7 +360,7 @@ namespace odfaeg {
             if (activate(true))
             {
 
-                #ifdef SFML_DEBUG
+                #ifdef ODFAEG_DEBUG
                 // make sure that the user didn't leave an unchecked OpenGL error
                 GLenum error = glGetError();
                 if (error != GL_NO_ERROR)
@@ -479,9 +478,9 @@ namespace odfaeg {
         }
         void RenderTarget::applyTransform(TransformMatrix& tm) {
             glCheck(glLoadIdentity());
-            /*float* matrix = tm.getGlMatrix();
+            float* matrix = tm.getGlMatrix();
             glCheck(glMultMatrixf(matrix));
-            delete matrix;*/
+            delete matrix;
         }
         void RenderTarget::setMajorVersion(unsigned int version) {
              majorVersion = version;

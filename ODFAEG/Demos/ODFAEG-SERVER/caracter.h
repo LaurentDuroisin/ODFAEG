@@ -38,6 +38,7 @@ public :
     int getMaxLife();
     int getLevel();
     std::string getClass();
+    std::string getName();
     int getAttack();
     void setAttack(int attack);
     void setAttackSpeed(float attackSpeed);

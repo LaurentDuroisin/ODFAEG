@@ -47,6 +47,12 @@ namespace odfaeg {
                 core::Command cmd(a, trigger, slot);
                 getListener().connect("CBUTTONCLICKED", cmd);
             }
+            void Button::pushEvent (sf::Event event) {
+                getListener().pushEvent(event);
+            }
+            void Button::checkSubWindowEvents() {
+
+            }
         }
     }
 }

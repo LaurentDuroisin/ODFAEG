@@ -30,13 +30,15 @@
 #include <SFML/System/Err.hpp>
 #include "../../../include/odfaeg/Graphics/renderTexture.h"
 #include <SFML/OpenGL.hpp>
+#include "glCheck.h"
 namespace odfaeg
 {
     namespace graphic {
         using namespace sf;
         ////////////////////////////////////////////////////////////
         RenderTexture::RenderTexture() :
-        m_impl(NULL)
+        m_impl(NULL),
+        vertexArrayId(0)
         {
 
         }
@@ -45,6 +47,10 @@ namespace odfaeg
         ////////////////////////////////////////////////////////////
         RenderTexture::~RenderTexture()
         {
+            if (vertexArrayId != 0) {
+                GLuint vao = reinterpret_cast<unsigned int>(vertexArrayId);
+                glCheck(glDeleteVertexArrays(1, &vao));
+            }
             delete m_impl;
         }
 
@@ -69,7 +75,6 @@ namespace odfaeg
                 err() << "Impossible to create render texture (failed to create the target texture)" << std::endl;
                 return false;
             }
-
             // We disable smoothing by default for render textures
             setSmooth(false);
 
@@ -89,6 +94,13 @@ namespace odfaeg
             // Initialize the render texture
             if (!m_impl->create(width, height, settings, m_texture.m_texture))
                 return false;
+            if (RenderTarget::getMajorVersion() >= 3 && RenderTarget::getMinorVersion() >= 3) {
+                GLuint vao;
+                glCheck(glGenVertexArrays(1, &vao));
+                vertexArrayId = reinterpret_cast<unsigned int>(vao);
+                glCheck(glBindVertexArray(vertexArrayId));
+            }
+
 
             // We can now initialize the render target part
             RenderTarget::initialize();

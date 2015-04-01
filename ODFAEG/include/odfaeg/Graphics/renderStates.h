@@ -133,7 +133,6 @@ namespace odfaeg {
             const Texture* texture; ///< Texture
             const Shader*  shader; ///< Shader
             unsigned int vertexBufferId, normalBufferId, indexBufferId, mvpBufferId, numInstances; ///VBO index.
-            bool gpuTransform;
         };
     }
 }
