@@ -142,7 +142,7 @@ namespace odfaeg {
                         "colors[1] = current_color * current_color.a + previous_color * (1 - current_color.a);"
                         "colors[1].a = current_color.a + previous_color.a * (1 - current_color.a);"
                         "colors[0] = previous_color * previous_depth_alpha.a + current_color * (1 - previous_depth_alpha.a);"
-                        "colors[0].a = previous_color.a + previous_depth_alpha.a * (1 - previous_color.a);"
+                        "colors[0].a = current_color.a + previous_color.a * (1 - current_color.a);"
                         "b = (current_depth >= previous_depth_alpha.z);"
                         "gl_FragColor = colors[int(b)];"
                     "}";
@@ -238,7 +238,7 @@ namespace odfaeg {
                             "colors[1] = current_color * current_color.a + previous_color * (1 - current_color.a);"
                             "colors[1].a = current_color.a + previous_color.a * (1 - current_color.a);"
                             "colors[0] = previous_color * previous_depth_alpha.a + current_color * (1 - previous_depth_alpha.a);"
-                            "colors[0].a = previous_color.a + previous_depth_alpha.a * (1 - previous_color.a);"
+                            "colors[0].a = current_color.a + previous_color.a * (1 - current_color.a);"
                             "b = (current_depth >= previous_depth_alpha.z);"
                             "gl_FragColor = colors[int(b)];"
                         "}";
