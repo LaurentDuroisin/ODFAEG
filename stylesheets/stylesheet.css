@@ -680,6 +680,17 @@ a.download-button span {
   color: #fff;
 }
 
+a.documentation-button span {
+  background-position: 10px 5px;
+  width: auto;
+  height: auto;
+  padding: 5px 10px;
+  padding-left: 45px;
+  display: inline-block;
+  text-indent: 0!important;
+  color: #fff;
+}
+
 footer {
   margin-bottom: 60px;
   padding-bottom: 60px;
