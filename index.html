@@ -31,6 +31,7 @@
         <div class="inner">
           <a href="https://github.com/LaurentDuroisin/ODFAEG/tarball/master" class="download-button tar"><span>Download</span></a>
           <a href="https://github.com/LaurentDuroisin/ODFAEG/zipball/master" class="download-button zip"><span>Download</span></a>
+          <a href="https://github.com/LaurentDuroisin/ODFAEG/menu.html" class="documentation-button"><span>Documentation</span></a>
           <a href="https://github.com/LaurentDuroisin/ODFAEG" class="code">View Odfaeg on GitHub</a>
         </div>
         <span class="blc"></span><span class="trc"></span>
@@ -41,20 +42,20 @@
 
 <p>ODFAEG est un framework de création d'applications qui se veut être à la fois flexible, performant et robuste!</p>
 
-<pre><code>$ 
-EXPORT_CLASS_GUID(BoundingVolumeBoundingBox, BoundingVolume, BoundingBox)
-EXPORT_CLASS_GUID(EntityTile, Entity, Tile)
-EXPORT_CLASS_GUID(EntityTile, Entity, BigTile)
-EXPORT_CLASS_GUID(EntityShadowTile, Entity, g2d::ShadowTile)
-EXPORT_CLASS_GUID(EntityShadowWall, Entity, g2d::ShadowWall)
-EXPORT_CLASS_GUID(EntityWall, Entity, g2d::Wall)
-EXPORT_CLASS_GUID(EntityDecor, Entity, g2d::Decor)
-EXPORT_CLASS_GUID(EntityAnimation, Entity, Anim)
-MyAppli app(sf::VideoMode(800, 600, 32), "Test odfaeg");
-return app.exec();
+<pre><code>
+void main() {
+  EXPORT_CLASS_GUID(BoundingVolumeBoundingBox, BoundingVolume, BoundingBox)
+  EXPORT_CLASS_GUID(EntityTile, Entity, Tile)
+  EXPORT_CLASS_GUID(EntityTile, Entity, BigTile)
+  EXPORT_CLASS_GUID(EntityWall, Entity, g2d::Wall)
+  EXPORT_CLASS_GUID(EntityDecor, Entity, g2d::Decor)
+  EXPORT_CLASS_GUID(EntityAnimation, Entity, Anim)
+  MyAppli app(sf::VideoMode(800, 600, 32), "Test odfaeg");
+  return app.exec();
+}
 </code></pre>
 
-<p>Si vous souhaîter utiliser la version d'essai de ODFAEG il suffit de cliquer sur le lien downlaod en haut de la page et de suivre les tutoriels.</p>
+<p>Si vous souhaîtez utiliser la version d'essai de ODFAEG il suffit de cliquer sur le lien downlaod en haut de la page et de suivre les tutoriels.</p>
 
 <h3>
 <a id="designer-templates" class="anchor" href="#designer-templates" aria-hidden="true"><span class="octicon octicon-link"></span></a>Template, design et philosophie.</h3>
