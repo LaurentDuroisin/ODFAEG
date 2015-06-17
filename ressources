@@ -94,7 +94,7 @@
       afin de pouvoir ensuite les récupérer n'importe ou dans le programme, cette classe s'appelle ResourceCache et elle attend
       un paramètre template qui est le type de l'identifiant qui référencera tout les gestionnaires de ressource, par défaut, le type est
       std::string : 
-      ResourceCache<> cache;
+      ResourceCache&lt;&gt; cache;
       Pour ajouter un gestionnaire de ressources il suffit d'appeler la méthode addResourceManager :
       cache.addResourceManager(tm);
       Et pour le récupérer, il suffit d'appeler la méthode resourceManager, cette méthode attend deux paramètres, le type de ressource géré
