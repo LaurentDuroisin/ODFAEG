@@ -119,14 +119,20 @@
       Le foncteur peut également prendre une liste de paramètres supplémentaires par exemple pour les shaders, on peut choisir
       de charger différent types de shader.
       Voici par exemple comment charger la ressource à partir d'un fichier avec notre foncteur :
+      <pre><code>
       enum OBJECTS {
            ROBOT
       }
       ResourceManager&lt;Object, OBJECTS&gt; om;
       om.fromFileWithAlias(loadFunc, "modele.obj", ROBOT);
+      </pre></code>
       
       Il est également possible d'utiliser un gestionnaire de ressources de base pour accéder à un type de ressource et des gestionnaires de ressources dérivés
       pour charger différent sous type de ressources avant de les ajouter au cache!
+      <pre><code>
+      ResourceManager<Derived, DERIVEDS> rm;
+      cache.addResourceManager<Base, BASES>(rm, "Base");
+      </pre></code>
       
       <h1>La libération des ressources</h1>
       
