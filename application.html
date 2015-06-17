@@ -87,6 +87,9 @@
   getClock("ClockName") : cette méthode renvoie une horloge liée à l'application, par défaut, il y a une horloge d'ajoutée, appelée LoopTime
   qui mesure le temps boucle, donc, le temps écoulé depuis le dernière appel à la méthode exec.
   addClock(sf::Clock, std::string name) : ajoute une horloge liée à l'application, cette horloge sera référencée par un nom.
+  
+  <i>Pour l'instant ODFAEG utilise encore la classe sf::Clock mais par la suite elle sera remplacée par la classe Clock de ODFAEG.</i>
+  
   onDisconnected(User* user) : Renvoie un pointeur vers un utilisateur qui se déconnecte du réseau.
   app : pointeur vers l'application courante.
   
