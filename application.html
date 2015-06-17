@@ -80,5 +80,26 @@
   
   Et la dernière méthode est la méthode onExec, cette dernière fonction membre ne prend aucun paramètre, c'est dans cette méthode que
   ODFAEG va effectué les derniers traitements tels que la réception et l'envoi de message sur un réseau.
+  
+  <h1>Autres méthodes utiles.</h1>
+  
+  getTimeClock : cette méthode statique permet de récupérer l'horloge qui mesure le temps écoulé depuis le lancement du programme.
+  getClock("ClockName") : cette méthode renvoie une horloge liée à l'application, par défaut, il y a une horloge d'ajoutée, appelée LoopTime
+  qui mesure le temps boucle, donc, le temps écoulé depuis le dernière appel à la méthode exec.
+  addClock(sf::Clock, std::string name) : ajoute une horloge liée à l'application, cette horloge sera référencée par un nom.
+  onDisconnected(User* user) : Renvoie un pointeur vers un utilisateur qui se déconnecte du réseau.
+  app : pointeur vers l'application courante.
+  
+  Ensuite il ne reste plus qu'à créer l'application dans le main, pour cela, il suffit d'appeler le constructeur de la classe héritant
+  de odfaeg::core::Application, et ensuite, d'appeler la méthode exec comme ceci : (par exemple si la classe dérivée s'appelle MyAppli,
+  sa donnera ceci, ici je passe les paramètres au constructeur de la classe MyAppli dans le main)
+  
+  <code>
+    MyAppli app(sf::VideoMode(800, 600, 32), "Test odfaeg");
+    return app.exec();
+  </code>
+  
+  Et voilà maintenant vous savez créer une application ODFAEG!
+  
 </body>
 </html>
