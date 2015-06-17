@@ -21,7 +21,7 @@
       <div id="container">
       <p class="tagline">Gestion des ressources externes </p>
     </header>
-    <h1>Charger des ressources externes.</h1>
+    <h1>Charger et référencer des ressources externes.</h1>
     
       <h2>Définir les types des ressources à charger et des identifiants référençant la ressource</h2>
       
@@ -68,6 +68,8 @@
       partout dans le programme.
       Pour charger notre tileset en lui associant une valeur de notre enum de type TEXTURES, il suffit donc de faire ceci :
       tm.fromFileWithAlias("herbes.png", GRASS);
+      Il existe deux autres méthodes permettant de charger une ressource à partir de la mémoire, ce sont les méthodes fromMemory 
+      et fromMemoryWithAlias.
       
       <h2>Récupérer une ressource externe</h2>
       
@@ -92,7 +94,7 @@
       afin de pouvoir ensuite les récupérer n'importe ou dans le programme, cette classe s'appelle ResourceCache et elle attend
       un paramètre template qui est le type de l'identifiant qui référencera tout les gestionnaires de ressource, par défaut, le type est
       std::string : 
-      ResourceCache<> cache.
+      ResourceCache<> cache;
       Pour ajouter un gestionnaire de ressources il suffit d'appeler la méthode addResourceManager :
       cache.addResourceManager(tm);
       Et pour le récupérer, il suffit d'appeler la méthode resourceManager, cette méthode attend deux paramètres, le type de ressource géré
@@ -100,5 +102,41 @@
       TextureManager<TEXTURES> &tm = cache.resourceManager<Texture, TEXTURES>("TextureManager");
       
       On peut donc à partir de là récupérer un pointeur sur la ressource comme vu ci-dessus.
+      
+      <h1>Charger et référencer ses propres type de ressources</h1>
+      
+      Vous aimeriez pouvoir charger et référencer d'autres types de ressources que celles de SFML, par exemple, des modèles 3D provenant de fichiers
+      tel que des fichiers au format .obj, .md2, etc...
+      Sachez que c'est possible de le faire avec le gestionnaire de ressource de ODFAEG!
+      Pour ce faire, il suffit de définir un foncteur qui n'est rien d'autre qu'un objet de type std::function qui va 
+      référencer la fonction membre de votre classe qui chargera la ressource!
+      
+      std::function<bool(Object3DS,std::string> loadFunc(&MyLoader::fromFile);
+      
+      Ce foncteur doit retourner un booléen et doit prendre au moins deux paramètres, le premier paramètre est le type de l'objet qui
+      va chager la ressource externe, et le second paramètre est l'emplacement de la ressource qui doit être de type std::string si la 
+      ressource est chargée à partir d'un fichier ou bien void* si la ressource est chargée à partir de la mémoire.
+      Le foncteur peut également prendre une liste de paramètres supplémentaires par exemple pour les shaders, on peut choisir
+      de charger différent types de shader.
+      Voici par exemple comment charger la ressource à partir d'un fichier avec notre foncteur :
+      enum OBJECTS {
+           ROBOT
+      }
+      ResourceManager<Object, OBJECTS> om;
+      om.fromFileWithAlias(loadFunc, "modele.obj", ROBOT);
+      
+      Il est également possible d'utiliser un gestionnaire de ressources de base pour accéder à un type de ressource et des gestionnaires de ressources dérivés
+      pour charger différent sous type de ressources avant de les ajouter au cache!
+      
+      <h1>La libération des ressources</h1>
+      
+      ODFAEG utilise le principe RAAI (Resource acquisition is initialization) cela veut dire que les ressources sont libérée de
+      la mémoire lorsque le gestionnaire de ressources ou bien le cache si l'on utilise des ressources de type différent est détruit.
+      Il y a moyen de libérer les ressources avant, en appelant les méthodes deleteResourceByAlias ou alors deleteResourceByPath au cas
+      ou la RAM est pleine par exemple, mais faîtes attention que aucun autre thread n'utilise la ressource au moment ou vous libérer la ressource.
+      ODFAEG préfère l'utilisation d'un seul possesseur de la ressources plutôt que de plusieurs possesseurs pour des raisons de performance.
+      C'est pour cela que ODFAEG ne renvoie pas un std::shared_ptr vers la ressource!
+      Utiliser donc au maximum les méthodes join ou encore std::notify_all_at_thread_exit pour tout les threads utilisant la même ressource avant 
+      de la libérer!
   </body>
 </html>
