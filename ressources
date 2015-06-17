@@ -1,1 +1,61 @@
 
+<!doctype html>
+<!-- The Time Machine GitHub pages theme was designed and developed by Jon Rohan, on Feb 7, 2012. -->
+<!-- Follow him for fun. http://twitter.com/jonrohan. Tail his code on https://github.com/jonrohan -->
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="stylesheet" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" href="stylesheets/github-dark.css">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="javascripts/script.js"></script>
+    <title>Odfaeg</title>
+    <meta name="description" content="ODFAEG">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+  </head>
+  <body>
+  <div class="wrapper">
+    <header>
+      <h1 class="title">LastProject : ODFAEG</h1>
+      <div id="container">
+      <p class="tagline">Gestion des ressources externes </p>
+    </header>
+    <h1>Charger des ressources externes.</h1>
+    
+      <h2>Définir les types des ressources à charger et des identifiants référençant la ressource</h2>
+      
+      ODFAEG possède une classe permettant de charger des ressources externes et de leur associer un 
+      identitfiant unique de n'importe quel type qui sera utilisé partout dans le programme.
+      On peut donc très bien associé par exemple, à chaque ressource chargée, la valeur d'une énumération,
+      l'avantage est que l'on a pas besoin de retenir ou la ressource se trouve sur le disque dur lorsqu'on 
+      veut y accéder n'importe ou dans l'application.
+      Ce qui serait pénible, surtout si on se trompe de chemin on aura une erreur à l'exécution, tandit que avec
+      une énumération l'erreur se produira en compilation.
+      Je vais donc commencer par créer une énumération qui référencera toutes les ressources externes qui seront chargées
+      par l'application.
+      
+      <pre><code>
+        enum TEXTURES {
+          GRASS
+        };
+      </pre></code>
+      
+      Essayons maintenant de définir un gestionnaire de ressource qui va charger un tileset (Une image remplie de différentes textures d'herbe)
+      Pour des raisons d'optimisation ont charge toujours une grande image sur laquelle on place pleins de petites images.
+      Pour charger ses grand images il va falloir utiliser la classe odfaeg::core::ResourceManager de ODFAEG, cette classe attend
+      2 paramètres template : le type des ressources à charger et le type de l'identifiant qui référencera les ressources.
+      Cependant, ODFAEG possèdes quatre classes prédéfinie qui n'attendent qu'un seul paramètre template, ces
+      quatre classes sont : TextureManager (pour les images), SoundManager (pour les effets sonores), FontManager (pour les
+      polices de caractère) et ShaderManager (pour les shaders). 
+      Si le dernier paramètre template n'est renseigné lors de la déclaration, alors par défaut l'identifiant est de type std::string!
+      Par exemple dans ce cas ci : TextureManager<> tm;
+      
+      <h2>Charger une ressource externe.</h2>
+      
+      Maintenant que nous savons comment définir les types, nous allons voir comment charger une ressource, ici par exemple,
+      je veux charger mon tileset d'herbe, en utilisant mon énumération définie plus haut pour la référencer, je vais donc
+      déclarer un gestionnaire de ressource de ce type là :
+      TextureManager<TEXTURES> tm;
+  </body>
+</html>
