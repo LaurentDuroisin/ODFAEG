@@ -21,5 +21,64 @@
     <div id="container">
     <p class="tagline">Création d'une application </p>
   </header>
+  <h1>Définition de l'application</h1>
+  Pour créer une application il faut hériter de la classe odfaeg::core::Application. (Il faut donc créer une nouvelle classe 
+  et la faire hériter de la classe odfaeg::core::Application.)
+  
+  La classe odfaeg::core::Application possède deux constructeurs, un pour les applications graphique et un autre pour les applications
+  console.
+  
+  <h2>Création d'une application graphique.</h2>
+  
+  Pour créer une application graphique il vaut faudra appeler le constructeur avec arguments, en lui passant un sf::VideoMode, ainsi
+  que le titre de la fenêtreSFML. (un std::string).
+  Il est possible de passer des paramètres supplémentaire qui sont les suivants :
+  Un booléen qui par défaut vaut false, si ce booléen vaut true, ODFAEG va utiliser un thread pour détecter les événements généré
+  par l'application.
+  Un booléen qui indique si l'on veut utiliser le depthtest par défaut de openGL ou pas, vaut faux par défaut.
+  sf::Style qui par défaut vaut sf::Style::Defaut qui est le style de la fenêtre SFML.
+  sf::ContextSettings qui sont les paramètres openGL passé à la SFML.
+  
+  <h3>Méthodes virtuelles pouvant être redéfinie.</h3>
+  
+  Par défaut l'application ne fait rien, elle affiche juste une fenêtre, si vous voulez dessiner dans la fenêtre et gérer
+  les événements, il va falloir redéfinir certaines fonctions membres de la classe odfaeg::core::Application.
+  
+  La première méthode pouvant être redéfinie est la méthode onLoad, c'est dans cette méthode que ODFAEG va charger les ressources
+  externe à l'application. (Par exemple, une image externe chargée à partir d'un fichier qui se trouve sur le disque dur.)
+  
+  La seconde est la méthode onInit, dans cette méthode ODFAEG va initialisé toutes les entités qui devront être affichées au démarrage 
+  de l'application.
+  
+  La troisième méthode est la méthode onRender, elle prend en paramètre un pointeur sur un objet de typeFastRenderComponentManager,
+  En fait dans cette méthode, odfaeg va décrire tout ce qui devra être affiché sur des composants de rendus, nous ce que sont les composants
+  de rendu dans le prochain chapitre, pour l'instant, considérer les simplements comme des couches sur lesquelles on va pouvoir
+  dessiner différentes partie de notre scène. (Par exemple un composant pour le sol et un autre pour le reste)
+  
+  La quatrième méthode est la méthode onDisplay, elle prend en paramètre un pointeur sur la fenêtre de rendu, c'est dans cette
+  méthode que ODFAEG va dessiner sur la fenêtre de rendu!
+  
+  La cinquième méthode est la méthode onUpdate, cette dernière prend une référence sur un événement SFML, à chque fois qu'un événement
+  SFML est généré, ODFAEG appelle cette méthode, c'est donc dans cette méthode que ODFAEG va remettre à jour tout les états de vos objets.
+  
+  Et la dernière méthode est la méthode onExec, cette dernière fonction membre ne prend aucun paramètre, c'est dans cette méthode que
+  ODFAEG va effectué les derniers traitements en fonction des états défini dans la méthode onUpdate, on aura par exemple dans cette méthode :
+  les déplacements et les mises à jour des positions des objets en temps réel.
+  
+  <h2>Création d'une application console.</h2>
+  
+  Il n'est parfois pas nécessaire de créer une application de type graphique, par exemple, pour le cas des applications de type serveur.
+  Pour créer une application console, il suffit simplement d'appeler le constructeur par défaut de la classe odfaeg::core::Application.
+  
+  <h3>Méthode virtuelle pouvant être redéfinie.</h3>
+    
+  La première méthode pouvant être redéfinie est la méthode onLoad, c'est dans cette méthode que ODFAEG va charger les ressources
+  externe à l'application. (Par exemple, une image externe chargée à partir d'un fichier qui se trouve sur le disque dur.)
+  
+  La seconde est la méthode onInit, dans cette méthode ODFAEG va initialisé toutes les entités qui devront être affichées au démarrage 
+  de l'application.
+  
+  Et la dernière méthode est la méthode onExec, cette dernière fonction membre ne prend aucun paramètre, c'est dans cette méthode que
+  ODFAEG va effectué les derniers traitements tels que la réception et l'envoi de message sur un réseau.
 </body>
 </html>
