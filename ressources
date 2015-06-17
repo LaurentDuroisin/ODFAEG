@@ -49,14 +49,14 @@
       quatre classes sont : TextureManager (pour les images), SoundManager (pour les effets sonores), FontManager (pour les
       polices de caractère) et ShaderManager (pour les shaders). 
       Si le dernier paramètre template n'est renseigné lors de la déclaration, alors par défaut l'identifiant est de type std::string!
-      Par exemple dans ce cas ci : TextureManager<> tm;
+      Par exemple dans ce cas ci : TextureManager&lt;&gt; tm;
       
       <h2>Charger une ressource externe.</h2>
       
       Maintenant que nous savons comment définir les types, nous allons voir comment charger une ressource, ici par exemple,
       je veux charger mon tileset d'herbe, en utilisant mon énumération définie plus haut pour la référencer, je vais donc
       déclarer un gestionnaire de ressource de ce type là :
-      TextureManager<TEXTURES> tm;
+      TextureManager&lt;TEXTURES&gt; tm;
       Donc, il suffit de passer le nom de l'énumération en paramètre template!
       Maintenant, pour charger la ressources, il va falloir indiquer que l'on veut charger la ressource en la référençant à partir
       de son alias, car il y a deux méthodes :
@@ -99,7 +99,7 @@
       cache.addResourceManager(tm);
       Et pour le récupérer, il suffit d'appeler la méthode resourceManager, cette méthode attend deux paramètres, le type de ressource géré
       par le gestionnaire de ressource référencé, et le type de l'indentifiant référençant les ressources :
-      TextureManager<TEXTURES> &tm = cache.resourceManager<Texture, TEXTURES>("TextureManager");
+      TextureManager&lt;TEXTURES&gt; &amp;tm = cache.resourceManager&lt;Texture, TEXTURES&gt;("TextureManager");
       
       On peut donc à partir de là récupérer un pointeur sur la ressource comme vu ci-dessus.
       
@@ -111,7 +111,7 @@
       Pour ce faire, il suffit de définir un foncteur qui n'est rien d'autre qu'un objet de type std::function qui va 
       référencer la fonction membre de votre classe qui chargera la ressource!
       
-      std::function<bool(Object3DS,std::string> loadFunc(&MyLoader::fromFile);
+      std::function&lt;bool(Object3DS,std::string&gt; loadFunc(&amp;MyLoader::fromFile);
       
       Ce foncteur doit retourner un booléen et doit prendre au moins deux paramètres, le premier paramètre est le type de l'objet qui
       va chager la ressource externe, et le second paramètre est l'emplacement de la ressource qui doit être de type std::string si la 
@@ -122,7 +122,7 @@
       enum OBJECTS {
            ROBOT
       }
-      ResourceManager<Object, OBJECTS> om;
+      ResourceManager&lt;Object, OBJECTS&gt; om;
       om.fromFileWithAlias(loadFunc, "modele.obj", ROBOT);
       
       Il est également possible d'utiliser un gestionnaire de ressources de base pour accéder à un type de ressource et des gestionnaires de ressources dérivés
