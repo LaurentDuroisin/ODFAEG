@@ -57,5 +57,48 @@
       je veux charger mon tileset d'herbe, en utilisant mon énumération définie plus haut pour la référencer, je vais donc
       déclarer un gestionnaire de ressource de ce type là :
       TextureManager<TEXTURES> tm;
+      Donc, il suffit de passer le nom de l'énumération en paramètre template!
+      Maintenant, pour charger la ressources, il va falloir indiquer que l'on veut charger la ressource en la référençant à partir
+      de son alias, car il y a deux méthodes :
+      La méthode fromFile qui référencera la ressource de part son chemin d'accès sur le disque dur. (Déconseillé)
+      Et la méthode fromFileWithAlias qui référencera la ressource de part son chemin d'accès sur le disque dur mais également
+      de par son alias.
+      La première méthode attend donc un paramètre, le chemin d'accès de la ressource sur le disque dur, tandis que la seconde
+      méthode en attend deux : l'emplacement de la ressource sur le disque dur ainsi que un alias qui référencera la ressource
+      partout dans le programme.
+      Pour charger notre tileset en lui associant une valeur de notre enum de type TEXTURES, il suffit donc de faire ceci :
+      tm.fromFileWithAlias("herbes.png", GRASS);
+      
+      <h2>Récupérer une ressource externe</h2>
+      
+      Maintenant que l'on sait comment charger une ressource externe quelconque, il serait bien de pouvoir récupérer un pointeur 
+      vers la ressource afin de pouvoir l'utiliser!
+      Pour ce faire il existe deux méthodes essentielles :
+      const Texture* herbes = getResourceByAlias(GRASS);
+      Cette méthode va récupérer la texture à partir de son alias qui la référence.
+      const Texture* herbes = getResourceByPath("herbes.png");
+      Cette méthode va récupérer la texture à partir de son emplacement sur le disque dur. (Le chemin est toujours relatif par rapport
+      au répertoire de votre projet)
+      Il est fortement conseillé d'utiliser la première méthode.
+      
+      <i>
+      Si vous souhaiter envoyer les identifiants vers les ressources sur un réseau, il faudra bien sûr les convertir les valeurs de vos
+      énumérations en type entier lors de l'envoi, et les  reconvertir lors de la réception.</i>
+      
+      <h2>Charger des ressources de différent types.</h2>
+      
+      Il est fort possible que votre application n'utilise pas que des images mais aussi du son, voir même des ressources d'un type
+      que vous avez défini vous même, ODFAEG possède une classe qui permet de référencer des gestionnaires de ressources de différent types
+      afin de pouvoir ensuite les récupérer n'importe ou dans le programme, cette classe s'appelle ResourceCache et elle attend
+      un paramètre template qui est le type de l'identifiant qui référencera tout les gestionnaires de ressource, par défaut, le type est
+      std::string : 
+      ResourceCache<> cache.
+      Pour ajouter un gestionnaire de ressources il suffit d'appeler la méthode addResourceManager :
+      cache.addResourceManager(tm);
+      Et pour le récupérer, il suffit d'appeler la méthode resourceManager, cette méthode attend deux paramètres, le type de ressource géré
+      par le gestionnaire de ressource référencé, et le type de l'indentifiant référençant les ressources :
+      TextureManager<TEXTURES> &tm = cache.resourceManager<Texture, TEXTURES>("TextureManager");
+      
+      On peut donc à partir de là récupérer un pointeur sur la ressource comme vu ci-dessus.
   </body>
 </html>
