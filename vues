@@ -77,5 +77,30 @@
       précis, zoomer, la déplacer ou encore la faire tourner autour d'un axe!
       Sachez que c'est tout à fait possible de le faire avec ODFAEG!
       
+      <b>Déplacements.</b>
+      
+      Pour déplacer la vue il suffit d'appeler la méthode move de la classe odfaeg::graphic::View, celle-ci attends trois paramètres, 
+      les déplacements en x, y et z.
+      Vous pouvez aussi déplacer la vue dans une direction quelconque en utilisant l'autre méthodes qui attend deux paramètres : un vecteur et un scalaire.
+      
+      <b>Rotations.</b>
+      
+      Pour effectuer une rotation, il y a plusieurs méthodes :
+      
+      La première méthode rotate attend un angle et un axe quelconque autour duquel se fera la rotation.
+      Par defaut la rotation s'effectue autour de l'axe z c'est à dire celui qui pointe vers vous en vue 2D mais
+      qui pointe vers le haut en vue 3D.
+      
+      La seconde méthode effectue une rotation à partir de coordonnées polaire, et attend deux angles : têta et phi.
+      
+      Et la troisième méthode lookAt fait tourner la caméra pour la faire regarder vers un point précis, elle attend
+      trois paramètres, les coordonnées du point vers lequel regarder.
+      
+      <b>Zoom.</b>
+      
+      Pour zoomer il suffit d'appeler la méthode setScale, celle-ci attend 3 paramètres : les facteurs d'échelle en x, y et z.
+      
+      Voilà, maintenant vous savez définir les vues pour vos applications et vos composants et les déplacer dans votre monde!
+      
   </body>
 </html>
