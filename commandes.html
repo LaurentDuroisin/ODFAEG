@@ -184,6 +184,78 @@
           	fd() ;
           }
         </code></pre>
+        <h1>Création des commandes et des actions.</h1>
         
+          <h2>Création d'actions.</h2>
+          Les foncteurs de ODFAEG sont très pratique pour créer ses propres type de signaux et de slots, malheureusement, ils
+          ne permettent pas d'appeler un slots lorsque un ou plusieurs événements système (événements SFML) sont déclenchés.
+          Heureusement ODFAEG possède également une classe permettant de créer ses propres événements utilisateurs à partir dévénements système!
+          Cette classe s'appelle odfaeg::core::Action!
+          Voici par exemple comment créer une action qui va se déclencher lorsque l'une ou plusieurs de ses quatre touche (Z, Q, S, D) est enfoncée :
+          <pre><code>
+            Action a1 (Action::EVENT_TYPE::KEY_HELD_DOWN, sf::Keyboard::Key::Z);
+            Action a2 (Action::EVENT_TYPE::KEY_HELD_DOWN, sf::Keyboard::Key::Q);
+            Action a3 (Action::EVENT_TYPE::KEY_HELD_DOWN, sf::Keyboard::Key::S);
+            Action a4 (Action::EVENT_TYPE::KEY_HELD_DOWN, sf::Keyboard::Key::D);
+            Action combined (a1 || a2 || a3 || a4);
+          </code></pre>
+          
+          Comme pour les conditions, ou peut combiner plusieurs actions à l'aide des opérateurs logiques ||, |, && et !.
+          La sémantique est la même que pour les conditions c'est à dire que l'événement utilisateur sera déclenché si
+          l'une des quatre touche ou plusieurs seront enfoncées.
+          
+          Pour les touches et le boutons il y a 3 types dévénements :
+          KEY/BUTTON_HELD_DOWN signifie que l'action sera déclenchée tant que la touche ou le bouton restera enfoncé.
+          KEY/BUTTON_PRESSED_ONCE signifie que l'action sera déclenchée lorsque l'on appuira sur la touche ou le bouton.
+          KEY_BUTTON_RELEASE signifie que l'action sera déclenchée lorsque l'on relâchera la touche ou le bouton.
+          
+          Voila maintenant vous savez comment définir des signaux, des slots ainsi que des actions.
+          Maintenant il va falloir indiquer quel slot appeler lorsque une action et/ou un signal est/sont déclenché(s).
+          
+          <h2>Création des commandes</h2>
+          
+          Pour ce faire il faut créer un objet de type odfaeg::core::Command, cette classe possède trois constructeurs :
+          Le premier permet de lier une action à un slot, le second permet de lier un signal à un slot, et le dernier permet
+          de lier une action et un signal à un slot. (un exemple)
+          Command moveCommand(combined, FastDelegate<void>(&MyAppli::keyHeldDown, this, sf::Keyboard::Key::Unknown, realTime.restart()));
+          Ici par exemple, la fonction keyHeldDown de la classe MyAppli sera appelée lorsque l'une ou plusieurs des quatre touches (A, Z, S, D) 
+          sera enfoncée.
+          
+          Evidemment comme tout foncteur il faut lui passer des paramètres : this qui est le pointeur sur l'application courante, 
+          pour la touche je mets sf::Keyboard::Unknown car aucune touche ne peut être traitée lors de la création de la commande.
+          Et le dernier paramètre est juste le temps écoulé depuis le dernier appel à la méthode exec.
+          
+          Voici un autre exemple qui va exécuter la commande si la souris se trouve dans une zone particulière de la fenêtre.
+          
+          Command mouseInsideCommand(FastDelegate<bool>(&MyAppli::mouseInside,this,Vector2f(-1, -1)), FastDelegate<void>(&MyAppli::onMouseInside, this, Vector2f(-1,-1)));
+          
+          Et une dernière qui va appeler la fonction onMouseInside si l'on a cliqué dans la zone avec le bouton gauche de la souris :
+          
+          <pre><code>
+          Action action(Action::EVENT_TYPE::MOUSE_PRESSED_ONCE,sf::Mouse::Left);
+          Command mouseInsideLeftPressedCommand(action,FastDelegate<bool>(&MyAppli::mouseInside,this,Vector2f(-1, -1)), FastDelegate<void>(&MyAppli::onMouseInside, this, Vector2f(-1,-1)));
+          </code></pre>
+          
+          <h2>Connexion et changement des paramètres.</h2>
+          
+          Maintenant il ne reste plus qu'à connecter la commande au gestionnaire d'événements, le gestionnaire d'événement va vérifier
+          à chaque tour si une commande n'a pas été déclenchée, et si oui, il va exécuter la commande en lui passant la valeur des
+          paramètres que l'on a défini lors de la création de la commande.
+          Chaque application possède donc un gestionnaire d'événement, pour le récupérer il suffit d'appeler la méthode getListener() de
+          la classe odfaeg::core::Application.
+          Chaque commande est référencée par un nom (de type std::string) qui est le nom de la connexion.
+          getListener().connect(«mouseInsideCommand»,mouseInsideCommand);
+          
+          Il serait bien de pouvoir changer la valeur des paramètres des slots et des signaux à chaque tour de boucle, pour que la fonction
+          reçoive la bonne position de la souris à chaque tour de boucle.
+          Les méthodes setCommandSlotParams et setCommandSigParams permettent de faire cela, dans le cas de placeholders,
+          les méthodes s'appellent bindCommandSlotParams et bindCommandSigParams.
+          Un exemple : 
+          getListener().setCommandSigParams("MouseInside", this, mousePos);
+          
+          <i>Dans le cas des actions combinées, le slot ne sera appelé qu'une seule fois par tout de boucle, si vous voulez
+          appelé le slot plusieurs fois si plusieurs touche sont enfoncée alors il faudra créer une commande par touche.</i>
+          
+          Voilà maintenant vous savez comment créer n'importe quel type d'événement avec ODFAEG. 
   </body>
 </html>
