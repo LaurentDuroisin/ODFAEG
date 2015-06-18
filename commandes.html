@@ -1,1 +1,189 @@
-
+<!doctype html>
+<!-- The Time Machine GitHub pages theme was designed and developed by Jon Rohan, on Feb 7, 2012. -->
+<!-- Follow him for fun. http://twitter.com/jonrohan. Tail his code on https://github.com/jonrohan -->
+<html>
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <link rel="stylesheet" href="stylesheets/stylesheet.css" media="screen">
+  <link rel="stylesheet" href="stylesheets/github-dark.css">
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script type="text/javascript" src="javascripts/script.js"></script>
+  <title>Odfaeg</title>
+  <meta name="description" content="ODFAEG">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  </head>
+  <body>
+    <div class="wrapper">
+    <header>
+      <h1 class="title">LastProject : ODFAEG</h1>
+      <div id="container">
+      <p class="tagline">Sommaire : </p>
+    </header>
+      <h1>Création de fonctions de callback.</h1>
+        ODFAEG possède une classe similaire à std::function, cette classe est capable de pouvoir stocker n'importe
+        quel type de pointeur sur fonction et de paramètre dans le but d'appeler la fonction plus tard.
+        Contrairement à std::function et à std::bind, la classe odfaeg::core::FastDelegate n'attend que le type
+        de retour de la fonction en paramètre template, ceci permet de pouvoir faire des tableaux de foncteurs 
+        retournant un même type d'objet.
+        En général il existe deux type de foncteurs dans les frameworks pouvant créer leur propre type d'événements :
+        Les slots : ce sont des foncteurs ne retournant rien, il ne font que d'appeler un foncteur lorsqu'un événement
+        est déclenché.
+        Les signaux : ceux-ci retournent un booléen qui indique si un signal a été émis ou pas, et si le signal a été émis
+        alors le slot est appelé.
+        C'est le cas par exemple de la librairie QT mais celles-ci nécessite de faire appel à un générteur externe afin de 
+        générer des fichiers .moc, avec ODFAEG, tout ce fait à la compilation, il n'y a donc pas besoin de générer de .moc!
+        
+        Pour créer un slot ou un signal avec ODFAEG il suffit de définir un objet de type odfaeg::core::FastDelegate et de lui fournir
+        en paramètre template le type de retour du foncteur, voici un example de code source qui permet de créer, différent
+        foncteurs à l'aide de la classe odfaeg::core::FastDelegate!
+        
+        <pre><code>
+          #include<iostream>
+          #include<string>
+          #include <fstream>
+          #include <functional>
+          #include "odfaeg/Core/fastDelegate.h"
+          #include "odfaeg/Core/serialization.impl"
+          using namespace std::literals;
+          using namespace std::placeholders;
+           
+          void foo(int i, int j)
+          { std::cout << i << j; }
+           
+          struct A {
+              A() {
+                  var = 10;
+              }
+                  void foo(int i)
+                  { std::cout << i; }
+                  template <typename A>
+                  void serialize (A & ar) {
+                  ar(var);
+                  }
+                  int var;
+          };
+           
+          struct B {
+              B() {
+                  c = "serialize base";
+              }
+                  virtual void foo()
+                  { std::cout << 1; }
+                  virtual void print() {
+                  std::cout<<c<<std::endl;
+                  }       
+                  virtual ~B();
+                  std::string c;  
+          };
+           
+          B::~B(){}
+           
+          struct C : B {
+              C () {
+                  c = "serialize derived";
+              }
+              void foo();
+              void print () {
+                  B::print();
+                  std::cout<<c<<std::endl;
+              }   
+              std::string c;
+          };
+           
+          void C::foo(){ std::cout << 2; }
+          
+          int main (int argv, char* argc[]) {
+              void(*f)(int, int) = &foo;
+              odfaeg::FastDelegate<void> f1(f, 3, 4);
+              f1.setParams(5, 6);
+                  f1();
+                  std::cout << std::endl;
+           
+                  odfaeg::FastDelegate<void> f2(
+                          [](int i, int j){ std::cout << i << j; },
+                          7,8
+                  );
+                  f2();
+                  f2.setParams(9,10);
+                  f2();
+                  std::cout << std::endl;
+           
+                  int i = 11;
+                  odfaeg::FastDelegate<void> f3(
+                          [i](int j){ std::cout << i << j; },
+                          12
+                  );
+                  f3();
+                  f3.setParams(13);
+                  f3();
+                  std::cout << std::endl;
+           
+                  A a;
+                  odfaeg::FastDelegate<void> f4(&A::foo,&a,14);
+                  f4();
+                  f4.setParams(&a,15);
+                  f4();
+                  std::cout << std::endl;
+                  odfaeg::FastDelegate<void> f5 = f1;
+                  f5();
+                  f5=f3;
+                  f5();
+                  std::cout << std::endl;
+           
+                  C c;
+                  B* b = &c;
+                  odfaeg::FastDelegate<void> f6(&C::foo,&c);
+                  f6();
+                  f6.setParams(b);
+                  f6();
+                  std::cout << std::endl;
+           
+                  odfaeg::FastDelegate<void> f7(D(),16);
+                  f7();
+                  f7.setParams(17);
+                  f7();
+                  std::cout << std::endl;
+           
+                  odfaeg::FastDelegate<void> f8(bar,"ab"s);
+                  f8();
+                  f8.setParams("abc"s);
+                  f8();
+                  std::cout << std::endl;
+                  int pi = 1;
+              odfaeg::FastDelegate<void> f9(foo, &pi);
+                  f9();
+                  std::cout << std::endl;
+                  pi=2;
+                  f9();
+                  std::cout << std::endl;
+                  odfaeg::FastDelegate<int> f10(goo,18);
+                  std::cout << f10();
+                  f10.setParams(19);
+                  std::cout << f10();
+                  std::cout << std::endl;
+                  void(*fu)(int&) = &foo;
+                  int vi=1;
+                  odfaeg::FastDelegate<void> f11(fu, std::ref(vi));
+                  f11();
+                  std::cout << std::endl;
+                  vi=2;
+                  f11();
+                  std::cout<<std::endl;
+                  return 0;
+          }
+        </code></pre>
+        ODFAEG permet également l'utilisation de placeholders pour les slot et les signaux.
+        <pre><code>
+          void f (int i, int j, int l) {
+              std::cout<<"i : "<<i<<" j : "<<j<<" l : "<<l<<std::endl;
+          }
+          int main (int argv, char* argc[]) {
+          	odfaeg::FastDelegate<void> fd(&f, 1, 2, odfaeg::ph<0,int>()) ;
+          	fd.bind(3);
+          	fd() ;
+          }
+        </code></pre>
+        
+  </body>
+</html>
