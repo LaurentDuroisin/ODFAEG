@@ -20,6 +20,62 @@
     <div id="container">
     <p class="tagline">Les vues </p>
   </header>
+    <h1>Orientation, perspective et origine de la vue par défaut.</h1>
     
+      Chaque application ainsi que chaque composant de rendus de ODFAEG possède plusieurs propriétés dont :
+      
+      -Une vue
+      -Un gestionnaire d'événement comme vu dans le tutoriel précédent.
+      
+      Tandis que le gestionnaire d'événement permet de définir de nouveau événements pour l'application ou un composant.
+      La vue permet de définir la zone d'affichage dans la fenêtre ou le composant, la perspective (2D ou bien 3D),
+      la position de la caméra ainsi que l'orientation de la caméra dans le monde.
+      
+      Par défaut, la perspective est en 2D (orthographique), le centre de la caméra se situe en 0, 0 (au milieu de la fenêtre),
+      La tête de la caméra pointe vers le bas et la caméra regarde vers vous.
+      Et la zone d'affichage à l'écran va de 0 à la largeur de la fenêtre pour x, 0 à la hauteur de la fenêtre pour y et 
+      0 à 1 pour z.
+      
+      Les plans de coupe near et far sont situés entre -hauteur de la fenêtre -100 et hauteur de la fenêtre + 100 par défaut.
+      Ce qui veut dire que tout point n'étant pas compris entre ces deux plans ne sera pas dessiné!
+      
+      Il faudra donc penser à déplacer la vue également en Z qui en 2D, défini le centre en y de vos objets ainsi que de la vue.
+      Cela permet à ODFAEG de savoir si un objet est devant ou derrière un autre objet, et donc, de trier vos objet
+      dans l'ordre du plus éloigné au plus proche de la caméra! 
+      
+    <b>Système de coordonnées par défaut.</b>
+      
+      Etant donné que la caméra se trouve au centre et qu'elle regarde vers vous en pointant la tête vers le bas;
+      en partant du coin supérieur gauche de la fenêtre les coordonnées en x vont de -largeur*0.5 à + largeur*0.5 tantis que
+      celles de y vont de -hauteur*0.5 à hauteur*0.5 et celles de z de -hauteur-100 à hauteur+100.
+      
+    <h1>Changer de vue et de viewport.</h1>
+      
+      La classe odfaeg::graphic::view permet de gérer des vues et elle possède également deux constructeurs :
+      
+      Le premier permet de créer une vue en 2D (orhtographique), celui-ci prend quatre paramètres qui sont la taille de la largeur
+      de la vue, la hauteur de la vue, la position du plan de coupe le plus proche de la caméra et la position du plan de coupe 
+      le plus éloigné de la caméra.
+      
+      Le second constructeur permet de créer une vue en 3D (perspective), celui-ci prend cinq paramètres qui sont la taille de la vue,
+      la hauteur de la vue, l'angle de vue (le fovy), la position du plan de coupe le plus proche de la caméra et la position du plan de coupe 
+      le plus éloigné de la caméra.
+      
+      Pour la vue en perspective, étant donné que les objets sont plus grand lorsqu'il sont proche de la caméra, les coordonnées en partant du coin
+      inférieur gauche de l'écran varient de -1 à 1 en x  et de -1 à 1 en y sur le plan le plus proche de la caméra, comme on est en vue 3D, les coordonnées
+      ne varient pas de la même façon sur le plan le plus éloigné de la caméra et donc elles vont toujours varier de -largeur*0.5 à largeur*0.5 en x t et de
+      -hauteur * 0.5 à hauteur * 0.5 en y! (Car en 3D les coordonnées en x et en y dépendent des coordonnées en z)
+      
+      Pour changer de viewport, vous devez appeler la méthode setViewport de la classe odfaeg::graphic::view!
+      
+      <i>A l'inverse de la vue en 2D, en vue 3D la caméra à la tête qui pointe vers le haut et ne regarde pas vers vous mais à l'opposé!
+         Avec ODFAEG en 3D c'est l'axe z qui défini la hauteur et non l'axe y pour des raisons de facilité.</i>
+      
+    <h1>Jouer avec la vue.</h1>
+      
+      Pouvoir définir la vue s'est bien mais ça serait mieux de pouvoir déplacer la vue, la faire regarder vers un point bien
+      précis, zoomer, la déplacer ou encore la faire tourner autour d'un axe!
+      Sachez que c'est tout à fait possible de le faire avc ODFAEG!
+      
   </body>
 </html>
