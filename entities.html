@@ -1,1 +1,65 @@
 
+<!doctype html>
+<!-- The Time Machine GitHub pages theme was designed and developed by Jon Rohan, on Feb 7, 2012. -->
+<!-- Follow him for fun. http://twitter.com/jonrohan. Tail his code on https://github.com/jonrohan -->
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="stylesheet" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" href="stylesheets/github-dark.css">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="javascripts/script.js"></script>
+    <title>Odfaeg</title>
+    <meta name="description" content="ODFAEG">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+  </head>
+  <body>
+  <div class="wrapper">
+  <header>
+    <h1 class="title">LastProject : ODFAEG</h1>
+    <div id="container">
+    <p class="tagline">Les entités : </p>
+  </header>
+    <h1>Les entités de haut niveau.</h1>
+      Les entités de bas niveau (celles héritant de la classe odfaeg::graphic::drawable) peuvent ne pas suffire pour des jeux
+      plus complexe, c'est pourquoi ODFAEG possède ses propres type d'entités.
+      Toutes ces entités héritent de la classe odfaeg::graphic::Entity.
+      Les entités possèdent également plusieurs propriétés intéressantes :
+      
+      -Une liste de faces.
+      -Un type.
+      -Une liste d'entités enfant.
+      -Une entité parent.
+      -Un id.
+      -Des états. (Pouvant être de n'importe quel type)
+      -Une hiérarchie de volumes de collision.
+      
+      <b>Les faces : </b>
+      
+      Les faces continnent elles aussi plusieurs propriétés intéressantes tel que :
+      
+      -Un tableau de sommet.
+      -Une matrice de transformation.
+      -Un matériel.
+      
+      <b>Les matériaux : </b>
+      
+      Les matériaux peuvent contenir également quelques propriétés intéressantes tels que :
+      
+      -Une ou plusieurs textures.
+      -L'intensité de la composante spéculaire.
+      -La puissance de la composante spéculaire.
+      -Les indices de réfractions et de disfraction du matériel.
+      -Une "bumpmap". (Une texture de relief de la texture de la face utilisée pour calculer l'éclairage sur la texture)
+      
+      <h1>Quelque exemples d'entités : </h1>
+      
+      Les tiles (odfaeg::graphic::Tile) : celles-ci contiennent une seule face composée de quatre sommets.
+      Les décors (odfaeg::graphic::g2d::Decor) : Décors en 2D, même chose que les tiles à part que ceux-ci possèdes un matrices générant des ombres.
+      Les animations : celles-ci possèdent un groupe d'entités (des frames) qui seront affichées les unes après les autres.
+      Dans la version suivante, ODFAEG utilisera une frame temporaire pour l'interpolation des tableaux de sommets.
+      Les animations pourront donc être interpolée, pour les animations squeletique, il suffit de rajouter à chaque frame des frames enfant :
+      lorsque les sommets des frames parents (les bones) se mettrons à jour, les sommets des frames enfants se remettrons à jour également!
+  </body>
+</html>
