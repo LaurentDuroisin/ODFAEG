@@ -58,8 +58,7 @@
       Les tiles (odfaeg::graphic::Tile) : celles-ci contiennent une seule face composée de quatre sommets.
       Les décors (odfaeg::graphic::g2d::Decor) : Décors en 2D, même chose que les tiles à part que ceux-ci possèdes un matrices générant des ombres.
       Les animations : celles-ci possèdent un groupe d'entités (des frames) qui seront affichées les unes après les autres.
-      Dans la version suivante, ODFAEG utilisera une frame temporaire pour l'interpolation des tableaux de sommets.
-      Les animations pourront donc être interpolée, pour les animations squeletique, il suffit de rajouter à chaque frame des frames enfant :
-      lorsque les sommets des frames parents (les bones) se mettrons à jour, les sommets des frames enfants se remettrons à jour également!
+      Les animations peuvent être interpolée.
+      Les grandes tiles (odfaeg::graphic::BigTile) : celles-ci sont composée de plusieurs tiles.
   </body>
 </html>
