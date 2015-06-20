@@ -26,15 +26,16 @@
       plus complexe, c'est pourquoi ODFAEG possède ses propres type d'entités.
       Toutes ces entités héritent de la classe odfaeg::graphic::Entity.
       Les entités possèdent également plusieurs propriétés intéressantes :
-      
-      -Une liste de faces.
-      -Une matrice de transformation.
-      -Un type.
-      -Une liste d'entités enfant.
-      -Une entité parent.
-      -Un id.
-      -Des états. (Pouvant être de n'importe quel type)
-      -Une hiérarchie de volumes de collision.
+      <ul>
+      <li>Une liste de faces.</li>
+      <li>Une matrice de transformation.</li>
+      <li>Un type.</li>
+      <li>Une liste d'entités enfant.</li>
+      <li>Une entité parent.</li>
+      <li>Un id.</li>
+      <li>Des états. (Pouvant être de n'importe quel type)</li>
+      <li>Une hiérarchie de volumes de collision.</li>
+      </ul>
       
       Les entités tout comme les widgets de QT peuvent donc avoir plusieurs entités enfants et une entité parent afin
       de constituer une hiérarchie, ceci implique que tout changement de proriété affectant une entité parente, 
@@ -43,23 +44,27 @@
       Par exemple si vous avez une entité parente A qui contient deux entités enfantes B et C, par défaut, lorsque l'on déplacera 
       l'entité A, les entités B et C le seront également. (Même chose en ce qui concerne les autres type de transformations)
       
-      <b>Les faces : </b><br/>
+      <br/><b>Les faces : </b><br/>
       
       Les faces continnent elles aussi plusieurs propriétés intéressantes tel que :
       
-      -Un tableau de sommet.
-      -Une matrice de transformation.
-      -Un matériel.
+      <ul>
+      <li>Un tableau de sommet.</li>
+      <li>Une matrice de transformation.</li>
+      <li>Un matériel.</li>
+      </ul>
       
-      <b>Les matériaux : </b><br/>
+      <br/><b>Les matériaux : </b><br/>
       
       Les matériaux peuvent contenir également quelques propriétés intéressantes tels que :
       
-      -Une ou plusieurs textures.
-      -L'intensité de la composante spéculaire.
-      -La puissance de la composante spéculaire.
-      -Les indices de réfractions et de disfraction du matériel.
-      -Une "bumpmap". (Une texture de relief de la texture de la face utilisée pour calculer l'éclairage sur la texture)
+      <ul>
+      <li>Une ou plusieurs textures.</li>
+      <li>L'intensité de la composante spéculaire.</li>
+      <li>La puissance de la composante spéculaire.</li>
+      <li>Les indices de réfractions et de disfraction du matériel.</li>
+      <li>Une "bumpmap". (Une texture de relief de la texture de la face utilisée pour calculer l'éclairage sur la texture)</li>
+      </ul>
       
       <h1>Quelque exemples d'entités : </h1>
       
@@ -79,10 +84,10 @@
         
         Le constructeur de la classe odfaeg::graphic::Tile attend 4 paramètres :
         <ul>
-        <li>-Le premier est un pointeur vers une texture, qui sera placée sur le quadrilatère formé par les 4 sommets de la tile.</li>
-        <li>-Le second est la position de la tile. (tuile)</li>
-        <li>-Le troisième est la taille de la tile.</li>
-        <li>-Le quatrième est la partie de la texture qui sera placée sur le quadrilatère.</li>
+        <li>Le premier est un pointeur vers une texture, qui sera placée sur le quadrilatère formé par les 4 sommets de la tile.</li>
+        <li>Le second est la position de la tile. (tuile)</li>
+        <li>Le troisième est la taille de la tile.</li>
+        <li>Le quatrième est la partie de la texture qui sera placée sur le quadrilatère.</li>
         </ul>
         Les deux derniers paramètres sont la couleur de la tile (blanc par défaut) et un pointeur vers une entité parente (null par défaut).
         
@@ -93,8 +98,8 @@
         Le constructeur de cette classe n'attend que 3 paramètres :
         <ul>
         <li>Le premier est la position du sol.</li>
-        <li>-Le second est la taille d'un carré au sol.</li>
-        <li>-Et le troisième est le nombre de carrés par ligne.</li>
+        <li>Le second est la taille d'un carré au sol.</li>
+        <li>Et le troisième est le nombre de carrés par ligne.</li>
         </ul>
         
         La méthode addTile permet d'ajouter une tile au terrain, elle attend en paramètre un pointeur sur la tile à ajouter,
