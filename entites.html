@@ -80,7 +80,7 @@
       
         Celles-ci sont simplement des tableaux de quatre sommets.
         
-        <b>Les tiles : </b>
+        <br/><b>Les tiles : </b><br/>
         
         Le constructeur de la classe odfaeg::graphic::Tile attend 4 paramètres :
         <ul>
@@ -91,7 +91,7 @@
         </ul>
         Les deux derniers paramètres sont la couleur de la tile (blanc par défaut) et un pointeur vers une entité parente (null par défaut).
         
-        <b>Les grandes tiles et le sol.</b>
+        <br/><b>Les grandes tiles et le sol.</b><br/>
         
         Celles-ci sont simplement des groupes de tiles dont les bords se touchent.
         
@@ -112,36 +112,42 @@
         
         La méthode getHeight permet de récupérer la hauteur du terrain en un point bien précis, elle attend donc en paramètre un point.
         
-        <b>Les décors : </b>
+        <br/><b>Les décors : </b><br/>
         
         Le constructeur de la classe odfaeg::graphic::g2d::Decor attend plusieurs paramètres également :
         
-        -Le premier est un pointeur sur la tile utilisée pour afficher le décor.
-        -Le second, est un pointeur vers une lumière. (Pour calculer la position de l'ombre, ce paramètre deviendra bientôt obsolète dès que
-         les PCs ne supportant pas les shaders auront disparus.)
-        -Le troisième, la hauteur du décor. (Utilisé pour calculer la hauteur l'ombre)
-        -Le dernier paramètre deviendra bientôt obsolète est indique le type d'ombre à générer (Une forme ou bien une tile).
+        <ul>
+        <li>Le premier est un pointeur sur la tile utilisée pour afficher le décor</li>
+        <li>Le second, est un pointeur vers une lumière. (Pour calculer la position de l'ombre, ce paramètre deviendra bientôt obsolète dès que
+        les PCs ne supportant pas les shaders auront disparus.)</li>
+        <li>Le troisième, la hauteur du décor. (Utilisé pour calculer la hauteur l'ombre)</li>
+        <li>Le dernier paramètre deviendra bientôt obsolète est indique le type d'ombre à générer (Une forme ou bien une tile).</li>
+        </ul>
         
         Pour les PCs supportant les shaders les ombres sont calculée à l'aide de shaders grâce au shadow mapping et 
         à la matrice de projection des ombres!
         
-        <b>Les murs : </b>
+        <br/><b>Les murs : </b><br/>
         
           Le constructeur de la classe odfaeg::graphic::g2d::Wall prend plusieurs paramètres dont :
-          -Le type du mur, 0 = mur du coin en haut à gauche.
-          -La hauteur du mur. (Utilisé pour calculer la hauteur de l'ombre)
-          -Un pointeur vers la tile du mur.
-          -L'avant dernier paramètre, est un pointeur vers une lumière. (Pour calculer la position de l'ombre, ce paramètre deviendra bientôt obsolète dès que
-           les PCs ne supportant pas les shaders auront disparus.)
-          -Le dernier paramètre deviendra bientôt obsolète est indique le type d'ombre à générer (Une forme ou bien une tile).
-        
-        <b>Les animations : </b>
+          <ul>
+          <li>Le type du mur, 0 = mur du coin en haut à gauche.</li>
+          <li>La hauteur du mur. (Utilisé pour calculer la hauteur de l'ombre)</li>
+          <li>Un pointeur vers la tile du mur.</li>
+          <li>L'avant dernier paramètre, est un pointeur vers une lumière. (Pour calculer la position de l'ombre, ce paramètre deviendra bientôt obsolète dès que
+           les PCs ne supportant pas les shaders auront disparus.)</li>
+          <li>Le dernier paramètre deviendra bientôt obsolète est indique le type d'ombre à générer (Une forme ou bien une tile).</li>
+          </ul>
+          
+        <br/><b>Les animations : </b><br/>
         
           Le constructeur de la classe odfaeg::graphic::Anim attend 3 paramètres : 
-          -le taux de rafraichissement. 
-          -la position de l'animation.
-          -la taille des animations.
-          -Le dernier paramètre est un pointeur vers une entité parente. (null par défaut)
+          <ul>
+          <li>le taux de rafraichissement.</li>
+          <li>la position de l'animation.</li>
+          <li>la taille des animations.</li>
+          <li>Le dernier paramètre est un pointeur vers une entité parente. (null par défaut)</li>
+          </ul>
           
           La méthode setInterpolationLevel permet de modifier le niveau d'interpolation de l'animation.
           La méthode addFrame permet d'ajouté une frame à l'animation.
@@ -152,14 +158,16 @@
           du personnage.
           Les animations parentes et enfant doivent alors avoir le même nombre de frames.
         
-        <b>Les lumières ponctuelles : </b>
+        <br/><b>Les lumières ponctuelles : </b><br/>
         
           Avec ODFAEG les lumières ne sont rien d'autre que des formes dont le dégradé est calculé en fonction de différent paramètres qui sont :
           
-          -La normalmap de la vue.
-          -La bumpmap des matériaux.
-          -La distance par rapport à la source lumineuse.
-          -Les composantes spéculaires des matériaux.
+          <ul>
+          <li>La normalmap de la vue.</li>
+          <li>La bumpmap des matériaux.</li>
+          <li>La distance par rapport à la source lumineuse.</li>
+          <li>Les composantes spéculaires des matériaux.</li>
+          </ul>
           
           Le constructeurs de la classe odfaeg::graphic::g2d::PonctualLight attend plusieurs paramètre.
           
