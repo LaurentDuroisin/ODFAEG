@@ -1,0 +1,102 @@
+
+<!doctype html>
+<!-- The Time Machine GitHub pages theme was designed and developed by Jon Rohan, on Feb 7, 2012. -->
+<!-- Follow him for fun. http://twitter.com/jonrohan. Tail his code on https://github.com/jonrohan -->
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="stylesheet" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" href="stylesheets/github-dark.css">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="javascripts/script.js"></script>
+    <title>Odfaeg</title>
+    <meta name="description" content="ODFAEG">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+  </head>
+  <body>
+  <div class="wrapper">
+  <header>
+    <h1 class="title">LastProject : ODFAEG</h1>
+    <div id="container">
+    <p class="tagline">Le gestionnaire d'entités : </p>
+  </header>
+    <h1>Le monde</h1>
+      Comme pour tout les modules de ODFAEG (Coeur, Graphique, Physique, Audio, Réseau) ODFAEG possède une classe statique qui permet d'intéragir avec les autres modules.
+      Cette classe s'appelle World, et cette classe peut contenir un ou plusieurs gestionnaire d'entités.
+      Etant donné que le monde peut être très grand il est nécessaire de charger et de libérer des entités au fur et à mesure de l'exécution de l'application
+      afin de ne pas encombre la RAM, pour cela on peut choisir d'ajouter un ou plusieurs gestionnaires d'entités qui se chargerons d'afficher une
+      partie du monde, et les libérer.
+      Bref, le principe est fort similaire à celui des musiques de SFML qui sont chargée au fur et à mesure.
+      On charge les entités des zones du monde qui sont proche de la caméra, et ont libère les zones qui ne le sont plus.
+      Grâce à la sauvegarde on verra plus tard qu'il est très facile de sauvegarder et de restaurer une zone du monde.
+      Un gestionnaire d'entité peut donc être considéré comme une zone, le monde peut être composé d'un nombre indéfini de zones.
+      
+    <h1>Les gestionnaires d'entités.</h1>
+      Ce sont les gestionnaires d'entités qui vont contenir toutes les entités des différents zones et non pas le monde!
+      Les gestionnaires d'entité possèdent plusieurs propriétés :
+      
+      <ul>
+      <li>Une taille.</li>
+      <li>Une matrice de changement de base.</li>
+      <li>Une liste d'entités.</li>
+      <li>La liste des entités visibles dans la fenêtre de rendu.</li>
+      <li>Un gestionnaire de composant.</li>
+      <li>La liste des entités visibles racines.</li>
+      <li>Ainsi que des shaders et textures de rendu qui vont servir à calculer la réfraction, les ombres et les lumières.</li>
+      </ul>
+      
+      <h2>La grille et la matrice de changement de base.</h2>
+      
+      Je pense que je vous dois quelques explications à son sujet, il est possible que dans un monde à deux dimentions on souhaite dessiner des
+      objets en trois dimentions, ceci s'appelle faire de la 2D isométrique (ou dimétrique), pour ce faire, lorsque vous vous positionner à un
+      endroit dans le monde, le système de coordonnées change.
+      ODFAEG utilise pour des raisons de performance une grille dans laquelle sont ajoutées toutes les entités, cette grille est en fait un ensemble
+      de cases délimitées par un système d'axe, hors en 2D isométrique, les axes changent de direction! (La grille est donc de travers)
+      
+      Il faut donc pouvoir passer d'un système de coordonnée en 2D à un système de coordonnée en 2D isométrique lorsque l'on veut récupérer
+      une ou plusieurs entités à un endroit précis!
+      La matrice de changement de base permet de faire cela!
+      
+      <i>La grille est redimentionnée automatiquement suivant la taille de la zone, la taille de la zone est calculée automatiquement suivant
+      la position et la taille de toutes les entités!
+      Lorsque une entités est transformée, elle est automatiquement remise à jour dans la grille!</i>
+      
+      <h2>Créer et ajouter un gestionnaire d'entité dans le monde</h2>
+      
+      Le gestionnaire d'entité par défaut de ODFAEG s'appelle odfaeg::graphic::Map!
+      Le constructeur de la classe Map attend 4 paramètres :
+      <ul>
+      <li>Le premier est un pointeur vers le gestionnaire de composants de l'application, celui-ci peut être récupérer avec la méthode getRenderComponentManager</li>
+      <li>Le second est un nom qui référencera la map.</li>
+      <li>Les deux dernier sont la taille des cases de la grille de la map.</li>
+      </ul>
+      
+      Pour ajouter un gestionnaire de composant dans le monde vous devez appeler la méthode addEntityManager de la classe World!
+      Si vous souhaiter travaille avec l'entity manager vous devez le sélectionner avec la méthode setCurrentEntityManager, cette
+      méthode attend un paramètre : le nom de la map.
+      
+      Vous pouvez alors ajouté des entités avec la méthode addEntity de la classe World.
+      <h2>Les différents méthodes utiles de la classe World : </h2>
+      
+      
+      removeEntity : efface l'entité de la grille sans la libérer de la mémoire.
+      deleteEntity : efface l'entité de la grille et libère l'entité de la mémoire.
+      getLightMap : récupère la tile de lumière, cette méthode prend en paramètre le type des entités de lumière à rendre 
+      ainsi que les ids des composants pour lesquels calculer la lumière.
+      getShadowMap : même chose mais pour les ombres.
+      getReflectionMap : même chose mais pour les reflets.
+      getVisibleEntities : récupère toutes les entités visible d'un certain type.
+      moveEntity : déplace une entité de x, y et z unités.
+      collide : test si une entité est en collision avec une autre, il y a trois version de cette méthode, la première
+      test si le volume de collision d'une entité est en collision avec l'entité passée, la second test si le volume de
+      collision d'une entité est en collision avec un point, et la troisième test si une entité est sur la trajectoire 
+      d'une autre entité.
+      generateMap : génère un terrain avec au sol la liste de tile et au bord la liste de mur, dans une zone passée.
+      La taille d'une tile peut être plus grande que celle d'un carré du terrain, ceci permet de faire des effets de transitions
+      sur les bords!
+      getPath : Récupère la trajectoire la plus courte entre une entité et un point. (En tenant compte des collisions)
+      
+      
+  </body>
+</html>
