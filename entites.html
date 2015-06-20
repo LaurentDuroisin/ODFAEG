@@ -43,7 +43,7 @@
       Par exemple si vous avez une entité parente A qui contient deux entités enfantes B et C, par défaut, lorsque l'on déplacera 
       l'entité A, les entités B et C le seront également. (Même chose en ce qui concerne les autres type de transformations)
       
-      <b>Les faces : </b>
+      <b>Les faces : </b><br/>
       
       Les faces continnent elles aussi plusieurs propriétés intéressantes tel que :
       
@@ -51,7 +51,7 @@
       -Une matrice de transformation.
       -Un matériel.
       
-      <b>Les matériaux : </b>
+      <b>Les matériaux : </b><br/>
       
       Les matériaux peuvent contenir également quelques propriétés intéressantes tels que :
       
@@ -78,10 +78,12 @@
         <b>Les tiles : </b>
         
         Le constructeur de la classe odfaeg::graphic::Tile attend 4 paramètres :
-        -Le premier est un pointeur vers une texture, qui sera placée sur le quadrilatère formé par les 4 sommets de la tile.
-        -Le second est la position de la tile. (tuile) 
-        -Le troisième est la taille de la tile.
-        -Le quatrième est la partie de la texture qui sera placée sur le quadrilatère.
+        <ul>
+        <li>-Le premier est un pointeur vers une texture, qui sera placée sur le quadrilatère formé par les 4 sommets de la tile.</li>
+        <li>-Le second est la position de la tile. (tuile)</li>
+        <li>-Le troisième est la taille de la tile.</li>
+        <li>-Le quatrième est la partie de la texture qui sera placée sur le quadrilatère.</li>
+        </ul>
         Les deux derniers paramètres sont la couleur de la tile (blanc par défaut) et un pointeur vers une entité parente (null par défaut).
         
         <b>Les grandes tiles et le sol.</b>
@@ -89,9 +91,11 @@
         Celles-ci sont simplement des groupes de tiles dont les bords se touchent.
         
         Le constructeur de cette classe n'attend que 3 paramètres :
-        -Le premier est la position du sol.
-        -Le second est la taille d'un carré au sol.
-        -Et le troisième est le nombre de carrés par ligne.
+        <ul>
+        <li>Le premier est la position du sol.</li>
+        <li>-Le second est la taille d'un carré au sol.</li>
+        <li>-Et le troisième est le nombre de carrés par ligne.</li>
+        </ul>
         
         La méthode addTile permet d'ajouter une tile au terrain, elle attend en paramètre un pointeur sur la tile à ajouter,
         la position de la tile sur le terrain ainsi que un tableau de quatre nombres réels qui sont les hauteurs des 4 coins de la tile.
