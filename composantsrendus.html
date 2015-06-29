@@ -19,7 +19,23 @@
   <header>
     <h1 class="title">LastProject : ODFAEG</h1>
     <div id="container">
-    <p class="tagline">Les composant de rendu : </p>
+    <p class="tagline">Les composants de rendu : </p>
+    <h1>L`interet principal des composants de rendu.</h1>
+      Dessiner sur la fenetre de rendu c`est bien mais ceci pose quelque soucis d`ordre, en effet, vous devez afficher
+      dans l`ordre les entites de la plus eloignee a la plus proche de la vue si vous dessiner des objets semi-transparent sinon
+      le blending ne se fera pas bien vu que le test de profondeur par defaut d`opengl ne tiens pas compte de la transparence lors
+      du blending alpha.
+      En 2D le tri ne pose pas de probleme par contre en 3D cela peut devenir une vraie calamite lorsque vos objets de croisent!
+      
+      Heureusement, les composants de rendus de ODFAEG possedent des shaders!
+      Les shaders des composants de rendu de ODFAEG permettent de pouvoir dessiner les objets sur les composants dans n`importe
+      quel ordre en appliquant le blending alpha correctement par rapport a la profondeur des objets deja dessines!
+      Ceci a un fameux cout sur le FPS par contre, mais ce cout sera fortement reduit des la sortie des nouvelles cartes 
+      graphique et de l`appi "VULKAN"!
+      
+      Les shaders des composants de rendu permettent egalement de generer un tas d`informations necessaires qui seront utilisee pour 
+      le calcul de la lumiere, des ombres et de la refraction dans le gestionnaire d`entite par defaut de ODFAEG!
+    
   </header>
   </body>
   </html>
