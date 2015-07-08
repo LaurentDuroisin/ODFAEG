@@ -35,7 +35,45 @@
       
       Les shaders des composants de rendu permettent egalement de generer un tas d`informations necessaires qui seront utilisee pour 
       le calcul de la lumiere, des ombres et de la refraction dans le gestionnaire d`entite par defaut de ODFAEG!
-    
+   
+      La classe odfaeg::graphic::FastRenderComponent (que je vais renommé en RenderComponent d'ailleurs) permet de créer des composants 
+      de rendu, ceux-ci possèdent plusieurs textures de rendus utiles comme par exemple, une depthmap, le framebuffer, une texture de
+      réfraction et une bumpmap. Ces textures contiennent différentes informations au niveau de chaque fragment qui sont
+      utilisée par le gestionnaire d'entités par défaut afin de calculer la lumière, la réfraction et les ombres sur chaque objets.
+      On peut récupérer ses différentes textures et les afficher au moyen d'une tile avec des méthodes tel que getDepthBufferTile par exemple.
+      Vous aurez alors une image bleutée représentant la hauteur de chaque objets, le bleu plus foncé étant les objets les plus proche de la caméra.
+      En 2D ce sont donc les objets les plus haut, et en 3D les objets les plus proches.
+      
+      <h1>Créer des composants de rendus et les ajouter à la scene.</h1>
+       Pour créer un composant il faut appeler le constructeur de la classe RenderComponent.
+       Celui-ci prend 3 paramètres obligatoires : une référence vers la fenêtre de rendu de l'application, un nombre
+       indiquant l'id du composant, 0 signifie que le composant de rendu sera afficher en premier, 1, en deuxième, etc...
+       Le troisième paramètre est une chaînes de caractère qui indique le type d'entité(s) que l'on souhaite dessiner sur le composant.
+       "E_DECOR" par exemple signifie que l'on va dessiner toutes les entités de type E_DECOR sur le composant.
+       On peut dessiner plusieurs type d'entités, grâce au + : "E_DECOR+E_WALL" qui va dessiner toutes les entités
+       de type décors et murs sur les composants.
+       "*-E_CARACTER" va dessiner toutes les entités sauf celles de type E_CARACTER.
+       Bref vous l'avez compris, ceci n'est pas du tout compliqué à définir.
+       Le dernier paramètre facultatif indique si on veut utiliser un thread pour le rendu des composants.
+       
+       Mais pour que le framework dessine les composants il faut les ajouter aux gestionnaires de composants de l'application!
+       Le gestionnaire de composant va se charger de dessiner tout les composants sur la fenêtre de rendu, et va, également, 
+       traiter tout les événements interne liés au composant comme par exemple le rafraichissement des composants!
+       
+       A chaque tour de boucle vous devez définir ce qui devra être dessiner sur les composants de rendu.
+       Ceci se fait dans la méthode onRender, qui à chaque tour de boucle va rechercher les entités présente dans
+       la vue du composant via le gestionnaire d'entités et les charger sur le composants de rendu pour ensuite, les dessiner.
+       
+        World::drawOnComponents("E_BIGTILE", 0);
+        World::drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_CARACTER", 1);
+      
+      Le gestionnaire d'entité du framework charge donc toutes les entités visible sur les composants de rendu, et ensuite il 
+      recherche toutes les entités qui sont visibles sur la fenêtre de rendu!
+      
+      Vous n'êtes donc pas obligé de dessiner directement sur les composants de rendu et utiliser la méthode World::getVisibleEntities("expression")
+      mais ceci est conseillé si vous ne voulez pas vous embêter avec la semi-transparence, le calcul des normales, etc...
+      
+      Voila, pas besoin d'en dire plus à propos des composants de rendu, maintenant vous savez ce qu'ils permettent de faire!
   </header>
   </body>
   </html>
