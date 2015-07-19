@@ -1,0 +1,152 @@
+
+<!doctype html>
+<!-- The Time Machine GitHub pages theme was designed and developed by Jon Rohan, on Feb 7, 2012. -->
+<!-- Follow him for fun. http://twitter.com/jonrohan. Tail his code on https://github.com/jonrohan -->
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="stylesheet" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" href="stylesheets/github-dark.css">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="javascripts/script.js"></script>
+    <title>Odfaeg</title>
+    <meta name="description" content="ODFAEG">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+  </head>
+  <body>
+  <div class="wrapper">
+  <header>
+    <h1 class="title">LastProject : ODFAEG</h1>
+    <div id="container">
+    <p class="tagline">Composants gui : </p>
+  </header>
+  <body>
+    <h1>Les composants guis de ODFAEG.</h1>
+    
+      Les composants guis de ODFAEG ne sont rien d'autres que des boutons, des champs de saisie de texte,
+      des composants qui affichent du texte, des menus, des boîtes de dialogues, etc...
+      Contrairement aux composant de rendu, on ne peut pas changer la vue des composants guis, ceux-ci
+      s'affichent donc toujours sur la fenêtre de rendu.
+      Les composants guis sont affiché juste après les composants de rendu, ces composants sont légés c'est à
+      dire qu'il ne continnent pas de textures de normales, ni aucun shader.
+      Ils se contentent juste de s'afficher sans tenir compte de l'éclairage, ni des ombres.
+      Ce type de composant est à utiliser donc si vous n'avez pas besoin de calculer l'éclairage et de générer des
+      ombres lors de l'affichage de se composant.
+      On ne peut bien évidemment par chargé d'entités sur les composants guis, ce n'est pas leur rôle, le rôle.
+      Leur rôle est juste de dessiner une interface graphique bien précise.
+      
+      <h1>Créer ses propres type de composants.</h1>
+      
+      On peut bien sûr créer ses propres type de composant guis en héritant de la classe LightComponent.
+      Les composants guis peuvent aussi être des sous fenêtre, dans ce cas vous pouvez redéfinir la méthode checkSubWindowEvents.
+      Chaque composant possède un écouteur auxquel on peut connecter des commandes, ceci permet de proposer des interfaces
+      pour la gestions des événements interne au composant.
+      Par exemple, ici je vais créer un composant qui s'appelle odgaeg::graphic::gui::Button.
+      
+      Pour comprendre cela je vous conseille d'aller regarder le fichier .cpp et .h de cette classe.
+      En fait ce n'est rien d'autre qu'un rectangle que je dessine sur lequel j'affiche un texte : le texte du bouton!
+      Rien de très compliqué donc.
+      J'ai également fais une méthode isMouseInButton, cette méthode vérifier juste si la souris est dans le bouton.
+      Il faut donc que chaque composant gui aie une référence vers la fenêtre de rendu pou pouvoir s'afficher et déclencher
+      les signaux.
+      
+      Alors pour traiter les événements, l'utilisateur à le choix, soit il crée une commande qui appelle une méthode lorsque le signal
+      isMouseInButton est émit.
+      
+      Ou bien alors il décide d'utiliser l'interface ActionListener. (comme en java)
+      Si vous regarder la méthode addActionListener vous remarquerez que j'ai créer une interface qui s'appelle ActionListener
+      et qui contient une méthode abstraite qui s'appelle actionPerformed!
+      Il suffira donc à l'utilisateur de faire hériter sa propre classe de la classe actionListener et de redéfinir la méthode
+      actionPerformed pour traiter l'événement, cette méthode prend en paramètre un pointeur vers le bouton déclenchant l'évènement.
+      Bien sûr il ne faidra pas oublier d'ajouter le listener au bouton dans votre propre classe.
+      
+      Voici un exemple de code :
+      
+      <pre>
+        class MyAppli : public odfaeg::core::Application : public odfaeg::graphic::gui::Button {
+              public :
+              MyAppli(sf::VideoMode wm, std::string title) : 
+              odfaeg::core::Application(wm, title, false, true, true, sf::Style::Default, sf::ContextSettings(0, 0, 4, 3, 0))
+              {
+                    mFont.loadFromFile("Arial.ttf");
+                    mButton = new Button(odfaeg::math::Vec3f(0, 0, 0), odfaeg::math::Vec3f(100, 50, 0), &myFont, "myButton", getRenderWindow());
+                    mButton.addActionListener(this);
+                    getRenderComponentManager().addComponent(mButton);
+              }
+              void actionPerformed(odfaeg::graphic::gui::Button* button) {
+                   if (button == mButton) {
+                       std::cout<<"On a cliqué sur le bouton!"<<std::endl;
+                   }
+              }
+              private :
+              odfaeg::graphic::gui::Button* mButton;
+              odfaeg::graphic::Font mFont;
+        };
+      </pre>
+      
+      Ou la seconde solution qui n'utilise pas d'interface:
+      
+      <pre>
+              MyAppli(sf::VideoMode wm, std::string title) : 
+              odfaeg::core::Application(wm, title, false, true, true, sf::Style::Default, sf::ContextSettings(0, 0, 4, 3, 0))
+              {
+                    mFont.loadFromFile("Arial.ttf");
+                    mButton = new Button(odfaeg::math::Vec3f(0, 0, 0), odfaeg::math::Vec3f(100, 50, 0), &myFont, "myButton", getRenderWindow());
+                    core::FastDelegate<bool> trigger(&Button::isMouseInButton, this);
+                    core::FastDelegate<void> slot(&MyAppli::actionPerformed,this,mButton);
+                    core::Action a (core::Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, sf::Mouse::Left);
+                    core::Command cmd(a, trigger, slot);
+                    getListener().connect("CBUTTONCLICKED", cmd);
+                    getRenderComponentManager().addComponent(mButton);
+              }
+                
+      </pre>
+      
+      Personellement je préfère la première solution car les événements sont traités dans le contexte de gestion d'événements du composant
+      et non pas dans le contexte de gestion d'événements de l'application!
+      Vous pouvez alors désactiver la gestion des événements pour le bouton si vous le souhaîtez.
+      Ceci constitue le gros avantage d'utiliser un listener par rapport à Qt qui utilise des signaux et des slots.
+      Rendre le bouton non cliquable avec une méthode est une autre solution mais ceci n'est pas une bonne solution
+      si votre composant gui doit gérer plusieurs événements en interne!
+      Vous remarquerez que je n'ai même pas eu besoin de dessiner les composants gui en redéfinissant une quelconque méthode
+      de la classe odfaeg::core::Application, odfaeg dessine automatiquement les composants guis sur la fenêtre!
+      Il ne faut just pas oublier de les ajouter au gestionnaire de composant avec la méthode addComponent.
+      
+      <h1>Les composants guis de odfaeg.</h1>
+      
+      Actuellement odfaeg possède quelques composants gui, et il y en aura qui se rajouteront au fur et à mesure dans le framework!
+      odfaeg::graphic::gui::Button, odfaeg::graphic::gui::OptionPane et odfaeg::graphic::gui::TextArea.
+      Voici comment les utiliser :
+      Pour le bouton vous avez déjà eu un aperçu ci-dessus, je ne vais donc pas y revenir.
+      <b>Pour la zone de saisie de texte. (Text Area)</b>
+      Dans le constructeur :
+      <pre>
+      gui::TextArea* textArea = new gui::TextArea(Vec3f(350, 275, 0),Vec3f(100, 50, 0),fm.getResourceByAlias("FreeSerif"), "Test",getRenderWindow());
+      textArea->addFocusListener(this);
+      </pre>
+      Vous pouvez redéfinir la méthode gaignedFocus, celle-ci sera appelée lorsque l'on cliquera sur la "text area".
+      <pre>
+        void MyAppli::gaignedFocus(gui::TextArea* textArea) {
+            std::cout<<"gaigned focus"<<std::endl;
+        }
+      </pre>
+              
+      Vous pouvez alors activer ou désactiver les contextes de gestions d'événements de vos "text area" ceci permet
+      d'éviter que par exemple lorsque vous appuyer sur une touche que le texte s'affiche dans toutes vos "text area",
+      vous pouvez ainsi sélectionner la "text area" dans laquelle vous souhaîter écrire!
+      Lorsqu'il n'y a qu'une seule "text area" ceci n'est bien sûr pas nécessaire.
+      
+      <b>La boîte de dialogue.</b>
+      
+      Vous pourvez créer deux types de boîtes de dialogue, MESSAGE_DIALOG pour afficher simplement une popup ou bien 
+      CONFIRMATION_DIALOG pour demander confirmation à l'utilisateur lors de l'exécution d'une action.
+      
+      <pre>
+        op = new gui::OptionPane(Vec2f(200, 175), Vec2f(400, 200), fm.getResourceByAlias("FreeSerif"), "Test",gui::OptionPane::TYPE::CONFIRMATION_DIALOG);
+        getRenderComponentManager().addComponent(op);
+      </pre>
+      
+      
+  </body>
+  </html>
