@@ -146,7 +146,19 @@
         op = new gui::OptionPane(Vec2f(200, 175), Vec2f(400, 200), fm.getResourceByAlias("FreeSerif"), "Test",gui::OptionPane::TYPE::CONFIRMATION_DIALOG);
         getRenderComponentManager().addComponent(op);
       </pre>
-      
-      
+      Pour savoir quel option l'utilisateur à choisis vous pouvez utiliser cette la méthode getOption() :
+      <pre>
+         if (m_confirmInvitation->getOption() == gui::OptionPane::OPTION::YES_OPTION) {
+             //On exectue l'action.
+         } else if (m_confirmInvitation->getOption() == gui::OptionPane::OPTION::YES_OPTION) {
+            //On ne fait rien.
+         }
+      </pre>
+         Si getOption() peut renvoyer trois états :
+         YES_OPTION : l'utilisateur à cliqué sur le bouton de confirmation.
+         NO_OPTION : l'utilisateur n'a pas cliqué sur le bouton de confirmation.
+         UNDEFINED : l'utilisateur n'a pas encore choisi, la méthode getOption() remet l'état à UNDEFINED,
+         ainsi l'application n'exécute l'action qu'une seule fois en cas de confirmation.
+         Et voilà, maintenant vous savez comment utiliser et créer des composants gui avec ODFAEG, c'est pas dur!
   </body>
   </html>
