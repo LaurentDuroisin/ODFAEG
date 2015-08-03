@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="ODFAEGVIDEOTUTORIAL2" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/ODFAEGVIDEOTUTORIAL2" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/ODFAEGVIDEOTUTORIAL2" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-std=c++14" />
+			<Add option="-DODFAEG_STATIC" />
+			<Add directory="../../../../../usr/local/include" />
+		</Compiler>
+		<Linker>
+			<Add library="../../../../../usr/local/lib/libodfaeg-network-s.a" />
+			<Add library="../../../../../usr/local/lib/libodfaeg-audio-s.a" />
+			<Add library="../../../../../usr/local/lib/libodfaeg-graphics-s.a" />
+			<Add library="../../../../../usr/local/lib/libodfaeg-physics-s.a" />
+			<Add library="../../../../../usr/local/lib/libodfaeg-math-s.a" />
+			<Add library="../../../../../usr/local/lib/libodfaeg-core-s.a" />
+			<Add library="../../../../../usr/local/lib/libsfml-network.so" />
+			<Add library="../../../../../usr/local/lib/libsfml-audio.so" />
+			<Add library="../../../../../usr/local/lib/libsfml-graphics.so" />
+			<Add library="../../../../../usr/local/lib/libsfml-window.so" />
+			<Add library="../../../../../usr/local/lib/libsfml-system.so" />
+			<Add library="../../../../../usr/lib/x86_64-linux-gnu/libpthread.so" />
+			<Add library="../../../../../usr/lib/x86_64-linux-gnu/libGLEW.a" />
+			<Add library="GL" />
+			<Add library="../../../../../usr/lib/x86_64-linux-gnu/libfreetype.so" />
+			<Add library="ssl" />
+			<Add library="crypto" />
+			<Add directory="../../../../../usr/local/lib" />
+		</Linker>
+		<Unit filename="ball.cpp" />
+		<Unit filename="ball.hpp" />
+		<Unit filename="bar.cpp" />
+		<Unit filename="bar.hpp" />
+		<Unit filename="main.cpp" />
+		<Unit filename="partie.cpp" />
+		<Unit filename="partie.hpp" />
+		<Unit filename="player.cpp" />
+		<Unit filename="player.hpp" />
+		<Unit filename="pong.cpp" />
+		<Unit filename="pong.hpp" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<lib_finder disable_auto="1" />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
