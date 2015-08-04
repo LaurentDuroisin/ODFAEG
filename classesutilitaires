@@ -1,0 +1,123 @@
+<!doctype html>
+<!-- The Time Machine GitHub pages theme was designed and developed by Jon Rohan, on Feb 7, 2012. -->
+<!-- Follow him for fun. http://twitter.com/jonrohan. Tail his code on https://github.com/jonrohan -->
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="stylesheet" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" href="stylesheets/github-dark.css">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="javascripts/script.js"></script>
+    <title>Odfaeg</title>
+    <meta name="description" content="ODFAEG">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+  </head>
+  <body>
+  <div class="wrapper">
+  <header>
+    <h1 class="title">LastProject : ODFAEG</h1>
+    <div id="container">
+    <p class="tagline">Les classes utilitaires : </p>
+  </header>
+    Les states que nous avons vu précédemment sont utile pour enregistrer, annuler et restaurer des états, propres à l'application
+    ou aux entités mais ils ne permettent pas définir le comportement des entités entre elles lors d'une action.
+    C'est pour cette raison que le framework possède deux classes bien précise pour définir le comportement en fonction 
+    du type des entités lors d'une action.
+    Ces deux classes s'appelles odfaeg::core::Variant et odfaeg::core::Visitor.
+    La classe odfaeg::core::Variant va juste définir la liste des types d'entités pouvant être contenue dans un std::vector par exemple.
+    Tandit que l'interface odfaeg::core::Visitor va définir la classe qui va définir les comportements en fonction du type des entités 
+    participant à l'action à l'aide de foncteurs.
+    Prenons par exemple une classe Chien et une classe Chat qui sont deux entités de type différent.
+    <pre><code>
+    class Chien {
+    };
+    class Chat {
+    };
+    </pre></code>
+    On va définir un classe attaquer héritant de odfaeg::core::visitor qui va contenir quatre foncteurs différent, vu qu'il y a 4 comportements différent possibles  :
+    Un chat attque un chat, un chat attaque un chien, un chien attaque un chat et un chien attaque un chient.
+    Il va donc y avoir 4 foncteurs différents :
+    <pre><code>
+    class Attaquer : public odfaeg::core::Visitor<> {
+        void operator()(const chat&, const chat&) const
+        { std::cout <<  "griffe - griffe" << std::endl;}
+        void operator()(const chat&, const chien&) const
+        { std::cout <<  "griffe - mord  " << std::endl;}
+        void operator()(const chien&, const chat&) const
+        { std::cout <<  "mord - griffe" << std::endl;}
+        void operator()(const chien&, const chien&) const
+        { std::cout << "mord - mord  " << std::endl;}
+    };
+    </pre></code>
+    L'interface odfaeg::core::Visitor prend un paramètre template, c'est le type de retour renvoyé par les foncteurs, ici,
+    ils ne renvoient rien donc on laisse vide.
+    Ici il y a deux paramères aux foncteurs, il y aura donc, deux variants.
+    Les visiteurs définissant des comportements pour plusieurs variants sont appelé des n-ary visitors.
+    Il faudra donc appler la méthode odfaeg::core::apply_nary_visitor sur nos variants.
+    <pre><code>
+    int main() {
+        Chien chien;
+        Chat chat;
+        std::vector<std::pair<odfaeg::core::Variant<Chien, Chat>,odfaeg::core::Variant<Chien, Chat>>> list;
+        list.push_back(std::make_pair(chat, chat));
+        list.push_back(std::make_pair(chat, chien));
+        list.push_back(std::make_pair(chien, chat));
+        list.push_back(std::make_pair(chien, chien));
+        Attaquer attaquer;
+        for (unsigned int i = 0; i < list.size(); i++) {
+          odfaeg::apply_nary_visitor(attaquer, list[i].first, list[i].second);
+        }
+    }
+    </pre></code>
+    Si vos foncteurs ne prennent qu'un seul variant en paramètre, alors, vous devez appeler la méthode odfaeg::core::apply_visitor!
+    Voilà, sinon sachez qu'il existe une autre manière de faire :
+    <pre><code>
+      struct chat;
+      struct chien;
+      struct animal
+        : odfaeg::accept_visitor<animal,chat,chien>
+      { };
+       
+      struct chat
+              : odfaeg::acceptable<animal,chat>
+      { };
+       
+      struct chien
+              : odfaeg::acceptable<animal,chien>
+      { };
+      struct attaquer
+              : odfaeg::dispatchable<attaquer,animal>
+      {
+              void operator()(const chat&, const chat&) const
+              { std::cout <<  "griffe - griffe" << std::endl;}
+              void operator()(const chat&, const chien&) const
+              { std::cout <<  "griffe - mord  " << std::endl;}
+              void operator()(const chien&, const chat&) const
+              { std::cout <<  "mord - griffe" << std::endl;}
+              void operator()(const chien&, const chien&) const
+              { std::cout << "mord - mord  " << std::endl;}
+      };
+      int main() {
+        chat c1;
+        chien c2; 
+        animal& a1 =c1;
+        animal& a2 =c2; 
+        attaquer().apply(a1,a1);
+        attaquer().apply(a1,a2);
+        attaquer().apply(a2,a1);
+        attaquer().apply(a2,a2);
+      }
+    </pre></code>
+    La seule différence ici est que les objets chien et chat ont quelque chose en commun, vu qu'ils héritent de la classe
+    animal.
+    Cependant il faut hériter de plusieurs interfaces, la première (accept_visitor) prend en paramètre template la classe de base
+    ainsi que les sous classes de la famille.
+    L'interface acceptable prend en paramètre la classe de base et la classe dérivée.
+    Et enfin l'interface dispatchable prend en paramètre la classe définissant l'action et la classe de base.
+    l'interface dispatchable peut prendre plusieurs familles en paramètre template, donc, dans ce cas-ci on pourrait avoir d'autres
+    familles d'objets que des animaux.
+    Voila ce qui clôture ce chapitre!
+    Utiliser les classes utilitaires de odfaeg ainsi que les states sont de bon moyen pour éviter de devoir faire trop d'héritage!
+  </body>
+</html>
