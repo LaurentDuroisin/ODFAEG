@@ -29,7 +29,7 @@
     d'une action. (Clic sur un menu, clic sur un bouton, etc...)
     Pour définir un state, il faut créer un objet de type odfaeg::core::State, le constructeur prend deux paramètres :
     Le premier paramètre n'est autre que le nom du state, le second, un pointeur vers un objet héritant de l'interface odfaeg::core::StateExecutor.
-    MyState state(« The state », &myStateExecutor);
+    odfaeg::core::State state(«MenuState», &myStateExecutor);
     On peut ensuite ajouter n'importe quel type de paramètre à notre state :
     state.addParameter("Menu",visible);
    <h2>Création du state executor.</h2> 
@@ -46,11 +46,79 @@
     le .cpp : 
     <pre><code>
     bool MyStateExecutor::doState(State& state) {
-      state.changeParameter("Menu", true);
+      bool visible = state.getParameter("Menu").getValue<bool>();
+      if(visible)
+        state.changeParameter("Menu", false);
+      else
+        state.changeParameter("Menu",true);
     }
     bool MyStateExecutor::undoState(State& state) {
-      state.changeParameter("Menu", false);
+      bool visible = state.getParameter("Menu").getValue<bool>();
+      if(visible)
+        state.changeParameter("Menu", false);
+      else
+        state.changeParameter("Menu",true);
     }
     </pre></code>
+    Ici par exemple lorsque l'on cliquera sur un bouton ça changera l'état du menu. (Visible ou invisible)
+    Pour récupérer un paramètre du state il faut utiliser la méthode getValue, celle-ci attend un paramètre template : 
+    le type de la valeur du paramètre à récupérer.
+    changeParameter permet de changer la valeur d'un paramètre, removeParameter permet de supprimé un paramètre du state.
+    
+    <h2>Les groupes de states</h2>
+    Il est possible de regrouper les states en un groupe de states, ceci offre la possibilité
+    d'appliquer un ensemble de states en même temps, par exemple si l'action s'exécute suite au mouvement de la souris.
+    Pour cela il suffit de créer un objet de type odfaeg::core::StateGroup et de lui ajouter des states :
+    Tout comme pour les states, le constructeur de la classe odfaeg::core::StateGroup attend en paramètre le nom du groupe de states :
+    
+    <pre><code>
+      odfaeg::core::StateGroup sg("StateGroup1");
+      sg.addState(state);
+    </code></pre>
+    
+    Afin d'appliquer tout les states il suffit d'appeler la méthode execute de la classe odfaeg::core::StateGroup et
+    la méthode executeContrary permet de les annuler.
+    
+    <h2>La pile de states</h2>
+    Celle-ci est très utilisée dans les applications afin d'anuler ou de rétablir les dernières modifications effectuée.
+    La classe qui permet de créer des piles de states est la classe odfaeg::core::StateStack.
+    Cette pile peut par défaut enregistrer 20 groupes de states.
+    Pour ajouter un groupe de state dans la pile, il suffit d'appeler la méthode addStateGroup :
+    <pre><code>
+      odfaeg::core::StateStack stack;
+      stack.addStateGroup(sg);
+    </code></pre>
+    Pour annuler le dernier groupe de state enregistré il suffit d'appeler la méthode undo, et pour le rétablir, la méthode redo.
+    On trouve bien souvent ses deux menus dans beaucoup d'applications, avec les touches de racourcis CTRL+Z et CRTL+R.
+    Même si vous supprimer des objets de la mémoire, vous pourrez donc toujours les recréer à partir du moment ou les valeurs
+    des variables des objets sont enregistré dans des states!
+    Le gros avantage des states est donc que vous n'avez pas besoin de redéfinir à chaque fois les valeurs de vos objets dès leur création.
+    <h2>Les states et les entités.</h2
+    Sachez que la classe odfaeg::graphic::Entity possède une variable interne qui est un state, vous pouvez donc ajouter n'importe
+    quel autre type d'attributs aux entité!
+    Vous pouvez ensuite changer les états des attributs personnalisés des entités, grâce aux méthode interact et uninteract de la classe
+    odfaeg::graphic::Entity!
+    Celles-ci attendent un paramètre : un pointeur sur un objet héritant de l'interface odfaeg::core::StateExecutor.
+    Un exemple :
+    <pre><code>
+    class SkillExecutor : public odfaeg::core::StateExecutor {
+          bool doState(State& state) {
+            int mana = state.getParameter("Mana").getValue<int>();
+            state.changeParameter("Mana", mana-50);
+          }
+          bool undoState(State& state) {
+            int mana = state.getParameter("Mana").getValue<int>();
+            state.changeParameter("Mana", mana+50);
+          }
+    };
+    SkillExecutor se;
+    Entity* entity = new Magician(...);
+    entity->interact(&se);
+    </pre></code>
+    Ici on évite l'héritage en ajoutant simplement un paramètre supplémentaire à une entité de type mage!
+    Lorsque celui-ci lance ou annule le lancement un sort, on modifie la quantité de mana.
+    Ceci est plus propre que d'avoir beaucoup d'héritage dans le cas ou votre jeux comporte beaucoup de classes 
+    et d'objets différent ce qui est le cas des mmorpgs!
+    Voila c'est tout pour ce chapitre!
   </body>
 </html>
