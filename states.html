@@ -1,1 +1,56 @@
-
+<!doctype html>
+<!-- The Time Machine GitHub pages theme was designed and developed by Jon Rohan, on Feb 7, 2012. -->
+<!-- Follow him for fun. http://twitter.com/jonrohan. Tail his code on https://github.com/jonrohan -->
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="stylesheet" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" href="stylesheets/github-dark.css">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="javascripts/script.js"></script>
+    <title>Odfaeg</title>
+    <meta name="description" content="ODFAEG">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+  </head>
+  <body>
+  <div class="wrapper">
+  <header>
+    <h1 class="title">LastProject : ODFAEG</h1>
+    <div id="container">
+    <p class="tagline">Sommaire : </p>
+  </header>
+  <h1>Définir un state</h1>
+  <h2>Création du state.</h2>
+    Un state n'est autre qu'un état qui peut changer en fonction de différentes actions, les states sont surtout
+    utilisés lorsque il devient nécessaire d'afficher des menus et de les cacher sans devoir les recharger par exemple.
+    Un state peut aussi être utilisé pour annulé une action.
+    Les states de ODFAEG peuvent contenir plusieurs paramètres, de n'importe quel type, que l'on peut modifier en fonction
+    d'une action. (Clic sur un menu, clic sur un bouton, etc...)
+    Pour définir un state, il faut créer un objet de type odfaeg::core::State, le constructeur prend deux paramètres :
+    Le premier paramètre n'est autre que le nom du state, le second, un pointeur vers un objet héritant de l'interface odfaeg::core::StateExecutor.
+    MyState state(« The state », &myStateExecutor);
+    On peut ensuite ajouter n'importe quel type de paramètre à notre state :
+    state.addParameter("Menu",visible);
+   <h2>Création du state executor.</h2> 
+    Le state executor est un objet qui va modifier les paramètres du state en fonction d'une action.
+    Vous devez pour celà créer une classe héritant de l'interface odfaeg::core::StateExecutor et redéfinir les méthodes suivantes :
+    voici un exemple de code :
+    le header : 
+    <pre><code>
+    class MyStateExecutor : public odfaeg::core::StateExecutor {
+      bool doState(State& state);
+      bool undoState(State& state);
+    };
+    </pre></code>
+    le .cpp : 
+    <pre><code>
+    bool MyStateExecutor::doState(State& state) {
+      state.changeParameter("Menu", true);
+    }
+    bool MyStateExecutor::undoState(State& state) {
+      state.changeParameter("Menu", false);
+    }
+    </pre></code>
+  </body>
+</html>
