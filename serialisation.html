@@ -42,16 +42,50 @@ Si l'on veut sérialiser et désérialiser une chaine de caractère par exemple,
   odfaeg::core::ITextArchive ita(file);
   ita(machainelue);
 </code></pre>
+C'est l'opérateur () qui sert à écrire ou lire du contenu dans l'archive donc.
+
 Pour les objets, il faut définir comment les écrires, pour cela, il suffit de redéfinir la méthode serialize, qui est template:
-Celle-ci prend donc en paramètre template, l'archive dans laquelle seront serialises ou deserialise les variables de l'objet.
+Celle-ci prend donc en paramètre template, une référence vers l'archive dans laquelle seront serialises ou deserialise les variables de l'objet.
 <pre><code>
   template<typename Archive>
-  void serialize(Archive ar){
+  void AClass::serialize(Archive& ar){
      ar(var);
   }
 </code></pre>
-C'est l'opérateur () qui sert à écrire ou lire du contenu dans l'archive donc.
+
 
 <h1>La serialisation et les objets polymorphiques</h1>
+Pour les objets polymorphiques, vous devez redéfinir la méthode vtserialize! 
+Celle-ci attend aussi un paramètre template qui est une référence vers l'archive dans laquelle seront serialisée et désérialisée vos variables.
+<code><pre>
+template <typename Archive>  
+void ABaseClass::vtserialize(Archive& ar) {
+     ar(var);
+}
+template <typename Archive>  
+void ADerivedClass::vtserialize(Archive& ar) {
+     ABaseClass::vtserialize(ar);
+     ar(var);
+}
+</pre></code>
+L'une des deux méthodes vtserialize sera appelée par ODFAEG suivant le type du pointeur sur l'objet polymorphique à l'exécution!
+<code><pre>
+  ABaseClass* polymorphicObject = new ADeriveClass();
+  odfaeg::core::OTextArchive ota(file);
+  ota(polymorphicObject);
+  odfaeg::core::ITextArchive ita(file);
+  ABaseClass* polymoprhicRead;
+  ita(polymoprhicRead);
+</pre></code>
+Il n'est pas nécessaire d'allouer le pointeur pour la lecture de l'objet polymorphique car ceci sera fait automatiquement lors de la lecture.
+Il suffit juste donc de le déclarer et le passer à l'archive de lecture.
+Il y a cependant une nouveauté ici, comme ODFAEG doit créer lui même les pointeurs de fonctions vers les fonctions virtuelle template (car
+en c++ les fonctions virtuelles ne peuvent pas être template), il faut que ODFAEG crée ces pointeurs de fonctions en début de programme, pour
+que ODFAEG puisse appeler le bon pointeur de fonction en fonction du type de l'objet polymorphique à l'exécution!
+Pour créer ces pointeurs de fonction, il faut appeler cette macro tout au début dans la fonction main :
+EXPORT_CLASS_GUID(RELATIONID, ABaseClass, ADerivedClass);
+Le premier paramètre est juste l'id de la relation, le second le type de la classe de base et le troisième le type de la classe dérivée.
+Voilà c'est tout, maintenant vous savez écrire et lire n'importe quel type d'objet c++ avec ODFAEG dans un format standart et compatible de type texte, 
+vous pouvez aussi bien sûr les sérialiser dans des flux mémoire pour les envoyer sur le réseau par exemple.
 </body>
-</html>
+</html>b
