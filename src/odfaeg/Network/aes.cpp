@@ -81,10 +81,18 @@ namespace odfaeg {
             return data;
         }
         void AES_ENC::ossl_setKey(char* sKey) {
-           ossl_key = (unsigned char*)(sKey);
+           delete ossl_key;
+           ossl_key = new unsigned char[strlen(sKey)];
+           for (unsigned int i = 0; i < strlen(sKey); i++) {
+                ossl_key[i] = (unsigned char) sKey[i];
+           }
         }
         void AES_ENC::ossl_setIv(char* sIv) {
-           iv = (unsigned char*)(sIv);
+           delete iv;
+           iv = new unsigned char[strlen(sIv)];
+           for (unsigned int i = 0; i < strlen(sIv); i++) {
+                iv[i] = (unsigned char) sIv[i];
+           }
         }
         char* AES_ENC::ossl_getKey() {
            return (char*)(ossl_key);
