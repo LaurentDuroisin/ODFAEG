@@ -3,7 +3,7 @@
 </header>
 <body>
 <title>Créer un réseau sécurisé en entreprise style celui de la NSA.</title>
-<h1>Présentation de mon travail</h1>
+<h1>Présentation de mon travail de fin d'études</h1>
 <p>Dans mon travail de fin d'étude, j'ai dû configurer un réseau similaire à celui<br/>
 de la NSA.<br/>
 Contrairement à ce que l'on dit dans certaines vidéos, construire un intranet n'est pas cher!<br/>
@@ -25,14 +25,28 @@ On dit qu'il y a 3 zones :
 </ul>
 La zone verte permet l'accès à internet aux machines de l'entreprise.<br/>
 La zone rouge bloque toutes les requêtes en provenance de l'internet et à destination du serveur intranet.<br/>
-La zone orange ne laisse passer que les requêtes http, les mails, etc...<br/>
+La zone orange ne laisse passer que les requêtes http, les mails, etc... en provenance de l'internet vers le serveur web.<br/>
 L'avantage d'une telle architecture est que si un pirate tente de pirater le serveur web, le serveur intranet lui<br/>
 restera toujours intact car le modem va rediriger toutes les requêtes en provenance d'internet vers le serveur web.<br/>
 </p>
 <p>
   L'avantage d'un tel réseau est que si un pirate tente de hacker le serveur web, le serveur intranet<br/>
-  restera intacte, en effet, le parefeu va bloquer tout ce qui vient de l'internet vers le serveur<br/>
-  intranet.
+  restera intacte, en effet, le parefeu va bloquer toutes les réquêtes provenant de l'internet vers le serveur<br/>
+  intranet et comme le modem va rediriger tout ce qui provient de l'internet vers le serveur web, il sera<br/>
+  impossible d'accéder au le serveur intranet de l'extérieur.<br/>
+  <b>Attention que les réponses en provenance de l'internet vers les utilisateurs de l'intranet ne seront bien sûr pas<br/>
+  bloquées sinon les utilisateurs ne pourraient pas consulter les sites webs.</b><br/>
+  Mais ceci n'endommagera pas le serveur intranet qui lui ne recevra rien en provenance de l'internet vu qu'il<br/>
+  va tout rediriger vers l'utilisateur de l'intranet, ce sera donc la machine de l'utilisateur qui sera touchée.<br/>
+  Pour éviter que l'utilisateur perde ses données on va stocker toutes ses données sur le serveur intranet<br/>
+  à l'aide d'un contrôleur de domaine, je vous présenterai ça dans la deuxième partie du travail.<br/>
+  Toutes les données de chaque utilisateur sera protégé par un mot de passe, ainsi, même si un imposteur<br/>
+  installe un logiciel pirate sur le serveur intranet pour tenter d'avoir accès au serveur intranet à partir de l'extérieur 
+  en contournant le parefeu qui bloque tout. (Celà est déjà très difficile voir impossible à faire mais ne sous estimons pas les pirates!) <br/>
+  Il ne pourra pas consulter les données des autres car il n'aura pas le mot de passe!<br/>
+  Voila, il n'y a plus rien à dire de plus sur la topologie du réseau, sur la page suivante nous allons voir comment configurer le parefeu!<br/>
+  <a href="tfe2">Page suivante</a>
 </p>
+
 </body>
 </html>
