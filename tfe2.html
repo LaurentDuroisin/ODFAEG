@@ -4,5 +4,39 @@
 <body>
 <title>Mon travail de fin d'études</title>
 <h1>Configuration du parfeu!</h1>
+<p>
+A ce stade j'estime que vous savez comment télécharger et graver un fichier iso, partitionner un disque dur, installer un os à partir du BIOS, câbler un réseau, etc...<br/>
+J'ai donc téléchargé les fichiers .iso de smoothwall, de ubuntu serveur, de ubuntu desktop et de free-eos et je les ai graver sur cd.<br/>
+A l'instllation du parefeu, smoothwall vous demande d'entrer un type de clavier, votre région et votre langue.<br/>
+Il vous demande aussi d'entrer le mot de passe administrateur, ce mot de passe vous permettra de configurer le <br/>
+parefeu, choissez donc un mot de passe fort. (Avec des chiffres et des caractères prit au hasard)<br/>
+Eviter des mots de passe du genre le nom de votre chien, votre age, le nom d'un proche ou d'un objet.<br/>
+Car smoothwall peut être administré aussi à distance.<br/>
+</p>
+<p>
+Ensuite on doit choisir un mode pour les requêtes sortantes (uniquement.)  : <br/>
+Open : aucune requête sortante du réseau local n'est bloquée.	<br/>
+	Half open : la plupart des requêtes sortantes ne sont pas bloquées, seulement celles qui 	semblent les plus dangereuses.<br/>
+	Closed : tout est bloqué, il faut alors spécifier  explicitement les ports ou adresses IP 	autorisés à communiquer avec l'internet.<br/>
+	Dans notre cas, le mieux est half-open.<br/>
+
+	Ensuite il faut préciser le type de réseau que l'on a, il y a plusieurs choix possibles : <br/>
+
+	Green seulement : cette interface réseau ne bloque aucun port par défaut, utilisée pour 	le trafique sur le réseau local. <br/>
+	Cette interface relie le smoothwall au switch.<br/>
+	Orange : cette interface réseau bloque certains port à l'internet, cette interface est 	utilisée pour l'accès aux utilisateurs distant à certaines pages du serveur web, ceci est 	appelé la zone démilitarisée car elle est accessible via l'extérieur du réseau local.<br/>
+
+	Rouge : c'est celle qui relie internet au réseau local, elle ne laisse rien passer par 	défault, car tout ce qui est sur le réseau local ne doit pas être accessible via l'extérieur, 	seul ce qui se 	trouve sur la dmz (donc sur le serveur web.) peut être accessible via 	l'extérieur.<br/>
+
+	Purple : ca c'est l'interface qui gère le wi-fi du réseau interne de l'entreprise, en résumé, 	c'est pareil que l'interface verte hormis que la carte réseau est une carte réseau wi-fi. 	(connexion sans câble, donc, avec une antenne.)<br/>
+	Dans notre cas on doit choisir trois interfaces réseau (green + orange + red.), donc il 	faut mettre 3 cartes réseaux dans la machine.)<br/>
+	Ensuite il faut choisir quel carte réseau va gérer quel interface (laquelle sera reliée au 	switch commutateur (green.) , laquelle sera reliée au serveur web (orange.), et laquelle 	sera reliée au routeur. (rouge.)<br/>
+
+	Enfin il faut définir les adresses IP pour les trois cartes, et après cela il reste un dernier 	menu ou il faut préciser l'adresse IP du modem/routeur et celle du serveur DNS.<br/>
+
+	Une fois ça de fait on peut aussi spécifier des paramètres supplémentaire, par exemple 	si on utilise un proxy, etc..., ceci n'est pas nécessaire dans notre cas.<br/>
+
+	Une fois ça de fait la machine redémarre, et on peut alors se connecter en temps qu' 	administrateur, pour accéder au menu de configuration il suffit de taper setup.<br/>
+	On peut aussi administrer smoothwall à distance via un navigateur.<br/>
 </body>
 </html>
