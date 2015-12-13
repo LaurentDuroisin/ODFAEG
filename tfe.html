@@ -2,10 +2,37 @@
 <header>
 </header>
 <body>
-<title>Créer un réseau sécurisé en entreprise.</title>
+<title>Créer un réseau sécurisé en entreprise style celui de la NSA.</title>
+<h1>Présentation de mon travail</h1>
 <p>Dans mon travail de fin d'étude, j'ai dû configurer un réseau similaire à celui<br/>
 de la NSA.<br/>
-Voici la mappage : <br/>
+Contrairement à ce que l'on dit dans certaines vidéos, construire un intranet n'est pas cher!<br/>
+De plus, smoothwall, free-eos et ubuntu sont gratuit!<br/>
+Il n'y a donc que le prix des équipements réseaux à payer!<br/>
+Voici la mappage du réseau que j'ai du réaliser : <br/>
+<br/>
 <img src="http://img11.hostingpics.net/pics/781211mappagerseau.jpg"/>
+Pour le parefeu j'ai utilisé smoothwall qui est une distribution linux qui ne fait<br/>
+office que de parefeu, ceci n'est pas un bête parefeu comme le parefeu windows.<br/>
+Celui-ci à l'avantage de pouvoir "faire le gendarme" par rapport au traffic transitant<br/>
+sur 3 réseaux différent, le parefeu n'est pas qu'un soft mais aussi une machine physique <br/>
+qui possède 3 carte réseaux.<br/>
+On dit qu'il y a 3 zones :
+<ul>
+  <li>La zone rouge : elle bloque tout!</li>
+  <li>La zone orange : elle n'ouvre que certains port spécifique comme le port 80 par exemple. (c'est la zone démilitarisée)</li>
+  <li>La zone verte : elle ne bloque rien.</li>
+</ul>
+La zone verte permet l'accès à internet aux machines de l'entreprise.<br/>
+La zone rouge bloque tout le traffic en provenance de l'internet et à destination du serveur intranet.<br/>
+La zone orange ne laisse passer que les requêtes http, les mails, etc...<br/>
+L'avantage d'une telle architecture est que si un pirate tente de pirater le serveur web, le serveur intranet lui<br/>
+restera toujours intact car le modem va rediriger toutes les requêtes en provenance d'internet vers le serveur web.<br/>
+</p>
+<p>
+  L'avantage d'un tel réseau est que si un pirate tente de hacker le serveur web, le serveur intranet<br/>
+  restera intacte, en effet, le parefeu va bloquer tout ce qui vient de l'internet vers le serveur<br/>
+  intranet.
+</p>
 </body>
 </html>
