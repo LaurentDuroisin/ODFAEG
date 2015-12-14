@@ -30,6 +30,30 @@ Pour paramétrer smoothwall en mode commande, je vous en parlerai plus loin.<br/
 Il ne faut pas oublier d'autoriser l'administration à distance de free-eos sur un autre 	réseau, ceci ce fait à l'aide de du gestionnaire d'administration de free-eos, on va dans <br/>
 le gestionnaire d'administration, on tapes son login et son mot de passe, et on choisi 	accès à distance, là on ajoute le réseau local. (192.168.3.0)<br/>
 Voila, maintenant je vais passer à la page suivante ou je vais configurer un contrôleur de domaine sur le serveur intranet.<br/>
+<h1>Configurer claroline sur free-EOS</h1>
+Création des comptes utilisateurs :  <br/>
+
+Il suffit d'aller sur la page d'administration de free-eos (Le gestionnaire de 	serveur), et de créer les comptes, j'ai créer deux comptes pour tester ainsi que 		deux groupes d'utilisateurs. (profs et élèves.)<br/>
+
+Ensuite il faut créer ce que l'on appelle des ateliers, les ateliers son en fait des 	répertoires dans lesquels les différents utilisateurs du réseau peuvent mettre des choses et les partager.<br/>
+Il y a deux sortes de répertoires, ceux contenant des applications webs (comme 	claroline.) et ceux qui contiennent des fichiers utilisateurs.<br/>
+Pour mettre une application web du genre claroline, il faut associer un atelier qui 	servira de « conteneur » pour l'application web.<br/>
+
+Pour ma part j'ai créer un répertoire qui permet au prof et à ses élèves d'accéder à 	claroline en tapant l'url du répertoire ainsi que un login et un mot de passe.<br/>
+Il a fallut aussi modifier le serveur dns, le serveur dns permet d'associer une adresse IP 	à un nom d'host, il peut dès lors retrouver l'adresse ip du serveur à partir du nom de la machine,<br/>
+cela s'appelle la résolution de nom, ou même faire l'inverse, à partir de 	l'adresse IP du serveur, retrouver le nom de la machine.<br/>	
+Pour pouvoir utiliser le nom d'host de la machine dans l'url du navigateur, ce qui est 	indispensable pour claroline qui utilise le php et redirige les pages en utilisant le nom <br/>
+d'host et pas l'adresse IP dans l'url, il faut préciser à la machine locale ou se trouve le 	serveur dns sinon vous ne pourrez pas accéder à toutes les pages de claroline.<br/>
+(Par 	exemple lorsque vous vous connecter via le formulaire de login et de mot de passe et 	que votre page est redirigée vers une page php dont l'url comporte le nom du serveur et 	non l'adresse ip!)<br/>
+Avec linux, la résolution de nom se fait dans fichier /etc/resolv.conf.<br/>
+Il faut indiquer dans ce fichier l'adresse IP du serveur D.N.S (ici c'est free-eos.) 	ajoutant cette ligne dans le fichier : <br/>
+nameserver 192.168.2.2<br/>
+Et voilà maintenant on peut accéder au serveur web en entrant le nom d'host du serveur 	suivit de son nom de domaine, le nom d'host et le nom de domaine sont séparés par un 	point.<br/>
+	
+Les serveurs dns permettent de retrouver une adresse IP à partir d'un nom d'hôte 	donné, ou l'inverse, ils sont hiérarchiser du plus général au plus spécifique, de ce fait, <br/>
+on retrouve un serveur dns commun à tout les serveurs dns qui existent appelé  le root 	serveur, et si un serveur dns ne possède  pas d 'adresse IP pour un nom d'hôte donné, 	<br/>
+il refile le travail à un autre serveur dns situé plus haut sur la hiérarchie et ça voyage 	de cette manière jusqu'à trouver l'adresse ip du nom d'host donné, dans les modems <br/>
+il y 	a un serveur dns inclus qui se charge de refiler la requêtes dns à d'autres modems et 	ainsi trouver l'ip du destinataire à partir de l'url...par exemple.<br/>
 <a href="tfe4">Page suivante.</a>
 </body>
 </html>
