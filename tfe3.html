@@ -1,0 +1,35 @@
+<html>
+<head>
+</head>
+<body>
+<h1>Configuration du serveur web Free-EOS</h1>
+Pour pouvoir accéder aux pages webs du serveur Free-EOS dans le réseau,<br/>
+il va falloir le configurer.<br/>
+On va commencer par désigner smoothwall comme passerelle par défaut. <br/>
+Comme le serveur web est dans le réseau 192.168.2.0, il faut indiquer l'adresse ip <br/>
+de la passerelle dans ce réseau qui n'est autre que 192.168.2.1.<br/>
+Smoothwall est la passerelle qui fait le lien entre les 3 réseaux. (192.168.3.0, 192.168.2.0 et 192.168.1.0)<br/>
+Il faut donc que tout les paquets à destinations d'autres réseau passent par smoothwall.<br/>
+<h1>Désigner la passerelle par défaut pour le réseau local.</h1>
+Sur chaque machine du réseau local, il faut désigner smoothwall comme étant la passerelle par défaut,
+sour linux, on peut faire cela à l'aide une simple commande : <br/>
+route add default gw 192.168.3.1<br/>
+Ceci va désigner smoothwall comme étant la passerelle par défaut pour le réseau local.
+<h1>Modifier le filtrage des paquets.</h1>
+Cela ne suffit pas, car smoothwall empêche les paquets venant de free-eos vers le 	réseau 	local de passer par mesure de sécurité,<br/>
+seulement ici comme on doit faire des 	tests, il va falloir configurer smoothwall.<br/>
+Il y a deux type de façon de faire, une en mode graphique et une en mode console, pour 	le mode graphique, il suffit de taper l'adresse ip de smoothwall dans un navigateur<br/>
+sur 	une machine locale de cette manière : https://192.168.2.1:441<br/>
+On doit cliquer sur le lien network puis aller dans l'onglet internal, là il faut spécifier 	comme adresse source celle de free-eos (192.168.2.2)<br/>
+et comme adresse de destination, 	le réseau local (192.168.3.0), et comme port, 80 qui est le port utilisé pour les requêtes 	de type http. <br/>
+(http est un protocole de haut niveau permettant de se transférer des pages 	par navigateur ou autre programme d'application.)<br/>
+https est un protocole http sécurisé qui demande un login et un mot de passe avant de 	pouvoir accéder à une page web, les données de ce protocole sont cryptées.<br/>
+On fait pareil mais avec le port 443 administrer le serveur free-eos.<br/>
+Pour paramétrer smoothwall en mode commande, je vous en parlerai plus loin.<br/>
+
+Il ne faut pas oublier d'autoriser l'administration à distance de free-eos sur un autre 	réseau, ceci ce fait à l'aide de du gestionnaire d'administration de free-eos, on va dans <br/>
+le gestionnaire d'administration, on tapes son login et son mot de passe, et on choisi 	accès à distance, là on ajoute le réseau local. (192.168.3.0)<br/>
+Voila, maintenant je vais passer à la page suivante ou je vais configurer un contrôleur de domaine sur le serveur intranet.<br/>
+<a href="tfe4">Page suivante.</a>
+</body>
+</html>
