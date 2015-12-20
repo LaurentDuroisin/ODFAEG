@@ -22,7 +22,7 @@ MyAppli::MyAppli(Vec2f size, std::string title) :
     frc->setView(view);
 
     //getView().setPerspective(-size.x * 0.5f, size.x * 0.5f, -size.y * 0.5f, size.y * 0.5f,-1000, 1000);
-    getRenderComponentManager().addComponent(frc);
+    getRenderComponentManager().addRenderComponent(frc);
     speed = 10.f;
     sensivity = 0.1f;
     oldX = sf::Mouse::getPosition(getRenderWindow()).x;
@@ -106,8 +106,8 @@ void MyAppli::onDisplay(RenderWindow* window) {
     for (unsigned int i = 0; i < entities.size(); i++) {
         window->draw(*entities[i]);
     }*/
-    Entity* lightMap = World::getLightMap("E_PONCTUAL_LIGHT", 1, 0);
-    window->draw(*lightMap, sf::BlendMultiply);
+    Entity& lightMap = World::getLightMap("E_PONCTUAL_LIGHT", 1, 0);
+    window->draw(lightMap, sf::BlendMultiply);
     //std::cout<<()<<std::endl;
 
 }

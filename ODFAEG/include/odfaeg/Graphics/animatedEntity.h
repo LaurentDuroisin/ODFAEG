@@ -68,7 +68,7 @@ class ODFAEG_GRAPHICS_API AnimatedEntity : public Entity {
     *  \brief to redefined in the derived class, return the current frame of the animation.
     *  \return Entity* the current frame of the animation.
     */
-    virtual Entity* getCurrentEntity() const = 0;
+    virtual Entity* getCurrentFrame() const = 0;
 };
 }
 }

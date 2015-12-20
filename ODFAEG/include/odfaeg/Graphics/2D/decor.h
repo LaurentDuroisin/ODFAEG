@@ -43,7 +43,6 @@ namespace odfaeg {
                   * \param Shadow::SHADOW_TYPE : the type of shadow to generate. (A shape, or a black sprite)
                   */
                 Decor(Tile *t, Light *light, int height, Shadow::SHADOW_TYPE shadowType);
-                Entity* clone();
                 bool operator== (Entity &other);
                 /**
                  *\fn void vtserialize(Archive & ar)

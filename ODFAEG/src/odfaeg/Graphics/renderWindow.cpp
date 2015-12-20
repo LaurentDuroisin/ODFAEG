@@ -14,7 +14,7 @@ namespace odfaeg {
         }
 
         ////////////////////////////////////////////////////////////
-        RenderWindow::RenderWindow(VideoMode mode, const String& title, Uint32 style, const ContextSettings& settings, bool useDepthDepth)
+        RenderWindow::RenderWindow(VideoMode mode, const String& title, Uint32 style, const ContextSettings& settings, bool useOpenCL, bool useDepthDepth)
         {
             // Don't call the base class constructor because it contains virtual function calls
             this->useDepthTest = useDepthDepth;
@@ -29,6 +29,7 @@ namespace odfaeg {
                 Shader::setVersionMajor(1);
                 Shader::setVersionMinor(3);
             }
+            (useOpenCL) ? Shader::setUsingOpenCL(true) : Shader::setUsingOpenCL(false);
             vertexArrayId = 0;
         }
 

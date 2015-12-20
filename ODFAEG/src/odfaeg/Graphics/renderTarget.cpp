@@ -118,8 +118,8 @@ namespace odfaeg {
             math::Vec3f(view.getViewport().getWidth(), view.getViewport().getHeight(), 1));
             math::Vec3f coords = view.getViewMatrix().transform(point);
             coords = view.getProjMatrix().project(coords);
-            coords = vpm.toViewportCoordinates(coords);
             coords /= coords.w;
+            coords = vpm.toViewportCoordinates(coords);
             return coords;
         }
 
@@ -377,14 +377,14 @@ namespace odfaeg {
                     glCheck(glEnable(GL_DEPTH_TEST));
                     glCheck(glEnable(GL_ALPHA_TEST));
                     glCheck(glAlphaFunc(GL_GREATER, 0.f));
-                    glCheck(glDepthFunc(GL_LESS));
+                    glCheck(glDepthFunc(GL_GREATER));
                 } else {
                     glCheck(glDisable(GL_DEPTH_TEST));
                     glCheck(glDisable(GL_ALPHA_TEST));
                 }
                 glCheck(glEnable(GL_TEXTURE_2D));
                 glCheck(glEnable(GL_BLEND));
-                glCheck(glClearDepth(1));
+                glCheck(glClearDepth(0));
                 glCheck(glDepthMask(GL_TRUE));
                 glCheck(glDisable(GL_SCISSOR_TEST));
 

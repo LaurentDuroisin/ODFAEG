@@ -8,16 +8,16 @@ namespace odfaeg {
         class ODFAEG_NETWORK_API SymEncPacket : public sf::Packet {
             public :
                 static char* getKey() {
-                    return aes.getKey();
+                    return aes.ossl_getKey();
                 }
                 static char* getIv() {
-                    return aes.getIv();
+                    return aes.ossl_getIv();
                 }
                 static void setKey(char* key) {
-                    aes.setKey(key);
+                    aes.ossl_setKey(key);
                 }
                 static void setIv(char* iv) {
-                    aes.setIv(iv);
+                    aes.ossl_setIv(iv);
                 }
             private :
                 virtual const void* onSend(std::size_t& dataSize);

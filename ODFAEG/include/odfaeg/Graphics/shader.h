@@ -238,6 +238,7 @@ namespace odfaeg {
             /// \param location  Location of the attribute in the vertex.
             ///
             void bindAttribute(int location, const std::string& name);
+            void setParameter(const std::string& name);
             ////////////////////////////////////////////////////////////
             /// \brief Change a float parameter of the shader
             ///
@@ -513,6 +514,8 @@ namespace odfaeg {
             static void setVersionMinor(unsigned int minorVersion);
             static unsigned int getShadingLanguageVersionMajor();
             static unsigned int getShadingLanguageVersionMinor();
+            static void setUsingOpenCL(bool useOpenCL);
+            static bool isUsingOpenCL();
         private :
 
             ////////////////////////////////////////////////////////////
@@ -565,6 +568,7 @@ namespace odfaeg {
             VertexAttribTable m_vertexAttribs; ///< Vertex attributes location cache.
             static unsigned int shading_language_version_major;
             static unsigned int shading_language_version_minor;
+            static bool useOpenCL;
         };
     }
 

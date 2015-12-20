@@ -40,11 +40,11 @@ namespace odfaeg {
 
                     if (anims[i]->isRunning() &&
                         anims[i]->getElapsedTime().asSeconds() > anims[i]->getFrameRate()) {
-                        anims[i]->nextImage();
-                        if (graphic::World::containsVisibleEntity(anims[i])) {
-                            graphic::World::changeVisibleEntity(anims[i]->getPreviousCurrentEntity(), anims[i]->getCurrentEntity());
+                        anims[i]->computeNextFrame();
+                        if (anims[i]->isCurrentFrameChanged() && graphic::World::containsVisibleEntity(anims[i])) {
+                            graphic::World::changeVisibleEntity(anims[i]->getPreviousFrame(), anims[i]->getCurrentFrame());
                         }
-                        anims[i]->setCurrentEntityChanged(false);
+                        anims[i]->setCurrentFrameChanged(false);
                         anims[i]->resetClock();
                     }
                 }

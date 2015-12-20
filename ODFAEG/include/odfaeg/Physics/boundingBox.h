@@ -61,7 +61,8 @@ namespace odfaeg {
                 bool onIntersects (BaseInterface& interface, math::Ray& ray, math::Vec3f& near, math::Vec3f& far, CollisionResultSet::Info& info) {
                     return interface.intersectsWhere(ray, near, far, info);
                 }
-                bool intersects(BoundingVolume &bv, CollisionResultSet::Info& info);
+                bool intersects (BoundingBox& bx);
+                bool intersects (BoundingVolume &bv, CollisionResultSet::Info& info);
                 bool intersects (BoundingSphere &bs, CollisionResultSet::Info& info);
                 /** \fn bool intersects (BoundingEllipsoid &be)
                 *   \brief test if a bounding ellipsoid collides with the bounding box.

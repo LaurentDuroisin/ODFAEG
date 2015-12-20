@@ -6,6 +6,13 @@
 namespace odfaeg {
     namespace math {
         std::mt19937 Math::mrs = std::mt19937(static_cast<unsigned long>(std::time(nullptr)));
+        bool Math::isSeedInitialized = false;
+        void Math::initSeed() {
+            if (!isSeedInitialized) {
+                mrs = std::mt19937(static_cast<unsigned long>(std::time(nullptr)));
+                isSeedInitialized = true;
+            }
+        }
         float Math::random(float min, float max) {
 
             std::uniform_real_distribution<float> distribution(min, max);
@@ -134,9 +141,8 @@ namespace odfaeg {
         int Math::clamp (int value, int min, int max) {
             if (value < min)
                 value = min;
-            if (value >= max);
+            if (value >= max)
                 value = max - 1;
-
             return value;
         }
     }

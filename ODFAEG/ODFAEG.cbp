@@ -31,8 +31,8 @@
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
 				<Compiler>
+					<Add option="-O3" />
 					<Add option="-Wall" />
-					<Add option="-O2" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -40,7 +40,6 @@
 			</Target>
 		</Build>
 		<Compiler>
-			<Add option="-fexpensive-optimizations" />
 			<Add option="-Os" />
 			<Add option="-O3" />
 			<Add option="-std=c++11" />
@@ -50,6 +49,7 @@
 			<Add directory="../../../../../usr/include/freetype2" />
 			<Add directory="../../../../../usr/include/AL" />
 			<Add directory="../../../../../usr/include/SFML" />
+			<Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include" />
 		</Compiler>
 		<Linker>
 			<Add option="-pg" />
@@ -70,6 +70,7 @@
 		<Unit filename="include/odfaeg/Core/any.h" />
 		<Unit filename="include/odfaeg/Core/application.h" />
 		<Unit filename="include/odfaeg/Core/archive.h" />
+		<Unit filename="include/odfaeg/Core/clock.h" />
 		<Unit filename="include/odfaeg/Core/command.h" />
 		<Unit filename="include/odfaeg/Core/command.tpp" />
 		<Unit filename="include/odfaeg/Core/entitySystem.h" />
@@ -92,6 +93,7 @@
 		<Unit filename="include/odfaeg/Core/stateParameter.h" />
 		<Unit filename="include/odfaeg/Core/stateParameterBase.h" />
 		<Unit filename="include/odfaeg/Core/stateStack.h" />
+		<Unit filename="include/odfaeg/Core/time.h" />
 		<Unit filename="include/odfaeg/Core/timer.h" />
 		<Unit filename="include/odfaeg/Core/utilities.h" />
 		<Unit filename="include/odfaeg/Core/variant.h" />
@@ -106,6 +108,9 @@
 		<Unit filename="include/odfaeg/Graphics/GUI/actionListener.hpp" />
 		<Unit filename="include/odfaeg/Graphics/GUI/button.hpp" />
 		<Unit filename="include/odfaeg/Graphics/GUI/focusListener.hpp" />
+		<Unit filename="include/odfaeg/Graphics/GUI/menu.hpp" />
+		<Unit filename="include/odfaeg/Graphics/GUI/menuItem.hpp" />
+		<Unit filename="include/odfaeg/Graphics/GUI/menubar.hpp" />
 		<Unit filename="include/odfaeg/Graphics/GUI/optionPane.hpp" />
 		<Unit filename="include/odfaeg/Graphics/GUI/textArea.hpp" />
 		<Unit filename="include/odfaeg/Graphics/anim.h" />
@@ -125,8 +130,7 @@
 		<Unit filename="include/odfaeg/Graphics/entityLight.h" />
 		<Unit filename="include/odfaeg/Graphics/entityManager.h" />
 		<Unit filename="include/odfaeg/Graphics/export.hpp" />
-		<Unit filename="include/odfaeg/Graphics/fastRenderComponent.h" />
-		<Unit filename="include/odfaeg/Graphics/fastRenderComponentManager.h" />
+		<Unit filename="include/odfaeg/Graphics/fastRenderComponent.hpp" />
 		<Unit filename="include/odfaeg/Graphics/font.h" />
 		<Unit filename="include/odfaeg/Graphics/gridMap.h" />
 		<Unit filename="include/odfaeg/Graphics/heavyComponent.h" />
@@ -134,8 +138,10 @@
 		<Unit filename="include/odfaeg/Graphics/lightComponent.h" />
 		<Unit filename="include/odfaeg/Graphics/map.h" />
 		<Unit filename="include/odfaeg/Graphics/model.h" />
+		<Unit filename="include/odfaeg/Graphics/oitRenderComponent.h" />
 		<Unit filename="include/odfaeg/Graphics/projMatrix.h" />
 		<Unit filename="include/odfaeg/Graphics/rectangleShape.h" />
+		<Unit filename="include/odfaeg/Graphics/renderComponentManager.h" />
 		<Unit filename="include/odfaeg/Graphics/renderStates.h" />
 		<Unit filename="include/odfaeg/Graphics/renderTarget.h" />
 		<Unit filename="include/odfaeg/Graphics/renderTexture.h" />
@@ -174,6 +180,7 @@
 		<Unit filename="include/odfaeg/Math/vec2f.h" />
 		<Unit filename="include/odfaeg/Math/vec4.h" />
 		<Unit filename="include/odfaeg/Network/aes.h" />
+		<Unit filename="include/odfaeg/Network/bigInt.hpp" />
 		<Unit filename="include/odfaeg/Network/client.h" />
 		<Unit filename="include/odfaeg/Network/encryptedPacket.h" />
 		<Unit filename="include/odfaeg/Network/network.h" />
@@ -211,12 +218,14 @@
 		<Unit filename="src/odfaeg/Audio/stream.cpp" />
 		<Unit filename="src/odfaeg/Core/actions.cpp" />
 		<Unit filename="src/odfaeg/Core/application.cpp" />
+		<Unit filename="src/odfaeg/Core/clock.cpp" />
 		<Unit filename="src/odfaeg/Core/command.cpp" />
 		<Unit filename="src/odfaeg/Core/entitySystem.cpp" />
 		<Unit filename="src/odfaeg/Core/erreur.cpp" />
 		<Unit filename="src/odfaeg/Core/state.cpp" />
 		<Unit filename="src/odfaeg/Core/stateGroup.cpp" />
 		<Unit filename="src/odfaeg/Core/stateStack.cpp" />
+		<Unit filename="src/odfaeg/Core/time.cpp" />
 		<Unit filename="src/odfaeg/Core/utilities.cpp" />
 		<Unit filename="src/odfaeg/Graphics/2D/ambientLight.cpp" />
 		<Unit filename="src/odfaeg/Graphics/2D/decor.cpp" />
@@ -227,6 +236,9 @@
 		<Unit filename="src/odfaeg/Graphics/2D/wall.cpp" />
 		<Unit filename="src/odfaeg/Graphics/3D/cube.cpp" />
 		<Unit filename="src/odfaeg/Graphics/GUI/button.cpp" />
+		<Unit filename="src/odfaeg/Graphics/GUI/menu.cpp" />
+		<Unit filename="src/odfaeg/Graphics/GUI/menuItem.cpp" />
+		<Unit filename="src/odfaeg/Graphics/GUI/menubar.cpp" />
 		<Unit filename="src/odfaeg/Graphics/GUI/optionPane.cpp" />
 		<Unit filename="src/odfaeg/Graphics/GUI/textArea.cpp" />
 		<Unit filename="src/odfaeg/Graphics/GlDebug.cpp" />
@@ -242,15 +254,16 @@
 		<Unit filename="src/odfaeg/Graphics/cpuRenderComponent.cpp" />
 		<Unit filename="src/odfaeg/Graphics/entity.cpp" />
 		<Unit filename="src/odfaeg/Graphics/fastRenderComponent.cpp" />
-		<Unit filename="src/odfaeg/Graphics/fastRenderComponentManager.cpp" />
 		<Unit filename="src/odfaeg/Graphics/font.cpp" />
 		<Unit filename="src/odfaeg/Graphics/glCheck.cpp" />
 		<Unit filename="src/odfaeg/Graphics/glCheck.h" />
 		<Unit filename="src/odfaeg/Graphics/gridMap.cpp" />
 		<Unit filename="src/odfaeg/Graphics/map.cpp" />
 		<Unit filename="src/odfaeg/Graphics/model.cpp" />
+		<Unit filename="src/odfaeg/Graphics/oitRenderComponent.cpp" />
 		<Unit filename="src/odfaeg/Graphics/projMatrix.cpp" />
 		<Unit filename="src/odfaeg/Graphics/rectangleShape.cpp" />
+		<Unit filename="src/odfaeg/Graphics/renderComponentManager.cpp" />
 		<Unit filename="src/odfaeg/Graphics/renderStates.cpp" />
 		<Unit filename="src/odfaeg/Graphics/renderTarget.cpp" />
 		<Unit filename="src/odfaeg/Graphics/renderTexture.cpp" />
@@ -292,6 +305,7 @@
 		<Unit filename="src/odfaeg/Math/vec4.cpp" />
 		<Unit filename="src/odfaeg/Math/viewMatrix.cpp" />
 		<Unit filename="src/odfaeg/Network/aes.cpp" />
+		<Unit filename="src/odfaeg/Network/bigInt.cpp" />
 		<Unit filename="src/odfaeg/Network/client.cpp" />
 		<Unit filename="src/odfaeg/Network/encryptedPacket.cpp" />
 		<Unit filename="src/odfaeg/Network/network.cpp" />
@@ -310,9 +324,6 @@
 		<Unit filename="src/odfaeg/Physics/orientedBoundingBox.cpp" />
 		<Unit filename="src/odfaeg/Physics/particle.cpp" />
 		<Unit filename="src/odfaeg/Physics/particleSystem.cpp" />
-		<Unit filename="src/odfaeg/Sound/SoundFile.cpp" />
-		<Unit filename="src/odfaeg/Sound/player.cpp" />
-		<Unit filename="src/odfaeg/Sound/stream.cpp" />
 		<Unit filename="src/odfaeg/Window/GlContext.hpp" />
 		<Unit filename="src/odfaeg/Window/InputImpl.hpp" />
 		<Unit filename="src/odfaeg/Window/JoystickImpl.hpp" />

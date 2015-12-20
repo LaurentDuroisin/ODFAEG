@@ -16,6 +16,121 @@ namespace odfaeg {
             vboNormalBuffer = 0;
             vboIndexBuffer = 0;
             needToUpdateVBOBuffer = false;
+            nbVerticesPerFace = 4;
+            loop = true;
+        }
+        VertexArray::VertexArray(const VertexArray& va) {
+            vboVertexBuffer = 0;
+            vboNormalBuffer = 0;
+            vboIndexBuffer = 0;
+            m_normals = va.m_normals;
+            m_locals = va.m_locals;
+            m_vertices = va.m_vertices;
+            m_primitiveType = va.m_primitiveType;
+            oldVerticesSize = va.oldVerticesSize;
+            m_numIndexes = va.m_numIndexes;
+            m_baseIndexes = va.m_baseIndexes;
+            m_baseVertices = va.m_baseVertices;
+            m_indexes = va.m_indexes;
+            loop = va.loop;
+            m_vPosX = va.m_vPosX;
+            m_vPosY = va.m_vPosY;
+            m_vPosZ = va.m_vPosZ;
+            m_vPosW = va.m_vPosW;
+            m_vcRed = va.m_vcRed;
+            m_vcGreen = va.m_vcGreen;
+            m_vcBlue = va.m_vcBlue;
+            m_vcAlpha = va.m_vcAlpha;
+            m_ctX = va.m_ctX;
+            m_ctY = va.m_ctY;
+            nbVerticesPerFace = va.nbVerticesPerFace;
+            needToUpdateVBOBuffer = true;
+        }
+        VertexArray::VertexArray(const VertexArray&& va) {
+            vboVertexBuffer = 0;
+            vboNormalBuffer = 0;
+            vboIndexBuffer = 0;
+            m_normals = va.m_normals;
+            m_locals = va.m_locals;
+            m_vertices = va.m_vertices;
+            m_primitiveType = va.m_primitiveType;
+            oldVerticesSize = va.oldVerticesSize;
+            m_numIndexes = va.m_numIndexes;
+            m_baseIndexes = va.m_baseIndexes;
+            m_baseVertices = va.m_baseVertices;
+            m_indexes = va.m_indexes;
+            loop = va.loop;
+            m_vPosX = va.m_vPosX;
+            m_vPosY = va.m_vPosY;
+            m_vPosZ = va.m_vPosZ;
+            m_vPosW = va.m_vPosW;
+            m_vcRed = va.m_vcRed;
+            m_vcGreen = va.m_vcGreen;
+            m_vcBlue = va.m_vcBlue;
+            m_vcAlpha = va.m_vcAlpha;
+            m_ctX = va.m_ctX;
+            m_ctY = va.m_ctY;
+            nbVerticesPerFace = va.nbVerticesPerFace;
+            needToUpdateVBOBuffer = true;
+        }
+        VertexArray& VertexArray::operator= (const VertexArray& va) {
+            vboVertexBuffer = 0;
+            vboNormalBuffer = 0;
+            vboIndexBuffer = 0;
+            m_normals = va.m_normals;
+            m_locals = va.m_locals;
+            m_vertices = va.m_vertices;
+            m_primitiveType = va.m_primitiveType;
+            oldVerticesSize = va.oldVerticesSize;
+            m_numIndexes = va.m_numIndexes;
+            m_baseIndexes = va.m_baseIndexes;
+            m_baseVertices = va.m_baseVertices;
+            m_indexes = va.m_indexes;
+            loop = va.loop;
+            m_vPosX = va.m_vPosX;
+            m_vPosY = va.m_vPosY;
+            m_vPosZ = va.m_vPosZ;
+            m_vPosW = va.m_vPosW;
+            m_vcRed = va.m_vcRed;
+            m_vcGreen = va.m_vcGreen;
+            m_vcBlue = va.m_vcBlue;
+            m_vcAlpha = va.m_vcAlpha;
+            m_ctX = va.m_ctX;
+            m_ctY = va.m_ctY;
+            nbVerticesPerFace = va.nbVerticesPerFace;
+            needToUpdateVBOBuffer = true;
+            return *this;
+        }
+        VertexArray& VertexArray::operator= (const VertexArray&& va) {
+            vboVertexBuffer = 0;
+            vboNormalBuffer = 0;
+            vboIndexBuffer = 0;
+            m_normals = va.m_normals;
+            m_locals = va.m_locals;
+            m_vertices = va.m_vertices;
+            m_primitiveType = va.m_primitiveType;
+            oldVerticesSize = va.oldVerticesSize;
+            m_numIndexes = va.m_numIndexes;
+            m_baseIndexes = va.m_baseIndexes;
+            m_baseVertices = va.m_baseVertices;
+            m_indexes = va.m_indexes;
+            loop = va.loop;
+            m_vPosX = va.m_vPosX;
+            m_vPosY = va.m_vPosY;
+            m_vPosZ = va.m_vPosZ;
+            m_vPosW = va.m_vPosW;
+            m_vcRed = va.m_vcRed;
+            m_vcGreen = va.m_vcGreen;
+            m_vcBlue = va.m_vcBlue;
+            m_vcAlpha = va.m_vcAlpha;
+            m_ctX = va.m_ctX;
+            m_ctY = va.m_ctY;
+            nbVerticesPerFace = va.nbVerticesPerFace;
+            needToUpdateVBOBuffer = true;
+            return *this;
+        }
+        bool VertexArray::isLoop() {
+            return loop;
         }
         void VertexArray::transform(TransformMatrix tm) {
             for (unsigned int i = 0; i < m_vertices.size(); i++) {
@@ -33,7 +148,9 @@ namespace odfaeg {
             vboVertexBuffer = 0;
             vboNormalBuffer = 0;
             vboIndexBuffer = 0;
-            needToUpdateVBOBuffer = false;
+            needToUpdateVBOBuffer = true;
+            loop = true;
+            nbVerticesPerFace = 4;
         }
         void VertexArray::addInstancedRenderingInfos(unsigned int numIndexes, unsigned int baseVertex, unsigned int baseIndex) {
             m_numIndexes.push_back(numIndexes);
@@ -43,7 +160,7 @@ namespace odfaeg {
         void VertexArray::addIndex(unsigned int index) {
             m_indexes.push_back(index);
             if (!needToUpdateVBOBuffer)
-                    needToUpdateVBOBuffer = true;
+                needToUpdateVBOBuffer = true;
         }
         std::vector<unsigned int> VertexArray::getBaseIndexes() {
             return m_baseIndexes;
@@ -137,12 +254,20 @@ namespace odfaeg {
             }*/
             //if (!contains)  {
                 m_vertices.push_back(vertex);
+                m_vPosX.push_back(vertex.position.x);
+                m_vPosY.push_back(vertex.position.y);
+                m_vPosZ.push_back(vertex.position.z);
+                m_vPosW.push_back(1);
+                m_vcRed.push_back(vertex.color.r);
+                m_vcBlue.push_back(vertex.color.g);
+                m_vcGreen.push_back(vertex.color.b);
+                m_vcAlpha.push_back(vertex.color.a);
+                m_ctX.push_back(vertex.texCoords.x);
+                m_ctY.push_back(vertex.texCoords.y);
                 m_locals.push_back(math::Vec3f(vertex.position.x, vertex.position.y, vertex.position.z));
                 if (!needToUpdateVBOBuffer)
-                    needToUpdateVBOBuffer = true;
-            //
+                    needToUpdateVBOBuffer = true;            //
         }
-
         math::Vec3f VertexArray::getLocal(unsigned int index) const {
             return m_locals[index];
         }
@@ -298,6 +423,24 @@ namespace odfaeg {
         }
         void VertexArray::updateVBOBuffer() {
             needToUpdateVBOBuffer = true;
+        }
+        void VertexArray::remove (unsigned int index) {
+            std::vector<Vertex>::iterator it = m_vertices.begin();
+            for (unsigned int i = 0; i < m_vertices.size(); i++) {
+                if (i == index) {
+                    it = m_vertices.erase(it);
+                } else {
+                    it++;
+                }
+                std::vector<unsigned int>::iterator it2 = m_indexes.begin();
+                for (unsigned int j = 0; j < m_indexes.size(); j++) {
+                    if (i == m_indexes[j]) {
+                        it2 = m_indexes.erase(it2);
+                    } else {
+                        it2++;
+                    }
+                }
+            }
         }
         VertexArray::~VertexArray() {
             if (VBO::isAvailable() && vboVertexBuffer != 0) {

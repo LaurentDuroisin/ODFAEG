@@ -34,9 +34,7 @@ set(SRC
 	${INCROOT}/stateParameter.h
 	${INCROOT}/stateParameterBase.h
 	${INCROOT}/stateExecutor.h
-	${SRCROOT}/actions.cpp
-	${INCROOT}/world.h
-	${SRCROOT}/world.cpp
+	${SRCROOT}/actions.cpp	
 	${INCROOT}/archive.h	
 	)	
 

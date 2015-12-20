@@ -10,6 +10,9 @@
 #include <SFML/Graphics.hpp>
 class Caracter : public odfaeg::graphic::AnimatedEntity {
 public :
+    enum ANIMS {
+        WALKING, ATTACKING = 8
+    };
     Caracter() : AnimatedEntity(odfaeg::math::Vec3f(0, 0, 0), odfaeg::math::Vec3f(0, 0, 0), odfaeg::math::Vec3f(0, 0, 0),"E_CARACTER") {
         currentAnimIndex = 0;
     }
@@ -58,7 +61,9 @@ public :
     void setLevel (int level);
     sf::Time getTimeOfLastAttack();
     sf::Time getTimeOfLastHpRegen();
-    void attackFocusedMonster();
+    void attackFocusedCaracter();
+    void setFocusedCaracter(Caracter* caracter);
+    Caracter* getFocusedCaracter();
     void up (int xp);
     int getCurrentXp ();
     int getXpReqForNextLevel ();
@@ -66,12 +71,13 @@ public :
     void setRegenHpSpeed(float regenHpSpeed);
     int getRegenHpAmount();
     void setRegenHpAmount(int regenHpAmount);
-    Entity* getCurrentEntity() const;
+    Entity* getCurrentFrame() const;
     void onDraw(odfaeg::graphic::RenderTarget&, odfaeg::graphic::RenderStates) const;
     void onMove(odfaeg::math::Vec3f& t);
     virtual void setIsMovingFromKeyboard(bool b) {}
     virtual bool isMovingFromKeyboard() = 0;
     sf::Clock& getClkTransfertTime();
+
     template <typename Archive>
     void vtserialize(Archive & ar) {
         Entity::vtserialize(ar);
@@ -101,6 +107,8 @@ public :
     int life, maxLife, regenHpAmount;
     bool attacking, fightingMode;
     sf::Clock clockAtkSpeed, clockRegenHp, clockTransfertTime;
+    Caracter* focusedCaracter;
+    ANIMS baseAnimIndex;
 };
 #endif
 

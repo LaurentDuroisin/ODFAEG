@@ -64,9 +64,9 @@ void MyAppli::onInit () {
     //fire1->setShadowCenter(Vec2f(80, 100));
     //fire2->setShadowCenter(Vec2f(80, 100));
     //fire3->setShadowCenter(Vec2f(80, 100));
-    fire->addEntity(fire1);
-    fire->addEntity(fire2);
-    fire->addEntity(fire3);
+    fire->addFrame(fire1);
+    fire->addFrame(fire2);
+    fire->addFrame(fire3);
     fire->play(true);
     World::addEntity(fire);
     //PonctualLight* light = new PonctualLight(Vec2f(50, 150),100,50,0,200,sf::Color(255,255,0),16,0);
@@ -120,6 +120,8 @@ void MyAppli::onExec () {
         } else if (request == "MOVEFROMKEYBOARD") {
             int id = conversionStringInt(infos[1]);
             Hero* hero = static_cast<Hero*> (World::getEntity(id));
+            hero->setFightingMode(false);
+            hero->setAttacking(false);
             Vec3f dir (conversionStringFloat(infos[2]), conversionStringFloat(infos[3]), 0);
             hero->setDir(Vec2f(dir.x, dir.y));
             hero->setMoving(true);
@@ -166,6 +168,8 @@ void MyAppli::onExec () {
         } else if (request == "MOVEFROMPATH") {
             int id = conversionStringInt(infos[1]);
             Hero* hero = static_cast<Hero*> (World::getEntity(id));
+            hero->setFightingMode(false);
+            hero->setAttacking(false);
             Vec3f fPos (conversionStringInt(infos[2]), conversionStringInt(infos[3]), 0);
             sf::Int64 last_cli_time = conversionStringLong(infos[4]);
             sf::Int64 cli_time = user->getClientTime();
@@ -185,7 +189,7 @@ void MyAppli::onExec () {
                     bx.move(Vec3f(d.x, d.y, 0));
                 }
                 bx.setPosition(bx.getPosition().x, bx.getPosition().y, 0);
-                if (bx.isPointInside(fPos)) {
+                if (bx.isPointInside(fPos) && monster->isAlive()) {
                     isMonsterOnMouse = true;
                     int id = monster->getId();
                     int nbMaxHp = monster->getMaxLife();
@@ -253,8 +257,34 @@ void MyAppli::onExec () {
                 }
             }
         //Update the path followed by the caracter. (For mouse movements)
-        } else if (request == "SELECT_MONSTER") {
-
+        } else if (request == "ATTACK") {
+            int id = conversionStringInt(infos[1]);
+            Hero* hero = static_cast<Hero*> (World::getEntity(id));
+            Vec3f fPos (conversionStringInt(infos[2]), conversionStringInt(infos[3]), 0);
+            sf::Int64 last_cli_time = conversionStringLong(infos[4]);
+            sf::Int64 cli_time = user->getClientTime();
+            sf::Int64 elapsedTime = cli_time - last_cli_time;
+            std::vector<Entity*> monsters = World::getEntities("E_MONSTER");
+            bool isMonsterOnMouse = false;
+            for (unsigned int i = 0; i < monsters.size(); i++) {
+                Monster* monster = static_cast<Monster*>(monsters[i]);
+                BoundingBox bx = monster->getGlobalBounds();
+                sf::Int64 deltaTime = monster->getClkLastMove().getElapsedTime().asMicroseconds() - elapsedTime;
+                //std::cout<<"elapseTime : "<<elapsedTime<<std::endl<<"deltaTime : "<<deltaTime<<std::endl;
+                if (deltaTime < 0 || monster->isMoving()) {
+                    Vec2f pos = (monster->isMoving()) ?
+                                Computer::getPosOnPathFromTime(monster->getCenter(),monster->getPath(),elapsedTime,monster->getSpeed())
+                                : Computer::getPosOnPathFromTime(monster->getCenter(),monster->getPath(),deltaTime,monster->getSpeed());
+                    Vec2f d = pos - Vec2f(monster->getCenter().x, monster->getCenter().y);
+                    bx.move(Vec3f(d.x, d.y, 0));
+                }
+                bx.setPosition(bx.getPosition().x, bx.getPosition().y, 0);
+                if (bx.isPointInside(fPos) && monster->isAlive()) {
+                    isMonsterOnMouse = true;
+                    hero->setFocusedCaracter(monster);
+                    hero->setFightingMode(true);
+                }
+            }
         } else if (request == "GETCARPOS") {
             std::vector<Entity*> caracters = World::getEntities("E_MONSTER+E_HERO");
             for (unsigned int i = 0; i < caracters.size(); i++) {
@@ -319,7 +349,64 @@ void MyAppli::onExec () {
     std::vector<Entity*> caracters = World::getEntities("E_HERO+E_MONSTER");
     for (unsigned int i = 0; i < caracters.size(); i++) {
         Caracter* caracter = static_cast<Caracter*>(caracters[i]);
-        if (caracter->isMoving()) {
+        if (caracter->isInFightingMode()) {
+            Caracter* ennemi = caracter->getFocusedCaracter();
+            if (ennemi != nullptr) {
+                int distToEnnemi = caracter->getCenter().computeDist(ennemi->getCenter());
+                if (distToEnnemi > caracter->getRange() && caracter->isMoving()) {
+                    caracter->setAttacking(false);
+                    sf::Int64 elapsedTime = getClock("LoopTime").getElapsedTime().asMicroseconds();
+                    Vec2f actualPos = caracter->getCenter();
+                    Vec2f newPos = Computer::getPosOnPathFromTime(actualPos, caracter->getPath(), elapsedTime, caracter->getSpeed());
+                    if (newPos.computeDist(caracter->getPath()[caracter->getPath().size() - 1]) <= PATH_ERROR_MARGIN) {
+                        caracter->setMoving(false);
+                        newPos = caracter->getPath()[caracter->getPath().size() - 1];
+                        std::string message = "STOPCARMOVE"+conversionIntString(caracter->getId())+"*"+conversionFloatString(newPos.x)+"*"+conversionFloatString(newPos.y);
+                        SymEncPacket packet;
+                        packet<<message;
+                        Network::sendTcpPacket(packet);
+                    }
+                    Vec2f d = newPos - actualPos;
+                    Vec2f dir = d.normalize();
+                    if (dir != caracter->getDir())
+                        caracter->setDir(dir);
+                    World::moveEntity(caracter, d.x, d.y, d.y);
+                } else if (distToEnnemi > caracter->getRange() && !caracter->isMoving()) {
+                    std::vector<Vec2f> path = World::getPath(caracter, caracter->getFocusedCaracter()->getCenter());
+                    if (path.size() > 0) {
+                        caracter->setPath(path);
+                        caracter->setMoving(true);
+                        SymEncPacket packet;
+                        std::string response="";
+                        int size = path.size();
+                        response += "NEWPATH"+conversionIntString(size)+"*"+conversionIntString(caracter->getId())+"*"+conversionFloatString(caracter->getCenter().x)+"*"+conversionFloatString(caracter->getCenter().y)+"*";
+                        for (int i = 0; i < size; i++) {
+                            response += conversionFloatString(path[i].x)+"*"+conversionFloatString(path[i].y);
+                            if (i != size - 1)
+                                response += "*";
+                        }
+                        packet<<response;
+                        Network::sendTcpPacket(packet);
+                    }
+                } else {
+                    if (caracter->isMoving()) {
+                        caracter->setMoving(false);
+                        Vec3f newPos = caracter->getCenter();
+                        std::string message = "STOPCARMOVE"+conversionIntString(caracter->getId())+"*"+conversionFloatString(newPos.x)+"*"+conversionFloatString(newPos.y);
+                        SymEncPacket packet;
+                        packet<<message;
+                        Network::sendTcpPacket(packet);
+                    }
+                    caracter->setAttacking(true);
+                    caracter->attackFocusedCaracter();
+                    Caracter* monster = caracter->getFocusedCaracter();
+                    if (!monster->isInFightingMode()) {
+                        monster->setFightingMode(true);
+                        monster->setFocusedCaracter(caracter);
+                    }
+                }
+            }
+        } else if (caracter->isMoving()) {
             if (caracter->isMovingFromKeyboard()) {
                 sf::Int64 elapsedTime = getClock("LoopTime").getElapsedTime().asMicroseconds();
                 Vec3f actualPos = Vec3f(caracter->getCenter().x, caracter->getCenter().y, 0);
@@ -356,7 +443,7 @@ void MyAppli::onExec () {
     std::vector<Entity*> monsters = World::getEntities("E_MONSTER");
     for (unsigned int i = 0; i < monsters.size(); i++) {
         Monster* monster = static_cast<Monster*>(monsters[i]);
-        if (monster->getClkLastMove().getElapsedTime().asMicroseconds() >= monster->getTimeUntilNextMove().asMicroseconds()) {
+        if (!monster->isInFightingMode() && monster->isAlive() && monster->getClkLastMove().getElapsedTime().asMicroseconds() >= monster->getTimeUntilNextMove().asMicroseconds()) {
             Vec3f finalPos;
             do {
                 finalPos = monster->respawn();
@@ -380,6 +467,45 @@ void MyAppli::onExec () {
             SymEncPacket packet;
             packet<<response;
             Network::sendTcpPacket(packet);
+        } else if (monster->isInFightingMode() && monster->isAlive())  {
+            Caracter* ennemi = monster->getFocusedCaracter();
+            int distToEnnemi = monster->getCenter().computeDist(ennemi->getCenter());
+            if (distToEnnemi > monster->getRange() && monster->isMoving()) {
+                monster->setAttacking(false);
+                sf::Int64 elapsedTime = getClock("LoopTime").getElapsedTime().asMicroseconds();
+                Vec2f actualPos = monster->getCenter();
+                Vec2f newPos = Computer::getPosOnPathFromTime(actualPos, monster->getPath(), elapsedTime, monster->getSpeed());
+                if (newPos.computeDist(monster->getPath()[monster->getPath().size() - 1]) <= PATH_ERROR_MARGIN) {
+                    monster->setMoving(false);
+                    newPos = monster->getPath()[monster->getPath().size() - 1];
+                    std::string message = "STOPCARMOVE"+conversionIntString(caracter->getId())+"*"+conversionFloatString(newPos.x)+"*"+conversionFloatString(newPos.y);
+                    SymEncPacket packet;
+                    packet<<message;
+                    Network::sendTcpPacket(packet);
+                }
+                Vec2f d = newPos - actualPos;
+                Vec2f dir = d.normalize();
+                if (dir != monster->getDir())
+                    monster->setDir(dir);
+                World::moveEntity(monster, d.x, d.y, d.y);
+            } else if (distToEnnemi > monster->getRange() && !monster->isMoving()) {
+                std::vector<Vec2f> path = World::getPath(monster, monster->getFocusedCaracter()->getCenter());
+                if (path.size() > 0) {
+                    monster->setPath(path);
+                    monster->setMoving(true);
+                    SymEncPacket packet;
+                    std::string response="";
+                    int size = path.size();
+                    response += "NEWPATH"+conversionIntString(size)+"*"+conversionIntString(monster->getId())+"*"+conversionFloatString(monster->getCenter().x)+"*"+conversionFloatString(monster->getCenter().y)+"*";
+                    for (int i = 0; i < size; i++) {
+                        response += conversionFloatString(path[i].x)+"*"+conversionFloatString(path[i].y);
+                        if (i != size - 1)
+                            response += "*";
+                    }
+                    packet<<response;
+                    Network::sendTcpPacket(packet);
+                }
+            }
         }
     }
 }

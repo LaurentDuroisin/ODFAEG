@@ -128,7 +128,7 @@ namespace odfaeg {
             flat = true;
             computeVectors();
         }
-        void BoundingBox::computeVectors() {
+        void OrientedBoundingBox::computeVectors() {
             edgeNormals.clear();
             edgeBissectors.clear();
             faceNormals.clear();

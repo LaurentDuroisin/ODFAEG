@@ -45,6 +45,9 @@ namespace odfaeg {
                 }
                 return info;
             }
+            static void clear() {
+                infos.clear();
+            }
             private :
             static std::vector<Info> infos;
         };

@@ -5,6 +5,7 @@
 #include "../../../include/odfaeg/Core/erreur.h"
 #include "maths.h"
 #include "export.hpp"
+#include "../Core/serialization.h"
 /**
   *\namespace odfaeg
   * the namespace of the Opensource Development Framework Adapted for Every Games.
@@ -25,7 +26,7 @@ namespace odfaeg {
           * Vectors are very usefull for physic's and mathematic's algorithms. (Physics, geometry, ...)
           * In ODFAEG, vectors are used to define a direction or a point.
           */
-        class ODFAEG_MATH_API Vec2f : public sf::Vector2f {
+        class ODFAEG_MATH_API Vec2f : public sf::Vector2f, public core::Serializable {
             public:
             /**\fn Vec2f()
             *  \brief default constructror.

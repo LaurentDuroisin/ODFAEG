@@ -60,8 +60,8 @@ set(SRC_GRAPHICS
 	${SRCROOT}/view.cpp
 	${INCROOT}/component.h
 	${SRCROOT}/component.cpp
-	${INCROOT}/fastRenderComponentManager.h
-	${SRCROOT}/fastRenderComponentManager.cpp
+	${INCROOT}/renderComponentManager.h
+	${SRCROOT}/renderComponentManager.cpp
 	${INCROOT}/vbo.h
 	${SRCROOT}/vbo.cpp
 	${INCROOT}/batcher.h
@@ -77,8 +77,8 @@ set(SRC_GRAPHICS
 	${SRCROOT}/animation.cpp	
 	${INCROOT}/tile.h
 	${SRCROOT}/tile.cpp
-	${INCROOT}/fastRenderComponent.h
-	${SRCROOT}/fastRenderComponent.cpp
+	${INCROOT}/oitRenderComponent.h
+	${SRCROOT}/oitRenderComponent.cpp
 	${INCROOT}/animatedEntity.h	
 	${INCROOT}/model.h
 	${SRCROOT}/model.cpp
@@ -94,13 +94,13 @@ set(SRC_GRAPHICS
 	${INCROOT}/tGround.h
 	${SRCROOT}/tGround.cpp
 	${INCROOT}/billBoard.h
-	${SRCROOT}/billBoard.cpp
-	${INCROOT}/sdlWindow.hpp
-	${SRCROOT}/sdlWindow.cpp
+	${SRCROOT}/billBoard.cpp	
 	${INCROOT}/sdlRenderWindow.hpp
 	${SRCROOT}/sdlRenderWindow.cpp
 	${INCROOT}/cpuRenderComponent.hpp
 	${SRCROOT}/cpuRenderComponent.cpp
+	${INCROOT}/fastRenderComponent.hpp
+	${SRCROOT}/fastRenderComponent.cpp
 	${INCROOT}/world.h
 	${SRCROOT}/world.cpp)
 source_group ("graphics" FILES ${SRC_GRAPHICS})

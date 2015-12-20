@@ -19,7 +19,7 @@ namespace odfaeg {
           *
           * each object inherits from this class.
           */
-        class ODFAEG_GRAPHICS_API Transformable {
+        class ODFAEG_GRAPHICS_API Transformable : public core::Serializable {
         public :
             /**
             * \fn BoundingBox getLocalBounds() const

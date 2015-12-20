@@ -45,23 +45,23 @@ namespace odfaeg {
                 *  \brief add a frame into the animation.
                 *  \param Entity* entity : the frame to remove.
                 */
-                void addEntity (Entity *entity);
+                void addFrame (Entity *entity);
                 /**
                 *  \fn removeEntity(Entity* entity)
                 *  \brief remove a frame from the animation.
                 *  \param Entity* entity : the frame to add.
                 */
-                void removeEntity (Entity *entity);
+                void removeFrame (Entity *entity);
                 /** \fn isCurrentEntityChanged();
                 *   \brief tells if the current entity have being changed.
                 *   \return true when the current entity is changed.
                 */
-                bool isCurrentEntityChanged();
+                bool isCurrentFrameChanged();
                 /** \fn setCurrentEntityChanged(bool b);
                 *   \brief tells if the current frame have just been changed or not.
                 *   \param true if the current entity is changed.
                 */
-                void setCurrentEntityChanged(bool b);
+                void setCurrentFrameChanged(bool b);
                 /** \fn  play(bool loop)
                 *   \brief play the animation, if loop is set to true, the animation is play in loop.
                 *   \param bool loop : true if the animation have to be displayed in loop.
@@ -93,7 +93,7 @@ namespace odfaeg {
                 /** \fn nextImage()
                 *   \brief set the next frame of the animation.
                 */
-                void nextImage();
+                void computeNextFrame();
                 /** \fn isRunning()
                 *   \return true if the animation is currently playing.
                 */
@@ -102,28 +102,29 @@ namespace odfaeg {
                 *   \brief change the index of the current frame of the animation.
                 *   \param the current index of the animation.
                 */
-                void setCurrentTile(int index);
+                void setCurrentFrame(int index);
                 /** \fn getCurrentTileIndex()
                 *   \brief get the index of the current frame.
                 *   \return the index of the current frame.
                 */
-                int getCurrentTileIndex();
+                int getCurrentFrameIndex();
                 /** \fn getCurrentEntity() const
                 *   \brief get the current frame of the animation.
                 *   \return Entity* the current frame of the animation.
                 */
-                Entity* getCurrentEntity () const;
+                Entity* getCurrentFrame () const;
                 /** \fn getPreviousEntity()
                 *   \brief get the previous frame of the animation.
                 *   \return Entity* the previous frame of the animation.
                 */
-                Entity* getPreviousCurrentEntity();
+                Entity* getPreviousFrame();
                 /** \fn void onDraw(RenderTarget &target, RenderStates states)
                 *   \brief draw the current frame of the animation on the given render target.
                 *   \param RenderTarget target : the target which draw the frame.
                 *   \param RenderStates states : the states to render the frame with. (blendMode, shaders, etc...)
                 */
                 void onDraw (RenderTarget &target, RenderStates states);
+                void onFrameChanged();
                 /** \fn bool operator==(Entity& other)
                 *   \brief compare two animations.
                 *   \param Entity& other : the other entity.
@@ -159,11 +160,12 @@ namespace odfaeg {
                 void vtserialize(Archive & ar) {
                     Entity::vtserialize(ar);
                     ar(fr);
-                    ar(currentEntity);
-                    ar(previousCurrentEntity);
+                    ar(currentFrame);
+                    ar(previousFrame);
+                    ar(nextFrame);
                     ar(running);
                     ar(loop);
-                    ar(currentEntityChanged);
+                    ar(currentFrameChanged);
                 }
                 /**
                 *  \fn ~Anim()
@@ -171,15 +173,17 @@ namespace odfaeg {
                 */
                 virtual ~Anim();
             private :
+                void interpolate(Entity* currentFrame, Entity* nextFrame);
                 /** \fn recomputeSize()
                 *   \brief recompute the size of an animation.
                 */
                 void recomputeSize();
+                unsigned int interpLevels, interpPerc, currentFrameIndex; /**> the index of the current tile*/
                 sf::Clock clock; /**> the clock to measure times before frames.*/
                 float fr; /**> the framerate of the animations.*/
-                unsigned int currentTile; /**> the index of the current tile*/
-                Entity *currentEntity, *previousCurrentEntity; /**> previousCurrentEntity : the previous frame and the current frame of the entity*/
-                bool running, loop, currentEntityChanged; /**> tells if the animation is currently playing in loop (or not) and if the current frame have just been changed.*/
+                Entity *nextFrame, *currentFrame, *previousFrame; /**> previousCurrentEntity : the previous frame and the current frame of the entity*/
+                std::vector<VertexArray> vas;
+                bool running, loop, currentFrameChanged; /**> tells if the animation is currently playing in loop (or not) and if the current frame have just been changed.*/
         };
     }
 }

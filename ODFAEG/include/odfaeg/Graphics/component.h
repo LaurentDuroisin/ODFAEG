@@ -6,9 +6,9 @@ namespace odfaeg {
     namespace graphic {
         class Component : public Drawable, public Transformable {
         public :
-            Component(math::Vec3f position, math::Vec3f size, math::Vec3f origin, bool useThread)
+            Component(math::Vec3f position, math::Vec3f size, math::Vec3f origin, bool useThread, unsigned int priority=0)
             : Transformable(position, size, origin),
-            listener(useThread) {
+            listener(useThread), priority(priority) {
                 activateEventContext = true;
                 visible = true;
                 id = nbComponents;
@@ -27,6 +27,9 @@ namespace odfaeg {
             int getId() {
                 return id;
             }
+            unsigned int getPriority() {
+                return priority;
+            }
             virtual void onVisibilityChanged(bool visible);
             virtual void onEventContextActivated(bool activate);
         private :
@@ -35,6 +38,7 @@ namespace odfaeg {
             bool visible;
             int id;
             static int nbComponents;
+            unsigned int priority;
         };
     }
 }

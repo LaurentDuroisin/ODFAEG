@@ -79,20 +79,20 @@ void Pong::onExec() {
             int idPlayer2 = conversionStringInt(infos[2]);
             Ball* ball = new Ball();
             Partie* partie = new Partie(*players[idPlayer1], *players[idPlayer2], *ball);
-            EntityManager* em = new Map(nullptr, "PONG_MAP"+conversionIntString(partie->id()), 50, 50);
-            World::addEntityManager(em);
+            Map* map = new Map(nullptr, "PONG_MAP"+conversionIntString(partie->id()), 50, 50);
+            World::addEntityManager(map);
             World::setCurrentEntityManager("PONG_MAP"+conversionIntString(partie->id()));
+            World::addEntity(ball);
             parties.insert(std::make_pair(partie->id(), partie));
             players[idPlayer1]->setPartyId(partie->id());
             players[idPlayer2]->setPartyId(partie->id());
             ball->setPartyId(partie->id());
             players[idPlayer1]->setPosition(Vec2f(0, 275));
             players[idPlayer2]->setPosition(Vec2f(790, 275));
-            Bar* top = new Bar(Vec2f(0, 0), Vec2f(800, 10));
-            Bar* bottom = new Bar(Vec2f(0, 590), Vec2f(800, 10));
             World::addEntity(players[idPlayer1]);
             World::addEntity(players[idPlayer2]);
-            World::addEntity(ball);
+            Bar* top = new Bar(Vec2f(0, 0), Vec2f(800, 10));
+            Bar* bottom = new Bar(Vec2f(0, 590), Vec2f(800, 10));
             World::addEntity(top);
             World::addEntity(bottom);
             std::string message1 = "PARTYINFOS1"+conversionIntString(partie->id())+"*"+conversionFloatString(players[idPlayer1]->getPosition().x)+"*"+conversionFloatString(players[idPlayer1]->getPosition().y)
@@ -198,7 +198,6 @@ void Pong::onExec() {
             sf::Int64 lastSrvTime = Application().getTimeClk().getElapsedTime().asMicroseconds() - elapsedTime;
             Ball& ball = parties[idParty]->ball();
             sf::Int64 remainingTime = checkLastBallPos(&ball, lastSrvTime, elapsedTime);
-            moveBall(&ball, remainingTime);
             if (idPlayer == parties[idParty]->player1().getId()) {
                 std::string message = "STOP"+conversionIntString(idPlayer)
                                         +"*"+conversionFloatString(parties[idParty]->player1().getCenter().x)
@@ -214,10 +213,11 @@ void Pong::onExec() {
                 packet<<message;
                 parties[idParty]->player1().user().sendTcpPacket(packet);
             }
+            moveBall(&ball, remainingTime);
         }
     }
     for (it = parties.begin(); it != parties.end(); it++) {
-        World::setCurrentEntityManager("PONG_MAP"+conversionIntString(it->first));
+        World::setCurrentEntityManager("PONG_MAP"+it->second->id());
         std::vector<Entity*> players = World::getEntities("E_PLAYER");
         for (unsigned int i = 0; i < players.size(); i++) {
             Player* player = static_cast<Player*>(players[i]);
@@ -260,7 +260,11 @@ void Pong::moveBall(Ball* ball, sf::Int64 elapsedTime) {
     if (World::collide(ball, ballPath)) {
         CollisionResultSet::Info info = CollisionResultSet::popCollisionInfo();
         Entity* entity = info.entity;
-        Vec2f tmpPos = info.center - ball->dir() * (info.mtu.magnitude() + EPSILON);
+        Vec3f near, far;
+        std::unique_ptr<BoundingVolume> bv = ball->getCollisionVolume()->clone();
+        bv->move(info.center - bv->getCenter());
+        bv->intersectsWhere(ballPath, near, far, info);
+        Vec2f tmpPos = far - ball->dir() * (info.mtu.magnitude() + ball->getCollisionVolume()->getSize().x * 0.5f + EPSILON);
         Vec2f v1 = tmpPos - actualPos;
         Vec2f v2 = newPos - actualPos;
         float ratio = v1.magnSquared() / v2.magnSquared();
@@ -283,19 +287,15 @@ void Pong::moveBall(Ball* ball, sf::Int64 elapsedTime) {
     } else {
         Vec2f d = newPos - actualPos;
         World::moveEntity(ball, d.x, d.y, 0);
+        //std::cout<<"new pos : "<<newPos;
     }
     if (newPos.x <= -100) {
         Partie* partie = parties[ball->partyId()];
         partie->player2().increaseScore();
-        Vec2f d = Vec2f(400, 300) - ball->getCenter();
-        World::moveEntity(ball, d.x, d.y, 0);
+        ball->setCenter(Vec2f(400, 300));
         ball->updateDir(Vec2f(-1, 1).normalize());
-        std::string message = "INCREASE_SCORE"+conversionIntString(partie->player2().getId());
-        SymEncPacket packet;
-        packet<<message;
-        Network::sendTcpPacket(packet);
         if (partie->player2().score() >= 10) {
-            std::string message = "WINplayer : "+partie->player2().pseudo()+" win!";
+            std::string message = "player : "+ partie->player2().pseudo()+" win!";
             SymEncPacket packet;
             packet<<message;
             Network::sendTcpPacket(packet);
@@ -306,15 +306,10 @@ void Pong::moveBall(Ball* ball, sf::Int64 elapsedTime) {
     } else if (newPos.x >= 900) {
         Partie* partie = parties[ball->partyId()];
         partie->player1().increaseScore();
-        Vec2f d = Vec2f(400, 300) - ball->getCenter();
-        World::moveEntity(ball, d.x, d.y, 0);
+        ball->setCenter(Vec2f(400, 300));
         ball->updateDir(Vec2f(1, 1).normalize());
-        std::string message = "INCREASE_SCORE"+conversionIntString(partie->player1().getId());
-        SymEncPacket packet;
-        packet<<message;
-        Network::sendTcpPacket(packet);
         if (partie->player1().score() >= 10) {
-            std::string message = "WINplayer : "+partie->player1().pseudo()+" win!";
+            std::string message = "player : "+ partie->player1().pseudo()+" win!";
             SymEncPacket packet;
             packet<<message;
             Network::sendTcpPacket(packet);

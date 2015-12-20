@@ -7,7 +7,7 @@ namespace odfaeg {
         using namespace std;
         using namespace sf;
         User::User (TcpSocket &socketTCP, UdpSocket &socketUDP) : clientTCP(socketTCP), clientUDP(socketUDP) {
-            hasPbKey = hasPbKeyRsa = false;
+            hasPbKey = hasPbKeyRsa = certifiate = false;
             address = socketTCP.getRemoteAddress();
             remotePortUDP = 0;
             useSecuredConnexion = false;
@@ -113,6 +113,18 @@ namespace odfaeg {
         }
         sf::Int64 User::getClientTime () {
             return clientTime + elapsedTime.getElapsedTime().asMicroseconds();
+        }
+        void User::setCertificate(std::string certificate) {
+            this->certificate = certificate;
+        }
+        std::string User::getCertificate() {
+            return certificate;
+        }
+        void User::setCertifiate(bool b) {
+            certifiate = b;
+        }
+        bool User::isCertifiate() {
+            return certifiate;
         }
         User::~User () {
 

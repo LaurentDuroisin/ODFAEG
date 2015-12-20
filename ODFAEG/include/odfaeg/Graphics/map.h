@@ -6,7 +6,7 @@
 #include "2D/decor.h"
 #include "2D/ambientLight.h"
 #include "2D/ponctualLight.h"
-#include "fastRenderComponentManager.h"
+#include "renderComponentManager.h"
 #include "../Core/utilities.h"
 #include "../Physics/boundingSphere.h"
 #include "renderWindow.h"
@@ -29,7 +29,7 @@ namespace odfaeg {
 class ODFAEG_GRAPHICS_API Map : public EntityManager {
 
     public :
-        /** \fn Map(FastRenderComponentManager* frcm, std::string name, int cellWidth, int cellHeight, int cellDepth);
+        /** \fn Map(RenderComponentManager* frcm, std::string name, int cellWidth, int cellHeight, int cellDepth);
         *   \brief constructor
         *   \param frcm : the component manager used to manage components.
         *   \param name : the name of the map.
@@ -37,7 +37,7 @@ class ODFAEG_GRAPHICS_API Map : public EntityManager {
         *   \param cellHeight : the height of the cells.
         *   \param cellDepth : the depth of the cells.
         */
-        Map(FastRenderComponentManager* frcm, std::string name, int cellWidth, int cellHeight);
+        Map(RenderComponentManager* frcm, std::string name, int cellWidth, int cellHeight);
         /**
         *   \fn ~Map();
         *   \brief destructor.
@@ -257,7 +257,7 @@ class ODFAEG_GRAPHICS_API Map : public EntityManager {
         * \brief insert a visible entity into the entity manager.
         * \param entity : the visible entity to insert.
         */
-        void insertVisibleEntity(Entity *entity);
+        void insertVisibleEntity(Entity *entity, physic::BoundingBox bx);
         /**
         * \fn void removeVisibleEntity(Entity *entity);
         * \brief remove a visible entity from the entity manager.
@@ -279,7 +279,6 @@ class ODFAEG_GRAPHICS_API Map : public EntityManager {
         * \return the light tile.
         */
         Entity& getLightTile(std::string expression, int n, va_list args);
-        Entity& getRefractionTile(std::string expression, int n, va_list args);
         /**
         * \fn void drawOnComponents(std::string expression, int layer, sf::BlendMode mode = sf::BlendMode::BlendAlpha);
         * \brief draw the entities on a component.
@@ -287,6 +286,7 @@ class ODFAEG_GRAPHICS_API Map : public EntityManager {
         * \param layer : the layer of the component on which to draw the entities.
         * \param mode: the blend mode.
         */
+        Entity& getRefractionTile (std::string expression, int n, va_list args);
         void drawOnComponents(std::string expression, int layer, sf::BlendMode mode = sf::BlendAlpha);
         /**
         * \fn void drawOnComponents(Drawable& drawable, int layer, RenderStates states = RenderStates::Default);
@@ -352,16 +352,15 @@ class ODFAEG_GRAPHICS_API Map : public EntityManager {
         typedef std::map <std::string, std::vector<Entity*>>::iterator VEntitiesByType; /**> A typedef to the iterator of the map which contains the visible entities.*/
         std::vector<Entity*> visibleParentEntities; /**> The parent entities of the visible entities.*/
         std::vector<Entity*> lights, shadows; /**> The lights and the shadows.*/
-        FastRenderComponentManager* frcm; /**> The component manager.*/
-        RenderTexture *shadowMap, *lightMap, *stencilBuffer, *normalMap, *refractionMap; /**> The shadow map, the light map and the normal map.*/
+        RenderComponentManager* frcm; /**> The component manager.*/
+        RenderTexture *shadowMap, *lightMap, *stencilBuffer, *normalMap, *backDepthBuffer, *refractionMap; /**> The shadow map, the light map and the normal map.*/
         Texture textShadow, textLight; /**> The texture of the shadows and the lights.*/
         Tile *shadowTile, *lightTile, *stencilBufferTile, *normalMapTile, *refractionTile; /**> The shadow, light and normal map tiles.*/
-        Shader* perPixLightingShader, *perPixShadowShader, *buildShadowMapShader,
-        *buildNormalMapShader, *buildRefractionMapShader; /**> The shaders used to generate the lightmap and the final normal map.*/
+        Shader* perPixLightingShader, *perPixShadowShader, *perPixShadowShader2, *buildShadowMapShader,
+        *buildNormalMapShader, *depthBufferGenShader, *buildRefractionMapShader; /**> The shaders used to generate the lightmap and the final normal map.*/
         bool updateComponents;
         float diagSize;
 };
 }
 }
 #endif
-

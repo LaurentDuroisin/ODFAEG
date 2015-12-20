@@ -10,6 +10,7 @@ namespace odfaeg {
             void setScale(math::Vec3f scale);
             math::Vec3f toViewportCoordinates(math::Vec3f vec);
             math::Vec3f toNormalizedCoordinates(math::Vec3f vec);
+            math::Matrix4f getMatrix();
         private :
             math::Matrix4f viewport;
             math::Vec3f position;

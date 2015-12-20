@@ -6,7 +6,7 @@
 
 #include "../Core/entitySystem.h"
 #include "../Core/timer.h"
-#include "../Graphics/fastRenderComponent.h"
+#include "../Graphics/oitRenderComponent.h"
 #include "../Graphics/baseChangementMatrix.h"
 #include "../Graphics/entityManager.h"
 #include <cstdarg>
@@ -339,10 +339,10 @@ namespace odfaeg {
                     }
                     return graphic::BaseChangementMatrix();
                 }
-                static void addEntitiesUpdater(core::EntitySystem *eu) {
+                static void addWorker(core::EntitySystem *eu) {
                     cache.eus.push_back(eu);
                 }
-                static void addAnimUpdater(core::Timer *au) {
+                static void addTimer(core::Timer *au) {
                     cache.aus.push_back(au);
                 }
                 static void update() {

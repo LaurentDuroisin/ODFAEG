@@ -133,12 +133,14 @@ namespace odfaeg {
             Batcher batcher; /**> A group of faces using the same materials and primitive type.*/
             sf::Color backgroundColor; /**> The background color.*/
             std::vector<Instance*> m_instances; /**> Instances to draw. (Instanced rendering.) */
+            std::vector<std::unique_ptr<Face>> additionalFaces;
             std::vector<Entity*> visibleEntities; /**> Entities loaded*/
             RenderTexture *frameBuffer; /**> the frame buffer.*/
             RenderTexture *depthBuffer; /**> the depth buffer.*/
             RenderTexture *specularTexture; /**> specular components.*/
             RenderTexture *bumpTexture;
             RenderTexture *refractionTexture;
+            RenderTexture *normalMap;
             Shader* depthBufferGenerator; /**> the shader to generate the depth buffer.*/
             Shader* frameBufferGenerator; /**> the shader to generate the frame buffer.*/
             Shader* specularTextureGenerator;

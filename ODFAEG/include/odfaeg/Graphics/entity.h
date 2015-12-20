@@ -131,6 +131,7 @@ namespace odfaeg {
                 *   \param RenderStates states : the states used to render the entities.
                 */
                 virtual void onDraw(RenderTarget &target, RenderStates states) {}
+                virtual void onFrameChanged() {}
                 /** \fn void onMove (math::Vec3f& t)
                 *   \brief virtual method which can be redefined if we need to do something when the entity is moving.
                 *   \param math::Vec3f t : the translation of the entity.
@@ -307,11 +308,8 @@ namespace odfaeg {
                 void updateTransform();
                 template <typename Archive>
                 void vtserialize(Archive & ar) {
-                    /*if (!alreadySerialized) {
-                        ar(parent);
-                        alreadySerialized = true;
-                    }*/
                     Transformable::serialize(ar);
+                    ar(parent);
                     ar(id);
                     ar(faces);
                     ar(type.first);
@@ -319,6 +317,7 @@ namespace odfaeg {
                     ar(collisionVolume);
                     if (ar.isInputArchive())
                         onLoad();
+                    alreadySerialized = true;
                     ar(children);
                 }
                 /** \fn void onLoad()

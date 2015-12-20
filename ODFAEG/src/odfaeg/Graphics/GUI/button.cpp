@@ -13,10 +13,11 @@ namespace odfaeg {
                 text.setSize(size);
                 rect = RectangleShape(size);
                 rect.setOutlineThickness(5.f);
-                rect.setOutlineColor(sf::Color::Black);
+                rect.setOutlineColor(sf::Color::Red);
             }
             void Button::clear() {
-                rect.setFillColor(background);
+                if (background != rect.getFillColor())
+                    rect.setFillColor(background);
             }
             void Button::setTextSize(unsigned int size) {
                 text.setCharacterSize(size);

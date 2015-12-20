@@ -21,12 +21,11 @@ namespace odfaeg {
         class SrkClient;
         class ODFAEG_NETWORK_API EncryptedPacket : public sf::Packet {
             public :
-                static int getCertificate(unsigned char** out) {
-                    return rsa.getCertificate(out);
-                }
-                static void setCertificate(const unsigned char* certificate, int length) {
-                    rsa.setCertificate(certificate, length);
-                }
+                static Rsa& getRsa();
+                static int getCertificate(unsigned char** out);
+                static void setCertificate(const unsigned char* in, int l);
+                static void setEncryptWithPrKey(bool b);
+                static void setDecryptWithPrKey(bool b);
             private :
                 /**
                 * \fn const void* onSend(std::size_t& dataSize)
@@ -41,7 +40,8 @@ namespace odfaeg {
                 * \param std::size_t : the size of the datas.
                 */
                 virtual void onReceive (const void* data, std::size_t dataSize);
-                static Rsa rsa;
+                static Rsa& rsa;
+                static bool encryptWithPrKey, decryptWithPrKey;
         };
     }
 }

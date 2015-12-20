@@ -65,6 +65,7 @@ namespace odfaeg {
                 * \brief check if messages are received and store them into the queue.
                 */
                 void checkMessages();
+                std::string getCertificate();
                 /**
                 * \fn ~SrkServer()
                 * \brief destructor.

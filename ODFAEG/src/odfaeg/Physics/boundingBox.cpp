@@ -349,6 +349,35 @@ namespace odfaeg {
         bool BoundingBox::isFlat() {
             return flat;
         }
+        bool BoundingBox::intersects (BoundingBox& other) {
+            int hx1 = width * 0.5;
+            int hy1 = height * 0.5;
+            int hz1 = depth * 0.5;
+            int hx2 = other.width * 0.5;
+            int hy2 = other.height * 0.5;
+            int hz2 = other.depth * 0.5;
+            //Check the mins and max medians positions.
+            float minX1 = center.x - hx1, minX2 = other.center.x - hx2;
+            float minY1 = center.y - hy1, minY2 = other.center.y - hy2;
+            float minZ1 = center.z - hz1, minZ2 = other.center.z - hz2;
+            float maxX1 = center.x + hx1, maxX2 = other.center.x + hx2;
+            float maxY1 = center.y + hy1, maxY2 = other.center.y + hy2;
+            float maxZ1 = center.z + hz1, maxZ2 = other.center.z + hz2;
+            //If the medians overlap, our two boxes intersects.
+            for (int i = 0; i < 3; i++) {
+                if (i == 0) {
+                    if (minX1 > maxX2 || maxX1 < minX2)
+                        return false;
+                } else if (i == 1) {
+                    if (minY1 > maxY2 || maxY1 < minY2)
+                        return false;
+                } else {
+                    if (minZ1 > maxZ2 || maxZ1 < minZ2)
+                        return false;
+                }
+            }
+            return true;
+        }
         //Test if the box intersects another.
         bool BoundingBox::intersects (BoundingBox &other, CollisionResultSet::Info& info) {
             int hx1 = width * 0.5;

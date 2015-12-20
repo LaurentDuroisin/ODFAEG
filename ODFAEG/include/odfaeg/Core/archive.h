@@ -131,7 +131,18 @@ namespace odfaeg {
                       class... D,
                       class = typename std::enable_if<std::is_fundamental<T>::value>::type>
             void operator() (T& data, D...) {
-                buffer<<data<<std::endl;
+                std::ostringstream oss;
+                oss<<typeid(data).name()<<"*"<<reinterpret_cast<unsigned long long int>(&data);
+                std::map<std::string, long long int>::iterator it = adresses.find(oss.str());
+                if (it != adresses.end()) {
+                    buffer<<it->second<<std::endl;
+                } else {
+                    std::pair<std::string, long long int> newAddress (oss.str(), nbSerialized);
+                    adresses.insert(newAddress);
+                    buffer<<newAddress.second<<std::endl;
+                    buffer<<data<<std::endl;
+                    nbSerialized++;
+                }
             }
             /**
             * \fn void operator(T* data, D...)
@@ -144,14 +155,16 @@ namespace odfaeg {
                   class = typename std::enable_if<std::is_fundamental<T>::value>::type>
             void operator() (T* data, D...) {
                 if (data != nullptr) {
-                    std::map<unsigned long long int, long long int>::iterator it = adresses.find(reinterpret_cast<long long int>(data));
+                    std::ostringstream oss;
+                    oss<<typeid(*data).name()<<"*"<<reinterpret_cast<unsigned long long int>(data);
+                    std::map<std::string, long long int>::iterator it = adresses.find(oss.str());
                     if (it != adresses.end()) {
                         buffer<<it->second<<std::endl;
                     } else {
-                        std::pair<unsigned long long int, long long int> newAddress (reinterpret_cast<long long int>(data), nbSerialized);
+                        std::pair<std::string, long long int> newAddress (oss.str(), nbSerialized);
                         adresses.insert(newAddress);
                         buffer<<newAddress.second<<std::endl;
-                        (*this)(*data);
+                        buffer<<(*data)<<std::endl;
                         nbSerialized++;
                     }
                 } else {
@@ -164,7 +177,18 @@ namespace odfaeg {
             class = typename std::enable_if<!std::is_fundamental<E>::value>::type,
             class = typename std::enable_if<std::is_enum<E>::value>::type>
             void operator() (E& data, D...) {
-                buffer<<data<<std::endl;
+                std::ostringstream oss;
+                oss<<typeid(data).name()<<"*"<<reinterpret_cast<unsigned long long int>(&data);
+                std::map<std::string, long long int>::iterator it = adresses.find(oss.str());
+                if (it != adresses.end()) {
+                    buffer<<it->second<<std::endl;
+                } else {
+                    std::pair<std::string, long long int> newAddress (oss.str(), nbSerialized);
+                    adresses.insert(newAddress);
+                    buffer<<newAddress.second<<std::endl;
+                    buffer<<data<<std::endl;
+                    nbSerialized++;
+                }
             }
             template <typename E,
             class... D,
@@ -172,14 +196,16 @@ namespace odfaeg {
             class = typename std::enable_if<std::is_enum<E>::value>::type>
             void operator() (E* data, D...) {
                 if (data != nullptr) {
-                    std::map<unsigned long long int, long long int>::iterator it = adresses.find(reinterpret_cast<unsigned long long int>(data));
+                    std::ostringstream oss;
+                    oss<<typeid(*data).name()<<"*"<<reinterpret_cast<unsigned long long int>(data);
+                    std::map<std::string, long long int>::iterator it = adresses.find(oss.str());
                     if (it != adresses.end()) {
                         buffer<<it->second<<std::endl;
                     } else {
-                        std::pair<unsigned long long int, long long int> newAddress (reinterpret_cast<unsigned long long int>(data), nbSerialized);
+                        std::pair<std::string, long long int> newAddress (oss.str(), nbSerialized);
                         adresses.insert(newAddress);
                         buffer<<newAddress.second<<std::endl;
-                        (*this)(*data);
+                        buffer<<(*data)<<std::endl;
                         nbSerialized++;
                     }
                 } else {
@@ -200,11 +226,22 @@ namespace odfaeg {
                   class = typename std::enable_if<std::is_same<T, std::string>::value>::type,
                   class = typename std::enable_if<!std::is_enum<T>::value>::type>
             void operator() (T& data, D...) {
-                 std::size_t str_size = data.length();
-                 const char* datas = data.c_str();
-                 std::vector<char> vDatas;
-                 vDatas.assign(datas, datas + str_size);
-                 (*this)(vDatas);
+                std::ostringstream oss;
+                oss<<typeid(data).name()<<"*"<<reinterpret_cast<unsigned long long int>(&data);
+                std::map<std::string, long long int>::iterator it = adresses.find(oss.str());
+                if (it != adresses.end()) {
+                    buffer<<it->second<<std::endl;
+                } else {
+                    std::pair<std::string, long long int> newAddress (oss.str(), nbSerialized);
+                    adresses.insert(newAddress);
+                    buffer<<newAddress.second<<std::endl;
+                    std::size_t str_size = data.length();
+                    buffer<<str_size<<std::endl;
+                    const char* datas = data.c_str();
+                    for (unsigned int i = 0; i < str_size; i++)
+                        (*this)(datas[i]);
+                    nbSerialized++;
+                }
             }
             /**
             *\fn void operator(T* data, D...)
@@ -219,14 +256,20 @@ namespace odfaeg {
                   class = typename std::enable_if<!std::is_enum<T>::value>::type>
             void operator() (T* data, D...) {
                 if (data != nullptr) {
-                    std::map<unsigned long long int, long long int>::iterator it = adresses.find(reinterpret_cast<unsigned long long int>(data));
+                    std::ostringstream oss;
+                    oss<<typeid(*data).name()<<"*"<<reinterpret_cast<unsigned long long int>(data);
+                    std::map<std::string, long long int>::iterator it = adresses.find(oss.str());
                     if (it != adresses.end()) {
                         buffer<<it->second<<std::endl;
                     } else {
-                        std::pair<unsigned long long int, long long int> newAddress (reinterpret_cast<unsigned long long int>(data), nbSerialized);
+                        std::pair<std::string, long long int> newAddress (oss.str(), nbSerialized);
                         adresses.insert(newAddress);
                         buffer<<newAddress.second<<std::endl;
-                        (*this)(*data);
+                        std::size_t str_size = data->length();
+                        buffer<<str_size<<std::endl;
+                        const char* datas = data->c_str();
+                        for (unsigned int i = 0; i < str_size; i++)
+                            (*this)(datas[i]);
                         nbSerialized++;
                     }
                 } else {
@@ -248,7 +291,18 @@ namespace odfaeg {
                       class = typename std::enable_if<!has_typedef_key<O>::value>::type,
                       class = typename std::enable_if<!std::is_enum<O>::value>::type>
             void operator() (O& object, D...) {
-                object.serialize(*this);
+                std::ostringstream oss;
+                oss<<typeid(object).name()<<"*"<<reinterpret_cast<unsigned long long int>(&object);
+                std::map<std::string, long long int>::iterator it = adresses.find(oss.str());
+                if (it != adresses.end()) {
+                    buffer<<it->second<<std::endl;
+                } else {
+                    std::pair<std::string, long long int> newAddress (oss.str(), nbSerialized);
+                    adresses.insert(newAddress);
+                    buffer<<newAddress.second<<std::endl;
+                    nbSerialized++;
+                    object.serialize(*this);
+                }
             }
             template <class O,
                       class... D,
@@ -264,15 +318,17 @@ namespace odfaeg {
             */
             void operator() (O* object, D...) {
                 if (object != nullptr) {
-                    std::map<unsigned long long int, long long int>::iterator it = adresses.find(reinterpret_cast<unsigned long long int>(object));
+                    std::ostringstream oss;
+                    oss<<typeid(*object).name()<<"*"<<reinterpret_cast<unsigned long long int>(object);
+                    std::map<std::string, long long int>::iterator it = adresses.find(oss.str());
                     if (it != adresses.end()) {
                         buffer<<it->second<<std::endl;
                     } else {
-                        std::pair<unsigned long long int, long long int> newAddress (reinterpret_cast<unsigned long long int>(object), nbSerialized);
+                        std::pair<std::string, long long int> newAddress (oss.str(), nbSerialized);
                         adresses.insert(newAddress);
                         buffer<<newAddress.second<<std::endl;
-                        object->serialize(*this);
                         nbSerialized++;
+                        object->serialize(*this);
                     }
                 } else {
                     long long int id = -1;
@@ -294,11 +350,22 @@ namespace odfaeg {
                       class = typename std::enable_if<!std::is_enum<O>::value>::type,
                       class = typename std::enable_if<!sizeof...(D)>::type>
             void operator() (O& object, D...) {
-                if (typeid(decltype(object)).name() == typeid(object).name()) {
-                    object.vtserialize(*this);
+                std::ostringstream oss;
+                oss<<typeid(object).name()<<"*"<<reinterpret_cast<unsigned long long int>(&object);
+                std::map<std::string, long long int>::iterator it = adresses.find(oss.str());
+                if (it != adresses.end()) {
+                    buffer<<it->second<<std::endl;
                 } else {
-                    object.key.register_object(&object);
-                    object.key.serialize_object("serialize", "OTextArchive", *this);
+                    std::pair<std::string, long long int> newAddress (oss.str(), nbSerialized);
+                    adresses.insert(newAddress);
+                    buffer<<newAddress.second<<std::endl;
+                    nbSerialized++;
+                    if (typeid(decltype(object)).name() == typeid(object).name()) {
+                        object.vtserialize(*this);
+                    } else {
+                        object.key.register_object(&object);
+                        object.key.serialize_object("serialize", "OTextArchive", *this);
+                    }
                 }
             }
             /**
@@ -316,25 +383,27 @@ namespace odfaeg {
                       class = typename std::enable_if<!sizeof...(D)>::type>
             void operator() (O* object, D...) {
                 if (object != nullptr) {
-                    std::map<unsigned long long int, long long int>::iterator it = adresses.find(reinterpret_cast<unsigned long long int>(object));
+                    std::ostringstream oss;
+                    oss<<typeid(*object).name()<<"*"<<reinterpret_cast<unsigned long long int>(object);
+                    std::map<std::string, long long int>::iterator it = adresses.find(oss.str());
                     if (it != adresses.end()) {
                         buffer<<it->second<<std::endl;
                     } else {
-                        std::string typeName = "BaseType";
-                        std::pair<unsigned long long int, long long int> newAddress (reinterpret_cast<unsigned long long int>(object), nbSerialized);
+                        std::pair<std::string, long long int> newAddress (oss.str(), nbSerialized);
                         adresses.insert(newAddress);
+                        buffer<<newAddress.second<<std::endl;
+                        std::string typeName = "BaseType";
                         if (typeid(decltype(*object)).name() == typeid(*object).name()) {
-                            buffer<<newAddress.second<<std::endl;
                             buffer<<typeName<<std::endl;
+                            nbSerialized++;
                             object->vtserialize(*this);
                         } else {
                             object->key.register_object(object);
                             typeName = object->key.getTypeName();
-                            buffer<<newAddress.second<<std::endl;
                             buffer<<typeName<<std::endl;
+                            nbSerialized++;
                             object->key.serialize_object("serialize", "OTextArchive", *this);
                         }
-                        nbSerialized++;
                     }
                 } else {
                     long long int id = -1;
@@ -545,7 +614,7 @@ namespace odfaeg {
             std::ostream& buffer; /**< the output buffer containing the datas.*/
             int utf16_compressor_initialized = 0; /**<A boolean to test if the compressor is initialized*/
             u16 * dictionary[DICT_LEN]; /**<A the dictionnary used for the compression algorithm*/
-            std::map<unsigned long long int, long long int> adresses; /**< an std::map used to store the adresses and the id of the serialized pointers.*/
+            std::map<std::string, long long int> adresses; /**< an std::map used to store the adresses and the id of the serialized pointers.*/
             unsigned long long int nbSerialized; /** <the number data which are serialized into the archive*/
         };
         /**
@@ -612,9 +681,25 @@ namespace odfaeg {
                   class... D,
                   class = typename std::enable_if<std::is_fundamental<T>::value>::type>
             void operator() (T& data, D...) {
-                 buffer>>data;
-                 char space;
-                 buffer.get(space);
+                long long int id;
+                buffer>>id;
+                char space;
+                buffer.get(space);
+                std::map<long long int, std::string>::iterator it = adresses.find(id);
+                if (it != adresses.end()) {
+                    std::istringstream iss(it->second);
+                    std::vector<std::string> parts = split(iss.str(), "*");
+                    data = *reinterpret_cast<T*> (conversionStringULong(parts[1]));
+                } else {
+                    std::ostringstream oss;
+                    oss<<typeid(data).name()<<"*"<<reinterpret_cast<unsigned long long int>(&data);
+                    std::pair<long long int, std::string> newAddress (id, oss.str());
+                    adresses.insert(newAddress);
+                    nbDeserialized++;
+                    buffer>>data;
+                    char space;
+                    buffer.get(space);
+                }
             }
             /**
             * \fn void operator(T& data, D...)
@@ -623,9 +708,25 @@ namespace odfaeg {
             * \param D... used for SFINAE.
             */
             void operator() (char& data) {
-                 buffer.get(data);
-                 char space;
-                 buffer.get(space);
+                long long int id;
+                buffer>>id;
+                char space;
+                buffer.get(space);
+                std::map<long long int, std::string>::iterator it = adresses.find(id);
+                if (it != adresses.end()) {
+                    std::istringstream iss(it->second);
+                    std::vector<std::string> parts = split(iss.str(), "*");
+                    data = *reinterpret_cast<char*> (conversionStringULong(parts[1]));
+                } else {
+                    std::ostringstream oss;
+                    oss<<typeid(data).name()<<"*"<<reinterpret_cast<unsigned long long int>(&data);
+                    std::pair<long long int, std::string> newAddress (id, oss.str());
+                    adresses.insert(newAddress);
+                    nbDeserialized++;
+                    buffer.get(data);
+                    char space;
+                    buffer.get(space);
+                }
             }
             /**
             * \fn void operator(T& data, D...)
@@ -634,9 +735,25 @@ namespace odfaeg {
             * \param D... used for SFINAE.
             */
             void operator() (unsigned char& data) {
-                 buffer.get((char&) data);
-                 char space;
-                 buffer.get(space);
+                long long int id;
+                buffer>>id;
+                char space;
+                buffer.get(space);
+                std::map<long long int, std::string>::iterator it = adresses.find(id);
+                if (it != adresses.end()) {
+                    std::istringstream iss(it->second);
+                    std::vector<std::string> parts = split(iss.str(), "*");
+                    data = *reinterpret_cast<unsigned char*> (conversionStringULong(parts[1]));
+                } else {
+                    std::ostringstream oss;
+                    oss<<typeid(data).name()<<"*"<<reinterpret_cast<unsigned long long int>(&data);
+                    std::pair<long long int, std::string> newAddress (id, oss.str());
+                    adresses.insert(newAddress);
+                    nbDeserialized++;
+                    buffer.get((char&) data);
+                    char space;
+                    buffer.get(space);
+                }
             }
 
             /**
@@ -654,15 +771,91 @@ namespace odfaeg {
                 char space;
                 buffer.get(space);
                 if (id != -1) {
-                    std::map<long long int, unsigned long long int>::iterator it = adresses.find(id);
+                    std::map<long long int, std::string>::iterator it = adresses.find(id);
                     if (it != adresses.end()) {
-                        data = reinterpret_cast<T*> (it->second);
+                        std::istringstream iss(it->second);
+                        std::vector<std::string> parts = split(iss.str(), "*");
+                        data = reinterpret_cast<T*> (conversionStringULong(parts[1]));
                     } else {
                         data = new T();
-                        (*this)(*data);
-                        std::pair<long long int, unsigned long long int> newAddress (id, reinterpret_cast<unsigned long long int>(data));
+                        std::ostringstream oss;
+                        oss<<typeid(*data).name()<<"*"<<reinterpret_cast<unsigned long long int>(data);
+                        std::pair<long long int, std::string> newAddress (id, oss.str());
                         adresses.insert(newAddress);
                         nbDeserialized++;
+                        buffer>>(*data);
+                        char space;
+                        buffer.get(space);
+                    }
+                } else {
+                    data = nullptr;
+                }
+            }
+             /**
+            * \fn void operator(T& data, D...)
+            * \brief read a pointer to a fundamental type from the archive.
+            * \param T& the data to read.
+            * \param D... used for SFINAE.
+            */
+            template <typename T,
+                  class... D,
+                  class = typename std::enable_if<std::is_fundamental<T>::value>::type>
+            void operator() (char*& data, D...) {
+                long long int id;
+                buffer>>id;
+                char space;
+                buffer.get(space);
+                if (id != -1) {
+                    std::map<long long int, std::string>::iterator it = adresses.find(id);
+                    if (it != adresses.end()) {
+                        std::istringstream iss(it->second);
+                        std::vector<std::string> parts = split(iss.str(), "*");
+                        data = reinterpret_cast<T*> (conversionStringULong(parts[1]));
+                    } else {
+                        data = new char();
+                        std::ostringstream oss;
+                        oss<<typeid(*data).name()<<"*"<<reinterpret_cast<unsigned long long int>(data);
+                        std::pair<long long int, std::string> newAddress (id, oss.str());
+                        adresses.insert(newAddress);
+                        nbDeserialized++;
+                        buffer>>(*data);
+                        char space;
+                        buffer.get(space);
+                    }
+                } else {
+                    data = nullptr;
+                }
+            }
+             /**
+            * \fn void operator(T& data, D...)
+            * \brief read a pointer to a fundamental type from the archive.
+            * \param T& the data to read.
+            * \param D... used for SFINAE.
+            */
+            template <typename T,
+                  class... D,
+                  class = typename std::enable_if<std::is_fundamental<T>::value>::type>
+            void operator() (unsigned char*& data, D...) {
+                long long int id;
+                buffer>>id;
+                char space;
+                buffer.get(space);
+                if (id != -1) {
+                    std::map<long long int, std::string>::iterator it = adresses.find(id);
+                    if (it != adresses.end()) {
+                        std::istringstream iss(it->second);
+                        std::vector<std::string> parts = split(iss.str(), "*");
+                        data = reinterpret_cast<T*> (conversionStringULong(parts[1]));
+                    } else {
+                        data = new unsigned char();
+                        std::ostringstream oss;
+                        oss<<typeid(*data).name()<<"*"<<reinterpret_cast<unsigned long long int>(data);
+                        std::pair<long long int, std::string> newAddress (id, oss.str());
+                        adresses.insert(newAddress);
+                        nbDeserialized++;
+                        buffer>>((char&) *data);
+                        char space;
+                        buffer.get(space);
                     }
                 } else {
                     data = nullptr;
@@ -673,11 +866,27 @@ namespace odfaeg {
                     class = typename std::enable_if<!std::is_fundamental<E>::value>::type,
                     class = typename std::enable_if<std::is_enum<E>::value>::type>
             void operator()(E& data, D...) {
-                int eVal;
-                buffer>>eVal;
-                data = static_cast<E>(eVal);
+                long long int id;
+                buffer>>id;
                 char space;
                 buffer.get(space);
+                std::map<long long int, std::string>::iterator it = adresses.find(id);
+                if (it != adresses.end()) {
+                    std::istringstream iss(it->second);
+                    std::vector<std::string> parts = split(iss.str(), "*");
+                    data = *reinterpret_cast<E*> (conversionStringULong(parts[1]));
+                } else {
+                    int eVal;
+                    buffer>>eVal;
+                    data = static_cast<E>(eVal);
+                    char space;
+                    buffer.get(space);
+                    std::ostringstream oss;
+                    oss<<typeid(data).name()<<"*"<<reinterpret_cast<unsigned long long int>(&data);
+                    std::pair<long long int, std::string> newAddress (id, oss.str());
+                    adresses.insert(newAddress);
+                    nbDeserialized++;
+                }
             }
             template <typename E,
                     class... D,
@@ -689,13 +898,21 @@ namespace odfaeg {
                 char space;
                 buffer.get(space);
                 if (id != -1) {
-                    std::map<long long int, unsigned long long int>::iterator it = adresses.find(id);
+                    std::map<long long int, std::string>::iterator it = adresses.find(id);
                     if (it != adresses.end()) {
-                        data = reinterpret_cast<E*> (it->second);
+                        std::istringstream iss(it->second);
+                        std::vector<std::string> parts = split(iss.str(), "*");
+                        data = reinterpret_cast<E*> (conversionStringULong(parts[1]));
                     } else {
                         data = new E();
-                        (*this)(*data);
-                        std::pair<long long int, unsigned long long int> newAddress (id, reinterpret_cast<unsigned long long int>(data));
+                        int eVal;
+                        buffer>>eVal;
+                        *data = static_cast<E>(eVal);
+                        char space;
+                        buffer.get(space);
+                        std::ostringstream oss;
+                        oss<<typeid(*data).name()<<"*"<<reinterpret_cast<unsigned long long int>(data);
+                        std::pair<long long int, std::string> newAddress (id, oss.str());
                         adresses.insert(newAddress);
                         nbDeserialized++;
                     }
@@ -716,11 +933,31 @@ namespace odfaeg {
                   class = typename std::enable_if<std::is_same<T, std::string>::value>::type,
                   class = typename std::enable_if<!std::is_enum<T>::value>::type>
             void operator() (T& data, D...) {
-                std::vector<char> vDatas;
-                (*this)(vDatas);
-                const char* datas = &vDatas[0];
-                std::size_t str_size = vDatas.size();
-                data = std::string(datas, str_size);
+                long long int id;
+                buffer>>id;
+                char space;
+                buffer.get(space);
+                std::map<long long int, std::string>::iterator it = adresses.find(id);
+                if (it != adresses.end()) {
+                    std::istringstream iss(it->second);
+                    std::vector<std::string> parts = split(iss.str(), "*");
+                    data = *reinterpret_cast<T*> (conversionStringULong(parts[1]));
+                } else {
+                    std::size_t str_size;
+                    buffer>>str_size;
+                    char space;
+                    buffer.get(space);
+                    char* datas = new char[str_size];
+                    for (unsigned int i = 0; i < str_size; i++) {
+                        (*this)(datas[i]);
+                    }
+                    data = std::string(datas, str_size);
+                    std::ostringstream oss;
+                    oss<<typeid(data).name()<<"*"<<reinterpret_cast<unsigned long long int>(&data);
+                    std::pair<long long int, std::string> newAddress (id, oss.str());
+                    adresses.insert(newAddress);
+                    nbDeserialized++;
+                }
             }
             /**
             * \fn void operator(T& data, D...)
@@ -739,13 +976,23 @@ namespace odfaeg {
                 char space;
                 buffer.get(space);
                 if (id != -1) {
-                    std::map<long long int, unsigned long long int>::iterator it = adresses.find(id);
+                    std::map<long long int, std::string>::iterator it = adresses.find(id);
                     if (it != adresses.end()) {
-                        data = reinterpret_cast<T*> (it->second);
+                        std::istringstream iss(it->second);
+                        std::vector<std::string> parts = split(iss.str(), "*");
+                        data = reinterpret_cast<T*> (conversionStringULong(parts[1]));
                     } else {
-                        data = new T();
-                        (*this)(*data);
-                        std::pair<long long int, unsigned long long int> newAddress (id, reinterpret_cast<unsigned long long int>(data));
+                        std::size_t str_size;
+                        buffer>>str_size;
+                        char space;
+                        buffer.get(space);
+                        char* datas = new char [str_size];
+                        for (unsigned int i = 0; i < str_size; i++)
+                            (*this)(datas[i]);
+                        data = new std::string(datas, str_size);
+                        std::ostringstream oss;
+                        oss<<typeid(*data).name()<<"*"<<reinterpret_cast<unsigned long long int>(data);
+                        std::pair<long long int, std::string> newAddress (id, oss.str());
                         adresses.insert(newAddress);
                         nbDeserialized++;
                     }
@@ -767,7 +1014,23 @@ namespace odfaeg {
                       class = typename std::enable_if<!has_typedef_key<O>::value>::type,
                       class = typename std::enable_if<!std::is_enum<O>::value>::type>
             void operator() (O& object, D...) {
-                object.serialize(*this);
+                long long int id;
+                buffer>>id;
+                char space;
+                buffer.get(space);
+                std::map<long long int, std::string>::iterator it = adresses.find(id);
+                if (it != adresses.end()) {
+                    std::istringstream iss(it->second);
+                    std::vector<std::string> parts = split(iss.str(), "*");
+                    object = *reinterpret_cast<O*> (conversionStringULong(parts[1]));
+                } else {
+                    std::ostringstream oss;
+                    oss<<typeid(object).name()<<"*"<<reinterpret_cast<unsigned long long int>(&object);
+                    std::pair<long long int, std::string> newAddress (id, oss.str());
+                    adresses.insert(newAddress);
+                    nbDeserialized++;
+                    object.serialize(*this);
+                }
             }
             /**
             * \fn void operator(O& data, D...)
@@ -787,15 +1050,19 @@ namespace odfaeg {
                 char space;
                 buffer.get(space);
                 if (id != -1) {
-                    std::map<long long int, unsigned long long int>::iterator it = adresses.find(id);
+                    std::map<long long int, std::string>::iterator it = adresses.find(id);
                     if (it != adresses.end()) {
-                        object = reinterpret_cast<O*>(it->second);
+                        std::istringstream iss(it->second);
+                        std::vector<std::string> parts = split(iss.str(), "*");
+                        object = reinterpret_cast<O*> (conversionStringULong(parts[1]));
                     } else {
                         object = new O();
-                        object->serialize(*this);
-                        std::pair<long long int, unsigned long long int> newAddress (id, reinterpret_cast<unsigned long long int>(object));
+                        std::ostringstream oss;
+                        oss<<typeid(*object).name()<<"*"<<reinterpret_cast<unsigned long long int>(object);
+                        std::pair<long long int, std::string> newAddress (id, oss.str());
                         adresses.insert(newAddress);
                         nbDeserialized++;
+                        object->serialize(*this);
                     }
                 } else {
                     object = nullptr;
@@ -816,11 +1083,27 @@ namespace odfaeg {
                       class = typename std::enable_if<!std::is_enum<O>::value>::type,
                       class = typename std::enable_if<!sizeof...(D)>::type>
             void operator() (O& object, D...) {
-                if (typeid(decltype(object)) == typeid(object)) {
-                    object.vtserialize(*this);
+                long long int id;
+                buffer>>id;
+                char space;
+                buffer.get(space);
+                std::map<long long int, std::string>::iterator it = adresses.find(id);
+                if (it != adresses.end()) {
+                    std::istringstream iss(it->second);
+                    std::vector<std::string> parts = split(iss.str(), "*");
+                    object = *reinterpret_cast<O*> (conversionStringULong(parts[1]));
                 } else {
-                    object.key.register_object(&object);
-                    object.key.serialize_object("serialize", "ITextArchive", *this);
+                    std::ostringstream oss;
+                    oss<<typeid(object).name()<<"*"<<reinterpret_cast<unsigned long long int>(&object);
+                    std::pair<long long int, std::string> newAddress (id, oss.str());
+                    adresses.insert(newAddress);
+                    nbDeserialized++;
+                    if (typeid(decltype(object)) == typeid(object)) {
+                        object.vtserialize(*this);
+                    } else {
+                        object.key.register_object(&object);
+                        object.key.serialize_object("serialize", "ITextArchive", *this);
+                    }
                 }
             }
             /**
@@ -842,25 +1125,32 @@ namespace odfaeg {
                 char space;
                 buffer.get(space);
                 if (id != -1) {
-                    std::map<long long int, unsigned long long int>::iterator it = adresses.find(id);
+                    std::map<long long int, std::string>::iterator it = adresses.find(id);
                     if (it != adresses.end()) {
-                        object = reinterpret_cast<O*>(it->second);
+                        std::istringstream iss(it->second);
+                        std::vector<std::string> parts = split(iss.str(), "*");
+                        object = reinterpret_cast<O*> (conversionStringULong(parts[1]));
                     } else {
                         std::string typeName;
                         getline(buffer, typeName);
                         if (typeName == "BaseType") {
                             object = new O();
-                            object->vtserialize(*this);
-                            std::pair<long long int, unsigned long long int> newAddress (id, reinterpret_cast<unsigned long long int>(object));
+                            std::ostringstream oss;
+                            oss<<typeid(*object).name()<<"*"<<reinterpret_cast<unsigned long long int>(object);
+                            std::pair<long long int, std::string> newAddress (id, oss.str());
                             adresses.insert(newAddress);
+                            nbDeserialized++;
+                            object->vtserialize(*this);
                         } else {
                             object = dynamic_cast<O*>(O::allocate(typeName));
+                            std::ostringstream oss;
+                            oss<<typeid(*object).name()<<"*"<<reinterpret_cast<unsigned long long int>(object);
+                            std::pair<long long int, std::string> newAddress (id, oss.str());
+                            adresses.insert(newAddress);
+                            nbDeserialized++;
                             object->key.register_object(object);
                             object->key.serialize_object("serialize", "ITextArchive", *this);
-                            std::pair<long long int, unsigned long long int> newAddress (id, reinterpret_cast<unsigned long long int>(object));
-                            adresses.insert(newAddress);
                         }
-                        nbDeserialized++;
                     }
                 } else {
                     object = nullptr;
@@ -886,18 +1176,22 @@ namespace odfaeg {
                 char space;
                 buffer.get(space);
                 if (id != -1) {
-                    std::map<long long int, unsigned long long int>::iterator it = adresses.find(id);
+                    std::map<long long int, std::string>::iterator it = adresses.find(id);
                     if (it != adresses.end()) {
-                        object = reinterpret_cast<O*>(it->second);
+                        std::istringstream iss(it->second);
+                        std::vector<std::string> parts = split(iss.str(), "*");
+                        object = reinterpret_cast<O*> (conversionStringULong(parts[1]));
                     } else {
                         std::string typeName;
                         getline(buffer, typeName);
                         object = dynamic_cast<O*>(O::allocate(typeName));
-                        object->key.register_object(object);
-                        object->key.serialize_object("serialize", "ITextArchive", *this);
-                        std::pair<long long int, unsigned long long int> newAddress (id, reinterpret_cast<unsigned long long int>(object));
+                        std::ostringstream oss;
+                        oss<<typeid(*object).name()<<"*"<<reinterpret_cast<unsigned long long int>(object);
+                        std::pair<long long int, std::string> newAddress (id, oss.str());
                         adresses.insert(newAddress);
                         nbDeserialized++;
+                        object->key.register_object(object);
+                        object->key.serialize_object("serialize", "ITextArchive", *this);
                     }
                 } else {
                     object = nullptr;
@@ -1065,9 +1359,10 @@ namespace odfaeg {
             }
         private :
             std::istream& buffer; /**< the buffer where to read the data.*/
-            std::map<long long int, unsigned long long int> adresses; /**< an std::map used to store ids and adresses of readed pointers.*/
+            std::map<long long int, std::string> adresses; /**< an std::map used to store ids and adresses of readed pointers.*/
             unsigned long long int nbDeserialized; /** the nb object which have been deserailized.*/
         };
     }
 }
 #endif // ODFAEG_ARCHIVE
+

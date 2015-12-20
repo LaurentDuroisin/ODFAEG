@@ -1,6 +1,7 @@
 #ifndef UTILITIES
 #define UTILITIES
 #include <string>
+#include <regex>
 #include <vector>
 #include <sstream>
 #include <SFML/Config.hpp>
@@ -36,6 +37,7 @@ namespace odfaeg {
         *  \return the int.
         */
         sf::Int64 conversionStringLong(std::string str);
+        sf::Uint64 conversionStringULong(std::string str);
         /**\fn std::string conversionFloatString(float f);
         *  \brief convert a float to an std::string.
         *  \param the float to convert.
@@ -54,6 +56,7 @@ namespace odfaeg {
         *  \return the std::string.
         */
         std::string conversionLongString(sf::Int64 i);
+        int conversionStringToHex(std::string str);
     }
 }
 #endif

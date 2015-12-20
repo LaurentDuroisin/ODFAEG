@@ -99,8 +99,6 @@ void Pong::onDisplay(RenderWindow* rw) {
         rw->draw(*m_ball);
         rw->draw(*top);
         rw->draw(*bottom);
-        rw->draw(score1);
-        rw->draw(score2);
     }
 }
 void Pong::onUpdate(sf::Event& event) {
@@ -164,11 +162,6 @@ void Pong::onExec() {
         World::addEntity(m_ball);
         World::addEntity(top);
         World::addEntity(bottom);
-        FontManager<>& fm = cache.resourceManager<Font, std::string>("FontManager");
-        score1 = Text(sf::String(conversionIntString(m_player1->score()).c_str()), *fm.getResourceByAlias("FreeSerif"), 50);
-        score2 = Text(sf::String(conversionIntString(m_player2->score()).c_str()), *fm.getResourceByAlias("FreeSerif"), 50);
-        score1.setPosition(Vec3f(300, 50, 0));
-        score2.setPosition(Vec3f(500, 50, 0));
     }
     if (Network::getResponse("PARTYINFOS2", response)) {
         std::vector<std::string> infos = split(response, "*");
@@ -198,11 +191,6 @@ void Pong::onExec() {
         World::addEntity(m_ball);
         World::addEntity(top);
         World::addEntity(bottom);
-        FontManager<>& fm = cache.resourceManager<Font, std::string>("FontManager");
-        score1 = Text(sf::String(conversionIntString(m_player1->score()).c_str()), *fm.getResourceByAlias("FreeSerif"), 50);
-        score2 = Text(sf::String(conversionIntString(m_player2->score()).c_str()), *fm.getResourceByAlias("FreeSerif"), 50);
-        score1.setPosition(Vec3f(300, 50, 0));
-        score2.setPosition(Vec3f(500, 50, 0));
     }
     if (m_confirmInvitation->getOption() == gui::OptionPane::OPTION::YES_OPTION) {
         std::string message = "CREATE_PARTY*"+conversionIntString(m_player1->getId())+"*"+conversionIntString(m_player2->getId());
@@ -266,20 +254,6 @@ void Pong::onExec() {
         p->setMoving(false);
         p->setDir(Vec2f(0, 0));
     }
-    if (m_party != nullptr && (Network::getResponse("INCREASE_SCORE", response))) {
-        std::vector<std::string> infos = split(response, "*");
-        int id = conversionStringInt(infos[0]);
-        Player* p = static_cast<Player*>(World::getEntity(id));
-        p->increaseScore();
-        if (p->getId() == m_player1->getId()) {
-            score1.setString(sf::String(conversionIntString(m_player1->score()).c_str()));
-        } else {
-            score2.setString(sf::String(conversionIntString(m_player2->score()).c_str()));
-        }
-    }
-    if (m_party != nullptr && (Network::getResponse("WIN", response))) {
-
-    }
     if (m_party != nullptr) {
         sf::Int64 elapsedTime = getClock("TransferTime").getElapsedTime().asMicroseconds();
         Vec2f newPosP1, newPosP2;
@@ -312,7 +286,11 @@ void Pong::onExec() {
         while (actualPosBall != newPosBall && World::collide(&m_party->ball(), ballPath)) {
             CollisionResultSet::Info info = CollisionResultSet::popCollisionInfo();
             Entity* entity = info.entity;
-            Vec2f tmpPosBall = info.center - tmpDir * (info.mtu.magnitude() + EPSILON);
+            Vec3f near, far;
+            std::unique_ptr<BoundingVolume> bv = m_party->ball().getCollisionVolume()->clone();
+            bv->move(info.center - bv->getCenter());
+            bv->intersectsWhere(ballPath, near, far, info);
+            Vec2f tmpPosBall = far - tmpDir * (info.mtu.magnitude() + m_party->ball().getCollisionVolume()->getSize().x * 0.5f + EPSILON);
             Vec2f v1 = tmpPosBall - actualPosBall;
             Vec2f v2 = newPosBall - actualPosBall;
             float ratio = v1.magnSquared() / v2.magnSquared();

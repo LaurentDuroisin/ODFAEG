@@ -53,7 +53,7 @@ public :
     void onMouseInside (sf::Vector2f mousePos);
     void onLoad();
     void onInit ();
-    void onRender(odfaeg::graphic::FastRenderComponentManager *cm);
+    void onRender(odfaeg::graphic::RenderComponentManager *cm);
     void onDisplay(odfaeg::graphic::RenderWindow* window);
     void onUpdate (sf::Event& event);
     void onExec ();

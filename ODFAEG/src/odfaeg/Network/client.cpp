@@ -73,6 +73,8 @@ namespace odfaeg {
                 running = true;
                 if (useThread)
                     m_thread = thread (&SrkClient::run, this);
+                EncryptedPacket::setEncryptWithPrKey(false);
+                EncryptedPacket::setDecryptWithPrKey(false);
                 std::cout<<"Client started!"<<std::endl;
                 return true;
             } else {

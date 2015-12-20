@@ -102,8 +102,11 @@ namespace odfaeg {
         }
         void Entity::updateTransform() {
 
-            /*getTransform().update();
-            if (!(RenderTarget::getMajorVersion() >= 3 && RenderTarget::getMinorVersion() >= 3)) {
+            getTransform().update();
+            for (unsigned int i = 0; i < children.size(); i++) {
+                children[i]->updateTransform();
+            }
+            /*if (!(RenderTarget::getMajorVersion() >= 3 && RenderTarget::getMinorVersion() >= 3)) {
                 for (unsigned int i = 0; i < faces.size(); i++) {
                     VertexArray& va = faces[i]->getVertexArray();
                     va.transform(getTransform());
@@ -127,7 +130,7 @@ namespace odfaeg {
         }
 
         void Entity::onMove(math::Vec3f &t) {
-            updateTransform();
+            //updateTransform();
             for (unsigned int i = 0; i < children.size(); i++) {
                 children[i]->move(t);
             }
@@ -135,14 +138,14 @@ namespace odfaeg {
 
         }
         void Entity::onScale(math::Vec3f &s) {
-            updateTransform();
+            //updateTransform();
             for (unsigned int i = 0; i < children.size(); i++) {
                 children[i]->scale(s);
             }
 
         }
         void Entity::onRotate(float angle) {
-            updateTransform();
+            //updateTransform();
             for (unsigned int i = 0; i < children.size(); i++) {
                 children[i]->rotate(angle);
             }

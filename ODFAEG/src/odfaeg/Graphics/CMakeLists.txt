@@ -60,8 +60,8 @@ set(SRC_GRAPHICS
 	${SRCROOT}/view.cpp
 	${INCROOT}/component.h
 	${SRCROOT}/component.cpp
-	${INCROOT}/fastRenderComponentManager.h
-	${SRCROOT}/fastRenderComponentManager.cpp
+	${INCROOT}/renderComponentManager.h
+	${SRCROOT}/renderComponentManager.cpp
 	${INCROOT}/vbo.h
 	${SRCROOT}/vbo.cpp
 	${INCROOT}/batcher.h
@@ -77,8 +77,8 @@ set(SRC_GRAPHICS
 	${SRCROOT}/animation.cpp	
 	${INCROOT}/tile.h
 	${SRCROOT}/tile.cpp
-	${INCROOT}/fastRenderComponent.h
-	${SRCROOT}/fastRenderComponent.cpp
+	${INCROOT}/oitRenderComponent.h
+	${SRCROOT}/oitRenderComponent.cpp
 	${INCROOT}/animatedEntity.h	
 	${INCROOT}/model.h
 	${SRCROOT}/model.cpp
@@ -99,6 +99,8 @@ set(SRC_GRAPHICS
 	${SRCROOT}/sdlRenderWindow.cpp
 	${INCROOT}/cpuRenderComponent.hpp
 	${SRCROOT}/cpuRenderComponent.cpp
+	${INCROOT}/fastRenderComponent.hpp
+	${SRCROOT}/fastRenderComponent.cpp
 	${INCROOT}/world.h
 	${SRCROOT}/world.cpp)
 source_group ("graphics" FILES ${SRC_GRAPHICS})
@@ -128,13 +130,18 @@ set(SRC_GRAPHICS_3D
 	
 source_group("3d_graphics" FILES ${SRC_GRAPHICS_3D})
 set(SRC_GUI
-    ${INCROOT}/GUI/button.hpp
-    ${SRCROOT}/GUI/button.cpp
-    ${INCROOT}/GUI/textArea.hpp
-    ${SRCROOT}/GUI/textArea.cpp
-    ${INCROOT}/GUI/optionPane.hpp
-    ${SRCROOT}/GUI/optionPane.cpp)
-
+	${INCROOT}/GUI/button.hpp
+	${SRCROOT}/GUI/button.cpp
+	${INCROOT}/GUI/textArea.hpp
+	${SRCROOT}/GUI/textArea.cpp
+	${INCROOT}/GUI/optionPane.hpp
+	${SRCROOT}/GUI/optionPane.cpp
+	${INCROOT}/GUI/menubar.hpp
+	${SRCROOT}/GUI/menubar.cpp
+	${INCROOT}/GUI/menu.hpp
+	${SRCROOT}/GUI/menu.cpp
+	${INCROOT}/GUI/menuItem.hpp
+	${SRCROOT}/GUI/menuItem.cpp)
 source_group ("gui" FILES ${SRC_GUI})
 find_package (SFML 2 REQUIRED)
 find_package(Freetype REQUIRED)

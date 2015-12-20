@@ -56,7 +56,7 @@ namespace odfaeg
 
 
         ////////////////////////////////////////////////////////////
-        bool RenderTexture::create(unsigned int width, unsigned int height, ContextSettings settings)
+        bool RenderTexture::create(unsigned int width, unsigned int height, ContextSettings settings,  bool depthAttachement, unsigned int nbChannels)
         {
             RenderTarget::setMajorVersion(settings.majorVersion);
             RenderTarget::setMinorVersion(settings.minorVersion);
@@ -69,11 +69,27 @@ namespace odfaeg
                 Shader::setVersionMinor(3);
             }
             // Create the texture
+            if (depthAttachement)
+                        settings.depthBits = 8;
             useDepthTest = (settings.depthBits > 0) ? 1 : 0;
-            if (!m_texture.create(width, height))
-            {
-                err() << "Impossible to create render texture (failed to create the target texture)" << std::endl;
-                return false;
+            std::vector<unsigned int> textureIds(nbChannels);
+            m_textures.clear();
+            m_textures.resize(nbChannels);
+            for (unsigned int i = 0; i < nbChannels; i++) {
+                if (depthAttachement) {
+                    if (!m_textures[i].create(width, height, true))
+                    {
+                        err() << "Impossible to create render texture (failed to create the target texture)" << std::endl;
+                        return false;
+                    }
+                } else {
+                    if (!m_textures[i].create(width, height))
+                    {
+                        err() << "Impossible to create render texture (failed to create the target texture)" << std::endl;
+                        return false;
+                    }
+                }
+                textureIds[i] = m_textures[i].m_texture;
             }
             // We disable smoothing by default for render textures
             setSmooth(false);
@@ -92,7 +108,7 @@ namespace odfaeg
             }
 
             // Initialize the render texture
-            if (!m_impl->create(width, height, settings, m_texture.m_texture))
+            if (!m_impl->create(width, height, settings, depthAttachement, textureIds, nbChannels))
                 return false;
             if (RenderTarget::getMajorVersion() >= 3 && RenderTarget::getMinorVersion() >= 3) {
                 GLuint vao;
@@ -111,28 +127,28 @@ namespace odfaeg
         ////////////////////////////////////////////////////////////
         void RenderTexture::setSmooth(bool smooth)
         {
-            m_texture.setSmooth(smooth);
+            m_textures[0].setSmooth(smooth);
         }
 
 
         ////////////////////////////////////////////////////////////
         bool RenderTexture::isSmooth() const
         {
-            return m_texture.isSmooth();
+            return m_textures[0].isSmooth();
         }
 
 
         ////////////////////////////////////////////////////////////
         void RenderTexture::setRepeated(bool repeated)
         {
-            m_texture.setRepeated(repeated);
+            m_textures[0].setRepeated(repeated);
         }
 
 
         ////////////////////////////////////////////////////////////
         bool RenderTexture::isRepeated() const
         {
-            return m_texture.isRepeated();
+            return m_textures[0].isRepeated();
         }
 
 
@@ -149,8 +165,10 @@ namespace odfaeg
             // Update the target texture
             if (setActive(true))
             {
-                m_impl->updateTexture(m_texture.m_texture);
-                m_texture.m_pixelsFlipped = true;
+                for (unsigned int i = 0; i < m_textures.size(); i++) {
+                    m_impl->updateTexture(m_textures[i].m_texture);
+                    m_textures[i].m_pixelsFlipped = true;
+                }
             }
         }
 
@@ -158,17 +176,19 @@ namespace odfaeg
         ////////////////////////////////////////////////////////////
         Vector2u RenderTexture::getSize() const
         {
-            return m_texture.getSize();
+            return m_textures[0].getSize();
         }
 
 
         ////////////////////////////////////////////////////////////
+        const std::vector<Texture> RenderTexture::getTextures() const
+        {
+            return m_textures;
+        }
         const Texture& RenderTexture::getTexture() const
         {
-            return m_texture;
+            return m_textures[0];
         }
-
-
         ////////////////////////////////////////////////////////////
         bool RenderTexture::activate(bool active)
         {

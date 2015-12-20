@@ -36,6 +36,10 @@ set(SRC
 	${INCROOT}/stateExecutor.h
 	${SRCROOT}/actions.cpp	
 	${INCROOT}/archive.h	
+	${INCROOT}/time.h
+	${SRCROOT}/time.cpp
+	${INCROOT}/clock.h
+	${SRCROOT}/clock.cpp
 	)	
 
 include_directories(${CMAKE_INCLUDE_PATH})

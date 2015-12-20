@@ -17,12 +17,12 @@ namespace odfaeg {
           * \date 1/02/2014
           *  Represent a material of a face.
           */
-        class ODFAEG_GRAPHICS_API Material {
+        class ODFAEG_GRAPHICS_API Material : public core::Serializable {
              private :
              /** \struct TetureInfo
              *   \brief represent the informations about a texture used by the material.
              */
-             struct TextureInfo {
+             struct TextureInfo : public core::Serializable {
                 private :
                 const Texture* texture; /**> A texture used by the material.*/
                 sf::IntRect rect; /**> The coordinates of the texture.*/
@@ -218,7 +218,7 @@ namespace odfaeg {
           * \date 1/02/2014
           *  Represent a material of a face.
           */
-        class ODFAEG_GRAPHICS_API Face {
+        class ODFAEG_GRAPHICS_API Face : public core::Serializable {
         public :
             /**
             * \fn Face()

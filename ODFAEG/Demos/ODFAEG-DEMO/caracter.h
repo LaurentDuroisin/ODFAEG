@@ -80,7 +80,7 @@ public :
     void setRegenHpSpeed(float regenHpSpeed);
     int getRegenHpAmount();
     void setRegenHpAmount(int regenHpAmount);
-    Entity* getCurrentEntity() const;
+    Entity* getCurrentFrame() const;
     void onDraw(odfaeg::graphic::RenderTarget&, odfaeg::graphic::RenderStates);
     void onMove(odfaeg::math::Vec3f& t);
     void setIsMovingFromKeyboard(bool b);

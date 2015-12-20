@@ -6,7 +6,6 @@
 #include "odfaeg/Graphics/world.h"
 #include "odfaeg/Graphics/entitiesUpdater.h"
 #include "odfaeg/Graphics/map.h"
-#include "odfaeg/Graphics/text.h"
 #include "bar.hpp"
 #include "odfaeg/Graphics/GUI/button.hpp"
 #include "odfaeg/Graphics/GUI/textArea.hpp"
@@ -24,7 +23,6 @@ class Pong : public odfaeg::core::Application, public odfaeg::graphic::gui::Acti
         void onExec();
         void actionPerformed(odfaeg::graphic::gui::Button* button);
     private :
-        odfaeg::graphic::Text score1, score2;
         odfaeg::graphic::gui::TextArea* m_taPseudo;
         odfaeg::graphic::gui::Button*  m_bPseudo;
         odfaeg::graphic::gui::OptionPane *m_pseudoUsed, *m_confirmInvitation;

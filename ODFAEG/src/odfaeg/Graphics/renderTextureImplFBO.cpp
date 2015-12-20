@@ -90,7 +90,7 @@ namespace odfaeg {
 
 
             ////////////////////////////////////////////////////////////
-            bool RenderTextureImplFBO::create(unsigned int width, unsigned int height, ContextSettings settings, unsigned int textureId)
+            bool RenderTextureImplFBO::create(unsigned int width, unsigned int height, ContextSettings settings, bool depthAttachement, std::vector<unsigned int> textureIds, unsigned int nbChannels)
             {
                 // Create the context
                 m_context = new Context(settings, width, height);
@@ -110,7 +110,6 @@ namespace odfaeg {
                     glCheck(glBindFramebuffer(GL_FRAMEBUFFER, m_frameBuffer));
                 else
                     glCheck(glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_frameBuffer));
-
                 // Create the depth buffer if requested
                 if (settings.depthBits > 0)
                 {
@@ -136,10 +135,19 @@ namespace odfaeg {
                     }
                 }
                 if (RenderTarget::getMajorVersion() >= 3 && RenderTarget::getMinorVersion() >= 3) {
-                    glCheck(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureId, 0));
+                    for (unsigned int i = 0; i < nbChannels; i++) {
+                        // Link the texture to the frame buffer
+                        glCheck(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0_EXT + i, GL_TEXTURE_2D, textureIds[i], 0));
+                    }
                 } else {
-                    // Link the texture to the frame buffer
-                    glCheck(glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, textureId, 0));
+                    if (depthAttachement) {
+                        glCheck(glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_TEXTURE_2D, textureIds[0], 0));
+                    } else {
+                        for (unsigned int i = 0; i < nbChannels; i++) {
+                            // Link the texture to the frame buffer
+                            glCheck(glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT + i, GL_TEXTURE_2D, textureIds[i], 0));
+                        }
+                    }
                 }
                 if (RenderTarget::getMajorVersion() >= 3 && RenderTarget::getMinorVersion() >= 3) {
                     // A final check, just to be sure.

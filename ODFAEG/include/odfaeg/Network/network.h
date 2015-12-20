@@ -229,6 +229,8 @@ namespace odfaeg {
                 static sf::Int64 getTimeBtw2Sync() {
                     return timeBtw2Sync;
                 }
+                static void setCertifiateClientMess(std::string mess);
+                static std::string getCertifiateClientMess();
             private :
                 static sf::Clock timeoutClk; /**>clock.*/
                 static SrkClient &cli; /**>The client.*/
@@ -240,6 +242,7 @@ namespace odfaeg {
                 static sf::Int64 timeBtw2Sync;
                 static sf::Clock timeBtw2SyncClk;
                 static sf::Clock timeBtw2PingsClk; /**> clock measuring the interval between two pings.*/
+                static std::string certifiateClientMess;
         };
     }
 }

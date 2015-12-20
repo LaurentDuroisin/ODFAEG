@@ -252,8 +252,8 @@ namespace odfaeg {
             matrix.m44 = m44;
             return matrix;
         }
-        float* Matrix4f::toGlMatrix() {
-            float* matrix = new float[16];
+        std::array<float, 16> Matrix4f::toGlMatrix() {
+            std::array<float, 16> matrix;
             matrix[0] = m11;
             matrix[1] = m12;
             matrix[2] = m13;

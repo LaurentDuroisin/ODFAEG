@@ -24,7 +24,7 @@ namespace odfaeg {
         }
         void Player::play(bool loop) {
             inPause = false;
-            stream->setLoop(true);
+            stream->setLoop(loop);
             stream->play();
         }
         void Player::stop() {

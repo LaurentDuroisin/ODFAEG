@@ -98,7 +98,7 @@ namespace odfaeg {
 
 
         ////////////////////////////////////////////////////////////
-        bool Texture::create(unsigned int width, unsigned int height)
+        bool Texture::create(unsigned int width, unsigned int height, bool depthText)
         {
             // Check if texture parameters are valid before creating it
             if ((width == 0) || (height == 0))
@@ -135,6 +135,7 @@ namespace odfaeg {
                 GLuint texture;
                 glCheck(glGenTextures(1, &texture));
                 m_texture = static_cast<unsigned int>(texture);
+                glCheck(glBindImageTextures(0, 1, &m_texture));
             }
 
             // Make sure that the current texture binding will be preserved
@@ -142,7 +143,11 @@ namespace odfaeg {
 
             // Initialize the texture
             glCheck(glBindTexture(GL_TEXTURE_2D, m_texture));
-            glCheck(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_actualSize.x, m_actualSize.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL));
+            if (depthText) {
+                glCheck(glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, m_actualSize.x, m_actualSize.y, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL));
+            } else {
+                glCheck(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_actualSize.x, m_actualSize.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL));
+            }
             glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, m_isRepeated ? GL_REPEAT : GL_CLAMP_TO_EDGE));
             glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_isRepeated ? GL_REPEAT : GL_CLAMP_TO_EDGE));
             glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_isSmooth ? GL_LINEAR : GL_NEAREST));

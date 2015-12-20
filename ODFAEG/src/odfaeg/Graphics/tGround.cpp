@@ -14,11 +14,11 @@ namespace odfaeg {
                 int yPosition = math::Math::abs(getPosition().y) / tileSize.y + tilePos.y / tileSize.y;
                 int position = yPosition * nbTilesPerRow + xPosition;
                 int belowPos = (yPosition - 1) * nbTilesPerRow  + xPosition;
-                if (xPosition > 0) {
+                if (xPosition > 0 && position - 1 < getChildren().size()) {
                     heights[0] = getChildren()[position-1]->getFaces()[0]->getVertexArray()[1].position.z;
                     heights[3] = getChildren()[position-1]->getFaces()[0]->getVertexArray()[2].position.z;
                 }
-                if (belowPos  > 0) {
+                if (belowPos  > 0 && belowPos < getChildren().size()) {
                     heights[0] = getChildren()[belowPos]->getFaces()[0]->getVertexArray()[3].position.z;
                     heights[1] = getChildren()[belowPos]->getFaces()[0]->getVertexArray()[2].position.z;
                 }

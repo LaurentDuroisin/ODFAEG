@@ -413,7 +413,7 @@ namespace odfaeg {
                             ptIndex = (i + 1 == points.size()) ? 0 : i + 1;
                             return j;
                         }
-                        if (dist <= distMin && nDist <= nDistMin && (a1 > 0 && a2 < 0 || a1 < 0 && a2 > 0)) {
+                        if ((dist <= distMin) && (nDist <= nDistMin) && (a1 > 0 && a2 < 0 || a1 < 0 && a2 > 0)) {
                             distMin = dist;
                             nDistMin = nDist;
                             edgeIndex = i;

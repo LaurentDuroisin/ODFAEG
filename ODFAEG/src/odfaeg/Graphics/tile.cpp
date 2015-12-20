@@ -34,7 +34,7 @@ namespace odfaeg {
         }
         Tile::Tile (const Texture *image, math::Vec3f position, math::Vec3f size, sf::IntRect subRect, sf::Color color, Entity *parent)
         : Entity (position, size, size * 0.5f, "E_TILE") {
-            Face* face = new Face(sf::TrianglesFan,getTransform());
+            Face* face = new Face(sf::Quads,getTransform());
             Vertex v1(sf::Vector3f(0, 0, 0));
             Vertex v2(sf::Vector3f(size.x, 0, 0));
             Vertex v3(sf::Vector3f(size.x, size.y, 0));

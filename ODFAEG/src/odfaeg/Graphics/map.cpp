@@ -9,7 +9,7 @@ namespace odfaeg {
     namespace graphic {
     using namespace std;
 
-        Map::Map (FastRenderComponentManager* frcm, std::string name, int cellWidth, int cellHeight) : EntityManager(name), frcm(frcm) {
+        Map::Map (RenderComponentManager* frcm, std::string name, int cellWidth, int cellHeight) : EntityManager(name), frcm(frcm) {
             gridMap = new GridMap(cellWidth, cellHeight);
             updateComponents = false;
             id = 0;
@@ -23,17 +23,21 @@ namespace odfaeg {
                 stencilBuffer = new RenderTexture();
                 normalMap = new RenderTexture();
                 refractionMap = new RenderTexture();
+                backDepthBuffer = new RenderTexture();
                 shadowMap->create(frcm->getWindow().getSize().x, frcm->getWindow().getSize().y,frcm->getWindow().getSettings());
                 lightMap->create(frcm->getWindow().getSize().x, frcm->getWindow().getSize().y,frcm->getWindow().getSettings());
                 stencilBuffer->create(frcm->getWindow().getSize().x, frcm->getWindow().getSize().y,frcm->getWindow().getSettings());
                 normalMap->create(frcm->getWindow().getSize().x, frcm->getWindow().getSize().y,frcm->getWindow().getSettings());
                 refractionMap->create(frcm->getWindow().getSize().x, frcm->getWindow().getSize().y,frcm->getWindow().getSettings());
+                backDepthBuffer->create(frcm->getWindow().getSize().x, frcm->getWindow().getSize().y,frcm->getWindow().getSettings());
                 resolution = sf::Vector3i ((int) frcm->getWindow().getSize().x, (int) frcm->getWindow().getSize().y, frcm->getWindow().getView().getSize().z);
                 perPixLightingShader = new Shader();
                 buildShadowMapShader = new Shader();
                 perPixShadowShader = new Shader();
                 buildNormalMapShader = new Shader();
                 buildRefractionMapShader = new Shader();
+                depthBufferGenShader = new Shader();
+                perPixShadowShader2 = new Shader();
                 if (Shader::getShadingLanguageVersionMajor() >= 3 && Shader::getShadingLanguageVersionMinor() >= 3) {
                     const std::string perPixLightingVertexShader =
                     "#version 330 core\n"
@@ -118,37 +122,68 @@ namespace odfaeg {
                     }
 
                 } else {
-                   const std::string  buildNormalMapVertexShader =
-                   "#version 130 \n"
-                   "void main () {"
-                        "gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;"
-                        "gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;"
-                        "gl_FrontColor = gl_Color;"
-                   "}";
-                    const std::string buildNormalMapFragmentShader =
-                    "#version 130 \n"
-                    "const vec2 size = vec2(2.0,0.0);"
-                    "const ivec3 off = ivec3(-1,0,1);"
-                    "uniform sampler2D texture;"
-                    "void main() {"
-                        "vec4 depth = texture2D(texture, gl_TexCoord[0].xy);"
-                        "float s01 = textureOffset(texture, gl_TexCoord[0].xy, off.xy).z;"
-                        "float s21 = textureOffset(texture, gl_TexCoord[0].xy, off.zy).z;"
-                        "float s10 = textureOffset(texture, gl_TexCoord[0].xy, off.yx).z;"
-                        "float s12 = textureOffset(texture, gl_TexCoord[0].xy, off.yz).z;"
-                        "vec3 va = normalize (vec3(size.xy, s21 - s01));"
-                        "vec3 vb = normalize (vec3(size.yx, s12 - s10));"
-                        "gl_FragColor = vec4(cross(va, vb), depth.z);"
-                    "}";
-                    const std::string perPixLightingVertexShader =
+                    const std::string  depthGenVertexShader =
                     "#version 130 \n"
                     "out mat4 projMat;"
                     "void main () {"
-                            "gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;"
-                            "gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;"
-                            "gl_FrontColor = gl_Color;"
-                            "projMat = gl_ProjectionMatrix;"
+                        "gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;"
+                        "gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;"
+                        "gl_FrontColor = gl_Color;"
+                        "projMat = gl_ProjectionMatrix;"
                     "}";
+                    const std::string depthGenFragShader =
+                    "#version 130 \n"
+                    "uniform sampler2D depthBuffer;"
+                    "uniform sampler2D texture;"
+                    "uniform vec3 resolution;"
+                    "uniform float haveTexture;"
+                    "in mat4 projMat;"
+                    "void main () {"
+                        "vec2 position = ( gl_FragCoord.xy / resolution.xy );"
+                        "vec4 previous_depth_alpha = texture2D(depthBuffer, position);"
+                        "vec4 texel = texture2D(texture, gl_TexCoord[0].xy);"
+                        "vec4 colors[2];"
+                        "colors[1] = texel * gl_Color;"
+                        "colors[0] = gl_Color;"
+                        "bool b = (haveTexture == 1);"
+                        "float current_alpha = colors[int(b)].a;"
+                        "float current_depth = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
+                        "colors[1] = vec4(current_depth, current_alpha, current_depth, current_alpha);"
+                        "colors[0] = vec4(current_depth, current_alpha, previous_depth_alpha.z, previous_depth_alpha.a);"
+                        "b = (current_depth >= previous_depth_alpha.z && current_alpha != 0);"
+                        "gl_FragColor = colors[int(b)];"
+                     "}";
+                     const std::string  buildNormalMapVertexShader =
+                     "#version 130 \n"
+                     "void main () {"
+                         "gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;"
+                         "gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;"
+                         "gl_FrontColor = gl_Color;"
+                     "}";
+                     const std::string buildNormalMapFragmentShader =
+                     "#version 130 \n"
+                     "const vec2 size = vec2(2.0,0.0);"
+                     "const ivec3 off = ivec3(-1,0,1);"
+                     "uniform sampler2D texture;"
+                     "void main() {"
+                         "vec4 depth = texture2D(texture, gl_TexCoord[0].xy);"
+                         "float s01 = textureOffset(texture, gl_TexCoord[0].xy, off.xy).z;"
+                         "float s21 = textureOffset(texture, gl_TexCoord[0].xy, off.zy).z;"
+                         "float s10 = textureOffset(texture, gl_TexCoord[0].xy, off.yx).z;"
+                         "float s12 = textureOffset(texture, gl_TexCoord[0].xy, off.yz).z;"
+                         "vec3 va = normalize (vec3(size.xy, s21 - s01));"
+                         "vec3 vb = normalize (vec3(size.yx, s12 - s10));"
+                         "gl_FragColor = vec4(cross(va, vb), depth.z);"
+                     "}";
+                     const std::string perPixLightingVertexShader =
+                     "#version 130 \n"
+                     "out mat4 projMat;"
+                     "void main () {"
+                          "gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;"
+                          "gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;"
+                          "gl_FrontColor = gl_Color;"
+                          "projMat = gl_ProjectionMatrix;"
+                     "}";
                      const std::string perPixLightingFragmentShader =
                      "#version 130 \n"
                      "const vec2 size = vec2(2.0,0.0);"
@@ -173,7 +208,7 @@ namespace odfaeg {
                          "vec3 viewPos = vec3(resolution.x * 0.5f, resolution.y * 0.5f, 0);"
                          "float z = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
                          "vec3 vertexToLight = sLightPos - pixPos;"
-                         "if (bump.x != 0 && bump.y != 0 && bump.z != 0) {"
+                         "if (bump.x != 0 || bump.y != 0 || bump.z != 0) {"
                              "float s01 = textureOffset(normalMap, position, off.xy).z;"
                              "float s21 = textureOffset(normalMap, position, off.zy).z;"
                              "float s10 = textureOffset(normalMap, position, off.yx).z;"
@@ -214,7 +249,7 @@ namespace odfaeg {
                     "uniform mat4 shadowProjMat;"
                     "out mat4 projMat;"
                     "void main () {"
-                        "gl_Position = gl_ProjectionMatrix * shadowProjMat * gl_ModelViewMatrix * gl_Vertex;"
+                        "gl_Position = gl_ModelViewProjectionMatrix * shadowProjMat * gl_Vertex;"
                         "gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;"
                         "gl_FrontColor = gl_Color;"
                         "projMat = gl_ProjectionMatrix;"
@@ -236,17 +271,26 @@ namespace odfaeg {
                     "out vec4 shadowCoords;"
                     "out mat4 projMat;"
                     "void main () {"
-                        "gl_Position = gl_ModelViewProjectionMatrix * shadowProjMat * gl_Vertex;"
+                        "gl_Position = gl_ProjectionMatrix * shadowProjMat * gl_ModelViewMatrix * gl_Vertex;"
                         "gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;"
                         "gl_FrontColor = gl_Color;"
                         "projMat = gl_ProjectionMatrix;"
+                        "shadowCoords = depthBiasMatrix * vec4(gl_Position.xyz, 1);"
+                    "}";
+                    const std::string perPixShadowVertexShader2 =
+                    "#version 130 \n"
+                    "uniform mat4 depthBiasMatrix;"
+                    "out vec4 shadowCoords;"
+                    "void main () {"
+                        "gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;"
+                        "gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;"
+                        "gl_FrontColor = gl_Color;"
                         "shadowCoords = depthBiasMatrix * vec4(gl_Position.xyz, 1);"
                     "}";
                     const std::string perPixShadowFragmentShader =
                     "#version 130 \n"
                     "uniform sampler2D texture;"
                     "uniform sampler2D stencilBuffer;"
-                    "uniform float firstPass;"
                     "uniform float set;"
                     "uniform float haveTexture;"
                     "in vec4 shadowCoords;"
@@ -255,21 +299,27 @@ namespace odfaeg {
                     "   vec4 color = (haveTexture == 1) ? texture2D(texture, gl_TexCoord[0].xy) * gl_Color : gl_Color;"
                     "   vec4 stencil = texture2D (stencilBuffer, shadowCoords.xy);"
                     "   float z = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
-                    "   if (firstPass == 1) {"
-                    "       if (stencil.z < z && set == 1) {"
-                    "           gl_FragColor = vec4(0, 0, 0, color.a);"
-                    "       } else {"
-                    "           gl_FragColor = vec4(1, 1, 1, 1);"
-                    "       }"
-                    "    } else {"
-                    "       if (set == 1) {"
-                    "           gl_FragColor = vec4(1, 1, 1, color.a);"
-                    "       } else if (stencil.z == 1.f) {"
-                    "           gl_FragColor = vec4(0, 0, 0, color.a);"
-                    "       } else {"
-                    "           gl_FragColor = vec4(1, 1, 1, 1);"
-                    "       }"
-                    "    }"
+                    "   if (stencil.z < z && set == 1) {"
+                    "       gl_FragColor = vec4(0, 0, 0, color.a);"
+                    "   } else {"
+                    "       gl_FragColor = vec4(1, 1, 1, 1);"
+                    "   }"
+                    "}";
+                    const std::string perPixShadowFragmentShader2 =
+                    "#version 130 \n"
+                    "uniform sampler2D texture;"
+                    "uniform sampler2D shadowBuffer;"
+                    "uniform float set;"
+                    "uniform float haveTexture;"
+                    "in vec4 shadowCoords;"
+                    "void main() {"
+                    "   vec4 color = (haveTexture == 1) ? texture2D(texture, gl_TexCoord[0].xy) * gl_Color : gl_Color;"
+                    "   vec4 shadow = texture2D (shadowBuffer, shadowCoords.xy);"
+                    "   if (set == 1) {"
+                    "       gl_FragColor = vec4(1, 1, 1, color.a);"
+                    "   } else {"
+                    "       gl_FragColor = shadow;"
+                    "   }"
                     "}";
                     const std::string buildRefractionMapVertexShader =
                     "#version 130 \n"
@@ -286,18 +336,34 @@ namespace odfaeg {
                     "uniform sampler2D texture;"
                     "uniform sampler2D refractionTexture;"
                     "uniform sampler2D refractionBuffer;"
+                    "uniform sampler2D framebuffer;"
+                    "uniform sampler2D backDepthBuffer;"
                     "uniform float haveTexture;"
                     "in mat4 projMat;"
                     "void main() {"
                         "vec2 position = vec2 (gl_FragCoord.xy / resolution.xy);"
-                        "vec4 color = (haveTexture == 1) ? texture2D(texture, gl_TexCoord[0].xy) * gl_Color : gl_Color;"
                         "vec4 refraction = texture2D(refractionTexture, position);"
-                        "vec4 refractionBufferColor = texture2D(refractionBuffer, position);"
+                        "vec4 previous_depth_alpha = texture2D(backDepthBuffer, position);"
+                        "vec4 previous_color = texture2D(refractionBuffer, position);"
+                        "vec4 texel = texture2D(texture, gl_TexCoord[0].xy);"
+                        "vec4 colors[2];"
+                        "colors[1] = texel * gl_Color;"
+                        "colors[0] = gl_Color;"
+                        "bool b = (haveTexture == 1);"
+                        "vec4 current_color = colors[int(b)];"
+                        "float current_depth = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
+                        "colors[1] = current_color * current_color.a + previous_color * (1 - current_color.a);"
+                        "colors[1].a = current_color.a + previous_color.a * (1 - current_color.a);"
+                        "colors[0] = previous_color * previous_depth_alpha.a + current_color * (1 - previous_depth_alpha.a);"
+                        "colors[0].a = previous_color.a + current_color.a * (1 - previous_color.a);"
+                        "b = (current_depth >= previous_depth_alpha.z);"
+                        "vec4 backfbcolor = colors[int(b)];"
+                        "vec4 fbcolor = texture2D(framebuffer, position);"
                         "float z = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
-                        "if (refractionBufferColor.a == 0) {"
-                            "gl_FragColor = color * refraction.r;"
+                        "if (z > refraction.z && refraction.x != 0) {"
+                            "gl_FragColor = (fbcolor * fbcolor.a + backfbcolor * (1 - fbcolor.a)) * refraction.x;"
                         "} else {"
-                            "gl_FragColor = refractionBufferColor;"
+                            "gl_FragColor = previous_color;"
                         "}"
                     "}";
                     if (!buildNormalMapShader->loadFromMemory(buildNormalMapVertexShader, buildNormalMapFragmentShader)) {
@@ -309,11 +375,17 @@ namespace odfaeg {
                     if (!perPixShadowShader->loadFromMemory(perPixShadowVertexShader, perPixShadowFragmentShader)) {
                         throw core::Erreur(54, "Error, failed to load per pix shadow map shader", 3);
                     }
+                     if (!perPixShadowShader2->loadFromMemory(perPixShadowVertexShader2, perPixShadowFragmentShader2)) {
+                        throw core::Erreur(55, "Error, failed to load per pix shadow map shader", 3);
+                    }
                     if (!perPixLightingShader->loadFromMemory(perPixLightingVertexShader, perPixLightingFragmentShader)) {
-                        throw core::Erreur(55, "Error, failed to load per pixel lighting shader", 3);
+                        throw core::Erreur(56, "Error, failed to load per pixel lighting shader", 3);
                     }
                     if (!buildRefractionMapShader->loadFromMemory(buildRefractionMapVertexShader, buildRefractionMapFragmentShader)) {
-                        throw core::Erreur(56, "Error, failed to load per pixel lighting shader", 3);
+                        throw core::Erreur(57, "Error, failed to load refraction shader", 3);
+                    }
+                    if (!depthBufferGenShader->loadFromMemory(depthGenVertexShader, depthGenFragShader)) {
+                        throw core::Erreur(58, "Error, failed to load depth buffer generator shader", 3);
                     }
                 }
                 buildNormalMapShader->setParameter("texture", Shader::CurrentTexture);
@@ -322,9 +394,16 @@ namespace odfaeg {
                 buildShadowMapShader->setParameter("texture", Shader::CurrentTexture);
                 perPixShadowShader->setParameter("stencilBuffer", stencilBuffer->getTexture());
                 perPixShadowShader->setParameter("texture", Shader::CurrentTexture);
+                perPixShadowShader2->setParameter("shadowBuffer", shadowMap->getTexture());
+                perPixShadowShader2->setParameter("texture", Shader::CurrentTexture);
                 buildRefractionMapShader->setParameter("texture", Shader::CurrentTexture);
                 buildRefractionMapShader->setParameter("resolution", resolution.x, resolution.y, resolution.z);
                 buildRefractionMapShader->setParameter("refractionBuffer", refractionMap->getTexture());
+                buildRefractionMapShader->setParameter("backdepthBuffer", backDepthBuffer->getTexture());
+                buildRefractionMapShader->setParameter("refractionBuffer", refractionMap->getTexture());
+                depthBufferGenShader->setParameter("resolution", resolution.x, resolution.y, resolution.z);
+                depthBufferGenShader->setParameter("texture", Shader::CurrentTexture);
+                depthBufferGenShader->setParameter("depthBuffer", backDepthBuffer->getTexture());
             }
         }
         void Map::generate_map(std::vector<Tile*> tGround, std::vector<Tile*> walls, math::Vec2f tileSize, physic::BoundingBox &rect, bool terrain3D) {
@@ -555,7 +634,6 @@ namespace odfaeg {
                                 if (cell != nullptr) {
                                     for (unsigned int n = 0; n < cell->getEntitiesInside().size(); n++) {
                                        Entity* entity = cell->getEntityInside(n);
-                                       physic::BoundingBox bx2 = entity->getGlobalBounds();
                                        if (!containsVisibleParentEntity(entity)) {
                                             visibleParentEntities.push_back(entity);
                                             /*if (entity->isAnimated()) {
@@ -563,7 +641,7 @@ namespace odfaeg {
                                                     animatedVisibleEntities.push_back(static_cast<AnimatedEntity*>(entity));
                                                 }
                                             } else {*/
-                                                insertVisibleEntity(entity);
+                                                insertVisibleEntity(entity, bx);
                                             //}
                                         }
                                     }
@@ -588,9 +666,9 @@ namespace odfaeg {
             }
             return false;
         }
-        void Map::insertVisibleEntity(Entity *entity) {
+        void Map::insertVisibleEntity(Entity *entity, physic::BoundingBox bx) {
             if (entity->isAnimated()) {
-                insertVisibleEntity(static_cast<AnimatedEntity*>(entity)->getCurrentEntity());
+                insertVisibleEntity(static_cast<AnimatedEntity*>(entity)->getCurrentFrame(), bx);
             }
             if (!entity->isAnimated()) {
                 vector<Entity*> children;
@@ -602,23 +680,14 @@ namespace odfaeg {
                     vEntitiesByType.insert(newEntitiesType);
                     it = vEntitiesByType.find(entity->getType());
                 }
-                physic::BoundingBox view = frcm->getWindow().getView().getViewVolume();
-                int x = view.getPosition().x;
-                int y = view.getPosition().y;
-                int z = view.getPosition().z;
-                int endX = view.getWidth();
-                int endY = view.getHeight();
-                int endZ = view.getDepth();
-                physic::BoundingBox bx (x, y, z, endX, endY, endZ);
                 //std::cout<<"view volume : "<<view.getPosition()<<" "<<view.getWidth()<<" "<<view.getHeight()<<" "<<view.getDepth()<<std::endl;
                 if (children.size() != 0) {
 
                     for (unsigned int i = 0; i < children.size(); i++) {
                         if (!containsVisibleEntity(children[i])) {
-                            physic::CollisionResultSet::Info info;
                             physic::BoundingBox bx2  = children[i]->getGlobalBounds();
                             //std::cout<<"view volume : "<<bx2.getPosition()<<" "<<bx2.getWidth()<<" "<<bx2.getHeight()<<" "<<bx2.getDepth()<<std::endl;
-                            if (bx.intersects(bx2, info)) {
+                            if (bx.intersects(bx2)) {
                                 it->second.push_back(children[i]);
                             }
                         }
@@ -641,7 +710,7 @@ namespace odfaeg {
         }
         void Map::insertAnimatedVisibleEntity (Entity *ae, std::vector<Entity*>& entities, View& view) {
             if (ae->isAnimated()) {
-                insertAnimatedVisibleEntity(static_cast<AnimatedEntity*> (ae)->getCurrentEntity(), entities, view);
+                insertAnimatedVisibleEntity(static_cast<AnimatedEntity*> (ae)->getCurrentFrame(), entities, view);
             }
             if (!ae->isAnimated()) {
                 vector<Entity*> children;
@@ -672,8 +741,7 @@ namespace odfaeg {
             if (children.size() != 0) {
                 for (unsigned int i = 0; i < children.size(); i++) {
                     physic::BoundingBox bx2 = children[i]->getGlobalBounds();
-                    physic::CollisionResultSet::Info info;
-                    if (bx.intersects(bx2, info)) {
+                    if (bx.intersects(bx2)) {
                         for (it2 = it->second.begin(); it2 != it->second.end();) {
                             if (*it2 == children[i]) {
                                 it2 = it->second.erase(it2);
@@ -685,8 +753,7 @@ namespace odfaeg {
                 }
             } else {
                 physic::BoundingBox bx2 = toRemove->getGlobalBounds();
-                physic::CollisionResultSet::Info info;
-                if (bx.intersects(bx2, info)) {
+                if (bx.intersects(bx2)) {
                     for (it2 = it->second.begin(); it2 != it->second.end();) {
                         if (*it2 == toRemove) {
                             it2 = it->second.erase(it2);
@@ -710,7 +777,7 @@ namespace odfaeg {
         }
         void Map::removeAnimatedVisibleEntity(Entity *toRemove, std::vector<Entity*>& entities, View& view, bool& removed) {
             if (toRemove->isAnimated()) {
-                removeAnimatedVisibleEntity(static_cast<AnimatedEntity*>(toRemove)->getCurrentEntity(), entities, view, removed);
+                removeAnimatedVisibleEntity(static_cast<AnimatedEntity*>(toRemove)->getCurrentFrame(), entities, view, removed);
             }
 
             if (!toRemove->isAnimated()) {
@@ -721,8 +788,7 @@ namespace odfaeg {
                 if (children.size() != 0) {
                     for (unsigned int i = 0; i < children.size(); i++) {
                         physic::BoundingBox bx2 = children[i]->getGlobalBounds();
-                        physic::CollisionResultSet::Info info;
-                        if (bx.intersects(bx2, info)) {
+                        if (bx.intersects(bx2)) {
                             for (it2 = entities.begin(); it2 != entities.end();) {
                                 if (*it2 == children[i]) {
                                     removed = true;
@@ -735,8 +801,7 @@ namespace odfaeg {
                     }
                 } else {
                     physic::BoundingBox bx2 = toRemove->getGlobalBounds();
-                    physic::CollisionResultSet::Info info;
-                    if (bx.intersects(bx2, info)) {
+                    if (bx.intersects(bx2)) {
                         for (it2 = entities.begin(); it2 != entities.end();) {
                             if (*it2 == toRemove) {
                                 removed = true;
@@ -1053,7 +1118,6 @@ namespace odfaeg {
             shadowMap->setView(frcm->getWindow().getView());
             if (Shader::isAvailable()) {
                 RenderStates states;
-                states.shader = perPixShadowShader;
                 //states.blendMode = sf::BlendNone;
                 if (n != -1) {
                     std::vector<unsigned int> idsCompInt;
@@ -1074,17 +1138,21 @@ namespace odfaeg {
                             if (find) {
                                 //std::cout<<"don't set"<<std::endl;
                                 perPixShadowShader->setParameter("set", 1);
+                                perPixShadowShader2->setParameter("set", 1);
                             } else {
                                 //std::cout<<"set"<<std::endl;
                                 perPixShadowShader->setParameter("set", 0);
+                                perPixShadowShader2->setParameter("set", 1);
                             }
                             for (unsigned int p = 0; p < 2; p++) {
                                 for (unsigned int k = 0; k < entities.size(); k++) {
                                     if (entities[k]->getFaces().size() > 0) {
                                         if (entities[k]->getFaces()[0]->getMaterial().getTexture() != nullptr) {
                                             perPixShadowShader->setParameter("haveTexture", 1);
+                                            perPixShadowShader2->setParameter("haveTexture", 1);
                                         } else {
                                             perPixShadowShader->setParameter("haveTexture", 0);
+                                            perPixShadowShader2->setParameter("haveTexture", 0);
                                         }
                                         if (p == 0) {
                                             math::Vec3f shadowCenter, shadowScale(1.f, 1.f, 1.f), shadowRotationAxis;
@@ -1102,12 +1170,10 @@ namespace odfaeg {
                                             tm.setTranslation(entities[k]->getPosition() + shadowCenter);
                                             tm.update();
                                             perPixShadowShader->setParameter("shadowProjMat", tm.getMatrix().transpose());
-                                            perPixShadowShader->setParameter("firstPass", 1);
+                                            states.shader = perPixShadowShader;
                                             shadowMap->draw(*entities[k], states);
                                         } else {
-                                            TransformMatrix tm;
-                                            perPixShadowShader->setParameter("shadowProjMat", tm.getMatrix().transpose());
-                                            perPixShadowShader->setParameter("firstPass", 0);
+                                            states.shader = perPixShadowShader2;
                                             shadowMap->draw(*entities[k], states);
                                         }
                                     }
@@ -1197,6 +1263,8 @@ namespace odfaeg {
             math::Vec3f size (viewArea.getWidth(), viewArea.getHeight(), 0);
             refractionMap->clear(sf::Color::Black);
             refractionMap->setView(frcm->getWindow().getView());
+            backDepthBuffer->clear(sf::Color::Black);
+            backDepthBuffer->setView(frcm->getWindow().getView());
             RenderStates states;
             states.shader = buildRefractionMapShader;
             if (Shader::isAvailable()) {
@@ -1218,29 +1286,24 @@ namespace odfaeg {
                                     math::Vec3f forward = view.getForward();
                                     view.lookAt(-forward.x, -forward.y, -forward.z);
                                     refractionMap->setView(view);
-                                    for (unsigned int k = 0; k < entities.size(); k++) {
-                                        if (entities[k]->getFaces().size() > 0) {
-                                            if (entities[k]->getFaces()[0]->getMaterial().getTexture() != nullptr) {
-                                                perPixShadowShader->setParameter("haveTexture", 1);
-                                            } else {
-                                                perPixShadowShader->setParameter("haveTexture", 0);
-                                            }
-                                        }
-                                        refractionMap->draw(*entities[k], states);
-                                    }
-                                    refractionMap->setView(frcm->getRenderComponent(i)->getView());
+                                    backDepthBuffer->setView(view);
                                     buildRefractionMapShader->setParameter("refractionTexture",frcm->getRenderComponent(i)->getRefractionTexture());
+                                    buildRefractionMapShader->setParameter("frameBuffer",frcm->getRenderComponent(i)->getFrameBufferTexture());
                                     for (unsigned int k = 0; k < entities.size(); k++) {
                                         if (entities[k]->getFaces().size() > 0) {
                                             if (entities[k]->getFaces()[0]->getMaterial().getTexture() != nullptr) {
                                                 perPixShadowShader->setParameter("haveTexture", 1);
+                                                depthBufferGenShader->setParameter("haveTexture", 1);
                                             } else {
                                                 perPixShadowShader->setParameter("haveTexture", 0);
+                                                depthBufferGenShader->setParameter("haveTexture", 0);
                                             }
                                         }
+                                        states.shader = buildRefractionMapShader;
                                         refractionMap->draw(*entities[k], states);
+                                        states.shader = depthBufferGenShader;
+                                        backDepthBuffer->draw(*entities[k], states);
                                     }
-
                                 }
                             }
                        }
@@ -1264,10 +1327,10 @@ namespace odfaeg {
             delete stencilBufferTile;
             delete perPixLightingShader;
             delete perPixShadowShader;
+            delete perPixShadowShader2;
             delete refractionMap;
             delete buildRefractionMapShader;
         }
     }
 }
-
 

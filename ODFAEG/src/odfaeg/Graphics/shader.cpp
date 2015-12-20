@@ -94,6 +94,7 @@ namespace odfaeg {
         Shader::CurrentTextureType Shader::CurrentTexture;
         unsigned int Shader::shading_language_version_major = getShadingLanguageVersionMajor();
         unsigned int Shader::shading_language_version_minor = getShadingLanguageVersionMinor();
+        bool Shader::useOpenCL = false;
         ////////////////////////////////////////////////////////////
         Shader::Shader() :
         m_shaderProgram (0),
@@ -372,7 +373,7 @@ namespace odfaeg {
                     glCheck(glUseProgram(m_shaderProgram));
                     GLint location = getParamLocation(name);
                     if (location != -1) {
-                        glCheck(glUniformMatrix4fv(location, 1, GL_FALSE,matrix.toGlMatrix()));
+                        glCheck(glUniformMatrix4fv(location, 1, GL_FALSE,matrix.toGlMatrix().data()));
                     }
                     glCheck(glUseProgram(0));
                 } else {
@@ -383,9 +384,8 @@ namespace odfaeg {
                     // Get parameter location and assign it new values
                     GLint location = getParamLocation(name);
                     if (location != -1) {
-                        float* glmatrix = matrix.toGlMatrix();
-                        glCheck(glUniformMatrix4fvARB(location, 1, GL_FALSE, glmatrix));
-                        delete glmatrix;
+                        std::array<float, 16> glmatrix = matrix.toGlMatrix();
+                        glCheck(glUniformMatrix4fvARB(location, 1, GL_FALSE, glmatrix.data()));
                     }
                     // Disable program
                     glCheck(glUseProgramObjectARB(program));
@@ -427,7 +427,9 @@ namespace odfaeg {
                 }
             }
         }
-
+        void Shader::setParameter(const std::string& name) {
+            GLuint imageLoc = glGetUniformLocation(m_shaderProgram, name.c_str());
+        }
         ////////////////////////////////////////////////////////////
         void Shader::bindAttribute(int location, const std::string& name) {
             if (m_shaderProgram) {
@@ -785,6 +787,12 @@ namespace odfaeg {
             if (glslversion)
                 return glslversion[1] - '0';
             return 0;
+        }
+        void Shader::setUsingOpenCL(bool useOpenCL) {
+            Shader::useOpenCL = useOpenCL;
+        }
+        bool Shader::isUsingOpenCL() {
+            return useOpenCL;
         }
     }
 } // namespace sf

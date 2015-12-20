@@ -19,7 +19,7 @@ namespace odfaeg {
           *
           * Manage a 3D matrix who is used to perform 3D transformations and projections.
           */
-        class ODFAEG_MATH_API Matrix4f {
+        class ODFAEG_MATH_API Matrix4f : public core::Serializable {
             public :
             float m11, m12, m13, m14; /** < the elements of the first row matrix.*/
             float m21, m22, m23, m24; /** < the elements of the second row matrix.*/
@@ -139,7 +139,7 @@ namespace odfaeg {
             Matrix4f& operator= (const Matrix4f &ohter);
             friend std::ostream& operator<< (std::ostream &out, const Matrix4f &mat4);
             bool operator==(const Matrix4f& other);
-            float* toGlMatrix();
+            std::array<float, 16> toGlMatrix();
             Matrix4f transpose();
             template <typename Archive>
             void serialize(Archive & ar) {

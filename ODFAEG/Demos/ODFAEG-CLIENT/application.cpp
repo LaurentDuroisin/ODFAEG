@@ -4,7 +4,7 @@ using namespace odfaeg::graphic;
 using namespace odfaeg::physic;
 using namespace odfaeg::math;
 using namespace odfaeg::network;
-MyAppli::MyAppli(sf::VideoMode wm, std::string title) : Application (wm, title, false, true, sf::Style::Default, sf::ContextSettings(0, 0, 4, 3, 0)) {
+MyAppli::MyAppli(sf::VideoMode wm, std::string title) : Application (wm, title, false, false, true, sf::Style::Default, sf::ContextSettings(0, 0, 4, 3, 0)) {
     running = false;
     actualKey = sf::Keyboard::Key::Unknown;
     previousKey = sf::Keyboard::Key::Unknown;
@@ -23,6 +23,8 @@ void MyAppli::keyHeldDown (sf::Keyboard::Key key) {
                     Vec2f dir(0, -1);
                     hero->setDir(dir);
             }
+            hero->setFightingMode(false);
+            hero->setAttacking(false);
             Vec2f dir = hero->getDir();
             std::string message = "MOVEFROMKEYBOARD*"+conversionIntString(hero->getId())+"*"+conversionFloatString(dir.x)+"*"+conversionFloatString(dir.y);
             SymEncPacket packet;
@@ -38,6 +40,8 @@ void MyAppli::keyHeldDown (sf::Keyboard::Key key) {
                 Vec2f dir(-1, 0);
                 hero->setDir(dir);
             }
+            hero->setFightingMode(false);
+            hero->setAttacking(false);
             Vec2f dir = hero->getDir();
             std::string message = "MOVEFROMKEYBOARD*"+conversionIntString(hero->getId())+"*"+conversionFloatString(dir.x)+"*"+conversionFloatString(dir.y);
             SymEncPacket packet;
@@ -53,6 +57,8 @@ void MyAppli::keyHeldDown (sf::Keyboard::Key key) {
                 Vec2f dir(0, 1);
                 hero->setDir(dir);
             }
+            hero->setFightingMode(false);
+            hero->setAttacking(false);
             Vec2f dir = hero->getDir();
             std::string message = "MOVEFROMKEYBOARD*"+conversionIntString(hero->getId())+"*"+conversionFloatString(dir.x)+"*"+conversionFloatString(dir.y);
             SymEncPacket packet;
@@ -68,6 +74,8 @@ void MyAppli::keyHeldDown (sf::Keyboard::Key key) {
                 Vec2f dir(1, 0);
                 hero->setDir(dir);
             }
+            hero->setFightingMode(false);
+            hero->setAttacking(false);
             Vec2f dir = hero->getDir();
             std::string message = "MOVEFROMKEYBOARD*"+conversionIntString(hero->getId())+"*"+conversionFloatString(dir.x)+"*"+conversionFloatString(dir.y);
             SymEncPacket packet;
@@ -83,12 +91,8 @@ void MyAppli::leftMouseButtonPressed(sf::Vector2f mousePos) {
     Vec3f finalPos(mousePos.x, getRenderWindow().getSize().y - mousePos.y, 0);
     finalPos = getRenderWindow().mapPixelToCoords(finalPos);
     finalPos = Vec3f(finalPos.x, finalPos.y, 0);
-    /*std::vector<Vec2f> path = World::getPath(caracter, finalPos);
-    if (path.size() > 0) {
-        caracter->setPath(path);
-        caracter->setIsMovingFromKeyboard(false);
-        caracter->setMoving(true);
-    }*/
+    hero->setFightingMode(false);
+    hero->setAttacking(false);
     std::string message = "MOVEFROMPATH*"+conversionIntString(hero->getId())+"*"+conversionIntString(finalPos.x)+"*"+conversionIntString(finalPos.y)+"*"+conversionLongString(Application::getTimeClk().getElapsedTime().asMicroseconds());
     SymEncPacket packet;
     packet<<message;
@@ -96,14 +100,25 @@ void MyAppli::leftMouseButtonPressed(sf::Vector2f mousePos) {
     received = false;
 }
 void MyAppli::rightMouseButtonPressed(sf::Vector2f mousePos) {
+    std::cout<<"attack"<<std::endl;
     Vec3f finalPos (mousePos.x, getRenderWindow().getSize().y - mousePos.y, 0);
     finalPos = getRenderWindow().mapPixelToCoords(finalPos);
     finalPos = Vec3f(finalPos.x, finalPos.y, 0);
     int id = hero->getId();
-    std::string message = "SELECT_MONSTER*"+conversionIntString(id)+"*"+conversionFloatString(finalPos.x)+"*"+conversionFloatString(finalPos.y)+"*"+conversionLongString(Application::getTimeClk().getElapsedTime().asMicroseconds());
+    std::string message = "ATTACK*"+conversionIntString(id)+"*"+conversionFloatString(finalPos.x)+"*"+conversionFloatString(finalPos.y)+"*"+conversionLongString(Application::getTimeClk().getElapsedTime().asMicroseconds());
     SymEncPacket packet;
     packet<<message;
     Network::sendTcpPacket(packet);
+    std::vector<Entity*> monsters = World::getEntities("E_MONSTER");
+    for (unsigned int i = 0; i < monsters.size(); i++) {
+        Monster* monster = static_cast<Monster*>(monsters[i]);
+        BoundingBox bx = monster->getGlobalBounds();
+        bx.setPosition(bx.getPosition().x, bx.getPosition().y, 0);
+        if (bx.isPointInside(finalPos)) {
+            hero->setFocusedCaracter(monster);
+            hero->setFightingMode(true);
+        }
+    }
 }
 bool MyAppli::mouseInside (sf::Vector2f mousePos) {
     BoundingBox bx (0, 0, 0, 100, 100, 0);
@@ -138,10 +153,10 @@ void MyAppli::onInit () {
     World::addEntityManager(theMap);
     World::setCurrentEntityManager("Map test");
     eu = new EntitiesUpdater(false);
-    World::addEntitiesUpdater(eu);
+    World::addWorker(eu);
     au = new AnimUpdater(false);
     au->setInterval(sf::seconds(0.01f));
-    World::addAnimUpdater(au);
+    World::addTimer(au);
     tiles.push_back(new Tile(tm.getResourceByAlias("GRASS"), Vec3f(0, 0, 0), Vec3f(120, 60, 0),sf::IntRect(0, 0, 100, 50)));
     walls.push_back(new Tile(tm.getResourceByAlias("WALLS"), Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 0, 100, 100)));
     walls.push_back(new Tile(tm.getResourceByAlias("WALLS"), Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 100, 100, 100)));
@@ -193,9 +208,9 @@ void MyAppli::onInit () {
     //fire1->setShadowCenter(Vec2f(80, 100));
     //fire2->setShadowCenter(Vec2f(80, 100));
     //fire3->setShadowCenter(Vec2f(80, 100));
-    fire->addEntity(fire1);
-    fire->addEntity(fire2);
-    fire->addEntity(fire3);
+    fire->addFrame(fire1);
+    fire->addFrame(fire2);
+    fire->addFrame(fire3);
     fire->play(true);
     World::addEntity(fire);
     au->addAnim(fire);
@@ -214,7 +229,7 @@ void MyAppli::onInit () {
     int textRectX = 0, textRectY = 0, textRectWidth = 50, textRectHeight = 100;
     int textWidth = text->getSize().x;
     Vec3f tmpCenter = hero->getCenter();
-    hero->setCenter(Vec3f(-25, -50, 0));
+    hero->setCenter(Vec3f(0, 0, 0));
     for (unsigned int i = 0; i <= 56; i+=8) {
         Anim* animation = new Anim(0.1f, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), 0);
         for (unsigned int j = 0; j < 8; j++) {
@@ -230,7 +245,7 @@ void MyAppli::onInit () {
                 textRectX = 0;
                 textRectY += textRectHeight;
             }
-            animation->addEntity(frame);
+            animation->addFrame(frame);
         }
         hero->addAnimation(animation);
         au->addAnim(animation);
@@ -250,7 +265,7 @@ void MyAppli::onInit () {
                 textRectX = 0;
                 textRectY += textRectHeight;
             }
-            animation->addEntity(frame);
+            animation->addFrame(frame);
         }
         hero->addAnimation(animation);
         au->addAnim(animation);
@@ -269,7 +284,7 @@ void MyAppli::onInit () {
     path = "tilesets/ogro.png";
     //for (unsigned int n = 0; n < monsters.size(); n++) {
         tmpCenter = monster->getCenter();
-        monster->setCenter(Vec3f(-25, -50, 0));
+        monster->setCenter(Vec3f(0, 0, 0));
         cache.resourceManager<Texture, std::string>("TextureManager").fromFileWithAlias(path, "OGRO");
         text = cache.resourceManager<Texture, std::string>("TextureManager").getResourceByPath(path);
         textRectX = 0, textRectY = 0, textRectWidth = 50, textRectHeight = 100;
@@ -288,7 +303,7 @@ void MyAppli::onInit () {
                     textRectX = 0;
                     textRectY += textRectHeight;
                 }
-                animation->addEntity(frame);
+                animation->addFrame(frame);
             }
             monster->addAnimation(animation);
             au->addAnim(animation);
@@ -307,7 +322,7 @@ void MyAppli::onInit () {
                     textRectX = 0;
                     textRectY += textRectHeight;
                 }
-                animation->addEntity(frame);
+                animation->addFrame(frame);
             }
             monster->addAnimation(animation);
             au->addAnim(animation);
@@ -321,8 +336,8 @@ void MyAppli::onInit () {
     light2 = new g2d::PonctualLight(Vec3f(50, 160, 160), 100, 50, 50, 255, sf::Color::Yellow, 16);
     World::addEntity(light1);
     World::addEntity(light2);
-    FastRenderComponent *frc1 = new FastRenderComponent(getRenderWindow(),0, "E_BIGTILE", false);
-    FastRenderComponent *frc2 = new FastRenderComponent(getRenderWindow(),1, "E_WALL+E_DECOR+E_ANIMATION+E_CARACTER+E_MONSTER", false);
+    OITRenderComponent *frc1 = new OITRenderComponent(getRenderWindow(),0, "E_BIGTILE", false);
+    OITRenderComponent *frc2 = new OITRenderComponent(getRenderWindow(),1, "E_WALL+E_DECOR+E_ANIMATION+E_CARACTER+E_MONSTER", false);
     getRenderComponentManager().addComponent(frc1);
     getRenderComponentManager().addComponent(frc2);
     //getView().move(d.x * 0.5f, d.y * 0.5f, 0);
@@ -334,14 +349,17 @@ void MyAppli::onInit () {
     Action a3 (Action::EVENT_TYPE::KEY_HELD_DOWN, sf::Keyboard::Key::S);
     Action a4 (Action::EVENT_TYPE::KEY_HELD_DOWN, sf::Keyboard::Key::D);
     Action a5 (Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, sf::Mouse::Left);
+    Action a6 (Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, sf::Mouse::Right);
     Action combined  = a1 || a2 || a3 || a4;
     Command moveAction(combined, FastDelegate<void>(&MyAppli::keyHeldDown, this, sf::Keyboard::Key::Unknown));
     getListener().connect("MoveAction", moveAction);
     g2d::AmbientLight::getAmbientLight().setColor(sf::Color(0, 0, 255));
     Command mouseInsideAction(FastDelegate<bool>(&MyAppli::mouseInside,this, sf::Vector2f(-1, -1)), FastDelegate<void>(&MyAppli::onMouseInside, this, sf::Vector2f(-1,-1)));
     getListener().connect("MouseInside",mouseInsideAction);
-    Command leftMouseButtonPressedAction (a5, FastDelegate<void>(&MyAppli::leftMouseButtonPressed, this, sf::Vector2f(-1, -1)));
-    getListener().connect("LeftMouseButtonPressedAction", leftMouseButtonPressedAction);
+    Command leftMouseButtonPressedCommand (a5, FastDelegate<void>(&MyAppli::leftMouseButtonPressed, this, sf::Vector2f(-1, -1)));
+    Command rightMouseButtonPressedCommand (a6, FastDelegate<void>(&MyAppli::rightMouseButtonPressed, this, sf::Vector2f(-1, -1)));
+    getListener().connect("LeftMouseButtonPressedAction", leftMouseButtonPressedCommand);
+    getListener().connect("RightMouseButtonPressedAction", rightMouseButtonPressedCommand);
     packet.clear();
     packet<<"GETCARPOS";
     hero->getClkTransfertTime().restart();
@@ -349,7 +367,7 @@ void MyAppli::onInit () {
     Network::sendTcpPacket(packet);
     received = false;
 }
-void MyAppli::onRender(FastRenderComponentManager *cm) {
+void MyAppli::onRender(RenderComponentManager *cm) {
     /* std::vector<Vec3f> path = caracter->getPath();
     VertexArray m_vertices(sf::PrimitiveType::LinesStrip);
     for (unsigned int i = 0; i < path.size(); i++) {
@@ -486,6 +504,7 @@ void MyAppli::onUpdate (sf::Event& event) {
     if (event.type == sf::Event::MouseButtonPressed) {
         sf::Vector2f mousePos (event.mouseButton.x, event.mouseButton.y);
         getListener().setCommandSlotParams("LeftMouseButtonPressedAction", this, mousePos);
+        getListener().setCommandSlotParams("RightMouseButtonPressedAction", this, mousePos);
     }
 }
 void MyAppli::onExec () {
@@ -624,5 +643,18 @@ void MyAppli::onExec () {
                 }
            }
        }
+    }
+    if (hero->isInFightingMode()) {
+        if (hero->getFocusedCaracter() != nullptr) {
+            int distToEnnemi = hero->getCenter().computeDist(hero->getFocusedCaracter()->getCenter());
+            if (distToEnnemi <= hero->getRange()) {
+                if (hero->isMoving())
+                    hero->setMoving(false);
+                hero->setAttacking(true);
+                hero->attackFocusedCaracter();
+            } else {
+                hero->setAttacking(false);
+            }
+        }
     }
 }

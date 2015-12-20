@@ -209,7 +209,7 @@ namespace odfaeg {
                 std::lock_guard<std::recursive_mutex> locker(rec_mutex);
                 unsigned char* out = nullptr;
                 int length = EncryptedPacket::getCertificate(&out);
-                string response ((char*) out, length);
+                string response (reinterpret_cast<char*>(out), length);
                 Packet packet;
                 packet<<response;
                 user.getTcpSocket().send(packet);
@@ -217,7 +217,7 @@ namespace odfaeg {
             } else {
                 unsigned char* out = nullptr;
                 int length = EncryptedPacket::getCertificate(&out);
-                string response ((char*) out, length);
+                string response (reinterpret_cast<char*>(out), length);
                 Packet packet;
                 packet<<response;
                 user.getTcpSocket().send(packet);
@@ -313,7 +313,6 @@ namespace odfaeg {
         }
         void Network::setPbKey (string message) {
             if (cli.isUsingThread()) {
-                std::lock_guard<std::recursive_mutex> locker(rec_mutex);
                 EncryptedPacket::setCertificate(reinterpret_cast<const unsigned char*>(message.c_str()), message.length());
             } else {
                 EncryptedPacket::setCertificate(reinterpret_cast<const unsigned char*>(message.c_str()), message.length());

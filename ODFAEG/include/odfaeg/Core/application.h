@@ -3,7 +3,7 @@
 #include "resourceCache.h"
 #include "../Graphics/renderWindow.h"
 #include "../Graphics/renderStates.h"
-#include "../Graphics/fastRenderComponentManager.h"
+#include "../Graphics/renderComponentManager.h"
 #include "../Graphics/world.h"
 #include "export.hpp"
 #include "singleton.h"
@@ -34,12 +34,12 @@ namespace odfaeg {
             *   \param sf::Uint32 : the window's style.
             *   \param ContextSettings : advanced opengl settings.
             */
-            Application(sf::VideoMode vm, std::string title, bool useThread = false, bool depthTest = true, sf::Uint32 style = sf::Style::Default, sf::ContextSettings settings = sf::ContextSettings())
+            Application(sf::VideoMode vm, std::string title, bool useOpenCL = false, bool useThread = false, bool depthTest = true, sf::Uint32 style = sf::Style::Default, sf::ContextSettings settings = sf::ContextSettings())
 
             {
                 clearColor = sf::Color::Black;
-                window = std::make_unique<graphic::RenderWindow>(vm, title, style, settings, depthTest);
-                componentManager = std::make_unique<graphic::FastRenderComponentManager>(*window);
+                window = std::make_unique<graphic::RenderWindow>(vm, title, style, settings, useOpenCL, depthTest);
+                componentManager = std::make_unique<graphic::RenderComponentManager>(*window);
                 app = this;
                 running = false;
                 sf::Clock loopSpeed;
@@ -176,9 +176,9 @@ namespace odfaeg {
             /**
             * \fn void onLoad()
             * \brief function which can be redefined if the application have to render entities on components.
-            * \param FastRenderComponentManager : the manager of all render components.
+            * \param RenderComponentManager : the manager of all render components.
             */
-            virtual void onRender (graphic::FastRenderComponentManager* cm){}
+            virtual void onRender (graphic::RenderComponentManager* cm){}
             /**
             * \fn void onLoad()
             * \brief function which can be redefined if the application have to render entities on the window.
@@ -223,11 +223,11 @@ namespace odfaeg {
             graphic::RenderWindow& getRenderWindow() {
                 return *window;
             }
-            /** \fn FastRenderComponentManager& getRenderComponentManager()
+            /** \fn RenderComponentManager& getRenderComponentManager()
             *   \brief return a reference to the render component manager.
             *   \return the render component manager of the application.
             */
-            graphic::FastRenderComponentManager& getRenderComponentManager() {
+            graphic::RenderComponentManager& getRenderComponentManager() {
                 return *componentManager;
             }
             /** \fn View& getView()
@@ -269,7 +269,7 @@ namespace odfaeg {
             static Application* app;
         private :
             std::unique_ptr<graphic::RenderWindow> window; /** > the render window*/
-            std::unique_ptr<graphic::FastRenderComponentManager> componentManager; /** > the render component manager which draw components on the window*/
+            std::unique_ptr<graphic::RenderComponentManager> componentManager; /** > the render component manager which draw components on the window*/
             std::map<std::string, sf::Clock> clocks; /** > all the clocks used by the application to measure the time.*/
             bool running; /** > determine if the application running or not.*/
             sf::Color clearColor; /** > keep the clear color of the window*/

@@ -52,7 +52,7 @@
 			<Add library="../../../../../usr/local/lib/libsfml-window.so" />
 			<Add library="../../../../../usr/local/lib/libsfml-system.so" />
 			<Add library="../../../../../lib/x86_64-linux-gnu/libpthread-2.19.so" />
-			<Add library="../../../../../usr/lib/x86_64-linux-gnu/libGLEW.a" />
+			<Add library="../../../../../usr/lib/x86_64-linux-gnu/libGLEW.so" />
 			<Add library="GL" />
 			<Add library="ssl" />
 			<Add library="crypto" />

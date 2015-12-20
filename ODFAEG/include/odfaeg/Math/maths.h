@@ -45,6 +45,7 @@ namespace odfaeg {
           */
         class ODFAEG_MATH_API Math {
             public:
+            static void initSeed();
             /**
             *  \fn float acosinus (float value)
             *  \brief return the arc cosinus of a cosinus value.
@@ -186,6 +187,7 @@ namespace odfaeg {
             static float random(float max, float min = 0);
             private :
             static std::mt19937 mrs;
+            static bool isSeedInitialized;
         };
     }
 }

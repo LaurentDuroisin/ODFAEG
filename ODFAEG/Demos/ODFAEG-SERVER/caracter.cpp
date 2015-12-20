@@ -21,6 +21,7 @@ Caracter::Caracter (std::string type, string name, string currentMapName, string
     alive = true;
     regenHpSpeed = 1.f;
     regenHpAmount = 1;
+    focusedCaracter = nullptr;
 }
 void Caracter::onMove(Vec3f& t) {
     Entity::onMove(t);
@@ -154,10 +155,22 @@ string Caracter::getClass () {
     return classs;
 }
 void Caracter::onDraw(RenderTarget &target, RenderStates states) {
-    target.draw(*getCurrentEntity(), states);
+    target.draw(*getCurrentFrame(), states);
 }
-Entity* Caracter::getCurrentEntity() const {
-    return anims[currentAnimIndex]->getCurrentEntity();
+Entity* Caracter::getCurrentFrame() const {
+    return anims[currentAnimIndex]->getCurrentFrame();
+}
+void Caracter::setFocusedCaracter(Caracter* focusedCaracter) {
+    this->focusedCaracter = focusedCaracter;
+}
+Caracter* Caracter::getFocusedCaracter() {
+    return focusedCaracter;
+}
+void Caracter::attackFocusedCaracter() {
+    if (clockAtkSpeed.getElapsedTime().asMicroseconds() > attackSpeed) {
+        clockAtkSpeed.restart();
+        focusedCaracter->setLife(focusedCaracter->getLife() - attack);
+    }
 }
 Caracter::~Caracter() {
 }

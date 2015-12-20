@@ -187,7 +187,7 @@ void Caracter::setMoving (bool b) {
         anims[currentAnimIndex]->play(true);
     } else {
         anims[currentAnimIndex]->stop();
-        anims[currentAnimIndex]->setCurrentTile(0);
+        anims[currentAnimIndex]->setCurrentFrame(0);
     }
 }
 bool Caracter::isMoving () {
@@ -231,10 +231,10 @@ string Caracter::getClass () {
     return classs;
 }
 void Caracter::onDraw(RenderTarget &target, RenderStates states) {
-    target.draw(*getCurrentEntity(), states);
+    target.draw(*getCurrentFrame(), states);
 }
-Entity* Caracter::getCurrentEntity() const {
-    return anims[currentAnimIndex]->getCurrentEntity();
+Entity* Caracter::getCurrentFrame() const {
+    return anims[currentAnimIndex]->getCurrentFrame();
 }
 void Caracter::setIsMovingFromKeyboard(bool b) {
     moveFromKeyboard = b;

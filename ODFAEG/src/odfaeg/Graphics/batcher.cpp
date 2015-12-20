@@ -164,23 +164,26 @@ namespace odfaeg {
                 numInstances = 0;
             }
             void Instance::addVertexArray(VertexArray *va, TransformMatrix& tm, unsigned int baseVertex, unsigned int baseIndex) {
-                if (Shader::getShadingLanguageVersionMajor() >= 4 && Shader::getShadingLanguageVersionMinor() >= 2) {
-                    unsigned int numIndexes = va->getIndexes().size();
+                if (Shader::getShadingLanguageVersionMajor() >= 4 && Shader::getShadingLanguageVersionMinor() >= 2
+                    || Shader::isUsingOpenCL()) {
                     for (unsigned int i = 0; i < va->getVertexCount(); i++) {
                         m_vertices.append((*va)[i]);
                     }
                     for (unsigned int i = 0; i < va->getIndexes().size(); i++) {
                         m_vertices.addIndex(va->getIndexes()[i]);
                     }
+                    unsigned int numIndexes = va->getIndexes().size();
                     m_vertices.addInstancedRenderingInfos(numIndexes,baseVertex,baseIndex);
                     numInstances++;
                 } else {
                     unsigned int numIndexes = m_vertices.getIndexes().size();
-                    for (unsigned int i = 0; i < va->getVertexCount(); i++) {
-                        m_vertices.append((*va)[i]);
+                    VertexArray vat = *va;
+                    vat.transform(tm);
+                    for (unsigned int i = 0; i < vat.getVertexCount(); i++) {
+                        m_vertices.append(vat[i]);
                     }
-                    for (unsigned int i = 0; i < va->getIndexes().size(); i++) {
-                        m_vertices.addIndex(numIndexes + va->getIndexes()[i]);
+                    for (unsigned int i = 0; i < vat.getIndexes().size(); i++) {
+                        m_vertices.addIndex(numIndexes + vat.getIndexes()[i]);
                     }
                 }
                 m_transforms.push_back(std::ref(tm));
@@ -225,18 +228,18 @@ namespace odfaeg {
                     if (instances[i]->getMaterial() == face->getMaterial()
                         && instances[i]->getPrimitiveType() == face->getVertexArray().getPrimitiveType()) {
                             added = true;
-                            instances[i]->addVertexArray(&face->getVertexArray(),face->getTransformMatrix(), numVertices,numIndexes);
+                            unsigned int baseVertex = instances[i]->getVertexArray().getVertexCount();
+                            unsigned int baseIndex = instances[i]->getVertexArray().getIndexes().size();
+                            instances[i]->addVertexArray(&face->getVertexArray(),face->getTransformMatrix(), baseVertex, baseIndex);
                     }
                 }
                 if (!added) {
                     Instance* instance = new Instance(face->getMaterial(), face->getVertexArray().getPrimitiveType());
-                    instance->addVertexArray(&face->getVertexArray(),face->getTransformMatrix(), numVertices,numIndexes);
+                    instance->addVertexArray(&face->getVertexArray(),face->getTransformMatrix(), 0, 0);
                     instances.push_back(instance);
-                    if (Shader::getShadingLanguageVersionMajor() >= 4 && Shader::getShadingLanguageVersionMinor() >= 2)
-                        numIndexes += instance->getVertexArray().getBaseIndexes().back();
                 }
-                if (Shader::getShadingLanguageVersionMajor() >= 4 && Shader::getShadingLanguageVersionMinor() >= 2)
-                    numVertices += face->getVertexArray().getVertexCount();
+                numIndexes += face->getVertexArray().getIndexes().size();
+                numVertices += face->getVertexArray().getVertexCount();
             }
             std::vector<Instance*> Batcher::getInstances() {
                 return instances;

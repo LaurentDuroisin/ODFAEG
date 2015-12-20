@@ -177,6 +177,9 @@ namespace odfaeg {
         }
         void View::reset (physic::BoundingBox rect) {
             viewport = rect;
+            /*setPerspective(-viewport.getSize().x * 0.5f,viewport.getSize().x * 0.5f,
+                           -viewport.getSize().x * 0.5f,viewport.getSize().x * 0.5f,
+                           viewport.getPosition().z, viewport.getPosition().z + viewport.getSize().z);*/
         }
         math::Vec3f View::getLeft() {
             return left;

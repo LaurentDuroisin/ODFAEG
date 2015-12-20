@@ -23,6 +23,8 @@ Caracter::Caracter (std::string type, std::string name, string currentMapName, s
     alive = true;
     regenHpSpeed = 1.f;
     regenHpAmount = 1;
+    focusedCaracter = nullptr;
+    baseAnimIndex = WALKING;
 }
 void Caracter::onMove(Vec3f& t) {
     Entity::onMove(t);
@@ -74,7 +76,15 @@ float Caracter::getAttackSpeed () {
     return attackSpeed;
 }
 void Caracter::setAttacking(bool b) {
-    this->attacking = b;
+    if (attacking != b) {
+        this->attacking = b;
+        if (attacking) {
+            baseAnimIndex = ATTACKING;
+        } else {
+            anims[baseAnimIndex + currentAnimIndex]->stop();
+            anims[baseAnimIndex + currentAnimIndex]->setCurrentFrame(0);
+        }
+    }
 }
 void Caracter::setAlive(bool b) {
     alive = b;
@@ -113,9 +123,7 @@ sf::Time Caracter::getTimeOfLastAttack() {
     return clockAtkSpeed.getElapsedTime();
 }
 void Caracter::setDir (Vec2f dir) {
-    //anims[currentAnimIndex]->setCurrentTile(0);
-    if (isMoving())
-        anims[currentAnimIndex]->stop();
+    anims[baseAnimIndex + currentAnimIndex]->stop();
     float angleRadians = dir.getAngleBetween(Vec2f::yAxis);
     int angle = Math::toDegrees(angleRadians);
     //Sud
@@ -142,23 +150,24 @@ void Caracter::setDir (Vec2f dir) {
     //Nord
     else
         currentAnimIndex = 1;
-    if (attacking)
-        currentAnimIndex += 8;
     this->dir = dir;
-    if (isMoving()) {
-        anims[currentAnimIndex]->play(true);
-    }
+    if (moving)
+        anims[baseAnimIndex + currentAnimIndex]->play(true);
 }
 Vec2f Caracter::getDir () {
     return dir;
 }
+
 void Caracter::setMoving (bool b) {
-    this->moving = b;
-    if (moving) {
-        anims[currentAnimIndex]->play(true);
-    } else {
-        anims[currentAnimIndex]->stop();
-        anims[currentAnimIndex]->setCurrentTile(0);
+    if (moving != b) {
+        this->moving = b;
+        if (moving) {
+            baseAnimIndex = WALKING;
+            anims[baseAnimIndex + currentAnimIndex]->play(true);
+        } else {
+            anims[baseAnimIndex + currentAnimIndex]->stop();
+            anims[baseAnimIndex + currentAnimIndex]->setCurrentFrame(0);
+        }
     }
 }
 bool Caracter::isMoving () {
@@ -193,13 +202,26 @@ string Caracter::getClass () {
     return classs;
 }
 void Caracter::onDraw(RenderTarget &target, RenderStates states) const {
-    target.draw(*getCurrentEntity(), states);
+    target.draw(*getCurrentFrame(), states);
 }
-Entity* Caracter::getCurrentEntity() const {
-    return anims[currentAnimIndex]->getCurrentEntity();
+Entity* Caracter::getCurrentFrame() const {
+    return anims[baseAnimIndex + currentAnimIndex]->getCurrentFrame();
 }
 sf::Clock& Caracter::getClkTransfertTime() {
     return clockTransfertTime;
+}
+void Caracter::setFocusedCaracter(Caracter* focusedCaracter) {
+    this->focusedCaracter = focusedCaracter;
+}
+Caracter* Caracter::getFocusedCaracter() {
+    return focusedCaracter;
+}
+void Caracter::attackFocusedCaracter() {
+    if (clockAtkSpeed.getElapsedTime().asMicroseconds() > attackSpeed) {
+        clockAtkSpeed.restart();
+        anims[baseAnimIndex + currentAnimIndex]->play(false);
+        focusedCaracter->setLife(focusedCaracter->getLife() - attack);
+    }
 }
 Caracter::~Caracter() {
 }

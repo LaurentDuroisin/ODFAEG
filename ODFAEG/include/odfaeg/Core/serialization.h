@@ -104,6 +104,10 @@ namespace odfaeg {
         * \version 1.0
         * \date 1/02/2014
         */
+        struct Serializable {
+            Serializable() : var(0) {}
+            int var;
+        };
         template <typename Base>
         struct Registered {
             /**

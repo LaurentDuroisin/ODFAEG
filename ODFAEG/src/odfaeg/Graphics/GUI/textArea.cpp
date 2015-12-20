@@ -20,7 +20,8 @@ namespace odfaeg {
                 getListener().connect("CTEXTENTERED", cmd);
             }
             void TextArea::clear() {
-                rect.setFillColor(background);
+                if (background != rect.getFillColor())
+                    rect.setFillColor(background);
             }
             void TextArea::setTextSize(unsigned int size) {
                 text.setCharacterSize(size);

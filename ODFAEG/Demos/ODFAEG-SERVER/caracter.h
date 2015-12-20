@@ -52,12 +52,14 @@ public :
     void setLevel (int level);
     sf::Time getTimeOfLastAttack();
     sf::Time getTimeOfLastHpRegen();
-    void attackFocusedMonster();
+    void setFocusedCaracter(Caracter* caracter);
+    Caracter* getFocusedCaracter();
+    void attackFocusedCaracter();
     float getRegenHpSpeed();
     void setRegenHpSpeed(float regenHpSpeed);
     int getRegenHpAmount();
     void setRegenHpAmount(int regenHpAmount);
-    Entity* getCurrentEntity() const;
+    Entity* getCurrentFrame() const;
     void onDraw(odfaeg::graphic::RenderTarget&, odfaeg::graphic::RenderStates);
     void onMove(odfaeg::math::Vec3f& t);
     virtual void setIsMovingFromKeyboard(bool b) {}
@@ -89,6 +91,7 @@ private :
     int life, maxLife, regenHpAmount;
     bool attacking, fightingMode;
     sf::Clock clockAtkSpeed, clockRegenHp;
+    Caracter* focusedCaracter;
 };
 #endif
 

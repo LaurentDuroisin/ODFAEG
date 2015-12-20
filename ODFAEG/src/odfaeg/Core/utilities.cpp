@@ -3,11 +3,11 @@ namespace odfaeg {
     namespace core {
         using namespace std;
         using namespace sf;
-        std::vector<std::string> split (const std::string &input, const std::string &separator) {
+        std::vector<std::string> split (const std::string &input, const std::string &regex) {
             std::vector<std::string> output;
             std::string::size_type prev_pos = 0, pos = 0;
 
-            while((pos = input.find(separator, pos)) != std::string::npos)
+            while((pos = input.find(regex, pos)) != std::string::npos)
             {
                 std::string substring( input.substr(prev_pos, pos-prev_pos) );
 
@@ -58,13 +58,21 @@ namespace odfaeg {
             ss >> i;
             return i;
         }
-
+        sf::Uint64 conversionStringULong(std::string str) {
+            std::stringstream ss(str);
+            sf::Uint64 i;
+            ss >> i;
+            return i;
+        }
         std::string conversionLongString(Int64 i)
         {
             std::stringstream ss;
             ss << i;
 
             return ss.str();
+        }
+        int conversionStringToHex(std::string str) {
+            return strtoul(str.c_str(), NULL, 16);
         }
     }
 }

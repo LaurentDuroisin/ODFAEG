@@ -19,6 +19,7 @@
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 #include "export.hpp"
+#include "bigInt.hpp"
 /**
   *\namespace odfaeg
   * the namespace of the Opensource Development Framework Adapted for Every Games.
@@ -35,14 +36,13 @@ namespace odfaeg {
           * \date 1/02/2014
           */
             public :
-                Rsa() {
-                    x = X509_new();
-                    evp_pkey = EVP_PKEY_new();
-                    pub = BIO_new(BIO_s_mem());
-                    pub_len = 0;
-                    pub_key = nullptr;
-                    keypair = generateKeys(2048);
-                }
+                Rsa();
+                unsigned char* encryptWithPbKey(const unsigned char* data, std::size_t dataSize, std::size_t& newSize);
+                unsigned char* decryptWithPrKey(const unsigned char* data, std::size_t dataSize, std::size_t& newSize);
+                unsigned char* encryptWithPrKey(const unsigned char* data, std::size_t dataSize, std::size_t& newSize);
+                unsigned char* decryptWithPbKey(const unsigned char* data, std::size_t dataSize, std::size_t& newSize);
+                std::string getCertificate();
+                void setCertificate(std::string certificate);
                 /**
                 * \fn unsigned char* decryptWithPrKey (const unsigned char* encData, int dataSize, int* newSize)
                 * \brief decrypt a message with the private key.
@@ -50,7 +50,7 @@ namespace odfaeg {
                 * \param dataSize : the size of the encrypted data.
                 * \param newSize : the size of the data.
                 */
-                unsigned char* decryptWithPrKey (const unsigned char* encData, int dataSize, int* newSize);
+                unsigned char* ossl_decryptWithPrKey (const unsigned char* encData, int dataSize, int& newSize);
                 /**
                 * \fn unsigned char* encryptWithPrKey (const unsigned char* encData, int dataSize, int* newSize)
                 * \brief encrypt a message with the private key.
@@ -58,7 +58,7 @@ namespace odfaeg {
                 * \param dataSize : the size of the data.
                 * \param newSize : the size of the encrypted data.
                 */
-                unsigned char* encryptWithPrKey (const unsigned char* data, int dataSize, int* newSize);
+                unsigned char* ossl_encryptWithPrKey (const unsigned char* data, int dataSize, int& newSize);
                  /**
                 * \fn unsigned char* decryptWithPbKey (const unsigned char* encData, int dataSize, int* newSize)
                 * \brief decrypt a message with the public key.
@@ -66,7 +66,7 @@ namespace odfaeg {
                 * \param dataSize : the size of the encrypted data.
                 * \param newSize : the size of the data.
                 */
-                unsigned char* decryptWithPbKey (const unsigned char* encData, int dataSize, int* newSize);
+                unsigned char* ossl_decryptWithPbKey (const unsigned char* encData, int dataSize, int& newSize);
                 /**
                 * \fn unsigned char* encryptWithPbKey (const unsigned char* encData, int dataSize, int* newSize)
                 * \brief encrypt a message with the public key.
@@ -74,78 +74,33 @@ namespace odfaeg {
                 * \param dataSize : the size of the data.
                 * \param newSize : the size of the encrypted data.
                 */
-                unsigned char* encryptWithPbKey (const unsigned char* data, int dataSize, int* newSize);
+                unsigned char* ossl_encryptWithPbKey (const unsigned char* data, int dataSize, int& newSize);
                 /**
                 * \fn int getCertificate(unsigned char** out)
                 * \brief get the certificate which contains the keys.
                 * \param the certificate.
                 * \return the size of the certificate.
                 */
-                int getCertificate(unsigned char** out);
+                int ossl_getCertificate(unsigned char** out);
                 /**
                 * \fn void setCertificate(const unsigned char* certificate, int length)
                 * \brief set the certificate containing the keys.
                 * \param certificate : the certificate.
                 * \param length : the length.
                 */
-                void setCertificate(const unsigned char* certificate, int length);
-                ~Rsa() {
-                    EVP_PKEY_free(evp_pkey);
-                    RSA_free(keypair);
-                    X509_free(x);
-                    BIO_free(pub);
-                    delete[] pub_key;
-                }
+                void ossl_setCertificate(const unsigned char* in, int l);
+                ~Rsa();
             private :
+                static const int BLOC_SIZE = 100;
+                void generateKeys(unsigned int size);
                 /**
                 * \fn RSA* generateKeys (int size)
                 * \brief generate keys with the given size.
                 * \param size : the size of the keys.
                 * \return the keys.
                 */
-                RSA* generateKeys (int size) {
-                    Rsa::size = size;
 
-
-                    RSA* key_pair = RSA_generate_key(size, 3, NULL, NULL);
-                    PEM_write_bio_RSAPublicKey(pub, keypair);
-                    pub_len = BIO_pending(pub);
-                    pub_key = (char*) malloc(pub_len + 1);
-                    BIO_read(pub, pub_key, pub_len);
-                    pub_key[pub_len] = '\0';
-                    EVP_PKEY_set1_RSA(evp_pkey,key_pair);
-                    X509_set_version(x,2);
-                    ASN1_INTEGER_set(X509_get_serialNumber(x),0);
-                    X509_gmtime_adj(X509_get_notBefore(x),0);
-                    X509_gmtime_adj(X509_get_notAfter(x),(long)60*60*24*365);
-                    X509_set_pubkey(x,evp_pkey);
-                    //X509_NAME* name = X509_get_subject_name(x);
-
-                    /* This function creates and adds the entry, working out the
-                     * correct string type and performing checks on its length.
-                     * Normally we'd check the return value for errors...
-                     */
-                   /* X509_NAME_add_entry_by_txt(name,"C", MBSTRING_ASC, (unsigned char*) "BE", -1, -1, 0);
-                    X509_NAME_add_entry_by_txt(name,"Falior",
-                    MBSTRING_ASC, (unsigned char*) "Falior Group", -1, -1, 0);*/
-
-                    /* Its self signed so set the issuer name to be the same as the
-                        * subject.
-                    */
-                    //X509_set_issuer_name(x,name);
-                    /* Add various extensions: standard extensions */
-                    /*add_ext(x, NID_basic_constraints, "critical,CA:TRUE");
-                    add_ext(x, NID_key_usage, "critical,keyCertSign,cRLSign");
-
-                    add_ext(x, NID_subject_key_identifier, "hash");
-
-
-                    add_ext(x, NID_netscape_cert_type, "sslCA");
-
-                    add_ext(x, NID_netscape_comment, "example comment extension");*/
-                    X509_sign(x,evp_pkey,EVP_sha1());
-                    return key_pair;
-                }
+                RSA* ssl_generateKeys (int size);
                 /*static void callback(int p, int n, void *arg)
                 {
                     char c='B';
@@ -173,9 +128,7 @@ namespace odfaeg {
                 RSA* keypair; /**> the keys.*/
                 X509 *x; /**> the certificate.*/
                 EVP_PKEY* evp_pkey; /**The envelop*/
-                BIO* pub; /**> an openssl structure used to print keys.*/
-                char* pub_key; /**> the public key.*/
-                size_t pub_len; /**> the length of the public key.*/
+                BigInt e, d, n;
         };
     }
 }

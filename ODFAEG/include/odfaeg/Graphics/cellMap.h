@@ -129,7 +129,7 @@ namespace odfaeg {
                 */
                 ~CellMap();
             private :
-                std::vector<Entity*> entityInside; /**> the entities which are inside the cell.*/
+                std::vector<std::unique_ptr<Entity>> entityInside; /**> the entities which are inside the cell.*/
                 physic::BoundingPolyhedron* cellVolume; /**> the volume of the cell.*/
                 bool passable, stateChanged, traveled; /**> if the cell is passable, if the state of the cell have been changed and if the cell have been visited.*/
                 math::Vec2f coords; /**> the coordinates and the center of the cell.*/

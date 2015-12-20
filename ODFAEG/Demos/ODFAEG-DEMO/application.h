@@ -5,6 +5,7 @@
 // *** END ***
 #ifndef MY_APPLI
 #define MY_APPLI
+#include "odfaeg/Graphics/fastRenderComponent.hpp"
 #include "odfaeg/Core/application.h"
 #include "odfaeg/Graphics/convexShape.h"
 #include "odfaeg/Graphics/rectangleShape.h"
@@ -60,7 +61,7 @@ public :
     void onMouseInside (sf::Vector2f mousePos);
     void onLoad();
     void onInit ();
-    void onRender(odfaeg::graphic::FastRenderComponentManager *cm);
+    void onRender(odfaeg::graphic::RenderComponentManager *cm);
     void onDisplay(odfaeg::graphic::RenderWindow* window);
     void onUpdate (sf::Event& event);
     void onExec ();

@@ -89,7 +89,7 @@ namespace odfaeg {
             /// \return True if creation has been successful
             ///
             ////////////////////////////////////////////////////////////
-            bool create(unsigned int width, unsigned int height, sf::ContextSettings = sf::ContextSettings());
+            bool create(unsigned int width, unsigned int height, sf::ContextSettings = sf::ContextSettings(), bool depthAttachement = false, unsigned int nbChannels = 1);
 
             ////////////////////////////////////////////////////////////
             /// \brief Enable or disable texture smoothing
@@ -190,7 +190,9 @@ namespace odfaeg {
             /// \return Const reference to the texture
             ///
             ////////////////////////////////////////////////////////////
+            const std::vector<Texture> getTextures() const;
             const Texture& getTexture() const;
+            const Texture& getDepthTexture() const;
             virtual bool isUsingDepthTest() const;
         private :
 
@@ -211,7 +213,7 @@ namespace odfaeg {
             // Member data
             ////////////////////////////////////////////////////////////
             priv::RenderTextureImpl* m_impl;    ///< Platform/hardware specific implementation
-            Texture                  m_texture; ///< Target texture to draw on
+            std::vector<Texture>                m_textures; ///< Target texture to draw on
             bool useDepthTest;
             unsigned int vertexArrayId;
         };

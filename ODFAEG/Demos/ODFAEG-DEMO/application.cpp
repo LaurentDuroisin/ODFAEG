@@ -1,12 +1,13 @@
 #include "application.h"
 #include "odfaeg/Math/distributions.h"
+#include "odfaeg/Graphics/GUI/menubar.hpp"
 using namespace odfaeg;
 using namespace odfaeg::graphic;
 using namespace odfaeg::math;
 using namespace odfaeg::physic;
 using namespace odfaeg::core;
 using namespace odfaeg::audio;
-MyAppli::MyAppli(sf::VideoMode wm, std::string title) : Application (wm, title, false, true, sf::Style::Default, sf::ContextSettings(0, 0, 4, 3, 0)) {
+MyAppli::MyAppli(sf::VideoMode wm, std::string title) : Application (wm, title, false, false, true, sf::Style::Default, sf::ContextSettings(0, 0, 0, 3, 0)) {
     running = false;
     actualKey = sf::Keyboard::Key::Unknown;
     previousKey = sf::Keyboard::Key::Unknown;
@@ -66,7 +67,7 @@ void MyAppli::keyHeldDown (sf::Keyboard::Key key) {
 void MyAppli::leftMouseButtonPressed(sf::Vector2f mousePos) {
     Vec2f mouse(mousePos.x, mousePos.y);
     Vec3f finalPos = getRenderWindow().mapPixelToCoords(Vec3f(mouse.x, getRenderWindow().getSize().y-mouse.y, 0));
-    std::cout<<mouse.x<<" "<<mouse.y<<std::endl;
+    //std::cout<<mouse.x<<" "<<mouse.y<<std::endl;
     point.clear();
     point.append(Vertex(sf::Vector3f(finalPos.x, finalPos.y, finalPos.y), sf::Color(255, 0, 0)));
     std::vector<Vec2f> path = World::getPath(caracter, finalPos);
@@ -124,10 +125,10 @@ void MyAppli::onInit () {
     World::addEntityManager(theMap);
     World::setCurrentEntityManager("Map test");
     eu = new EntitiesUpdater(false);
-    World::addEntitiesUpdater(eu);
+    World::addWorker(eu);
     au = new AnimUpdater(false);
     au->setInterval(sf::seconds(0.01f));
-    World::addAnimUpdater(au);
+    World::addTimer(au);
     tiles.push_back(new Tile(tm.getResourceByAlias("GRASS"), Vec3f(0, 0, 0), Vec3f(120, 60, 0),sf::IntRect(0, 0, 100, 50)));
     walls.push_back(new Tile(tm.getResourceByAlias("WALLS"), Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 0, 100, 100)));
     walls.push_back(new Tile(tm.getResourceByAlias("WALLS"), Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 100, 100, 100)));
@@ -143,7 +144,7 @@ void MyAppli::onInit () {
     walls[4]->getFaces()[0]->getMaterial().setTexId("WALLS");
     walls[5]->getFaces()[0]->getMaterial().setTexId("WALLS");
     std::ifstream ifs("FichierDeSerialisation");
-    /*if(ifs) {
+    if(ifs) {
         ITextArchive ia(ifs);
         std::vector<Entity*> entities;
         ia(entities);
@@ -156,7 +157,6 @@ void MyAppli::onInit () {
                     entities[i]->getChildren()[j]->getFaces()[0]->getMaterial().clearTextures();
                     entities[i]->getChildren()[j]->getFaces()[0]->getMaterial().addTexture(tm.getResourceByAlias(texId), texRect);
                     entities[i]->getChildren()[j]->getFaces()[0]->getMaterial().setTexId(texId);
-                    entities[i]->getChildren()[j]->setParent(entities[i]);
                 }
 
             } else if (entities[i]->getType() == "E_WALL") {
@@ -165,8 +165,6 @@ void MyAppli::onInit () {
                 entities[i]->getChildren()[0]->getFaces()[0]->getMaterial().clearTextures();
                 entities[i]->getChildren()[0]->getFaces()[0]->getMaterial().addTexture(tm.getResourceByAlias(texId), texRect);
                 entities[i]->getChildren()[0]->getFaces()[0]->getMaterial().setTexId(texId);
-                entities[i]->getChildren()[0]->setParent(entities[i]);
-                entities[i]->getChildren()[1]->setParent(entities[i]);
                 static_cast<Shadow*>(entities[i]->getChildren()[1])->createShadow(g2d::AmbientLight::getAmbientLight(), static_cast<Model*>(entities[i]));
                 World::getGridCellAt(Vec3f(entities[i]->getCenter().x, entities[i]->getCenter().y, 0))->setPassable(false);
             } else if (entities[i]->getType() == "E_DECOR") {
@@ -175,8 +173,6 @@ void MyAppli::onInit () {
                 entities[i]->getChildren()[0]->getFaces()[0]->getMaterial().clearTextures();
                 entities[i]->getChildren()[0]->getFaces()[0]->getMaterial().addTexture(tm.getResourceByAlias(texId), texRect);
                 entities[i]->getChildren()[0]->getFaces()[0]->getMaterial().setTexId(texId);
-                entities[i]->getChildren()[0]->setParent(entities[i]);
-                entities[i]->getChildren()[1]->setParent(entities[i]);
                 static_cast<Shadow*>(entities[i]->getChildren()[1])->createShadow(g2d::AmbientLight::getAmbientLight(),static_cast<Model*>(entities[i]));
             } else if (entities[i]->getType() == "E_ANIMATION") {
                 Anim* anim = static_cast<Anim*> (entities[i]);
@@ -186,10 +182,6 @@ void MyAppli::onInit () {
                     entities[i]->getChildren()[j]->getChildren()[0]->getFaces()[0]->getMaterial().clearTextures();
                     entities[i]->getChildren()[j]->getChildren()[0]->getFaces()[0]->getMaterial().addTexture(tm.getResourceByAlias(texId), texRect);
                     entities[i]->getChildren()[j]->getChildren()[0]->getFaces()[0]->getMaterial().setTexId(texId);
-                    entities[i]->getChildren()[j]->setParent(entities[i]);
-                    entities[i]->getChildren()[j]->setParent(entities[i]);
-                    entities[i]->getChildren()[j]->getChildren()[0]->setParent(entities[i]->getChildren()[j]);
-                    entities[i]->getChildren()[j]->getChildren()[1]->setParent(entities[i]->getChildren()[j]);
                     static_cast<Shadow*>(entities[i]->getChildren()[j]->getChildren()[1])->createShadow(g2d::AmbientLight::getAmbientLight(),static_cast<Model*>(entities[i]->getChildren()[0]));
                 }
                 anim->play(true);
@@ -197,7 +189,7 @@ void MyAppli::onInit () {
             }
         }
         ifs.close();
-    } else {*/
+    } else {
         BoundingBox mapZone(0, 0, 0, 1500, 1000, 0);
         World::generate_map(tiles, walls, Vec2f(100, 50), mapZone, false);
         Tile* thouse = new Tile(tm.getResourceByAlias("HOUSE"), Vec3f(0, 0, 0), Vec3f(250, 300, 0), sf::IntRect(0, 0, 250, 300));
@@ -231,16 +223,16 @@ void MyAppli::onInit () {
         //fire1->setShadowCenter(Vec2f(80, 100));
         //fire2->setShadowCenter(Vec2f(80, 100));
         //fire3->setShadowCenter(Vec2f(80, 100));
-        fire->addEntity(fire1);
-        fire->addEntity(fire2);
-        fire->addEntity(fire3);
+        fire->addFrame(fire1);
+        fire->addFrame(fire2);
+        fire->addFrame(fire3);
         fire->play(true);
         World::addEntity(fire);
         au->addAnim(fire);
         w = new g2d::Wall(3, 80, walls[3],&g2d::AmbientLight::getAmbientLight(), Shadow::SHADOW_TYPE::SHADOW_TILE);
         w->setPosition(Vec3f(0, 130, 130 + w->getSize().y * 0.5f));
         World::addEntity(w);
-    //}
+    }
     ps.setTexture(*tm.getResourceByAlias("PARTICLE"));
     for (unsigned int i = 0; i < 10; i++) {
         ps.addTextureRect(sf::IntRect(i*10, 0, 10, 10));
@@ -259,8 +251,8 @@ void MyAppli::onInit () {
     ps.addEmitter(refEmitter(emitter));
     View view = getView();
     //view.rotate(0, 0, 20);
-    FastRenderComponent *frc1 = new FastRenderComponent(getRenderWindow(),0, "E_BIGTILE");
-    FastRenderComponent *frc2 = new FastRenderComponent(getRenderWindow(),0, "E_WALL+E_DECOR+E_ANIMATION+E_CARACTER");
+    OITRenderComponent *frc1 = new OITRenderComponent(getRenderWindow(),0, "E_BIGTILE");
+    OITRenderComponent *frc2 = new OITRenderComponent(getRenderWindow(),0, "E_WALL+E_DECOR+E_ANIMATION+E_CARACTER");
     gui::TextArea* textArea = new gui::TextArea(Vec3f(350, 275, 0),Vec3f(100, 50, 0),fm.getResourceByAlias("FreeSerif"), "Test",getRenderWindow());
     textArea->addFocusListener(this);
     textArea->setVisible(false);
@@ -290,13 +282,13 @@ void MyAppli::onInit () {
             Tile *tile = new Tile(text, Vec3f(-25, -50, 0), Vec3f(textRectWidth, textRectHeight, 0), textRect);
             tile->getFaces()[0]->getMaterial().setTexId("VLADSWORD");
             g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight(), 100, Shadow::SHADOW_TYPE::SHADOW_TILE);
-            frame->setShadowCenter(Vec3f(0, 100, 100));
+            frame->setShadowCenter(Vec3f(0, 200, 200));
             textRectX += textRectWidth;
             if (textRectX + textRectWidth > textWidth) {
                 textRectX = 0;
                 textRectY += textRectHeight;
             }
-            animation->addEntity(frame);
+            animation->addFrame(frame);
         }
         caracter->addAnimation(animation);
         au->addAnim(animation);
@@ -339,11 +331,9 @@ void MyAppli::onInit () {
     pfire.play(true);
     sf::Listener::setPosition(caracter->getCenter().x, caracter->getCenter().y, 0);
 }
-void MyAppli::onRender(FastRenderComponentManager *cm) {
+void MyAppli::onRender(RenderComponentManager *cm) {
     // draw everything here...
     World::drawOnComponents("E_BIGTILE", 0);
-    /*Entity* shadowMap = World::getShadowMap("E_WALL+E_DECOR+E_ANIMATION+E_CARACTER", 2, 1);
-    World::drawOnComponents(*shadowMap,0,sf::BlendMultiply);*/
     World::drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_CARACTER", 1);
     fpsCounter++;
     if (getClock("FPS").getElapsedTime() >= sf::seconds(1.f)) {
@@ -353,8 +343,8 @@ void MyAppli::onRender(FastRenderComponentManager *cm) {
     }
 }
 void MyAppli::onDisplay(RenderWindow* window) {
-    /*Entity* shadowMap = World::getShadowMap("E_WALL+E_DECOR+E_ANIMATION+E_CARACTER", 2, 1);
-    window->draw(*shadowMap, sf::BlendMultiply);*/
+    Entity* shadowMap = World::getShadowMap("E_WALL+E_DECOR+E_ANIMATION+E_CARACTER", 2, 1);
+    window->draw(*shadowMap, sf::BlendMultiply);
     //getView().rotate(0, 0, 20);
     window->draw(ps);
     //getView().rotate(0, 0, 0);

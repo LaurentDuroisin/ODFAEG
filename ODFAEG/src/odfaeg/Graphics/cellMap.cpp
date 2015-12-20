@@ -16,9 +16,10 @@ namespace odfaeg {
         }
 
         void CellMap::addEntity (Entity *entity) {
-            entityInside.push_back(entity);
+            std::unique_ptr<Entity> ptr;
+            ptr.reset(entity);
+            entityInside.push_back(std::move(ptr));
         }
-
         physic::BoundingPolyhedron* CellMap::getCellVolume () {
             return cellVolume;
         }
@@ -30,13 +31,17 @@ namespace odfaeg {
         }
 
         vector<Entity*> CellMap::getEntitiesInside () {
-            return entityInside;
+            vector<Entity*> entitiesInside;
+            for (unsigned int i = 0; i < entityInside.size(); i++)
+                entitiesInside.push_back(entityInside[i].get());
+            return entitiesInside;
         }
 
         bool CellMap::removeEntity (Entity *entity) {
-            typename vector<Entity*>::iterator it;
+            typename vector<std::unique_ptr<Entity>>::iterator it;
             for (it = entityInside.begin(); it != entityInside.end();) {
-                if (entity == *it) {
+                if (entity == it->get()) {
+                    it->release();
                     it = entityInside.erase(it);
                     return true;
                 } else
@@ -60,7 +65,7 @@ namespace odfaeg {
 
         Entity* CellMap::getEntityInside (unsigned int index) {
             if (index >= 0 && index < entityInside.size()) {
-                return entityInside[index];
+                return entityInside[index].get();
             }
             return nullptr;
         }
@@ -94,7 +99,6 @@ namespace odfaeg {
 
         CellMap::~CellMap () {
             entityInside.clear();
-
         }
     }
 }
