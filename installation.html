@@ -32,46 +32,6 @@
       <iframe src="https://www.youtube.com/embed/Ij_aov8Rlm8" width="640" height="385"></iframe><br/>
       
       <h1>Installation sur les plateformes windows</h1>
-      Elle est très similaire a celle de la plateforme linux, je vous conseille donc de regarder les vidéos ci dessus,
-      il vous faudra juste installer le compilateur gcc ainsi openSSL autrement car sous windows il n'y a pas de dépôt apt et donc
-      la commande apt n'existe pas!
-      Il faut donc tout télécharger sur des sites webs.
-      
-      <h2>Installer le compilateur c++.</h2>
-      
-      Sous windows vous devez aller sur ce site : <a href="http://tdm-gcc.tdragon.net/">Ici</a><br/> et télécharger un compilateur tdm-gcc 32 bits pour les plateformes 32 bits ou 64 bits pour les plateformes 64 bits.
-      Ensuite, installer cmake-gui : <a href="http://www.cmake.org/cmake/resources/software.html">Ici</a><br/>
-      
-      <h2>Installer SFML.</h2>
-      
-      Pour installer SFML tout est expliqué sur le site web du développeur principal : <a href="http://en.sfml-dev.org">Ici</a><br/>
-      Pas besoin d'en dire plus donc ici.
-      
-      <h2>Installer openSSL.</h2>
-      
-      Sous windows la meilleur méthode pour installer openSSL est de télécharger MSYS : 
-      <a href="http://sourceforge.net/projects/mingw/files/">Ici</a><br/>
-
-      Ensuite télécharger les sources de openssl : https://www.openssl.org/
-      
-      Installer ensuite perl : <a href="http://www.perl.org/get.html">Ici</a><br/>
-      
-      Lancer MSYS, aller dans le répertoire de openssl et ensuite, taper la commande suivante : 
-      
-      perl Configure mingw
-      
-      Aller ensuite dans le fichier MakeFile, chercher la ligne PLATFORM et remplacer mingw par TDM-GCC-32 pour les plateformes 32 bits et TDM-GCC-64 pour les plateformes 64 bits.(Sinon ça ne compile pas)
-      
-      Taper ensuite les commandes suivante : mingw32-make et mingw32-make install pour installer la librairie.
-      
-      <h2>Localisation du compilateur c++ dans windows avec CMake.</h2>
-      
-      Lorsque vous ouvrez cmake pour compiler ODFAEG, le compilateur c++ se trouve ici :
-      (C:/TDM-GCC-32/bin ou bien C:/TDM-GCC-64/bin)
-      
-      
-      <h1>Attention</h1>
-      Pour l'instant, seul le "linkage" du framework en mode statique fonctionne.
-      Vous devez donc "linker" toutes les dépendances de ODFAEG lors de la compilation de votre projet.
+       ODFAEG ne compile pas sous windows à cause d'un bug avec le compilateur mingw.
   </body>
 </html>
