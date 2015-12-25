@@ -21,104 +21,128 @@
       <div id="container">
       <p class="tagline">Gestion des ressources externes </p>
     </header>
+     <div id="container">
+        <p class="tagline">Création d'une application </p>
+        <div id="main" role="main">
+          <div class="download-bar">
+            <div class="inner">
+              <a href="https://github.com/LaurentDuroisin/ODFAEG/tarball/master" class="download-button tar"><span>Download</span></a>
+              <a href="https://github.com/LaurentDuroisin/ODFAEG/zipball/master" class="download-button zip"><span>Download</span></a>
+              <a href="menu">Documentation</a>
+              <a href="http://odfaeg.yourboardpro.com/index.php">Forum</a>
+              <a href="https://github.com/LaurentDuroisin/ODFAEG" class="code">View Odfaeg on GitHub</a>
+              <a href="cv">CV</a>
+              <a href="tfe">Travail de fin d'études</a>
+            </div>
+          <span class="blc"></span><span class="trc"></span>
+        </div>
+          <article class="markdown-body">
     <h1>Charger et référencer des ressources externes.</h1>
     
       <h2>Définir les types des ressources à charger et des identifiants référençant la ressource</h2>
-      
-      ODFAEG possède une classe permettant de charger des ressources externes et de leur associer un 
-      identitfiant unique de n'importe quel type qui sera utilisé partout dans le programme.
-      On peut donc très bien associé par exemple, à chaque ressource chargée, la valeur d'une énumération,
-      l'avantage est que l'on a pas besoin de retenir ou la ressource se trouve sur le disque dur lorsqu'on 
-      veut y accéder n'importe ou dans l'application.
-      Ce qui serait pénible, surtout si on se trompe de chemin on aura une erreur à l'exécution, tandit que avec
-      une énumération l'erreur se produira en compilation.
-      Je vais donc commencer par créer une énumération qui référencera toutes les ressources externes qui seront chargées
-      par l'application.
+      <p>
+      ODFAEG possède une classe permettant de charger des ressources externes et de leur associer un <br/>
+      identitfiant unique de n'importe quel type qui sera utilisé partout dans le programme.<br/>
+      On peut donc très bien associé par exemple, à chaque ressource chargée, la valeur d'une énumération,<br/>
+      l'avantage est que l'on a pas besoin de retenir ou la ressource se trouve sur le disque dur lorsqu'on <br/>
+      veut y accéder n'importe ou dans l'application.<br/>
+      Ce qui serait pénible, surtout si on se trompe de chemin on aura une erreur à l'exécution, tandit que avec<br/>
+      une énumération l'erreur se produira en compilation.<br/>
+      Je vais donc commencer par créer une énumération qui référencera toutes les ressources externes qui seront chargées<br/>
+      par l'application.<br/></p>
       
       <pre><code>
         enum TEXTURES {
           GRASS
         };
       </pre></code>
-      
-      Essayons maintenant de définir un gestionnaire de ressource qui va charger un tileset (Une image remplie de différentes textures d'herbe)
-      Pour des raisons d'optimisation ont charge toujours une grande image sur laquelle on place pleins de petites images.
-      Pour charger ses grand images il va falloir utiliser la classe odfaeg::core::ResourceManager de ODFAEG, cette classe attend
-      2 paramètres template : le type des ressources à charger et le type de l'identifiant qui référencera les ressources.
-      Cependant, ODFAEG possèdes quatre classes prédéfinie qui n'attendent qu'un seul paramètre template, ces
-      quatre classes sont : TextureManager (pour les images), SoundManager (pour les effets sonores), FontManager (pour les
-      polices de caractère) et ShaderManager (pour les shaders). 
-      Si le dernier paramètre template n'est renseigné lors de la déclaration, alors par défaut l'identifiant est de type std::string!
-      Par exemple dans ce cas ci : TextureManager&lt;&gt; tm;
+      <p>
+      Essayons maintenant de définir un gestionnaire de ressource qui va charger un tileset (Une image remplie de différentes<br/>
+      textures d'herbe)<br/>
+      Pour des raisons d'optimisation ont charge toujours une grande image sur laquelle on place pleins de petites images.<br/>
+      Pour charger ses grand images il va falloir utiliser la classe odfaeg::core::ResourceManager de ODFAEG, cette classe attend<br/>
+      2 paramètres template : le type des ressources à charger et le type de l'identifiant qui référencera les ressources.<br/>
+      Cependant, ODFAEG possèdes quatre classes prédéfinie qui n'attendent qu'un seul paramètre template, ces<br/>
+      quatre classes sont : TextureManager (pour les images), SoundManager (pour les effets sonores), FontManager (pour les<br/>
+      polices de caractère) et ShaderManager (pour les shaders). <br/>
+      Si le dernier paramètre template n'est renseigné lors de la déclaration, alors par défaut l'identifiant est de type std::string!<br/>
+      Par exemple dans ce cas ci : TextureManager&lt;&gt; tm;<br/>
+      </p>
       
       <h2>Charger une ressource externe.</h2>
-      
-      Maintenant que nous savons comment définir les types, nous allons voir comment charger une ressource, ici par exemple,
-      je veux charger mon tileset d'herbe, en utilisant mon énumération définie plus haut pour la référencer, je vais donc
-      déclarer un gestionnaire de ressource de ce type là :
-      TextureManager&lt;TEXTURES&gt; tm;
-      Donc, il suffit de passer le nom de l'énumération en paramètre template!
-      Maintenant, pour charger la ressources, il va falloir indiquer que l'on veut charger la ressource en la référençant à partir
-      de son alias, car il y a deux méthodes :
-      La méthode fromFile qui référencera la ressource de part son chemin d'accès sur le disque dur. (Déconseillé)
-      Et la méthode fromFileWithAlias qui référencera la ressource de part son chemin d'accès sur le disque dur mais également
-      de par son alias.
-      La première méthode attend donc un paramètre, le chemin d'accès de la ressource sur le disque dur, tandis que la seconde
-      méthode en attend deux : l'emplacement de la ressource sur le disque dur ainsi que un alias qui référencera la ressource
-      partout dans le programme.
-      Pour charger notre tileset en lui associant une valeur de notre enum de type TEXTURES, il suffit donc de faire ceci :
-      tm.fromFileWithAlias("herbes.png", GRASS);
-      Il existe deux autres méthodes permettant de charger une ressource à partir de la mémoire, ce sont les méthodes fromMemory 
-      et fromMemoryWithAlias.
+      <p>
+      Maintenant que nous savons comment définir les types, nous allons voir comment charger une ressource, ici par exemple,<br/>
+      je veux charger mon tileset d'herbe, en utilisant mon énumération définie plus haut pour la référencer, je vais donc<br/>
+      déclarer un gestionnaire de ressource de ce type là : <br/>
+      TextureManager&lt;TEXTURES&gt; tm; <br/>
+      Donc, il suffit de passer le nom de l'énumération en paramètre template! <br/>
+      Maintenant, pour charger la ressources, il va falloir indiquer que l'on veut charger la ressource en la référençant à partir<br/>
+      de son alias, car il y a deux méthodes :<br/>
+      La méthode fromFile qui référencera la ressource de part son chemin d'accès sur le disque dur. (Déconseillé)<br/>
+      Et la méthode fromFileWithAlias qui référencera la ressource de part son chemin d'accès sur le disque dur mais également<br/>
+      de par son alias.<br/>
+      La première méthode attend donc un paramètre, le chemin d'accès de la ressource sur le disque dur, tandis que la seconde<br/>
+      méthode en attend deux : l'emplacement de la ressource sur le disque dur ainsi que un alias qui référencera la ressource<br/>
+      partout dans le programme.<br/>
+      Pour charger notre tileset en lui associant une valeur de notre enum de type TEXTURES, il suffit donc de faire ceci :<br/>
+      tm.fromFileWithAlias("herbes.png", GRASS);<br/>
+      Il existe deux autres méthodes permettant de charger une ressource à partir de la mémoire, ce sont les méthodes fromMemory <br/>
+      et fromMemoryWithAlias.<br/>
+      </p>
       
       <h2>Récupérer une ressource externe</h2>
-      
-      Maintenant que l'on sait comment charger une ressource externe quelconque, il serait bien de pouvoir récupérer un pointeur 
-      vers la ressource afin de pouvoir l'utiliser!
-      Pour ce faire il existe deux méthodes essentielles :
-      const Texture* herbes = getResourceByAlias(GRASS);
-      Cette méthode va récupérer la texture à partir de son alias qui la référence.
-      const Texture* herbes = getResourceByPath("herbes.png");
-      Cette méthode va récupérer la texture à partir de son emplacement sur le disque dur. (Le chemin est toujours relatif par rapport
-      au répertoire de votre projet)
-      Il est fortement conseillé d'utiliser la première méthode.
+      <p>
+      Maintenant que l'on sait comment charger une ressource externe quelconque, il serait bien de pouvoir récupérer un pointeur <br/>
+      vers la ressource afin de pouvoir l'utiliser! <br/>
+      Pour ce faire il existe deux méthodes essentielles : <br/>
+      const Texture* herbes = getResourceByAlias(GRASS); <br/>
+      Cette méthode va récupérer la texture à partir de son alias qui la référence. <br/>
+      const Texture* herbes = getResourceByPath("herbes.png"); <br/>
+      Cette méthode va récupérer la texture à partir de son emplacement sur le disque dur. (Le chemin est toujours relatif par rapport <br/>
+      au répertoire de votre projet)<br/>
+      Il est fortement conseillé d'utiliser la première méthode.<br/>
       
       <i>
-      Si vous souhaiter envoyer les identifiants vers les ressources sur un réseau, il faudra bien sûr les convertir les valeurs de vos
-      énumérations en type entier lors de l'envoi, et les  reconvertir lors de la réception.</i>
+      Si vous souhaiter envoyer les identifiants vers les ressources sur un réseau, il faudra bien sûr les convertir les valeurs de vos<br/>
+      énumérations en type entier lors de l'envoi, et les  reconvertir lors de la réception.</i><br/>
+      </p>
       
       <h2>Charger des ressources de différent types.</h2>
+      <p>
+      Il est fort possible que votre application n'utilise pas que des images mais aussi du son, voir même des ressources d'un type<br/>
+      que vous avez défini vous même, ODFAEG possède une classe qui permet de référencer des gestionnaires de ressources<br/>
+      de différent types afin de pouvoir ensuite les récupérer n'importe ou dans le programme, cette classe s'appelle ResourceCache <br/>
+      et elle attend un paramètre template qui est le type de l'identifiant qui référencera tout les gestionnaires de ressource, <br/>
+      par défaut, le type est std::string : <br/>
+      ResourceCache&lt;&gt; cache; <br/>
+      Pour ajouter un gestionnaire de ressources il suffit d'appeler la méthode addResourceManager : <br/>
+      cache.addResourceManager(tm); <br/>
+      Et pour le récupérer, il suffit d'appeler la méthode resourceManager, cette méthode attend deux paramètres, <br/>
+      le type de ressource géré par le gestionnaire de ressource référencé, et le type de l'indentifiant référençant les ressources : <br/>
+      TextureManager&lt;TEXTURES&gt; &amp;tm = cache.resourceManager&lt;Texture, TEXTURES&gt;("TextureManager"); <br/>
       
-      Il est fort possible que votre application n'utilise pas que des images mais aussi du son, voir même des ressources d'un type
-      que vous avez défini vous même, ODFAEG possède une classe qui permet de référencer des gestionnaires de ressources de différent types
-      afin de pouvoir ensuite les récupérer n'importe ou dans le programme, cette classe s'appelle ResourceCache et elle attend
-      un paramètre template qui est le type de l'identifiant qui référencera tout les gestionnaires de ressource, par défaut, le type est
-      std::string : 
-      ResourceCache&lt;&gt; cache;
-      Pour ajouter un gestionnaire de ressources il suffit d'appeler la méthode addResourceManager :
-      cache.addResourceManager(tm);
-      Et pour le récupérer, il suffit d'appeler la méthode resourceManager, cette méthode attend deux paramètres, le type de ressource géré
-      par le gestionnaire de ressource référencé, et le type de l'indentifiant référençant les ressources :
-      TextureManager&lt;TEXTURES&gt; &amp;tm = cache.resourceManager&lt;Texture, TEXTURES&gt;("TextureManager");
-      
-      On peut donc à partir de là récupérer un pointeur sur la ressource comme vu ci-dessus.
+      On peut donc à partir de là récupérer un pointeur sur la ressource comme vu ci-dessus.<br/>
+      </p>
       
       <h1>Charger et référencer ses propres type de ressources</h1>
+      <p>
+      Vous aimeriez pouvoir charger et référencer d'autres types de ressources que celles de SFML, par exemple, <br/>
+      des modèles 3D provenant de fichiers tel que des fichiers au format .obj, .md2, etc...<br/>
+      Sachez que c'est possible de le faire avec le gestionnaire de ressource de ODFAEG!<br/>
+      Pour ce faire, il suffit de définir un foncteur qui n'est rien d'autre qu'un objet de type std::function qui va <br/>
+      référencer la fonction membre de votre classe qui chargera la ressource!<br/>
       
-      Vous aimeriez pouvoir charger et référencer d'autres types de ressources que celles de SFML, par exemple, des modèles 3D provenant de fichiers
-      tel que des fichiers au format .obj, .md2, etc...
-      Sachez que c'est possible de le faire avec le gestionnaire de ressource de ODFAEG!
-      Pour ce faire, il suffit de définir un foncteur qui n'est rien d'autre qu'un objet de type std::function qui va 
-      référencer la fonction membre de votre classe qui chargera la ressource!
-      
-      std::function&lt;bool(Object3DS,std::string&gt; loadFunc(&amp;MyLoader::fromFile);
-      
-      Ce foncteur doit retourner un booléen et doit prendre au moins deux paramètres, le premier paramètre est le type de l'objet qui
-      va chager la ressource externe, et le second paramètre est l'emplacement de la ressource qui doit être de type std::string si la 
-      ressource est chargée à partir d'un fichier ou bien void* si la ressource est chargée à partir de la mémoire.
-      Le foncteur peut également prendre une liste de paramètres supplémentaires par exemple pour les shaders, on peut choisir
-      de charger différent types de shader.
-      Voici par exemple comment charger la ressource à partir d'un fichier avec notre foncteur :
+      std::function&lt;bool(Object3DS,std::string&gt; loadFunc(&amp;MyLoader::fromFile);<br/>
+      </p>
+      <p>
+      Ce foncteur doit retourner un booléen et doit prendre au moins deux paramètres, le premier paramètre <br/>
+      est le type de l'objet qui va chager la ressource externe, et le second paramètre est l'emplacement de la ressource<br/>
+      qui doit être de type std::string si la ressource est chargée à partir d'un fichier ou bien void* si la ressource est <br/>
+      chargée à partir de la mémoire.<br/>
+      Le foncteur peut également prendre une liste de paramètres supplémentaires par exemple pour les shaders, on peut choisir<br/>
+      de charger différent types de shader.<br/>
+      Voici par exemple comment charger la ressource à partir d'un fichier avec notre foncteur : <br/>
+      </p>
       <pre><code>
       enum OBJECTS {
            ROBOT
@@ -126,23 +150,31 @@
       ResourceManager&lt;Object, OBJECTS&gt; om;
       om.fromFileWithAlias(loadFunc, "modele.obj", ROBOT);
       </pre></code>
-      
-      Il est également possible d'utiliser un gestionnaire de ressources de base pour accéder à un type de ressource et des gestionnaires de ressources dérivés
-      pour charger différent sous type de ressources avant de les ajouter au cache!
+      <p>
+      Il est également possible d'utiliser un gestionnaire de ressources de base pour accéder à un type de ressource et <br/>
+      des gestionnaires de ressources dérivés pour charger différent sous type de ressources avant de les ajouter au cache!<br/>
+      </p>
       <pre><code>
       ResourceManager<Derived, DERIVEDS> rm;
       cache.addResourceManager<Base, BASES>(rm, "Base");
       </pre></code>
       
       <h1>La libération des ressources</h1>
-      
-      ODFAEG utilise le principe RAAI (Resource acquisition is initialization) cela veut dire que les ressources sont libérée de
-      la mémoire lorsque le gestionnaire de ressources ou bien le cache si l'on utilise des ressources de type différent est détruit.
-      Il y a moyen de libérer les ressources avant, en appelant les méthodes deleteResourceByAlias ou alors deleteResourceByPath au cas
-      ou la RAM est pleine par exemple, mais faîtes attention que aucun autre thread n'utilise la ressource au moment ou vous libérer la ressource.
-      ODFAEG préfère l'utilisation d'un seul possesseur de la ressources plutôt que de plusieurs possesseurs pour des raisons de performance.
-      C'est pour cela que ODFAEG ne renvoie pas un std::shared_ptr vers la ressource!
-      Utiliser donc au maximum les méthodes join ou encore std::notify_all_at_thread_exit pour tout les threads utilisant la même ressource avant 
-      de la libérer!
+      <p>
+      ODFAEG utilise le principe RAAI (Resource acquisition is initialization) cela veut dire que les ressources sont libérée de <br/>
+      la mémoire lorsque le gestionnaire de ressources ou bien le cache si l'on utilise des ressources de type différent est détruit.<br/>
+      Il y a moyen de libérer les ressources avant, en appelant les méthodes deleteResourceByAlias ou alors deleteResourceByPath au cas<br/>
+      ou la RAM est pleine par exemple, mais faîtes attention que aucun autre thread n'utilise la ressource au moment ou vous libérer <br/>
+      la ressource.<br/>
+      ODFAEG préfère l'utilisation d'un seul possesseur de la ressources plutôt que de plusieurs possesseurs pour des raisons <br/>
+      de performance.<br/>
+      C'est pour cela que ODFAEG ne renvoie pas un std::shared_ptr vers la ressource!<br/>
+      Utiliser donc au maximum les méthodes join ou encore std::notify_all_at_thread_exit pour tout les threads utilisant <br/>
+      la même ressource avant de la libérer!<br/>
+      </p>
+      </article>
+      </div>
+      </div>
+      </div>
   </body>
 </html>
