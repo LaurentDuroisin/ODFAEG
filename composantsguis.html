@@ -81,8 +81,8 @@
       
       Voici un exemple de code : <br/>
       </p>
-      <pre>
-        class MyAppli : public odfaeg::core::Application : public odfaeg::graphic::gui::Button {
+      <pre><code>
+      class MyAppli : public odfaeg::core::Application : public odfaeg::graphic::gui::Button {
               public :
               MyAppli(sf::VideoMode wm, std::string title) : 
               odfaeg::core::Application(wm, title, false, true, true, sf::Style::Default, sf::ContextSettings(0, 0, 4, 3, 0))
@@ -101,11 +101,11 @@
               odfaeg::graphic::gui::Button* mButton;
               odfaeg::graphic::Font mFont;
         };
-      </pre>
+      </pre></code>
       <p>
       Ou la seconde solution qui n'utilise pas d'interface:<br/>
       </p>
-      <pre>
+      <pre><code>
               MyAppli(sf::VideoMode wm, std::string title) : 
               odfaeg::core::Application(wm, title, false, true, true, sf::Style::Default, sf::ContextSettings(0, 0, 4, 3, 0))
               {
@@ -119,7 +119,7 @@
                     getRenderComponentManager().addComponent(mButton);
               }
                 
-      </pre>
+      </pre></code>
       <p>
       Personellement je préfère la première solution car les événements sont traités dans le contexte de gestion d'événements<br/>
       du composant et non pas dans le contexte de gestion d'événements de l'application!<br/>
@@ -129,7 +129,7 @@
       si votre composant gui doit gérer plusieurs événements en interne!<br/>
       Vous remarquerez que je n'ai même pas eu besoin de dessiner les composants gui en redéfinissant une quelconque méthode<br/>
       de la classe odfaeg::core::Application, odfaeg dessine automatiquement les composants guis sur la fenêtre!<br/>
-      Il ne faut just pas oublier de les ajouter au gestionnaire de composant avec la méthode addComponent.<br/>
+      Il ne faut juste pas oublier de les ajouter au gestionnaire de composant avec la méthode addComponent.<br/>
       </p>
       
       <h1>Les composants guis de odfaeg.</h1>
@@ -161,7 +161,7 @@
       Lorsqu'il n'y a qu'une seule "text area" ceci n'est bien sûr pas nécessaire.<br/>
       </p>
       
-      <b>La boîte de dialogue.</b>
+      <b>La boîte de dialogue.</b><br/>
       <p>
       Vous pourvez créer deux types de boîtes de dialogue, MESSAGE_DIALOG pour afficher simplement une popup ou bien<br/> 
       CONFIRMATION_DIALOG pour demander confirmation à l'utilisateur lors de l'exécution d'une action.<br/>
