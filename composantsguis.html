@@ -55,28 +55,32 @@
       On peut bien sûr créer ses propres type de composant guis en héritant de la classe LightComponent.<br/>
       Les composants guis peuvent aussi être des sous fenêtre, dans ce cas vous pouvez redéfinir la méthode checkSubWindowEvents.<br/>
       Chaque composant possède un écouteur auxquel on peut connecter des commandes, ceci permet de proposer des interfaces<br/>
-      pour la gestions des événements interne au composant.
-      Par exemple, ici je vais créer un composant qui s'appelle odgaeg::graphic::gui::Button.
+      pour la gestions des événements interne au composant.<br/>
+      Par exemple, ici je vais créer un composant qui s'appelle odgaeg::graphic::gui::Button.<br/>
+      </p>
       
-      Pour comprendre cela je vous conseille d'aller regarder le fichier .cpp et .h de cette classe.
-      En fait ce n'est rien d'autre qu'un rectangle que je dessine sur lequel j'affiche un texte : le texte du bouton!
-      Rien de très compliqué donc.
-      J'ai également fais une méthode isMouseInButton, cette méthode vérifier juste si la souris est dans le bouton.
-      Il faut donc que chaque composant gui aie une référence vers la fenêtre de rendu pou pouvoir s'afficher et déclencher
-      les signaux.
+      <p>
+      Pour comprendre cela je vous conseille d'aller regarder le fichier .cpp et .h de cette classe.<br/>
+      En fait ce n'est rien d'autre qu'un rectangle que je dessine sur lequel j'affiche un texte : le texte du bouton!<br/>
+      Rien de très compliqué donc.<br/>
+      J'ai également fais une méthode isMouseInButton, cette méthode vérifier juste si la souris est dans le bouton.<br/>
+      Il faut donc que chaque composant gui aie une référence vers la fenêtre de rendu pou pouvoir s'afficher et déclencher<br/>
+      les signaux.<br/>
+      </p>
+      <p>
+      Alors pour traiter les événements, l'utilisateur à le choix, soit il crée une commande qui appelle une méthode lorsque <br/>
+      le signal isMouseInButton est émit.<br/>
       
-      Alors pour traiter les événements, l'utilisateur à le choix, soit il crée une commande qui appelle une méthode lorsque le signal
-      isMouseInButton est émit.
+      Ou bien alors il décide d'utiliser l'interface ActionListener. (comme en java)<br/>
+      Si vous regarder la méthode addActionListener vous remarquerez que j'ai créer une interface qui s'appelle ActionListener<br/>
+      et qui contient une méthode abstraite qui s'appelle actionPerformed!<br/>
+      Il suffira donc à l'utilisateur de faire hériter sa propre classe de la classe actionListener et de redéfinir la méthode<br/>
+      actionPerformed pour traiter l'événement, cette méthode prend en paramètre un pointeur vers le bouton déclenchant l'évènement.<br/>
+      Bien sûr il ne faidra pas oublier d'ajouter le listener au bouton dans votre propre classe.<br/>
+
       
-      Ou bien alors il décide d'utiliser l'interface ActionListener. (comme en java)
-      Si vous regarder la méthode addActionListener vous remarquerez que j'ai créer une interface qui s'appelle ActionListener
-      et qui contient une méthode abstraite qui s'appelle actionPerformed!
-      Il suffira donc à l'utilisateur de faire hériter sa propre classe de la classe actionListener et de redéfinir la méthode
-      actionPerformed pour traiter l'événement, cette méthode prend en paramètre un pointeur vers le bouton déclenchant l'évènement.
-      Bien sûr il ne faidra pas oublier d'ajouter le listener au bouton dans votre propre classe.
-      
-      Voici un exemple de code :
-      
+      Voici un exemple de code : <br/>
+      </p>
       <pre>
         class MyAppli : public odfaeg::core::Application : public odfaeg::graphic::gui::Button {
               public :
@@ -98,9 +102,9 @@
               odfaeg::graphic::Font mFont;
         };
       </pre>
-      
-      Ou la seconde solution qui n'utilise pas d'interface:
-      
+      <p>
+      Ou la seconde solution qui n'utilise pas d'interface:<br/>
+      </p>
       <pre>
               MyAppli(sf::VideoMode wm, std::string title) : 
               odfaeg::core::Application(wm, title, false, true, true, sf::Style::Default, sf::ContextSettings(0, 0, 4, 3, 0))
@@ -116,64 +120,75 @@
               }
                 
       </pre>
-      
-      Personellement je préfère la première solution car les événements sont traités dans le contexte de gestion d'événements du composant
-      et non pas dans le contexte de gestion d'événements de l'application!
-      Vous pouvez alors désactiver la gestion des événements pour le bouton si vous le souhaîtez.
-      Ceci constitue le gros avantage d'utiliser un listener par rapport à Qt qui utilise des signaux et des slots.
-      Rendre le bouton non cliquable avec une méthode est une autre solution mais ceci n'est pas une bonne solution
-      si votre composant gui doit gérer plusieurs événements en interne!
-      Vous remarquerez que je n'ai même pas eu besoin de dessiner les composants gui en redéfinissant une quelconque méthode
-      de la classe odfaeg::core::Application, odfaeg dessine automatiquement les composants guis sur la fenêtre!
-      Il ne faut just pas oublier de les ajouter au gestionnaire de composant avec la méthode addComponent.
+      <p>
+      Personellement je préfère la première solution car les événements sont traités dans le contexte de gestion d'événements<br/>
+      du composant et non pas dans le contexte de gestion d'événements de l'application!<br/>
+      Vous pouvez alors désactiver la gestion des événements pour le bouton si vous le souhaîtez.<br/>
+      Ceci constitue le gros avantage d'utiliser un listener par rapport à Qt qui utilise des signaux et des slots.<br/>
+      Rendre le bouton non cliquable avec une méthode est une autre solution mais ceci n'est pas une bonne solution<br/>
+      si votre composant gui doit gérer plusieurs événements en interne!<br/>
+      Vous remarquerez que je n'ai même pas eu besoin de dessiner les composants gui en redéfinissant une quelconque méthode<br/>
+      de la classe odfaeg::core::Application, odfaeg dessine automatiquement les composants guis sur la fenêtre!<br/>
+      Il ne faut just pas oublier de les ajouter au gestionnaire de composant avec la méthode addComponent.<br/>
+      </p>
       
       <h1>Les composants guis de odfaeg.</h1>
-      
-      Actuellement odfaeg possède quelques composants gui, et il y en aura qui se rajouteront au fur et à mesure dans le framework!
-      odfaeg::graphic::gui::Button, odfaeg::graphic::gui::OptionPane et odfaeg::graphic::gui::TextArea.
-      Voici comment les utiliser :
-      Pour le bouton vous avez déjà eu un aperçu ci-dessus, je ne vais donc pas y revenir.
-      <b>Pour la zone de saisie de texte. (Text Area)</b>
-      Dans le constructeur :
-      <pre>
+      <p>
+      Actuellement odfaeg possède quelques composants gui, et il y en aura qui se rajouteront au fur et à mesure <br/>
+      dans le framework!<br/>
+      odfaeg::graphic::gui::Button, odfaeg::graphic::gui::OptionPane et odfaeg::graphic::gui::TextArea.<br/>
+      Voici comment les utiliser : <br/>
+      Pour le bouton vous avez déjà eu un aperçu ci-dessus, je ne vais donc pas y revenir.<br/>
+      <b>Pour la zone de saisie de texte. (Text Area)</b><br/>
+      Dans le constructeur : <br/>
+      </p>
+      <pre><code>
       gui::TextArea* textArea = new gui::TextArea(Vec3f(350, 275, 0),Vec3f(100, 50, 0),fm.getResourceByAlias("FreeSerif"), "Test",getRenderWindow());
       textArea->addFocusListener(this);
-      </pre>
-      Vous pouvez redéfinir la méthode gaignedFocus, celle-ci sera appelée lorsque l'on cliquera sur la "text area".
-      <pre>
+      </pre></code>
+      <p>
+      Vous pouvez redéfinir la méthode gaignedFocus, celle-ci sera appelée lorsque l'on cliquera sur la "text area".<br/>
+      </p>
+      <pre><code>
         void MyAppli::gaignedFocus(gui::TextArea* textArea) {
             std::cout<<"gaigned focus"<<std::endl;
         }
-      </pre>
-              
-      Vous pouvez alors activer ou désactiver les contextes de gestions d'événements de vos "text area" ceci permet
-      d'éviter que par exemple lorsque vous appuyer sur une touche que le texte s'affiche dans toutes vos "text area",
-      vous pouvez ainsi sélectionner la "text area" dans laquelle vous souhaîter écrire!
-      Lorsqu'il n'y a qu'une seule "text area" ceci n'est bien sûr pas nécessaire.
+      </pre></code>
+      <p>
+      Vous pouvez alors activer ou désactiver les contextes de gestions d'événements de vos "text area" ceci permet<br/>
+      d'éviter que par exemple lorsque vous appuyer sur une touche que le texte s'affiche dans toutes vos "text area",<br/>
+      vous pouvez ainsi sélectionner la "text area" dans laquelle vous souhaîter écrire!<br/>
+      Lorsqu'il n'y a qu'une seule "text area" ceci n'est bien sûr pas nécessaire.<br/>
+      </p>
       
       <b>La boîte de dialogue.</b>
+      <p>
+      Vous pourvez créer deux types de boîtes de dialogue, MESSAGE_DIALOG pour afficher simplement une popup ou bien<br/> 
+      CONFIRMATION_DIALOG pour demander confirmation à l'utilisateur lors de l'exécution d'une action.<br/>
+      </p>
       
-      Vous pourvez créer deux types de boîtes de dialogue, MESSAGE_DIALOG pour afficher simplement une popup ou bien 
-      CONFIRMATION_DIALOG pour demander confirmation à l'utilisateur lors de l'exécution d'une action.
-      
-      <pre>
+      <pre><code>
         op = new gui::OptionPane(Vec2f(200, 175), Vec2f(400, 200), fm.getResourceByAlias("FreeSerif"), "Test",gui::OptionPane::TYPE::CONFIRMATION_DIALOG);
         getRenderComponentManager().addComponent(op);
-      </pre>
-      Pour savoir quel option l'utilisateur à choisis vous pouvez utiliser cette la méthode getOption() :
-      <pre>
+      </pre></code>
+      <p>
+      Pour savoir quel option l'utilisateur à choisis vous pouvez utiliser cette la méthode getOption() : <br/>
+      </p>
+      <pre><code>
          if (m_confirmInvitation->getOption() == gui::OptionPane::OPTION::YES_OPTION) {
              //On exectue l'action.
          } else if (m_confirmInvitation->getOption() == gui::OptionPane::OPTION::YES_OPTION) {
             //On ne fait rien.
          }
-      </pre>
-         Si getOption() peut renvoyer trois états :
-         YES_OPTION : l'utilisateur à cliqué sur le bouton de confirmation.
-         NO_OPTION : l'utilisateur n'a pas cliqué sur le bouton de confirmation.
-         UNDEFINED : l'utilisateur n'a pas encore choisi, la méthode getOption() remet l'état à UNDEFINED,
-         ainsi l'application n'exécute l'action qu'une seule fois en cas de confirmation.
-         Et voilà, maintenant vous savez comment utiliser et créer des composants gui avec ODFAEG, c'est pas dur!
+      </pre></code>
+      <p>
+         Si getOption() peut renvoyer trois états : <br/>
+         YES_OPTION : l'utilisateur à cliqué sur le bouton de confirmation.<br/>
+         NO_OPTION : l'utilisateur n'a pas cliqué sur le bouton de confirmation.<br/>
+         UNDEFINED : l'utilisateur n'a pas encore choisi, la méthode getOption() remet l'état à UNDEFINED,<br/>
+         ainsi l'application n'exécute l'action qu'une seule fois en cas de confirmation.<br/>
+         Et voilà, maintenant vous savez comment utiliser et créer des composants gui avec ODFAEG, c'est pas dur!<br/>
+      </p>
         </article>
         </div>
         </div>
