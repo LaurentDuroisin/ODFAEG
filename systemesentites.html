@@ -21,34 +21,37 @@
     <p class="tagline">Les systèmes d'entités : </p>
   </header>
     <h1>Rôle des systèmes d'entités.</h1>
-    
-    Les systèmes d'entités ont pour but de remettre à jour les différentes propriété des entités.
-    Il existe deux type de systèmes :
+    <p>
+    Les systèmes d'entités ont pour but de remettre à jour les différentes propriété des entités.<br/>
+    Il existe deux type de systèmes :<br/>
     
     <ul>
     <li>Les timers : Ceux-ci ont pour but de remettre à jour les entités tout les x laps de temps.</li>
     <li>Les worker : Ceux-ci ont pour but de remettre à jour les entités lorsqu'un certaine condition a été remplie.</li>
     </ul>
-    
+    </p>
     <h1>Le timer et le worker par défaut.</h1>
-    
-      Comme pour les entités et le gestionnaires d'entité, le framework possède un worker et un timer par défaut.
+      <p>
+      Comme pour les entités et le gestionnaires d'entité, le framework possède un worker et un timer par défaut.<br/>
       
-      Le timer par défaut est la classe odfaeg::graphic::AnimUpdater, le constructeur prend une viariable booléenne,
-      si on passe true, un thread sera utilisé pour remettre à jour les entités!
+      Le timer par défaut est la classe odfaeg::graphic::AnimUpdater, le constructeur prend une viariable booléenne,<br/>
+      si on passe true, un thread sera utilisé pour remettre à jour les entités!<br/>
       
-      Cette classe possède une méthode pour ajouter des animations (La méthode addAnim), cette classe possède aussi une méthode interne
-      qui est chargée de chercher tout les x interval de temps si il faut remettre des animations à jours en fonction du framerate
-      des animations.
-      Pour que les animations puissent se remettrent à jour il faut ajouter le timer au monde, ceci se fait en appelant la
-      méthode addTimer de la classe odfaeg::graphic::World.
+      Cette classe possède une méthode pour ajouter des animations (La méthode addAnim), cette classe possède aussi une méthode interne<br/>
+      qui est chargée de chercher tout les x interval de temps si il faut remettre des animations à jours en fonction du framerate<br/>
+      des animations.<br/>
+      Pour que les animations puissent se remettrent à jour il faut ajouter le timer au monde, ceci se fait en appelant la<br/>
+      méthode addTimer de la classe odfaeg::graphic::World.<br/>
+      </p>
       
-      Le worker par défaut est la classe odfaeg::graphic::EntitiesUpdater
-      Cette classe ne fait rien d'autre que d'appeler la méthode checkVisibleEntities de la classe statique odfaeg::graphic::World.
-      Le worker va donc rechercher les entités qui se trouve dans le champ de vision des vues de la fenêtre de rendu et des composants
-      de rendus!
+      <p>
+      Le worker par défaut est la classe odfaeg::graphic::EntitiesUpdater<br/>
+      Cette classe ne fait rien d'autre que d'appeler la méthode checkVisibleEntities de la classe statique odfaeg::graphic::World.<br/>
+      Le worker va donc rechercher les entités qui se trouve dans le champ de vision des vues de la fenêtre de rendu et des composants<br/>
+      de rendus!<br/>
       
-      Pour ajouter un worker au monde il faut appeler la méthode addWorker.
-      Si l'on veut mettre à jour la scene car par exemple la vue à changé, alors, il faut appeler la méthode update de la classe work.
+      Pour ajouter un worker au monde il faut appeler la méthode addWorker.<br/>
+      Si l'on veut mettre à jour la scene car par exemple la vue à changé, alors, il faut appeler la méthode update de la classe work.<br/>
+      </p>
   </body>
 </html>
