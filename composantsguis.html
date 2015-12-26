@@ -105,7 +105,7 @@
       <p>
       Ou la seconde solution qui n'utilise pas d'interface:<br/>
       </p>
-      
+      <code>
               MyAppli(sf::VideoMode wm, std::string title) : 
               odfaeg::core::Application(wm, title, false, true, true, sf::Style::Default, sf::ContextSettings(0, 0, 4, 3, 0))
               {
@@ -118,7 +118,7 @@
                     getListener().connect("CBUTTONCLICKED", cmd);
                     getRenderComponentManager().addComponent(mButton);
               }
-                
+      </code>       
       
       <p>
       Personellement je préfère la première solution car les événements sont traités dans le contexte de gestion d'événements<br/>
