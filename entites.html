@@ -21,11 +21,28 @@
     <div id="container">
     <p class="tagline">Les entités : </p>
   </header>
+  <div id="container">
+        <p class="tagline">Création d'une application </p>
+        <div id="main" role="main">
+          <div class="download-bar">
+            <div class="inner">
+              <a href="https://github.com/LaurentDuroisin/ODFAEG/tarball/master" class="download-button tar"><span>Download</span></a>
+              <a href="https://github.com/LaurentDuroisin/ODFAEG/zipball/master" class="download-button zip"><span>Download</span></a>
+              <a href="menu">Documentation</a>
+              <a href="http://odfaeg.yourboardpro.com/index.php">Forum</a>
+              <a href="https://github.com/LaurentDuroisin/ODFAEG" class="code">View Odfaeg on GitHub</a>
+              <a href="cv">CV</a>
+              <a href="tfe">Travail de fin d'études</a>
+            </div>
+          <span class="blc"></span><span class="trc"></span>
+        </div>
+          <article class="markdown-body">
     <h1>Les entités de haut niveau.</h1>
-      Les entités de bas niveau (celles héritant de la classe odfaeg::graphic::drawable) peuvent ne pas suffire pour des jeux
-      plus complexe, c'est pourquoi ODFAEG possède ses propres type d'entités.
-      Toutes ces entités héritent de la classe odfaeg::graphic::Entity.
-      Les entités possèdent également plusieurs propriétés intéressantes :
+      <p>
+      Les entités de bas niveau (celles héritant de la classe odfaeg::graphic::drawable) peuvent ne pas suffire pour des jeux<br/>
+      plus complexe, c'est pourquoi ODFAEG possède ses propres type d'entités.<br/>
+      Toutes ces entités héritent de la classe odfaeg::graphic::Entity.<br/>
+      Les entités possèdent également plusieurs propriétés intéressantes : <br/>
       <ul>
       <li>Une liste de faces.</li>
       <li>Une matrice de transformation.</li>
@@ -36,27 +53,30 @@
       <li>Des états. (Pouvant être de n'importe quel type)</li>
       <li>Une hiérarchie de volumes de collision.</li>
       </ul>
+      </p>
+      <p>
+      Les entités tout comme les widgets de QT peuvent donc avoir plusieurs entités enfants et une entité parent afin<br/>
+      de constituer une hiérarchie, ceci implique que tout changement de proriété affectant une entité parente,<br/>
+      affectera aussi les propriétés des entités enfants de celle-ci.<br/>
       
-      Les entités tout comme les widgets de QT peuvent donc avoir plusieurs entités enfants et une entité parent afin
-      de constituer une hiérarchie, ceci implique que tout changement de proriété affectant une entité parente, 
-      affectera aussi les propriétés des entités enfants de celle-ci.
-      
-      Par exemple si vous avez une entité parente A qui contient deux entités enfantes B et C, par défaut, lorsque l'on déplacera 
-      l'entité A, les entités B et C le seront également. (Même chose en ce qui concerne les autres type de transformations)
+      Par exemple si vous avez une entité parente A qui contient deux entités enfantes B et C, par défaut, lorsque l'on déplacera<br/> 
+      l'entité A, les entités B et C le seront également. (Même chose en ce qui concerne les autres type de transformations)<br/>
+      </p>
       
       <br/><b>Les faces : </b><br/>
+      <p>
       
-      Les faces continnent elles aussi plusieurs propriétés intéressantes tel que :
+      Les faces continnent elles aussi plusieurs propriétés intéressantes tel que : <br/>
       
       <ul>
       <li>Un tableau de sommet.</li>
       <li>Une matrice de transformation.</li>
       <li>Un matériel.</li>
       </ul>
-      
+      </p>
       <br/><b>Les matériaux : </b><br/>
-      
-      Les matériaux peuvent contenir également quelques propriétés intéressantes tels que :
+      <p>
+      Les matériaux peuvent contenir également quelques propriétés intéressantes tels que : <br/>
       
       <ul>
       <li>Une ou plusieurs textures.</li>
@@ -65,9 +85,9 @@
       <li>Les indices de réfractions et de disfraction du matériel.</li>
       <li>Une "bumpmap". (Une texture de relief de la texture de la face utilisée pour calculer l'éclairage sur la texture)</li>
       </ul>
-      
+      </p>
       <h1>Quelque exemples d'entités : </h1>
-      
+      <p>
       Les tiles (odfaeg::graphic::Tile) : celles-ci contiennent une seule face composée de quatre sommets.<br/>
       Les décors (odfaeg::graphic::g2d::Decor) : Décors en 2D, même chose que les tiles à part que ceux-ci possèdes un matrices générant des ombres.<br/>
       Les animations : celles-ci possèdent un groupe d'entités (des frames) qui seront affichées les unes après les autres.<br/>
@@ -75,46 +95,49 @@
       Les murs (odfaeg::graphic::g2d::Wall) : ceux-ci contiennent une matrice de projection des ombres, et un id pour chaque type de murs qui <br/>
       est utilisé pour la génération de bord de carte et de labyrinthes. <br/>
       Les lumières ponctuelles : ce sont juste des lumières en forme de cercles ou d'éllipse. <br/>
-      
+      </p>
       <h1>Les entités par défaut de ODFAEG.</h1>
-      
-        Celles-ci sont simplement des tableaux de quatre sommets.
+        <p>
+        Celles-ci sont simplement des tableaux de quatre sommets.<br/>
         
         <br/><b>Les tiles : </b><br/>
         
-        Le constructeur de la classe odfaeg::graphic::Tile attend 4 paramètres :
+        Le constructeur de la classe odfaeg::graphic::Tile attend 4 paramètres : <br/>
         <ul>
         <li>Le premier est un pointeur vers une texture, qui sera placée sur le quadrilatère formé par les 4 sommets de la tile.</li>
         <li>Le second est la position de la tile. (tuile)</li>
         <li>Le troisième est la taille de la tile.</li>
         <li>Le quatrième est la partie de la texture qui sera placée sur le quadrilatère.</li>
         </ul>
-        Les deux derniers paramètres sont la couleur de la tile (blanc par défaut) et un pointeur vers une entité parente (null par défaut).
-        
+        Les deux derniers paramètres sont la couleur de la tile (blanc par défaut) et un pointeur vers une entité parente (null par défaut).<br/>
+        </p>
+        <p>
         <br/><b>Les grandes tiles et le sol.</b><br/>
         
-        Celles-ci sont simplement des groupes de tiles dont les bords se touchent.
+        Celles-ci sont simplement des groupes de tiles dont les bords se touchent.<br/>
         
-        Le constructeur de cette classe n'attend que 3 paramètres :
+        Le constructeur de cette classe n'attend que 3 paramètres : <br/>
         <ul>
         <li>Le premier est la position du sol.</li>
         <li>Le second est la taille d'un carré au sol.</li>
         <li>Et le troisième est le nombre de carrés par ligne.</li>
         </ul>
         
-        La méthode addTile permet d'ajouter une tile au terrain, elle attend en paramètre un pointeur sur la tile à ajouter,
-        la position de la tile sur le terrain ainsi que un tableau de quatre nombres réels qui sont les hauteurs des 4 coins de la tile.
-        Si le troisième paramètre est à null alors, la tile sera simplement ajoutée sinon, la hauteur des sommets sera ajustée en fonction 
-        de la hauteur des tiles précédement ajoutées. 
+        La méthode addTile permet d'ajouter une tile au terrain, elle attend en paramètre un pointeur sur la tile à ajouter,<br/>
+        la position de la tile sur le terrain ainsi que un tableau de quatre nombres réels qui sont les hauteurs des 4 coins de la tile.<br/>
+        Si le troisième paramètre est à null alors, la tile sera simplement ajoutée sinon, la hauteur des sommets sera ajustée en fonction<br/>
+        de la hauteur des tiles précédement ajoutées.<br/>
         
-        <i>Les tiles doivent être ajoutée dans cet ordre : d'abord celles de la première ligne en partant de la gauche jusqu'à la dernière ligne.
-        Sinon vous aurez un crash à l'exécution.</i>
+        <i>Les tiles doivent être ajoutée dans cet ordre : d'abord celles de la première ligne en partant de la gauche jusqu'à la dernière ligne.<br/>
+        Sinon vous aurez un crash à l'exécution.</i><br/>
         
-        La méthode getHeight permet de récupérer la hauteur du terrain en un point bien précis, elle attend donc en paramètre un point.
+        La méthode getHeight permet de récupérer la hauteur du terrain en un point bien précis, elle attend donc en paramètre un point.<br/>
         
         <br/><b>Les décors : </b><br/>
+        </p>
+        <p>
         
-        Le constructeur de la classe odfaeg::graphic::g2d::Decor attend plusieurs paramètres également :
+        Le constructeur de la classe odfaeg::graphic::g2d::Decor attend plusieurs paramètres également :<br/>
         
         <ul>
         <li>Le premier est un pointeur sur la tile utilisée pour afficher le décor</li>
@@ -124,12 +147,12 @@
         <li>Le dernier paramètre deviendra bientôt obsolète est indique le type d'ombre à générer (Une forme ou bien une tile).</li>
         </ul>
         
-        Pour les PCs supportant les shaders les ombres sont calculée à l'aide de shaders grâce au shadow mapping et 
-        à la matrice de projection des ombres!
+        Pour les PCs supportant les shaders les ombres sont calculée à l'aide de shaders grâce au shadow mapping et <br/>
+        à la matrice de projection des ombres! <br/>
         
         <br/><b>Les murs : </b><br/>
         
-          Le constructeur de la classe odfaeg::graphic::g2d::Wall prend plusieurs paramètres dont :
+          Le constructeur de la classe odfaeg::graphic::g2d::Wall prend plusieurs paramètres dont : <br/>
           <ul>
           <li>Le type du mur, 0 = mur du coin en haut à gauche.</li>
           <li>La hauteur du mur. (Utilisé pour calculer la hauteur de l'ombre)</li>
@@ -138,10 +161,10 @@
            les PCs ne supportant pas les shaders auront disparus.)</li>
           <li>Le dernier paramètre deviendra bientôt obsolète est indique le type d'ombre à générer (Une forme ou bien une tile).</li>
           </ul>
-          
+        </p>
         <br/><b>Les animations : </b><br/>
-        
-          Le constructeur de la classe odfaeg::graphic::Anim attend 3 paramètres : 
+        <p>
+          Le constructeur de la classe odfaeg::graphic::Anim attend 3 paramètres : <br/>
           <ul>
           <li>le taux de rafraichissement.</li>
           <li>la position de l'animation.</li>
@@ -149,18 +172,19 @@
           <li>Le dernier paramètre est un pointeur vers une entité parente. (null par défaut)</li>
           </ul>
           
-          La méthode setInterpolationLevel permet de modifier le niveau d'interpolation de l'animation.
-          La méthode addFrame permet d'ajouté une frame à l'animation.
-          Il est possible d'ajouter une animation enfant d'une autre animation, dans ce cas, les frames des animations
-          enfant seront changée en même temps que celles des animations parents.
-          Ceci est utile dans le cas des animations squelettique, si par exemple, vous avez un personnage et un pantalon,
-          et vous souhaiter que les frames et les sommets de l'animation des jambes pantalon changent en même temps que celles de l'animation des jambes
+          La méthode setInterpolationLevel permet de modifier le niveau d'interpolation de l'animation.<br/>
+          La méthode addFrame permet d'ajouté une frame à l'animation.<br/>
+          Il est possible d'ajouter une animation enfant d'une autre animation, dans ce cas, les frames des animations<br/>
+          enfant seront changée en même temps que celles des animations parents.<br/>
+          Ceci est utile dans le cas des animations squelettique, si par exemple, vous avez un personnage et un pantalon,<br/>
+          et vous souhaiter que les frames et les sommets de l'animation des jambes pantalon changent en même temps que celles de l'animation des jambes<br/>
           du personnage.
-          Les animations parentes et enfant doivent alors avoir le même nombre de frames.
-        
+          Les animations parentes et enfant doivent alors avoir le même nombre de frames.<br/>
+        </p>
+        <p>
         <br/><b>Les lumières ponctuelles : </b><br/>
         
-          Avec ODFAEG les lumières ne sont rien d'autre que des formes dont le dégradé est calculé en fonction de différent paramètres qui sont :
+          Avec ODFAEG les lumières ne sont rien d'autre que des formes dont le dégradé est calculé en fonction de différent paramètres qui sont : <br/>
           
           <ul>
           <li>La normalmap de la vue.</li>
@@ -169,17 +193,18 @@
           <li>Les composantes spéculaires des matériaux.</li>
           </ul>
           
-          Le constructeurs de la classe odfaeg::graphic::g2d::PonctualLight attend plusieurs paramètre.
+          Le constructeurs de la classe odfaeg::graphic::g2d::PonctualLight attend plusieurs paramètre.<br/>
           
-          -Le premier est le centre de la lumière.
-          -Les trois suivants sont les rayons en x, y et z de la lumière.
-          -Le suivant est l'intensité de la lumière.
-          -L'avant dernier est la qualité de la lumière.
-          -Et le dernier est un pointeur vers une entité parente. (null par défaut)
+          -Le premier est le centre de la lumière.<br/>
+          -Les trois suivants sont les rayons en x, y et z de la lumière.<br/>
+          -Le suivant est l'intensité de la lumière.<br/>
+          -L'avant dernier est la qualité de la lumière.<br/>
+          -Et le dernier est un pointeur vers une entité parente. (null par défaut)<br/>
           
-          Voila maintenant vous savez comment créer ces différentes entités par défaut afin de les afficher dans 
-          la fenêtre de rendu.
-          Cependant ceci ne sera pas optimal car vous risquer d'afficher des entités qui ne sont pas visible.
-          Dans le prochain chapitre nous allons voir comment optimiser cela à l'aide du gestionnaire d'entités!
+          Voila maintenant vous savez comment créer ces différentes entités par défaut afin de les afficher dans <br/>
+          la fenêtre de rendu.<br/>
+          Cependant ceci ne sera pas optimal car vous risquer d'afficher des entités qui ne sont pas visible.<br/<
+          Dans le prochain chapitre nous allons voir comment optimiser cela à l'aide du gestionnaire d'entités!<br/>
+          </p>
   </body>
 </html>
