@@ -21,21 +21,39 @@
     <div id="container">
     <p class="tagline">Le gestionnaire d'entités : </p>
   </header>
+  <div id="container">
+        <div id="main" role="main">
+          <div class="download-bar">
+            <div class="inner">
+              <a href="https://github.com/LaurentDuroisin/ODFAEG/tarball/master" class="download-button tar"><span>Download</span></a>
+              <a href="https://github.com/LaurentDuroisin/ODFAEG/zipball/master" class="download-button zip"><span>Download</span></a>
+              <a href="menu">Documentation</a>
+              <a href="http://odfaeg.yourboardpro.com/index.php">Forum</a>
+              <a href="https://github.com/LaurentDuroisin/ODFAEG" class="code">View Odfaeg on GitHub</a>
+              <a href="cv">CV</a>
+              <a href="tfe">Travail de fin d'études</a>
+            </div>
+          <span class="blc"></span><span class="trc"></span>
+        </div>
+        <article class="markdown-body">
     <h1>Le monde</h1>
-      Comme pour tout les modules de ODFAEG (Coeur, Graphique, Physique, Audio, Réseau) ODFAEG possède une classe statique qui permet d'intéragir avec les autres modules.
-      Cette classe s'appelle World, et cette classe peut contenir un ou plusieurs gestionnaire d'entités.
-      Etant donné que le monde peut être très grand il est nécessaire de charger et de libérer des entités au fur et à mesure de l'exécution de l'application
-      afin de ne pas encombre la RAM, pour cela on peut choisir d'ajouter un ou plusieurs gestionnaires d'entités qui se chargerons d'afficher une
-      partie du monde, et les libérer.
-      Bref, le principe est fort similaire à celui des musiques de SFML qui sont chargée au fur et à mesure.
-      On charge les entités des zones du monde qui sont proche de la caméra, et ont libère les zones qui ne le sont plus.
-      Grâce à la sauvegarde on verra plus tard qu'il est très facile de sauvegarder et de restaurer une zone du monde.
-      Un gestionnaire d'entité peut donc être considéré comme une zone, le monde peut être composé d'un nombre indéfini de zones.
+    <p>
+      Comme pour tout les modules de ODFAEG (Coeur, Graphique, Physique, Audio, Réseau) ODFAEG possède une classe statique <br/>
+      qui permet d'intéragir avec les autres modules.<br/>
+      Cette classe s'appelle World, et cette classe peut contenir un ou plusieurs gestionnaire d'entités.<br/>
+      Etant donné que le monde peut être très grand il est nécessaire de charger et de libérer des entités au fur et à mesure <br/>
+      de l'exécution de l'application afin de ne pas encombre la RAM, pour cela on peut choisir d'ajouter un ou plusieurs <br/>
+      gestionnaires d'entités qui se chargerons d'afficher une partie du monde, et les libérer.<br/>
+      Bref, le principe est fort similaire à celui des musiques de SFML qui sont chargée au fur et à mesure.<br/>
+      On charge les entités des zones du monde qui sont proche de la caméra, et ont libère les zones qui ne le sont plus.<br/>
+      Grâce à la sauvegarde on verra plus tard qu'il est très facile de sauvegarder et de restaurer une zone du monde.<br/>
+      Un gestionnaire d'entité peut donc être considéré comme une zone, le monde peut être composé d'un nombre indéfini de zones.<br/>
+    </p>
       
     <h1>Les gestionnaires d'entités.</h1>
-      Ce sont les gestionnaires d'entités qui vont contenir toutes les entités des différents zones et non pas le monde!
-      Les gestionnaires d'entité possèdent plusieurs propriétés :
-      
+      <p>
+      Ce sont les gestionnaires d'entités qui vont contenir toutes les entités des différents zones et non pas le monde!<br/>
+      Les gestionnaires d'entité possèdent plusieurs propriétés : <br/>
       <ul>
       <li>Une taille.</li>
       <li>Une matrice de changement de base.</li>
@@ -45,58 +63,65 @@
       <li>La liste des entités visibles racines.</li>
       <li>Ainsi que des shaders et textures de rendu qui vont servir à calculer la réfraction, les ombres et les lumières.</li>
       </ul>
+      </p>
       
       <h2>La grille et la matrice de changement de base.</h2>
+      <p>
+      Je pense que je vous dois quelques explications à son sujet, il est possible que dans un monde à deux dimentions <br/>
+      on souhaite dessiner des objets en trois dimentions, ceci s'appelle faire de la 2D isométrique (ou dimétrique), <br/>
+      pour ce faire, lorsque vous vous positionner à un endroit dans le monde, le système de coordonnées change.<br/>
+      ODFAEG utilise pour des raisons de performance une grille dans laquelle sont ajoutées toutes les entités, cette grille <br/>
+      est en fait un ensemble de cases délimitées par un système d'axe, hors en 2D isométrique, les axes changent de direction!<br/>
+      (La grille est donc de travers)<br/>
       
-      Je pense que je vous dois quelques explications à son sujet, il est possible que dans un monde à deux dimentions on souhaite dessiner des
-      objets en trois dimentions, ceci s'appelle faire de la 2D isométrique (ou dimétrique), pour ce faire, lorsque vous vous positionner à un
-      endroit dans le monde, le système de coordonnées change.
-      ODFAEG utilise pour des raisons de performance une grille dans laquelle sont ajoutées toutes les entités, cette grille est en fait un ensemble
-      de cases délimitées par un système d'axe, hors en 2D isométrique, les axes changent de direction! (La grille est donc de travers)
+      Il faut donc pouvoir passer d'un système de coordonnée en 2D à un système de coordonnée en 2D isométrique lorsque l'on <br/>
+      veut récupérer une ou plusieurs entités à un endroit précis!<br/>
+      La matrice de changement de base permet de faire cela!<br/>
       
-      Il faut donc pouvoir passer d'un système de coordonnée en 2D à un système de coordonnée en 2D isométrique lorsque l'on veut récupérer
-      une ou plusieurs entités à un endroit précis!
-      La matrice de changement de base permet de faire cela!
-      
-      <i>La grille est redimentionnée automatiquement suivant la taille de la zone, la taille de la zone est calculée automatiquement suivant
-      la position et la taille de toutes les entités!
-      Lorsque une entités est transformée, elle est automatiquement remise à jour dans la grille!</i>
+      <i>La grille est redimentionnée automatiquement suivant la taille de la zone, la taille de la zone est calculée automatiquement suivant<br/>
+      la position et la taille de toutes les entités!<br/>
+      Lorsque une entités est transformée, elle est automatiquement remise à jour dans la grille!</i><br/>
+      </p>
       
       <h2>Créer et ajouter un gestionnaire d'entité dans le monde</h2>
-      
-      Le gestionnaire d'entité par défaut de ODFAEG s'appelle odfaeg::graphic::Map!
-      Le constructeur de la classe Map attend 4 paramètres :
+      <p>
+      Le gestionnaire d'entité par défaut de ODFAEG s'appelle odfaeg::graphic::Map!<br/>
+      Le constructeur de la classe Map attend 4 paramètres : <br/>
       <ul>
       <li>Le premier est un pointeur vers le gestionnaire de composants de l'application, celui-ci peut être récupérer avec la méthode getRenderComponentManager</li>
       <li>Le second est un nom qui référencera la map.</li>
       <li>Les deux dernier sont la taille des cases de la grille de la map.</li>
       </ul>
       
-      Pour ajouter un gestionnaire de composant dans le monde vous devez appeler la méthode addEntityManager de la classe World!
-      Si vous souhaiter travaille avec l'entity manager vous devez le sélectionner avec la méthode setCurrentEntityManager, cette
-      méthode attend un paramètre : le nom de la map.
+      Pour ajouter un gestionnaire de composant dans le monde vous devez appeler la méthode addEntityManager de la classe World!<br/>
+      Si vous souhaiter travaille avec l'entity manager vous devez le sélectionner avec la méthode setCurrentEntityManager, cette<br/>
+      méthode attend un paramètre : le nom de la map.<br/>
       
-      Vous pouvez alors ajouté des entités avec la méthode addEntity de la classe World.
+      Vous pouvez alors ajouté des entités avec la méthode addEntity de la classe World.<br/>
+      </p>
       <h2>Les différents méthodes utiles de la classe World : </h2>
       
-      
-      removeEntity : efface l'entité de la grille sans la libérer de la mémoire.
-      deleteEntity : efface l'entité de la grille et libère l'entité de la mémoire.
-      getLightMap : récupère la tile de lumière, cette méthode prend en paramètre le type des entités de lumière à rendre 
-      ainsi que les ids des composants pour lesquels calculer la lumière.
-      getShadowMap : même chose mais pour les ombres.
-      getReflectionMap : même chose mais pour les reflets.
-      getVisibleEntities : récupère toutes les entités visible d'un certain type.
-      moveEntity : déplace une entité de x, y et z unités.
-      collide : test si une entité est en collision avec une autre, il y a trois version de cette méthode, la première
-      test si le volume de collision d'une entité est en collision avec l'entité passée, la seconde test si le volume de
-      collision d'une entité est en collision avec un point, et la troisième test si une entité est sur la trajectoire 
-      d'une autre entité.
-      generateMap : génère un terrain avec au sol la liste de tile et au bord la liste de mur, dans une zone passée.
-      La taille d'une tile peut être plus grande que celle d'un carré du terrain, ceci permet de faire des effets de transitions
-      sur les bords!
-      getPath : Récupère la trajectoire la plus courte entre une entité et un point. (En tenant compte des collisions)
-      
-      
+      <p>
+      removeEntity : efface l'entité de la grille sans la libérer de la mémoire.<br/>
+      deleteEntity : efface l'entité de la grille et libère l'entité de la mémoire.<br/>
+      getLightMap : récupère la tile de lumière, cette méthode prend en paramètre le type des entités de lumière à rendre <br/>
+      ainsi que les ids des composants pour lesquels calculer la lumière.<br/>
+      getShadowMap : même chose mais pour les ombres.<br/>
+      getReflectionMap : même chose mais pour les reflets.<br/>
+      getVisibleEntities : récupère toutes les entités visible d'un certain type.<br/>
+      moveEntity : déplace une entité de x, y et z unités.<br/>
+      collide : test si une entité est en collision avec une autre, il y a trois version de cette méthode, la première<br/>
+      test si le volume de collision d'une entité est en collision avec l'entité passée, la seconde test si le volume de<br/>
+      collision d'une entité est en collision avec un point, et la troisième test si une entité est sur la trajectoire <br/>
+      d'une autre entité.<br/>
+      generateMap : génère un terrain avec au sol la liste de tile et au bord la liste de mur, dans une zone passée.<br/>
+      La taille d'une tile peut être plus grande que celle d'un carré du terrain, ceci permet de faire des effets de transitions<br/>
+      sur les bords!<br/>
+      getPath : Récupère la trajectoire la plus courte entre une entité et un point. (En tenant compte des collisions)<br/>
+      </p>
+      </article>
+      </div>
+      </div>
+      </div>
   </body>
 </html>
