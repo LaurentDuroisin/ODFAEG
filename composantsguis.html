@@ -18,7 +18,6 @@
   <div class="wrapper">
   <header>
     <h1 class="title">LastProject : ODFAEG</h1>
-     <div id="container">
     <p class="tagline">Composants gui : </p>
   </header>
    <div id="container">
@@ -82,7 +81,7 @@
       
       Voici un exemple de code : <br/>
       </p>
-      <pre><code>
+      <pre>
       class MyAppli : public odfaeg::core::Application : public odfaeg::graphic::gui::Button {
               public :
               MyAppli(sf::VideoMode wm, std::string title) : 
@@ -102,11 +101,11 @@
               odfaeg::graphic::gui::Button* mButton;
               odfaeg::graphic::Font mFont;
         };
-      </pre></code>
+      </pre>
       <p>
       Ou la seconde solution qui n'utilise pas d'interface:<br/>
       </p>
-      <pre><code>
+      <pre>
               MyAppli(sf::VideoMode wm, std::string title) : 
               odfaeg::core::Application(wm, title, false, true, true, sf::Style::Default, sf::ContextSettings(0, 0, 4, 3, 0))
               {
@@ -120,7 +119,7 @@
                     getRenderComponentManager().addComponent(mButton);
               }
                 
-      </pre></code>
+      </pre>
       <p>
       Personellement je préfère la première solution car les événements sont traités dans le contexte de gestion d'événements<br/>
       du composant et non pas dans le contexte de gestion d'événements de l'application!<br/>
@@ -143,18 +142,18 @@
       <b>Pour la zone de saisie de texte. (Text Area)</b><br/>
       Dans le constructeur : <br/>
       </p>
-      <pre><code>
+      <pre>
       gui::TextArea* textArea = new gui::TextArea(Vec3f(350, 275, 0),Vec3f(100, 50, 0),fm.getResourceByAlias("FreeSerif"), "Test",getRenderWindow());
       textArea->addFocusListener(this);
-      </pre></code>
+      </pre>
       <p>
       Vous pouvez redéfinir la méthode gaignedFocus, celle-ci sera appelée lorsque l'on cliquera sur la "text area".<br/>
       </p>
-      <pre><code>
+      <pre>
         void MyAppli::gaignedFocus(gui::TextArea* textArea) {
             std::cout<<"gaigned focus"<<std::endl;
         }
-      </pre></code>
+      </pre>
       <p>
       Vous pouvez alors activer ou désactiver les contextes de gestions d'événements de vos "text area" ceci permet<br/>
       d'éviter que par exemple lorsque vous appuyer sur une touche que le texte s'affiche dans toutes vos "text area",<br/>
@@ -168,20 +167,20 @@
       CONFIRMATION_DIALOG pour demander confirmation à l'utilisateur lors de l'exécution d'une action.<br/>
       </p>
       
-      <pre><code>
+      <pre>
         op = new gui::OptionPane(Vec2f(200, 175), Vec2f(400, 200), fm.getResourceByAlias("FreeSerif"), "Test",gui::OptionPane::TYPE::CONFIRMATION_DIALOG);
         getRenderComponentManager().addComponent(op);
-      </pre></code>
+      </pre>
       <p>
       Pour savoir quel option l'utilisateur à choisis vous pouvez utiliser cette la méthode getOption() : <br/>
       </p>
-      <pre><code>
+      <pre>
          if (m_confirmInvitation->getOption() == gui::OptionPane::OPTION::YES_OPTION) {
              //On exectue l'action.
          } else if (m_confirmInvitation->getOption() == gui::OptionPane::OPTION::YES_OPTION) {
             //On ne fait rien.
          }
-      </pre></code>
+      </pre>
       <p>
          Si getOption() peut renvoyer trois états : <br/>
          YES_OPTION : l'utilisateur à cliqué sur le bouton de confirmation.<br/>
