@@ -18,29 +18,43 @@
   <div class="wrapper">
   <header>
     <h1 class="title">LastProject : ODFAEG</h1>
-    <div id="container">
     <p class="tagline">Composants gui : </p>
   </header>
-  <body>
+   <div id="container">
+        <div id="main" role="main">
+          <div class="download-bar">
+            <div class="inner">
+              <a href="https://github.com/LaurentDuroisin/ODFAEG/tarball/master" class="download-button tar"><span>Download</span></a>
+              <a href="https://github.com/LaurentDuroisin/ODFAEG/zipball/master" class="download-button zip"><span>Download</span></a>
+              <a href="menu">Documentation</a>
+              <a href="http://odfaeg.yourboardpro.com/index.php">Forum</a>
+              <a href="https://github.com/LaurentDuroisin/ODFAEG" class="code">View Odfaeg on GitHub</a>
+              <a href="cv">CV</a>
+              <a href="tfe">Travail de fin d'études</a>
+            </div>
+          <span class="blc"></span><span class="trc"></span>
+        </div>
+          <article class="markdown-body">
     <h1>Les composants guis de ODFAEG.</h1>
-    
-      Les composants guis de ODFAEG ne sont rien d'autres que des boutons, des champs de saisie de texte,
-      des composants qui affichent du texte, des menus, des boîtes de dialogues, etc...
-      Contrairement aux composant de rendu, on ne peut pas changer la vue des composants guis, ceux-ci
-      s'affichent donc toujours sur la fenêtre de rendu.
-      Les composants guis sont affiché juste après les composants de rendu, ces composants sont légés c'est à
-      dire qu'il ne continnent pas de textures de normales, ni aucun shader.
-      Ils se contentent juste de s'afficher sans tenir compte de l'éclairage, ni des ombres.
-      Ce type de composant est à utiliser donc si vous n'avez pas besoin de calculer l'éclairage et de générer des
-      ombres lors de l'affichage de se composant.
-      On ne peut bien évidemment par chargé d'entités sur les composants guis, ce n'est pas leur rôle, le rôle.
-      Leur rôle est juste de dessiner une interface graphique bien précise.
+      <p>
+      Les composants guis de ODFAEG ne sont rien d'autres que des boutons, des champs de saisie de texte,<br/>
+      des composants qui affichent du texte, des menus, des boîtes de dialogues, etc...<br/>
+      Contrairement aux composant de rendu, on ne peut pas changer la vue des composants guis, ceux-ci<br/>
+      s'affichent donc toujours sur la fenêtre de rendu.<br/>
+      Les composants guis sont affiché juste après les composants de rendu, ces composants sont légés c'est à<br/>
+      dire qu'il ne continnent pas de textures de normales, ni aucun shader.<br/>
+      Ils se contentent juste de s'afficher sans tenir compte de l'éclairage, ni des ombres.<br/>
+      Ce type de composant est à utiliser donc si vous n'avez pas besoin de calculer l'éclairage et de générer des<br/>
+      ombres lors de l'affichage de se composant.<br/>
+      On ne peut bien évidemment par chargé d'entités sur les composants guis, ce n'est pas leur rôle, le rôle.<br/>
+      Leur rôle est juste de dessiner une interface graphique bien précise.<br/>
+      </p>
       
       <h1>Créer ses propres type de composants.</h1>
-      
-      On peut bien sûr créer ses propres type de composant guis en héritant de la classe LightComponent.
-      Les composants guis peuvent aussi être des sous fenêtre, dans ce cas vous pouvez redéfinir la méthode checkSubWindowEvents.
-      Chaque composant possède un écouteur auxquel on peut connecter des commandes, ceci permet de proposer des interfaces
+      <p>
+      On peut bien sûr créer ses propres type de composant guis en héritant de la classe LightComponent.<br/>
+      Les composants guis peuvent aussi être des sous fenêtre, dans ce cas vous pouvez redéfinir la méthode checkSubWindowEvents.<br/>
+      Chaque composant possède un écouteur auxquel on peut connecter des commandes, ceci permet de proposer des interfaces<br/>
       pour la gestions des événements interne au composant.
       Par exemple, ici je vais créer un composant qui s'appelle odgaeg::graphic::gui::Button.
       
@@ -160,5 +174,9 @@
          UNDEFINED : l'utilisateur n'a pas encore choisi, la méthode getOption() remet l'état à UNDEFINED,
          ainsi l'application n'exécute l'action qu'une seule fois en cas de confirmation.
          Et voilà, maintenant vous savez comment utiliser et créer des composants gui avec ODFAEG, c'est pas dur!
+        </article>
+        </div>
+        </div>
+        </div>
   </body>
   </html>
