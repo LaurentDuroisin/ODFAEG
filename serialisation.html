@@ -18,22 +18,38 @@
 <div class="wrapper">
 <header>
 <h1 class="title">LastProject : ODFAEG</h1>
-<div id="container">
 <p class="tagline">La serialisation : </p>
-
 </header>
-Les opérateurs de flux du langage c++ présentent certaines lacunes :
--Ils ne permettent pas de sérialiser et désérialiser des pointeurs ni les contenaire de la STL.
-En effet, écrire l'adresse d'un pointeur dans un fichier est inutile car a deux exécutions différentes, l'adresse de l'objet alloué
-peut avoir changé, alors le pointeur risque de ne plus pointé vers le bonne objet lors de la lecture, ODFAEG possède un système qui affecte la
-nouvelle adresse au pointeur en associant un id à chaque adresse.
-ODFAEG  permet aussi de serialiser les contenaires de la STL, ainsi que des pointeurs intelligents.
-Les classes qui permettent de faire cela sont les classe odfaeg::core::OTextArchive et odfaeg::core::ITextArchive.
-Tout est serialiser sous forme de texte et non pas en binaire pour des raisons de compatibilité.
-On peut aussi créer un type d'archive personnalisée car la méthode qui permet a odfaeg de serialiser des objets est template.
-Pour serialiser un objet il faut d'abord créer un objet de type odfaeg::core::OTextArchive, le constructeur de cette classe 
-attend un paramètre : une référence  vers un flux  standart et donc un objet héritant de la classe std::ostream, prenons par exemple la classe
-ofstream pour écrire dans un fichier.
+<div id="container">
+        <p class="tagline">Création d'une application </p>
+        <div id="main" role="main">
+          <div class="download-bar">
+            <div class="inner">
+              <a href="https://github.com/LaurentDuroisin/ODFAEG/tarball/master" class="download-button tar"><span>Download</span></a>
+              <a href="https://github.com/LaurentDuroisin/ODFAEG/zipball/master" class="download-button zip"><span>Download</span></a>
+              <a href="menu">Documentation</a>
+              <a href="http://odfaeg.yourboardpro.com/index.php">Forum</a>
+              <a href="https://github.com/LaurentDuroisin/ODFAEG" class="code">View Odfaeg on GitHub</a>
+              <a href="cv">CV</a>
+              <a href="tfe">Travail de fin d'études</a>
+            </div>
+          <span class="blc"></span><span class="trc"></span>
+        </div>
+          <article class="markdown-body">
+<p>
+Les opérateurs de flux du langage c++ présentent certaines lacunes : <br/>
+-Ils ne permettent pas de sérialiser et désérialiser des pointeurs ni les contenaire de la STL.<br/>
+En effet, écrire l'adresse d'un pointeur dans un fichier est inutile car a deux exécutions différentes, <br/>
+l'adresse de l'objet alloué peut avoir changé, alors le pointeur risque de ne plus pointé vers le bonne objet <br/>
+lors de la lecture, ODFAEG possède un système qui affecte la nouvelle adresse au pointeur en associant un id à chaque adresse.<br/>
+ODFAEG  permet aussi de serialiser les contenaires de la STL, ainsi que des pointeurs intelligents.<br/>
+Les classes qui permettent de faire cela sont les classe odfaeg::core::OTextArchive et odfaeg::core::ITextArchive.<br/>
+Tout est serialiser sous forme de texte et non pas en binaire pour des raisons de compatibilité.<br/>
+On peut aussi créer un type d'archive personnalisée car la méthode qui permet a odfaeg de serialiser des objets est template.<br/>
+Pour serialiser un objet il faut d'abord créer un objet de type odfaeg::core::OTextArchive, le constructeur de cette classe <br/>
+attend un paramètre : une référence  vers un flux  standart et donc un objet héritant de la classe std::ostream, prenons par exemple la classe<br/>
+ofstream pour écrire dans un fichier.<br/>
+</p>
 <h1>La serialisation et les objets simples.</h1>
 Si l'on veut sérialiser et désérialiser une chaine de caractère par exemple, il suffit d'écrire ce code :
 <pre><code>
@@ -87,5 +103,9 @@ EXPORT_CLASS_GUID(RELATIONID, ABaseClass, ADerivedClass);
 Le premier paramètre est juste l'id de la relation, le second le type de la classe de base et le troisième le type de la classe dérivée.
 Voilà c'est tout, maintenant vous savez écrire et lire n'importe quel type d'objet c++ avec ODFAEG dans un format standart et compatible de type texte, 
 vous pouvez aussi bien sûr les sérialiser dans des flux mémoire pour les envoyer sur le réseau par exemple.
+</article>
+</div>
+</div>
+</div>
 </body>
 </html>
