@@ -59,7 +59,7 @@
     de ce fait il faut utiliser un objet de type odfaeg::network::SymEncPacket (qui ne sont rien d'autre que des packets chiffré<br/>
     avec la librairie openssl).<br/>
     </p>
-    <pre>code>
+    <pre><code>
     SymEncPacket packet;
     packet<<"response";
     user->sendTcpPacket(packet);
