@@ -17,41 +17,65 @@
   <div class="wrapper">
   <header>
     <h1 class="title">LastProject : ODFAEG</h1>
-    <div id="container">
     <p class="tagline">Le son : </p>
     <h1>Jouer un son : </h1>
   </header>
-    <body>
-    Contrairement à la SFML, ODFAEG n'utilise qu'une seule classe pour charger des sons ou bien jouer des musiques, c'est la classe odfaeg::audio::Stream.
-    Pour jouer un son il faut avant tout lire le fichier, pour cela, il faut utiliser la classe odfaeg::audio::SoundBufferManager, 
-    cette classe est fort similaire à odfaeg::graphic::TextureManager à part qu'elle charge des sons et non pas des texture.
+  <div id="container">
+        <div id="main" role="main">
+          <div class="download-bar">
+            <div class="inner">
+              <a href="https://github.com/LaurentDuroisin/ODFAEG/tarball/master" class="download-button tar"><span>Download</span></a>
+              <a href="https://github.com/LaurentDuroisin/ODFAEG/zipball/master" class="download-button zip"><span>Download</span></a>
+              <a href="menu">Documentation</a>
+              <a href="http://odfaeg.yourboardpro.com/index.php">Forum</a>
+              <a href="https://github.com/LaurentDuroisin/ODFAEG" class="code">View Odfaeg on GitHub</a>
+              <a href="cv">CV</a>
+              <a href="tfe">Travail de fin d'études</a>
+            </div>
+          <span class="blc"></span><span class="trc"></span>
+        </div>
+          <article class="markdown-body">
+    <p>
+    Contrairement à la SFML, ODFAEG n'utilise qu'une seule classe pour charger des sons ou bien jouer des musiques, <br/>
+    c'est la classe odfaeg::audio::Stream.<br/>
+    Pour jouer un son il faut avant tout lire le fichier, pour cela, il faut utiliser la classe odfaeg::audio::SoundBufferManager,<br/> 
+    cette classe est fort similaire à odfaeg::graphic::TextureManager à part qu'elle charge des sons et non pas des texture.<br/>
+    </p>
     <pre><code>
     SoundBufferManager<> sm;
     sm.fromFileWithAlias("sounds/walk_crop.wav", "step foot");
     sm.fromFileWithAlias("sounds/fire.wav", "fire");
     </pre></code>
-    Ensuite pour pouvoir utiliser ce son, il faut le passer à un objet de type odfaeg::audio::Stream.
+    <p>
+    Ensuite pour pouvoir utiliser ce son, il faut le passer à un objet de type odfaeg::audio::Stream.<br/>
+    </p>
     <pre><code>
     Stream* stream = new Stream();
     stream->load(*sm.getResourceByAlias("step foot"));
     Stream* stream2 = new Stream();
     stream2->load(*sm.getResourceByAlias("fire"));
     </pre>/code>
-    Cette classe est juste un flux audio personnalisé de OEDFAEG, on peut aussi charger des musiques en utilisant la méthode openFromFile de 
-    la classe odfaeg::audio::Stream. (Pas besoin d'utilise SoundBufferManager pour mes musiques vu qu'elles sont chargées au fur et à mesure
-    qu'elles sont jouées avec la classe odfaeg::audio::Stream.)
-    Enfin, pour pouvoir jouer le son, il faut utiliser la classe odfaeg::audio::Player et lui passer un objet de type odfaeg::audio::Stream qui contient
-    notre son :
+    <p>
+    Cette classe est juste un flux audio personnalisé de OEDFAEG, on peut aussi charger des musiques en utilisant la méthode openFromFile de <br/>
+    la classe odfaeg::audio::Stream. (Pas besoin d'utilise SoundBufferManager pour mes musiques vu qu'elles sont chargées au fur et à mesure <br/>
+    qu'elles sont jouées avec la classe odfaeg::audio::Stream.) <br/>
+    Enfin, pour pouvoir jouer le son, il faut utiliser la classe odfaeg::audio::Player et lui passer un objet de type odfaeg::audio::Stream qui contient <br/>
+    notre son : <br/>
+    </p>
     <pre<code>
     player.setAudioStream(stream);
     pfire.setAudioStream(stream2);
     </pre></code>
-    Pour jouer un son, il faut utiliser la méthode play de la classe odfaeg::audio::Player, celle-ci attend un paramètre booléen, pour
-    jouer le son en boucle ou bien une seule fois.
-    Comme pour la SFML, on peut mettre un son en pause, l'arrêter, etc... avec les méthode pause, stop, ...
+    <p>
+    Pour jouer un son, il faut utiliser la méthode play de la classe odfaeg::audio::Player, celle-ci attend un paramètre booléen, pour<br/>
+    jouer le son en boucle ou bien une seule fois.<br/>
+    Comme pour la SFML, on peut mettre un son en pause, l'arrêter, etc... avec les méthode pause, stop, ... <br/>
+    </p>
     <h1>La spatialisation du son.</h1>
-    Les classes et méthodes pour la spacialisation du son sont exactement les mêmes que celles de la SFML.
-    C'est à dire, pour paramétrer les sources sonores il suffit d'appeler les méthodes suivantes :
+    <p>
+    Les classes et méthodes pour la spacialisation du son sont exactement les mêmes que celles de la SFML.<br/>
+    C'est à dire, pour paramétrer les sources sonores il suffit d'appeler les méthodes suivantes : <br/>
+    </p>
     <pre><code>
     player.setRelativeToListener(true);
     player.setPosition(0.f, 0.f, 0.f);
@@ -61,13 +85,21 @@
     pfire.setMinDistance(200);
     pfire.setAttenuation(10.f);
     </pre></code>
-    Et pour paramétrer l'écouteur :
+    <p>
+    Et pour paramétrer l'écouteur : <br/>
+    </p>
     <pre><code>
     sf::Listener::setUpVector(0.f, 0.f, 1.f);
     sf::Listener::setPosition(caracter->getCenter().x, caracter->getCenter().y, 0);
     sf::Listener::setDirection(dir.x, dir.y, 0);
     </pre<</code>
-    Voila c'est tout pour ce chapitre, si vous voulez avoir plus de détails sur les méthodes utilisées pour la spatialisation du son, je vous invite
-    à aller lire les tutoriels à se sujet sur le site de la SFML.
+    <p>
+    Voila c'est tout pour ce chapitre, si vous voulez avoir plus de détails sur les méthodes utilisées pour la spatialisation du son, je vous invite <br/>
+    à aller lire les tutoriels à se sujet sur le site de la SFML. <br/>
+    </p>
+    </article>
+    </div>
+    </div>
+    </div>
   </body>
   </html>
