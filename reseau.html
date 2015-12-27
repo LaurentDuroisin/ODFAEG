@@ -17,59 +17,90 @@
   <div class="wrapper">
   <header>
     <h1 class="title">LastProject : ODFAEG</h1>
-    <div id="container">
     <p class="tagline">Le réseau : </p>
   </header>
-  <body>
+  <div id="container">
+        <p class="tagline">Création d'une application </p>
+        <div id="main" role="main">
+          <div class="download-bar">
+            <div class="inner">
+              <a href="https://github.com/LaurentDuroisin/ODFAEG/tarball/master" class="download-button tar"><span>Download</span></a>
+              <a href="https://github.com/LaurentDuroisin/ODFAEG/zipball/master" class="download-button zip"><span>Download</span></a>
+              <a href="menu">Documentation</a>
+              <a href="http://odfaeg.yourboardpro.com/index.php">Forum</a>
+              <a href="https://github.com/LaurentDuroisin/ODFAEG" class="code">View Odfaeg on GitHub</a>
+              <a href="cv">CV</a>
+              <a href="tfe">Travail de fin d'études</a>
+            </div>
+          <span class="blc"></span><span class="trc"></span>
+        </div>
+          <article class="markdown-body">
     <h1>Côté serveur : </h1>
-    La classe qui permet de gérer un réseau s'appelle odfaeg::network::Network, cette classe permet de démarrer un serveur ou un client,
-    récupérer des informations tel que le ping, ainsi que les horloges clients. 
-    Pour démarrer un serveur qui écoute sur les ports TCP et UDP (odfaeg utilise les deux protocoles) il faut appeler la méthode 
-    statique startSrv de la classe odfaeg::network::Network.
-    Cette méthode attend deux paramètres, le premier est le port TCP sur lequel écouter et le second le port UDP.
-    Cette méthode est à appeler dans la méthode onInit() de votre application.
-    Une fois le serveur lancé, vous pouvez par exemple vérifier si un client à envoyé un message (une requête), pour cela il suffit d'utiliser
-    la méthode hasRequest de la classe odfaeg::network::Network.
-    Pour récupérer la dernière requête reçue par le serveur, il faut utiliser la méthode getLastRequest de la classe odfaeg::network::Network,
-    cette méthode renvoie la dernière requête reçue, et elle attend un paramètre qui est un double pointeur vers un objet de type
-    odfaeg::network::User qui n'est rien d'autre qu'un pointeur vers l'utilsiateur odfaeg qui à envoyé la requête. (Ceci est utile si l'on souhaître 
-    répondre à l'utilisateur)
+    <p>
+    La classe qui permet de gérer un réseau s'appelle odfaeg::network::Network, cette classe permet de démarrer un serveur ou un client,<br/>
+    récupérer des informations tel que le ping, ainsi que les horloges clients.<br/>
+    Pour démarrer un serveur qui écoute sur les ports TCP et UDP (odfaeg utilise les deux protocoles) il faut appeler la méthode <br/>
+    statique startSrv de la classe odfaeg::network::Network.<br/>
+    Cette méthode attend deux paramètres, le premier est le port TCP sur lequel écouter et le second le port UDP.<br/>
+    Cette méthode est à appeler dans la méthode onInit() de votre application.<br/>
+    Une fois le serveur lancé, vous pouvez par exemple vérifier si un client à envoyé un message (une requête), pour cela il suffit d'utiliser<br/>
+    la méthode hasRequest de la classe odfaeg::network::Network.<br/>
+    Pour récupérer la dernière requête reçue par le serveur, il faut utiliser la méthode getLastRequest de la classe odfaeg::network::Network,<br/>
+    cette méthode renvoie la dernière requête reçue, et elle attend un paramètre qui est un double pointeur vers un objet de type<br/>
+    odfaeg::network::User qui n'est rien d'autre qu'un pointeur vers l'utilsiateur odfaeg qui à envoyé la requête.<br/>
+    (Ceci est utile si l'on souhaître répondre à l'utilisateur)<br/>
+    </p>
     <pre><code>
       User* user;
       std::string message = Network::getLastRequest(&user);
     </code></pre>
-    Maintenant si l'on souhaîte répondre à l'utilisateur, il y a deux possibilité, soit on lui envoie un packet en mode TCP,
-    de ce fait il faut utiliser un objet de type odfaeg::network::SymEncPacket (qui ne sont rien d'autre que des packets chiffré avec la librairie
-    openssl).
+    <p>
+    Maintenant si l'on souhaîte répondre à l'utilisateur, il y a deux possibilité, soit on lui envoie un packet en mode TCP,<br/>
+    de ce fait il faut utiliser un objet de type odfaeg::network::SymEncPacket (qui ne sont rien d'autre que des packets chiffré<br/>
+    avec la librairie openssl).<br/>
+    </p>
     <pre>code>
     SymEncPacket packet;
     packet<<"response";
     user->sendTcpPacket(packet);
     </pre></code>
-    Pour envoyer en udp, il faut utiliser un objet de type sf::Packet et la méthode sendUdpPacket.
-    Les packets envoyés en UDP ne sont donc pas chiffrés, n'envoyer donc jamais des données sensibles en udp tel que des mots de passe par exemple,
-    ayez donc bien celà en tête lorsque vous enverrai des données sur le réseau.
-    Si vous souhaîtes envoyer à tout les utilisateurs connecté au serveur, vous devez utiliser les méthodes sendTcpPacket et sendUdpPacket 
-    de la classe odfaeg::network::Network.
+    <p>
+    Pour envoyer en udp, il faut utiliser un objet de type sf::Packet et la méthode sendUdpPacket.<br/>
+    Les packets envoyés en UDP ne sont donc pas chiffrés, n'envoyer donc jamais des données sensibles en udp tel que des mots <br/>
+    de passe par exemple, ayez donc bien celà en tête lorsque vous enverrai des données sur le réseau.<br/>
+    Si vous souhaîtes envoyer à tout les utilisateurs connecté au serveur, vous devez utiliser les méthodes sendTcpPacket <br/>
+    et sendUdpPacket de la classe odfaeg::network::Network.<br/>
+    </p>
     <h1>côté client.</h1>
-    Pour démarer le client vous devez appeler la méthode startCli de la classe odfaeg::core::Network.
+    <p>
+    Pour démarer le client vous devez appeler la méthode startCli de la classe odfaeg::core::Network.<br/>
+    </p>
     <pre><code>
       Network::startCli(10'000, 10'001,sf::IpAddress::LocalHost);
     </code></pre>
-    Les deux premier paramètres sont les ports TCP et UDP du serveur auxquel on envoye les requêtes, et le derniers paramètre est l'adresse IP
-    du serveur vers lequel on souhaite envoyer des requêtes.
-    Pour envoyer une requête au serveur, il faut utiliser les méthodes sendTcpPacket et sendUdpPacket de la classe odfaeg::network::Network.
-    Pour vérifier si le serveur à répondu, vous pouvez utiliser la méthode hasResponse de la classe odfaeg::network::Network.
-    Pour récupérer la dernière réponse reçue, il faut utiliser la méthode getLastResponse() de la classe odfaeg::network::Network.
-    Vous pouvez également récupérer une réponse bien précise du serveur, par exemple pour mettre à jour la position du personnage d'un jeux,
-    vous pouvez utiliser cette méthode.
+    <p>
+    Les deux premier paramètres sont les ports TCP et UDP du serveur auxquel on envoye les requêtes, et le derniers paramètre <br/>
+    est l'adresse IP du serveur vers lequel on souhaite envoyer des requêtes.<br/>
+    Pour envoyer une requête au serveur, il faut utiliser les méthodes sendTcpPacket et sendUdpPacket de la classe <br/>
+    odfaeg::network::Network.<br/>
+    Pour vérifier si le serveur à répondu, vous pouvez utiliser la méthode hasResponse de la classe odfaeg::network::Network.<br/>
+    Pour récupérer la dernière réponse reçue, il faut utiliser la méthode getLastResponse() de la classe odfaeg::network::Network.<br/>
+    Vous pouvez également récupérer une réponse bien précise du serveur, par exemple pour mettre à jour la position du <br/>
+    personnage d'un jeux, vous pouvez utiliser cette méthode.<br/>
+    </p>
     <pre><code>
       if (Network::getResponse("NEWPOS", response)) {
          //Mise à jour de la position du personnage.
       }
     </code></pre>
-    Cette méthode renvoie vrai si une réponse commençant par le tag "NEWPOS" a été reçue et stocke la réponse (sans le tag) dans la variable passer
-    en second paramètre.
-    Voila c'est tout en ce qui concerne ce chapitre, rien de bien compliquer, ODFAEG simplifie beaucoup la vie.
+    <p>
+    Cette méthode renvoie vrai si une réponse commençant par le tag "NEWPOS" a été reçue et stocke la réponse (sans le tag) <br/>
+    dans la variable passer en second paramètre.<br/>
+    Voila c'est tout en ce qui concerne ce chapitre, rien de bien compliquer, ODFAEG simplifie beaucoup la vie.<br/>
+    </p>
+    </article>
+    </div>
+    </div>
+    </div>
   </body>
   </html>
