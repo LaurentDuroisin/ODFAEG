@@ -17,26 +17,48 @@
   <div class="wrapper">
   <header>
     <h1 class="title">LastProject : ODFAEG</h1>
-    <div id="container">
     <p class="tagline">Collisions et particules : </p>
   </header>
+  <div id="container">
+        <p class="tagline">Création d'une application </p>
+        <div id="main" role="main">
+          <div class="download-bar">
+            <div class="inner">
+              <a href="https://github.com/LaurentDuroisin/ODFAEG/tarball/master" class="download-button tar"><span>Download</span></a>
+              <a href="https://github.com/LaurentDuroisin/ODFAEG/zipball/master" class="download-button zip"><span>Download</span></a>
+              <a href="menu">Documentation</a>
+              <a href="http://odfaeg.yourboardpro.com/index.php">Forum</a>
+              <a href="https://github.com/LaurentDuroisin/ODFAEG" class="code">View Odfaeg on GitHub</a>
+              <a href="cv">CV</a>
+              <a href="tfe">Travail de fin d'études</a>
+            </div>
+          <span class="blc"></span><span class="trc"></span>
+        </div>
+          <article class="markdown-body">
   <h1>ODFAEG et les collisions</h1>
-  ODFAEG possède deux méthodes pour gérer les collisions, une moins précise et une plus précise.
-  La moins précise consiste à faire en sorte qu'on ne puisse pas passer sur une case particulière.
+  <p>
+  ODFAEG possède deux méthodes pour gérer les collisions, une moins précise et une plus précise.<br/>
+  La moins précise consiste à faire en sorte qu'on ne puisse pas passer sur une case particulière.<br/>
+  </p>
   <pre><code>
   World::getGridCellAt(math::Vec3f (0, 0, 0)))->setPassable(false);
   </pre></code>
-  On ne pourra donc pas passer sur la case qui se trouve en (0, 0, 0).
-  La méthode plus précise consiste à associé à chaque entité, une hiérarchie de volume englobant.
-  ODFAEG gère 5 types de volumes englobant, tout ces types héritent de la classe odfaeg::physic::BoundingVolume!
-  Voici les différents types de volumes englobants :
-  odfaeg::physic::BoundingBox : une boîte alignée avec les axes, le constructeur prend en paramètre la position en x, en y et en z de 
-  la boîte ainsi que la taille (largeur, hauteur et profondeur) de la boîte.
-  odfaeg::physic::BoundingSpehre : une sphère, le constructeur de cette classe prend en pramètre la position du centre de la sphère, ainsi que son rayon.
-  odfaeg::physic::BoundingEllipsoid : une éllipsoïde, le constructeur prend en paramètre le centre et les 3 rayons de l'éllipsoïde.
-  odfaeg::physic::OrientedBoundingBox : une boîte orientée, le constructeur prend en paramètre les coins de la boîtes. (4 coins pour la 2D, 8 pour la 3D)
-  odfaeg::physic::BoundingPolygon : un polygône quelconque, le constructeur de cette classe prend 3 points en paramètres, ainsi que un bool qui doit valoir true si le polygône est en 2D.
-  Voici comment associer un volume englobant à une entité :
+  <p>
+  On ne pourra donc pas passer sur la case qui se trouve en (0, 0, 0).<br/>
+  La méthode plus précise consiste à associé à chaque entité, une hiérarchie de volume englobant.<br/>
+  ODFAEG gère 5 types de volumes englobant, tout ces types héritent de la classe odfaeg::physic::BoundingVolume!<br/>
+  Voici les différents types de volumes englobants : <br/>
+  odfaeg::physic::BoundingBox : une boîte alignée avec les axes, le constructeur prend en paramètre la position en x, en y et en <br/>
+  z de la boîte ainsi que la taille (largeur, hauteur et profondeur) de la boîte. <br/>
+  odfaeg::physic::BoundingSpehre : une sphère, le constructeur de cette classe prend en pramètre la position du centre de la sphère, <br/>
+  ainsi que son rayon.<br/>
+  odfaeg::physic::BoundingEllipsoid : une éllipsoïde, le constructeur prend en paramètre le centre et les 3 rayons de l'éllipsoïde.<br/>
+  odfaeg::physic::OrientedBoundingBox : une boîte orientée, le constructeur prend en paramètre les coins de la boîtes.<br/>
+  (4 coins pour la 2D, 8 pour la 3D) <br/>
+  odfaeg::physic::BoundingPolygon : un polygône quelconque, le constructeur de cette classe prend 3 points en paramètres,<br/>
+  ainsi que un bool qui doit valoir true si le polygône est en 2D. <br/>
+  Voici comment associer un volume englobant à une entité : <br/>
+  </p>
   <pre><code>
   odfaeg::physic::BoundingVolume* volume = new odfaeg::physic::BoundingBox (0, 0, 0, 100, 100, 100);
   entity->setCollisionVolume(volume);
@@ -54,38 +76,57 @@
     emitter.setParticleTextureIndex(Distributions::uniformui(0, 9));
     emitter.setParticleScale(Distributions::rect(Vec3f(2.1f, 2.1f, 1.f), Vec3f(2.f, 2.f, 1.f)));
   </pre></code>
-  setEmmissionRate est le nombre de particules émises par seconde, ici, on emet 30 particules par secondes.
-  setParticlePosition est le rectangle dans lequel vont apparaître les particules, ici se sera dans le rectangle de centre 50, 90, 0 et de taille 25, 5, 0.
-  setParticleLifetime est la durée de vie des particules, ici elle varie entre 5 et 7 secondes.
-  setParticleVelocity est la force des particules, ici elle est de 0, -10, 0 ça veut dire que les particules vont monter vers le haut!
-  setPatricleRotation est la rotation des particules, ici la rotation des particules est nulle, donc, elle ne varie pas.
-  setParticuleTextureIndex sont les index des différentes textures utilisée pour dessiner les particules, ici il y en a 9.
-  J'utilise ici donc 10 textures pour dessiner les particules, qui seront choisie aléatoirement.
-  setParticleScale : modifie l'échelle des particules, ici l'échelle varie entre 2.1, 2.1, 1 et 2, 2, 1.
-  Ensuite il faut ajouter l'émetteur à un objet de type particule système :
+  <p>
+  setEmmissionRate est le nombre de particules émises par seconde, ici, on emet 30 particules par secondes.<br/>
+  setParticlePosition est le rectangle dans lequel vont apparaître les particules, ici se sera dans le rectangle <br/> 
+  de centre 50, 90, 0 et de taille 25, 5, 0.<br/>
+  setParticleLifetime est la durée de vie des particules, ici elle varie entre 5 et 7 secondes.<br/>
+  setParticleVelocity est la force des particules, ici elle est de 0, -10, 0 ça veut dire que les particules vont <br/> 
+  monter vers le haut!<br/>
+  setPatricleRotation est la rotation des particules, ici la rotation des particules est nulle, donc, elle ne varie pas.<br/>
+  setParticuleTextureIndex sont les index des différentes textures utilisée pour dessiner les particules, ici il y en a 9.<br/>
+  J'utilise ici donc 10 textures pour dessiner les particules, qui seront choisie aléatoirement.<br/>
+  setParticleScale : modifie l'échelle des particules, ici l'échelle varie entre 2.1, 2.1, 1 et 2, 2, 1.<br/>
+  Ensuite il faut ajouter l'émetteur à un objet de type particule système :<br/>
+  </p>
   <pre><code>
   ps.addEmitter(refEmitter(emitter));
   </pre></code>
-  Vous pouvez ensuite dessiner les particules, comme ceci :
+  <p>
+  Vous pouvez ensuite dessiner les particules, comme ceci : <br/>
+  </p>
   <pre><code>
   void MyAppli::onDisplay(RenderWindow* window) {
     window->draw(ps);
   }
   </pre></code>
-  Par défaut les particules se dessinnent sur le sol (sur le plan x, y), ça ne pose pas de problème en vue 2D mais cela pose problème en vue 3D.
-  Heureusement, ODFAEG possède une classe pour orienter les particules face à la caméra, cette classe se nomme odfaeg::physic::billboard.
+  <p>
+  Par défaut les particules se dessinnent sur le sol (sur le plan x, y), ça ne pose pas de problème en vue 2D mais cela <br/> 
+  pose problème en vue 3D.<br/>
+  Heureusement, ODFAEG possède une classe pour orienter les particules face à la caméra, cette classe se nomme <br/> 
+  odfaeg::physic::billboard.<br/>
+  </p>
   <pre><code>
   billboard = new BillBoard(view, ps);
   billboard->setView(view);
   billboard->setCenter(Vec3f(0, 0, z+20));
   </pre></code>
-  Comme pour la fenêtre de rendu et les composants de rendu, il faut mettre à jour la vue pour le billboardà chaque fois qu'on la modifie, setCenter met à jour le centre du billboard.
-  Lors du rendu, il faut appeler la méthode draw sur le billboard et non sur le système de particule :
+  <p>
+  Comme pour la fenêtre de rendu et les composants de rendu, il faut mettre à jour la vue pour le billboardà chaque fois <br/> 
+  qu'on la modifie, setCenter met à jour le centre du billboard.<br/>
+  Lors du rendu, il faut appeler la méthode draw sur le billboard et non sur le système de particule : <br/>
+  </p>
   <pre><code>
   void MyAppli::onDisplay(RenderWindow* window) {
     window->draw(*billboard);
   }
   </pre></code>
-  Tout comme le système de particule de thor, on peut également ajouter des affecteurs.
+  <p>
+  Tout comme le système de particule de thor, on peut également ajouter des affecteurs.<br/>
+  </p>
+  </article>
+  </div>
+  </div>
+  </div>
   </body>
   </html>
