@@ -20,34 +20,59 @@
     <div id="container">
     <p class="tagline">Créer ses propres type d'entité : </p>
   </header>
-  <body>
+   <div id="container">
+        <p class="tagline">Création d'une application </p>
+        <div id="main" role="main">
+          <div class="download-bar">
+            <div class="inner">
+              <a href="https://github.com/LaurentDuroisin/ODFAEG/tarball/master" class="download-button tar"><span>Download</span></a>
+              <a href="https://github.com/LaurentDuroisin/ODFAEG/zipball/master" class="download-button zip"><span>Download</span></a>
+              <a href="menu">Documentation</a>
+              <a href="http://odfaeg.yourboardpro.com/index.php">Forum</a>
+              <a href="https://github.com/LaurentDuroisin/ODFAEG" class="code">View Odfaeg on GitHub</a>
+              <a href="cv">CV</a>
+              <a href="tfe">Travail de fin d'études</a>
+            </div>
+          <span class="blc"></span><span class="trc"></span>
+        </div>
+          <article class="markdown-body">
   <h1>Définition de ses propres types d'entités statiques</h1>
-  Pour créer ses propres types d'entités, il suffit d'hériter de la classe odfaeg::graphic::Entity.
-  Il y a quelque méthodes à redéfinir :
-  opérator==(Entity* other), celui ci compare deux entités, ceci évite d'ajouter deux entités identique dans le gestionnaire d'entités.
-  isAnimated() : méthode qui doit renvoyer true si l'entité est animée, false sinon.
-  isModel() : méthode qui doit renvoyer true si l'entité est un modèle, false si l'entité est un sol.
-  selectable() : méthode qui doit renvoyer true si l'entité peut être sélectionnée, sinon false.
-  isLight() : méthode qui doit renvoyer true si l'entité est une lumière.
-  isSahdow() : méthode qui doit renvoyer true si l'entité est une ombre.
-  isLeaf() : méthode qui doit renvoyer true si l'entité ne possède pas d'entités enfants.
-  
-  Il y a également quelque méthodes que vous pouvez redéfinir vous même, les voici :
-  onDraw(RenderTarget &target, RenderStates states) : méthode à redéfinir pour dessiner l'entités.
-  onMove(math::Vec3f& t) : méthode à redéfinir si l'on doit mettre à jour des données lors du déplacement de l'entité.
-  onScale(math::Vec3f& s) : méthode à redéfinir si l'on doit mettre à jour des données lors du changement d'échelle de l'entité.
-  onRotate(float angle) : méthode à redéfinir si l'on doit mettre à jour des données lors de la rotation d'entité.
+  <p>
+  Pour créer ses propres types d'entités, il suffit d'hériter de la classe odfaeg::graphic::Entity.<br/>
+  Il y a quelque méthodes à redéfinir : <br/>
+  opérator==(Entity* other), celui ci compare deux entités, ceci évite d'ajouter deux entités identique dans le gestionnaire <br/>
+  d'entités.<br/>
+  isAnimated() : méthode qui doit renvoyer true si l'entité est animée, false sinon.<br/>
+  isModel() : méthode qui doit renvoyer true si l'entité est un modèle, false si l'entité est un sol.<br/>
+  selectable() : méthode qui doit renvoyer true si l'entité peut être sélectionnée, sinon false.<br/>
+  isLight() : méthode qui doit renvoyer true si l'entité est une lumière.<br/>
+  isSahdow() : méthode qui doit renvoyer true si l'entité est une ombre.<br/>
+  isLeaf() : méthode qui doit renvoyer true si l'entité ne possède pas d'entités enfants.<br/>
+  </p>
+  <p>
+  Il y a également quelque méthodes que vous pouvez redéfinir vous même, les voici : <br/>
+  onDraw(RenderTarget &target, RenderStates states) : méthode à redéfinir pour dessiner l'entités.<br/>
+  onMove(math::Vec3f& t) : méthode à redéfinir si l'on doit mettre à jour des données lors du déplacement de l'entité.<br/>
+  onScale(math::Vec3f& s) : méthode à redéfinir si l'on doit mettre à jour des données lors du changement d'échelle de l'entité.<br/>
+  onRotate(float angle) : méthode à redéfinir si l'on doit mettre à jour des données lors de la rotation d'entité.<br/>
+  </p>
   
   <h1>Définition de ses propres types d'entités dynamique.</h1>
-  
-  Les méthodes à redéfinir sont différentes que ci-dessus, les entités animées ne peuvent pas être une lumière, ni une ombre, ni une feuille, ni un modèle.
-  Celà n'empêche pas qu'une entités animée puisse contenir des frames de lumières si l'on souhaîte par exemple faire des lumières dynamiques.
-  Une animation n'est rien d'autre qu'une entité spéciale possédant plusieurs entités enfant, qui sont les frames de l'animation.
-  Les seules méthode à redéfinir sont donc selectable.
-  Il y en a une nouvelle : getCurrentFrame(), cette méthode renvoie la frame courante de l'animation.
-  Dans les méthodes pouvant être redéfinies, il y en a également une nouvelle, onFrameChanged(), on peut redéfinir cette méthode si par exemple,
-  on souhaîte effectuer une interpolation linéaire entre deux frames.
-  Comme pour les entités on peut bien sûr redéfinir les méthodes onMove, onScale, etc...
-  
+  <p>
+  Les méthodes à redéfinir sont différentes que ci-dessus, les entités animées ne peuvent pas être une lumière, <br/>
+  ni une ombre, ni une feuille, ni un modèle.<br/>
+  Celà n'empêche pas qu'une entités animée puisse contenir des frames de lumières si l'on souhaîte par exemple faire des <br/>
+  lumières dynamiques.<br/>
+  Une animation n'est rien d'autre qu'une entité spéciale possédant plusieurs entités enfant, qui sont les frames de l'animation.<br/>
+  Les seules méthode à redéfinir sont donc selectable.<br/>
+  Il y en a une nouvelle : getCurrentFrame(), cette méthode renvoie la frame courante de l'animation.<br/>
+  Dans les méthodes pouvant être redéfinies, il y en a également une nouvelle, onFrameChanged(), on peut redéfinir cette méthode si <br/>
+  par exemple, on souhaîte effectuer une interpolation linéaire entre deux frames.<br/>
+  Comme pour les entités on peut bien sûr redéfinir les méthodes onMove, onScale, etc...<br/>
+  </p>
+  </article>
+  </div>
+  </div>
+  </div>
   </body>
   </html>
