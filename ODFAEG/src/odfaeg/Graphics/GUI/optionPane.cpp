@@ -3,8 +3,8 @@ namespace odfaeg {
     namespace graphic {
         namespace gui {
             OptionPane::OptionPane(math::Vec3f position, math::Vec3f size, const Font* font, sf::String t, TYPE type) :
-                LightComponent (position, size, size * 0.5f, false),
-                rw (sf::VideoMode(size.x, size.y), "Option Pane", sf::Style::Default, sf::ContextSettings(0, 0, 4, 3, 0)),
+                rw (sf::VideoMode(size.x, size.y), "Option Pane", sf::Style::Default, sf::ContextSettings(0, 0, 0, 3, 0)),
+                LightComponent (rw, position, size, size * 0.5f),
                 type(type) {
                 rw.getView().move(size.x * 0.5f, size.y * 0.5f, size.z * 0.5f);
                 if (type == CONFIRMATION_DIALOG) {
@@ -64,6 +64,8 @@ namespace odfaeg {
                     if (event.type == sf::Event::Closed) {
                         rw.setVisible(false);
                     }
+                    yes->onUpdate(&getWindow(), event);
+                    no->onUpdate(&getWindow(), event);
                     getListener().pushEvent(event);
                 }
             }

@@ -55,7 +55,7 @@ namespace odfaeg {
 
 
             ////////////////////////////////////////////////////////////
-            bool RenderTextureImplDefault::create(unsigned int width, unsigned int height, sf::ContextSettings settings, bool depthAttachement, std::vector<unsigned int>, unsigned int)
+            bool RenderTextureImplDefault::create(unsigned int width, unsigned int height, sf::ContextSettings settings, unsigned int)
             {
                 // Store the dimensions
                 m_width = width;

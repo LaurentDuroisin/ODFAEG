@@ -315,6 +315,8 @@ transformable.h
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/transformable.h
 ../Core/listener.h
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/listener.h
+renderWindow.h
+/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/renderWindow.h
 
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/drawable.h
 renderStates.h
@@ -377,10 +379,6 @@ renderTexture.h
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/renderTexture.h
 tile.h
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/tile.h
-thread
--
-condition_variable
--
 entityManager.h
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/entityManager.h
 heavyComponent.h

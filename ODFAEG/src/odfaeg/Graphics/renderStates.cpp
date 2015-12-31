@@ -9,9 +9,7 @@ namespace odfaeg {
         blendMode(BlendAlpha),
         transform(),
         texture  (nullptr),
-        shader   (nullptr),
-        vertexBufferId(0),
-        normalBufferId(0)
+        shader   (nullptr)
         {
         }
 
@@ -22,9 +20,7 @@ namespace odfaeg {
         blendMode(BlendAlpha),
         transform(theTransform),
         texture  (nullptr),
-        shader   (nullptr),
-        vertexBufferId(0),
-        normalBufferId(0)
+        shader   (nullptr)
         {
         }
 
@@ -34,9 +30,7 @@ namespace odfaeg {
         blendMode(theBlendMode),
         transform(),
         texture  (nullptr),
-        shader   (nullptr),
-        vertexBufferId(0),
-        normalBufferId(0)
+        shader   (nullptr)
         {
         }
 
@@ -46,9 +40,7 @@ namespace odfaeg {
         blendMode(BlendAlpha),
         transform(),
         texture  (theTexture),
-        shader   (nullptr),
-        vertexBufferId(0),
-        normalBufferId(0)
+        shader   (nullptr)
         {
         }
 
@@ -58,9 +50,7 @@ namespace odfaeg {
         blendMode(BlendAlpha),
         transform(),
         texture  (nullptr),
-        shader   (theShader),
-        vertexBufferId(0),
-        normalBufferId(0)
+        shader   (theShader)
         {
         }
 
@@ -71,9 +61,7 @@ namespace odfaeg {
         blendMode(theBlendMode),
         transform(theTransform),
         texture  (theTexture),
-        shader   (theShader),
-        vertexBufferId(0),
-        normalBufferId(0)
+        shader   (theShader)
         {
         }
     }

@@ -510,12 +510,6 @@ namespace odfaeg {
             ///
             ////////////////////////////////////////////////////////////
             static bool isAvailable();
-            static void setVersionMajor(unsigned int majorVersion);
-            static void setVersionMinor(unsigned int minorVersion);
-            static unsigned int getShadingLanguageVersionMajor();
-            static unsigned int getShadingLanguageVersionMinor();
-            static void setUsingOpenCL(bool useOpenCL);
-            static bool isUsingOpenCL();
         private :
 
             ////////////////////////////////////////////////////////////
@@ -566,9 +560,6 @@ namespace odfaeg {
             TextureTable m_textures;           ///< Texture variables in the shader, mapped to their location
             ParamTable   m_params;             ///< Parameters location cache
             VertexAttribTable m_vertexAttribs; ///< Vertex attributes location cache.
-            static unsigned int shading_language_version_major;
-            static unsigned int shading_language_version_minor;
-            static bool useOpenCL;
         };
     }
 

@@ -3,8 +3,6 @@
 #include "renderWindow.h"
 #include "renderTexture.h"
 #include "tile.h"
-#include <thread>
-#include <condition_variable>
 #include "entityManager.h"
 #include "heavyComponent.h"
 /**
@@ -29,7 +27,7 @@ namespace odfaeg {
             * \param RenderWindow& window : the render window.
             * \param int layer : the layer's position.
             */
-            OITRenderComponent (RenderWindow& window, int layer, std::string expression, bool useThread=false);
+            OITRenderComponent (RenderWindow& window, int layer, std::string expression);
             /**
             * \fn bool loadEntitiesOnComponent(std::vector<Entity*> visibleEntities)
             * \brief load the given entities onto the component.
@@ -71,11 +69,6 @@ namespace odfaeg {
             */
             void draw(RenderTarget& target, RenderStates states);
             std::string getExpression();
-            /**
-            * \fn ~OITRenderComponent();
-            * \brief destructor.
-            */
-            ~OITRenderComponent();
             /**
             * \fn View& getView()
             * \brief return the view.
@@ -135,22 +128,21 @@ namespace odfaeg {
             std::vector<Instance*> m_instances; /**> Instances to draw. (Instanced rendering.) */
             std::vector<std::unique_ptr<Face>> additionalFaces;
             std::vector<Entity*> visibleEntities; /**> Entities loaded*/
-            RenderTexture *frameBuffer; /**> the frame buffer.*/
-            RenderTexture *depthBuffer; /**> the depth buffer.*/
-            RenderTexture *specularTexture; /**> specular components.*/
-            RenderTexture *bumpTexture;
-            RenderTexture *refractionTexture;
-            RenderTexture *normalMap;
-            Shader* depthBufferGenerator; /**> the shader to generate the depth buffer.*/
-            Shader* frameBufferGenerator; /**> the shader to generate the frame buffer.*/
-            Shader* specularTextureGenerator;
-            Shader* bumpTextureGenerator;
-            Shader* refractionTextureGenerator;
-            Shader* simpleShader;
+            std::unique_ptr<RenderTexture> frameBuffer; /**> the frame buffer.*/
+            std::unique_ptr<RenderTexture>  depthBuffer; /**> the depth buffer.*/
+            std::unique_ptr<RenderTexture>  specularTexture; /**> specular components.*/
+            std::unique_ptr<RenderTexture>  bumpTexture;
+            std::unique_ptr<RenderTexture>  refractionTexture;
+            std::unique_ptr<RenderTexture>  normalMap;
+            std::unique_ptr<Shader> depthBufferGenerator; /**> the shader to generate the depth buffer.*/
+            std::unique_ptr<Shader>  frameBufferGenerator; /**> the shader to generate the frame buffer.*/
+            std::unique_ptr<Shader>  specularTextureGenerator;
+            std::unique_ptr<Shader>  bumpTextureGenerator;
+            std::unique_ptr<Shader>  refractionTextureGenerator;
+            std::unique_ptr<Shader>  simpleShader;
             RenderStates currentStates; /**> the current render states.*/
             View view; /**> the view of the component.*/
-            Tile* frameBufferTile, *depthBufferTile; /**> the frame, depth and normal buffer.*/
-            unsigned int mvpBuffer; /** id of the buffer which store the model view projection matrix.*/
+            std::unique_ptr<Tile>  frameBufferTile, depthBufferTile; /**> the frame, depth and normal buffer.*/
             std::string expression;
             bool update;
         };

@@ -252,54 +252,6 @@ odfaeg-graphics/fast:
 	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/ponctualLight.cpp.s
 .PHONY : 2D/ponctualLight.cpp.s
 
-2D/shadowTile.o: 2D/shadowTile.cpp.o
-.PHONY : 2D/shadowTile.o
-
-# target to build an object file
-2D/shadowTile.cpp.o:
-	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/shadowTile.cpp.o
-.PHONY : 2D/shadowTile.cpp.o
-
-2D/shadowTile.i: 2D/shadowTile.cpp.i
-.PHONY : 2D/shadowTile.i
-
-# target to preprocess a source file
-2D/shadowTile.cpp.i:
-	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/shadowTile.cpp.i
-.PHONY : 2D/shadowTile.cpp.i
-
-2D/shadowTile.s: 2D/shadowTile.cpp.s
-.PHONY : 2D/shadowTile.s
-
-# target to generate assembly for a file
-2D/shadowTile.cpp.s:
-	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/shadowTile.cpp.s
-.PHONY : 2D/shadowTile.cpp.s
-
-2D/shadowWall.o: 2D/shadowWall.cpp.o
-.PHONY : 2D/shadowWall.o
-
-# target to build an object file
-2D/shadowWall.cpp.o:
-	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/shadowWall.cpp.o
-.PHONY : 2D/shadowWall.cpp.o
-
-2D/shadowWall.i: 2D/shadowWall.cpp.i
-.PHONY : 2D/shadowWall.i
-
-# target to preprocess a source file
-2D/shadowWall.cpp.i:
-	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/shadowWall.cpp.i
-.PHONY : 2D/shadowWall.cpp.i
-
-2D/shadowWall.s: 2D/shadowWall.cpp.s
-.PHONY : 2D/shadowWall.s
-
-# target to generate assembly for a file
-2D/shadowWall.cpp.s:
-	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/shadowWall.cpp.s
-.PHONY : 2D/shadowWall.cpp.s
-
 2D/wall.o: 2D/wall.cpp.o
 .PHONY : 2D/wall.o
 
@@ -371,6 +323,54 @@ GUI/button.s: GUI/button.cpp.s
 GUI/button.cpp.s:
 	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/button.cpp.s
 .PHONY : GUI/button.cpp.s
+
+GUI/filedialog.o: GUI/filedialog.cpp.o
+.PHONY : GUI/filedialog.o
+
+# target to build an object file
+GUI/filedialog.cpp.o:
+	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.o
+.PHONY : GUI/filedialog.cpp.o
+
+GUI/filedialog.i: GUI/filedialog.cpp.i
+.PHONY : GUI/filedialog.i
+
+# target to preprocess a source file
+GUI/filedialog.cpp.i:
+	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.i
+.PHONY : GUI/filedialog.cpp.i
+
+GUI/filedialog.s: GUI/filedialog.cpp.s
+.PHONY : GUI/filedialog.s
+
+# target to generate assembly for a file
+GUI/filedialog.cpp.s:
+	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.s
+.PHONY : GUI/filedialog.cpp.s
+
+GUI/label.o: GUI/label.cpp.o
+.PHONY : GUI/label.o
+
+# target to build an object file
+GUI/label.cpp.o:
+	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.o
+.PHONY : GUI/label.cpp.o
+
+GUI/label.i: GUI/label.cpp.i
+.PHONY : GUI/label.i
+
+# target to preprocess a source file
+GUI/label.cpp.i:
+	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.i
+.PHONY : GUI/label.cpp.i
+
+GUI/label.s: GUI/label.cpp.s
+.PHONY : GUI/label.s
+
+# target to generate assembly for a file
+GUI/label.cpp.s:
+	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.s
+.PHONY : GUI/label.cpp.s
 
 GUI/menu.o: GUI/menu.cpp.o
 .PHONY : GUI/menu.o
@@ -467,6 +467,30 @@ GUI/optionPane.s: GUI/optionPane.cpp.s
 GUI/optionPane.cpp.s:
 	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/optionPane.cpp.s
 .PHONY : GUI/optionPane.cpp.s
+
+GUI/panel.o: GUI/panel.cpp.o
+.PHONY : GUI/panel.o
+
+# target to build an object file
+GUI/panel.cpp.o:
+	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.o
+.PHONY : GUI/panel.cpp.o
+
+GUI/panel.i: GUI/panel.cpp.i
+.PHONY : GUI/panel.i
+
+# target to preprocess a source file
+GUI/panel.cpp.i:
+	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.i
+.PHONY : GUI/panel.cpp.i
+
+GUI/panel.s: GUI/panel.cpp.s
+.PHONY : GUI/panel.s
+
+# target to generate assembly for a file
+GUI/panel.cpp.s:
+	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.s
+.PHONY : GUI/panel.cpp.s
 
 GUI/textArea.o: GUI/textArea.cpp.o
 .PHONY : GUI/textArea.o
@@ -708,30 +732,6 @@ convexShape.cpp.s:
 	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/convexShape.cpp.s
 .PHONY : convexShape.cpp.s
 
-cpuRenderComponent.o: cpuRenderComponent.cpp.o
-.PHONY : cpuRenderComponent.o
-
-# target to build an object file
-cpuRenderComponent.cpp.o:
-	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/cpuRenderComponent.cpp.o
-.PHONY : cpuRenderComponent.cpp.o
-
-cpuRenderComponent.i: cpuRenderComponent.cpp.i
-.PHONY : cpuRenderComponent.i
-
-# target to preprocess a source file
-cpuRenderComponent.cpp.i:
-	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/cpuRenderComponent.cpp.i
-.PHONY : cpuRenderComponent.cpp.i
-
-cpuRenderComponent.s: cpuRenderComponent.cpp.s
-.PHONY : cpuRenderComponent.s
-
-# target to generate assembly for a file
-cpuRenderComponent.cpp.s:
-	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/cpuRenderComponent.cpp.s
-.PHONY : cpuRenderComponent.cpp.s
-
 entity.o: entity.cpp.o
 .PHONY : entity.o
 
@@ -755,30 +755,6 @@ entity.s: entity.cpp.s
 entity.cpp.s:
 	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/entity.cpp.s
 .PHONY : entity.cpp.s
-
-fastRenderComponent.o: fastRenderComponent.cpp.o
-.PHONY : fastRenderComponent.o
-
-# target to build an object file
-fastRenderComponent.cpp.o:
-	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/fastRenderComponent.cpp.o
-.PHONY : fastRenderComponent.cpp.o
-
-fastRenderComponent.i: fastRenderComponent.cpp.i
-.PHONY : fastRenderComponent.i
-
-# target to preprocess a source file
-fastRenderComponent.cpp.i:
-	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/fastRenderComponent.cpp.i
-.PHONY : fastRenderComponent.cpp.i
-
-fastRenderComponent.s: fastRenderComponent.cpp.s
-.PHONY : fastRenderComponent.s
-
-# target to generate assembly for a file
-fastRenderComponent.cpp.s:
-	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/fastRenderComponent.cpp.s
-.PHONY : fastRenderComponent.cpp.s
 
 font.o: font.cpp.o
 .PHONY : font.o
@@ -1212,30 +1188,6 @@ shader.cpp.s:
 	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/shader.cpp.s
 .PHONY : shader.cpp.s
 
-shadow.o: shadow.cpp.o
-.PHONY : shadow.o
-
-# target to build an object file
-shadow.cpp.o:
-	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/shadow.cpp.o
-.PHONY : shadow.cpp.o
-
-shadow.i: shadow.cpp.i
-.PHONY : shadow.i
-
-# target to preprocess a source file
-shadow.cpp.i:
-	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/shadow.cpp.i
-.PHONY : shadow.cpp.i
-
-shadow.s: shadow.cpp.s
-.PHONY : shadow.s
-
-# target to generate assembly for a file
-shadow.cpp.s:
-	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/shadow.cpp.s
-.PHONY : shadow.cpp.s
-
 shape.o: shape.cpp.o
 .PHONY : shape.o
 
@@ -1621,12 +1573,6 @@ help:
 	@echo "... 2D/ponctualLight.o"
 	@echo "... 2D/ponctualLight.i"
 	@echo "... 2D/ponctualLight.s"
-	@echo "... 2D/shadowTile.o"
-	@echo "... 2D/shadowTile.i"
-	@echo "... 2D/shadowTile.s"
-	@echo "... 2D/shadowWall.o"
-	@echo "... 2D/shadowWall.i"
-	@echo "... 2D/shadowWall.s"
 	@echo "... 2D/wall.o"
 	@echo "... 2D/wall.i"
 	@echo "... 2D/wall.s"
@@ -1636,6 +1582,12 @@ help:
 	@echo "... GUI/button.o"
 	@echo "... GUI/button.i"
 	@echo "... GUI/button.s"
+	@echo "... GUI/filedialog.o"
+	@echo "... GUI/filedialog.i"
+	@echo "... GUI/filedialog.s"
+	@echo "... GUI/label.o"
+	@echo "... GUI/label.i"
+	@echo "... GUI/label.s"
 	@echo "... GUI/menu.o"
 	@echo "... GUI/menu.i"
 	@echo "... GUI/menu.s"
@@ -1648,6 +1600,9 @@ help:
 	@echo "... GUI/optionPane.o"
 	@echo "... GUI/optionPane.i"
 	@echo "... GUI/optionPane.s"
+	@echo "... GUI/panel.o"
+	@echo "... GUI/panel.i"
+	@echo "... GUI/panel.s"
 	@echo "... GUI/textArea.o"
 	@echo "... GUI/textArea.i"
 	@echo "... GUI/textArea.s"
@@ -1678,15 +1633,9 @@ help:
 	@echo "... convexShape.o"
 	@echo "... convexShape.i"
 	@echo "... convexShape.s"
-	@echo "... cpuRenderComponent.o"
-	@echo "... cpuRenderComponent.i"
-	@echo "... cpuRenderComponent.s"
 	@echo "... entity.o"
 	@echo "... entity.i"
 	@echo "... entity.s"
-	@echo "... fastRenderComponent.o"
-	@echo "... fastRenderComponent.i"
-	@echo "... fastRenderComponent.s"
 	@echo "... font.o"
 	@echo "... font.i"
 	@echo "... font.s"
@@ -1741,9 +1690,6 @@ help:
 	@echo "... shader.o"
 	@echo "... shader.i"
 	@echo "... shader.s"
-	@echo "... shadow.o"
-	@echo "... shadow.i"
-	@echo "... shadow.s"
 	@echo "... shape.o"
 	@echo "... shape.i"
 	@echo "... shape.s"

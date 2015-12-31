@@ -38,11 +38,6 @@ class ODFAEG_GRAPHICS_API Map : public EntityManager {
         *   \param cellDepth : the depth of the cells.
         */
         Map(RenderComponentManager* frcm, std::string name, int cellWidth, int cellHeight);
-        /**
-        *   \fn ~Map();
-        *   \brief destructor.
-        */
-        ~Map();
         GridMap *gridMap; /**> The grid used to store the entities.*/
         /**
         * \fn int getId()
@@ -233,11 +228,6 @@ class ODFAEG_GRAPHICS_API Map : public EntityManager {
         bool collide(Entity *entity);
         bool collide(Entity* entity, math::Vec3f position);
         bool collide(Entity* entity, math::Ray ray);
-        /**
-        * \fn computeIntersectionsWithWalls()
-        * \brief check the intersections between the light and the walls.
-        */
-        void computeIntersectionsWithWalls();
         /** \fn generate_map(std::vector<Tile*> tGround, std::vector<Tile*> walls, BoundingBox &box)
         *   \brief generate a map in the given zone, which the given tiles for the ground and the given tiles for the walls.
         *   \param std::vector<Tile*> tGround : the tiles used for the ground.
@@ -353,11 +343,11 @@ class ODFAEG_GRAPHICS_API Map : public EntityManager {
         std::vector<Entity*> visibleParentEntities; /**> The parent entities of the visible entities.*/
         std::vector<Entity*> lights, shadows; /**> The lights and the shadows.*/
         RenderComponentManager* frcm; /**> The component manager.*/
-        RenderTexture *shadowMap, *lightMap, *stencilBuffer, *normalMap, *backDepthBuffer, *refractionMap; /**> The shadow map, the light map and the normal map.*/
+        std::unique_ptr<RenderTexture> shadowMap, lightMap, stencilBuffer, normalMap, backDepthBuffer, refractionMap; /**> The shadow map, the light map and the normal map.*/
         Texture textShadow, textLight; /**> The texture of the shadows and the lights.*/
-        Tile *shadowTile, *lightTile, *stencilBufferTile, *normalMapTile, *refractionTile; /**> The shadow, light and normal map tiles.*/
-        Shader* perPixLightingShader, *perPixShadowShader, *perPixShadowShader2, *buildShadowMapShader,
-        *buildNormalMapShader, *depthBufferGenShader, *buildRefractionMapShader; /**> The shaders used to generate the lightmap and the final normal map.*/
+        std::unique_ptr<Tile> shadowTile, lightTile, stencilBufferTile, normalMapTile, refractionTile; /**> The shadow, light and normal map tiles.*/
+        std::unique_ptr<Shader> perPixLightingShader, perPixShadowShader, perPixShadowShader2, buildShadowMapShader,
+        buildNormalMapShader, depthBufferGenShader, buildRefractionMapShader; /**> The shaders used to generate the lightmap and the final normal map.*/
         bool updateComponents;
         float diagSize;
 };

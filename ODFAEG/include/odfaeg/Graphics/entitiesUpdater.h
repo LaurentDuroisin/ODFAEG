@@ -20,7 +20,7 @@ namespace odfaeg {
         */
         class ODFAEG_CORE_API EntitiesUpdater : public core::EntitySystem {
         public :
-            EntitiesUpdater(bool usingThread) : EntitySystem(usingThread) {}
+            EntitiesUpdater() : EntitySystem() {}
             /**
             * \fn void onUpdate ()
             * \brief update all the entities which are in the current view.

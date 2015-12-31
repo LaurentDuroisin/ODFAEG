@@ -3,8 +3,8 @@ namespace odfaeg {
     namespace graphic {
         namespace gui {
             Menu::Menu(RenderWindow& rw, const Font* font, std::string t) :
-                LightComponent(math::Vec3f(0, 0, 0), math::Vec3f(t.length() * 10, 20, 0), math::Vec3f(0, 0, 0), false),
-                window (rw) {
+                LightComponent(rw, math::Vec3f(0, 0, 0), math::Vec3f(t.length() * 10, 20, 0), math::Vec3f(0, 0, 0))
+{
                 text.setString(sf::String(t.c_str()));
                 text.setCharacterSize(15);
                 text.setFont(*font);
@@ -58,7 +58,7 @@ namespace odfaeg {
             }
             bool Menu::isMouseOnMenu() {
                 physic::BoundingBox bb = getGlobalBounds();
-                math::Vec2f mousePos = math::Vec2f(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
+                math::Vec2f mousePos = math::Vec2f(sf::Mouse::getPosition(getWindow()).x, sf::Mouse::getPosition(getWindow()).y);
                 if (bb.isPointInside(mousePos)) {
                     return true;
                 }

@@ -86,9 +86,7 @@ set(SRC_GRAPHICS
 	${INCROOT}/light.h	
 	${INCROOT}/anim.h
 	${INCROOT}/gridMap.h
-	${SRCROOT}/gridMap.cpp
-	${INCROOT}/shadow.h
-	${SRCROOT}/shadow.cpp
+	${SRCROOT}/gridMap.cpp	
 	${INCROOT}/map.h
 	${SRCROOT}/map.cpp
 	${INCROOT}/tGround.h
@@ -96,11 +94,7 @@ set(SRC_GRAPHICS
 	${INCROOT}/billBoard.h
 	${SRCROOT}/billBoard.cpp	
 	${INCROOT}/sdlRenderWindow.hpp
-	${SRCROOT}/sdlRenderWindow.cpp
-	${INCROOT}/cpuRenderComponent.hpp
-	${SRCROOT}/cpuRenderComponent.cpp
-	${INCROOT}/fastRenderComponent.hpp
-	${SRCROOT}/fastRenderComponent.cpp
+	${SRCROOT}/sdlRenderWindow.cpp	
 	${INCROOT}/world.h
 	${SRCROOT}/world.cpp)
 source_group ("graphics" FILES ${SRC_GRAPHICS})
@@ -116,11 +110,7 @@ set(SRC_GRAPHICS_2D
 	${INCROOT}/2D/directionnalLight.h
 	${SRCROOT}/2D/directionnalLight.cpp
 	${INCROOT}/2D/decor.h
-	${SRCROOT}/2D/decor.cpp		
-	${INCROOT}/2D/shadowTile.h
-	${SRCROOT}/2D/shadowTile.cpp
-	${INCROOT}/2D/shadowWall.h
-	${SRCROOT}/2D/shadowWall.cpp)
+	${SRCROOT}/2D/decor.cpp)
 	
 source_group ("2d_graphics" FILES ${SRC_GRAPHICS_2D})
 
@@ -130,13 +120,22 @@ set(SRC_GRAPHICS_3D
 	
 source_group("3d_graphics" FILES ${SRC_GRAPHICS_3D})
 set(SRC_GUI
-    ${INCROOT}/GUI/button.hpp
-    ${SRCROOT}/GUI/button.cpp
-    ${INCROOT}/GUI/textArea.hpp
-    ${SRCROOT}/GUI/textArea.cpp
-    ${INCROOT}/GUI/optionPane.hpp
-    ${SRCROOT}/GUI/optionPane.cpp)
-
+	${INCROOT}/GUI/button.hpp
+	${SRCROOT}/GUI/button.cpp
+	${INCROOT}/GUI/textArea.hpp
+	${SRCROOT}/GUI/textArea.cpp
+	${INCROOT}/GUI/optionPane.hpp
+	${SRCROOT}/GUI/optionPane.cpp
+	${INCROOT}/GUI/menubar.hpp
+	${SRCROOT}/GUI/menubar.cpp
+	${INCROOT}/GUI/menu.hpp
+	${SRCROOT}/GUI/menu.cpp
+	${INCROOT}/GUI/menuItem.hpp
+	${SRCROOT}/GUI/menuItem.cpp
+	${INCROOT}/GUI/filedialog.hpp
+	${SRCROOT}/GUI/filedialog.cpp
+	${INCROOT}/GUI/label.hpp
+	${SRCROOT}/GUI/label.cpp)
 source_group ("gui" FILES ${SRC_GUI})
 find_package (SFML 2 REQUIRED)
 find_package(Freetype REQUIRED)

@@ -10,27 +10,13 @@ namespace odfaeg {
         RenderWindow::RenderWindow()
         {
             // Nothing to do
-            vertexArrayId = 0;
         }
 
         ////////////////////////////////////////////////////////////
-        RenderWindow::RenderWindow(VideoMode mode, const String& title, Uint32 style, const ContextSettings& settings, bool useOpenCL, bool useDepthDepth)
+        RenderWindow::RenderWindow(VideoMode mode, const String& title, Uint32 style, const ContextSettings& settings)
         {
             // Don't call the base class constructor because it contains virtual function calls
-            this->useDepthTest = useDepthDepth;
             create(mode, title, style, settings);
-            RenderTarget::setMajorVersion(settings.majorVersion);
-            RenderTarget::setMinorVersion(settings.minorVersion);
-            const GLubyte* glslversion = glGetString(GL_SHADING_LANGUAGE_VERSION);
-            if(glslversion) {
-                Shader::setVersionMajor(glslversion[0] - '0');
-                Shader::setVersionMinor(glslversion[1] - '0');
-            } else {
-                Shader::setVersionMajor(1);
-                Shader::setVersionMinor(3);
-            }
-            (useOpenCL) ? Shader::setUsingOpenCL(true) : Shader::setUsingOpenCL(false);
-            vertexArrayId = 0;
         }
 
 
@@ -41,27 +27,13 @@ namespace odfaeg {
         {
             // Don't call the base class constructor because it contains virtual function calls
             create(handle, settings);
-            RenderTarget::setMajorVersion(settings.majorVersion);
-            RenderTarget::setMinorVersion(settings.minorVersion);
-            const GLubyte* glslversion = glGetString(GL_SHADING_LANGUAGE_VERSION);
-            if(glslversion) {
-                Shader::setVersionMajor(glslversion[0] - '0');
-                Shader::setVersionMinor(glslversion[1] - '0');
-            } else {
-                Shader::setVersionMajor(2);
-                Shader::setVersionMinor(0);
-            }
-            vertexArrayId = 0;
         }
 
 
         ////////////////////////////////////////////////////////////
         RenderWindow::~RenderWindow()
         {
-            if (vertexArrayId != 0) {
-                GLuint vao = reinterpret_cast<unsigned int>(vertexArrayId);
-                glCheck(glDeleteVertexArrays(1, &vao));
-            }
+
         }
 
 
@@ -101,30 +73,10 @@ namespace odfaeg {
 
             return image;
         }
-        bool RenderWindow::isUsingDepthTest() const {
-            return useDepthTest;
-        }
-
         ////////////////////////////////////////////////////////////
         void RenderWindow::onCreate()
         {
             priv::ensureGlewInit();
-            /*glewExperimental = GL_TRUE;
-            GLenum status = glewInit();
-            if (status == GLEW_OK)
-            {
-                std::cout<<"Glew initialized!"<<std::endl;
-            }
-            else
-            {
-                err() << "Failed to initialize GLEW, " << glewGetErrorString(status) << std::endl;
-            }*/
-            if (getSettings().majorVersion >= 3 && getSettings().minorVersion >= 3 && vertexArrayId == 0) {
-                GLuint vao;
-                glCheck(glGenVertexArrays(1, &vao));
-                vertexArrayId = reinterpret_cast<unsigned int>(vao);
-                glCheck(glBindVertexArray(vertexArrayId));
-            }
             // Just initialize the render target part
             RenderTarget::initialize();
         }

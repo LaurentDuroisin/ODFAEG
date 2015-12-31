@@ -319,6 +319,8 @@ transformable.h
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/transformable.h
 ../Core/listener.h
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/listener.h
+renderWindow.h
+/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/renderWindow.h
 
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/drawable.h
 renderStates.h
@@ -381,10 +383,6 @@ renderTexture.h
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/renderTexture.h
 tile.h
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/tile.h
-thread
--
-condition_variable
--
 entityManager.h
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/entityManager.h
 heavyComponent.h
@@ -918,23 +916,7 @@ vector
 
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/config.hpp
 
-/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Core/actions.cpp
-../../../include/odfaeg/Core/action.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/action.h
-../../../include/odfaeg/Core/command.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/command.h
-SFML/Window.hpp
--
-chrono
--
-thread
--
-
 /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Core/application.cpp
 ../../../include/odfaeg/Core/application.h
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/application.h
-
-/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Core/command.cpp
-../../../include/odfaeg/Core/command.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/command.h
 

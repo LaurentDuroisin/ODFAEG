@@ -144,7 +144,6 @@ namespace odfaeg {
             }
             void Face::append(Vertex vertex, unsigned int indice) {
                 m_vertices.append(vertex);
-                m_vertices.addIndex(indice);
             }
             Material& Face::getMaterial() {
                 return m_material;
@@ -159,33 +158,12 @@ namespace odfaeg {
             bool Face::useSamePrimType (Face &other) {
                 return m_vertices.getPrimitiveType() == other.m_vertices.getPrimitiveType();
             }
-            Instance::Instance (Material& material, sf::PrimitiveType pType) : material(material), m_vertices(pType) {
+            Instance::Instance (Material& material, sf::PrimitiveType pType) : material(material) {
                 primType = pType;
                 numInstances = 0;
             }
-            void Instance::addVertexArray(VertexArray *va, TransformMatrix& tm, unsigned int baseVertex, unsigned int baseIndex) {
-                if (Shader::getShadingLanguageVersionMajor() >= 4 && Shader::getShadingLanguageVersionMinor() >= 2
-                    || Shader::isUsingOpenCL()) {
-                    for (unsigned int i = 0; i < va->getVertexCount(); i++) {
-                        m_vertices.append((*va)[i]);
-                    }
-                    for (unsigned int i = 0; i < va->getIndexes().size(); i++) {
-                        m_vertices.addIndex(va->getIndexes()[i]);
-                    }
-                    unsigned int numIndexes = va->getIndexes().size();
-                    m_vertices.addInstancedRenderingInfos(numIndexes,baseVertex,baseIndex);
-                    numInstances++;
-                } else {
-                    unsigned int numIndexes = m_vertices.getIndexes().size();
-                    VertexArray vat = *va;
-                    vat.transform(tm);
-                    for (unsigned int i = 0; i < vat.getVertexCount(); i++) {
-                        m_vertices.append(vat[i]);
-                    }
-                    for (unsigned int i = 0; i < vat.getIndexes().size(); i++) {
-                        m_vertices.addIndex(numIndexes + vat.getIndexes()[i]);
-                    }
-                }
+            void Instance::addVertexArray(VertexArray *va, TransformMatrix& tm) {
+
                 m_transforms.push_back(std::ref(tm));
                 m_vertexArrays.push_back(va);
             }
@@ -194,14 +172,10 @@ namespace odfaeg {
             }
             void Instance::clear() {
                 m_transforms.clear();
-                m_vertices.clear();
                 m_vertexArrays.clear();
             }
             std::vector<std::reference_wrapper<TransformMatrix>> Instance::getTransforms() {
                  return m_transforms;
-            }
-            VertexArray& Instance::getVertexArray() {
-                return m_vertices;
             }
             Material& Instance::getMaterial() {
                 return material;
@@ -213,7 +187,6 @@ namespace odfaeg {
                 return numInstances;
             }
             Instance::~Instance() {
-                m_vertices.clear();
                 m_transforms.clear();
                 m_vertexArrays.clear();
             }
@@ -228,21 +201,23 @@ namespace odfaeg {
                     if (instances[i]->getMaterial() == face->getMaterial()
                         && instances[i]->getPrimitiveType() == face->getVertexArray().getPrimitiveType()) {
                             added = true;
-                            unsigned int baseVertex = instances[i]->getVertexArray().getVertexCount();
-                            unsigned int baseIndex = instances[i]->getVertexArray().getIndexes().size();
-                            instances[i]->addVertexArray(&face->getVertexArray(),face->getTransformMatrix(), baseVertex, baseIndex);
+                            instances[i]->addVertexArray(&face->getVertexArray(),face->getTransformMatrix());
                     }
                 }
                 if (!added) {
                     Instance* instance = new Instance(face->getMaterial(), face->getVertexArray().getPrimitiveType());
-                    instance->addVertexArray(&face->getVertexArray(),face->getTransformMatrix(), 0, 0);
-                    instances.push_back(instance);
+                    instance->addVertexArray(&face->getVertexArray(),face->getTransformMatrix());
+                    std::unique_ptr<Instance> ptr;
+                    ptr.reset(instance);
+                    instances.push_back(std::move(ptr));
                 }
-                numIndexes += face->getVertexArray().getIndexes().size();
-                numVertices += face->getVertexArray().getVertexCount();
             }
             std::vector<Instance*> Batcher::getInstances() {
-                return instances;
+                std::vector<Instance*> insts;
+                for (unsigned int i = 0; i < instances.size(); i++) {
+                    insts.push_back(instances[i].get());
+                }
+                return insts;
             }
             unsigned int Batcher::getNumIndexes() {
                 return numIndexes;
@@ -251,11 +226,6 @@ namespace odfaeg {
                 return numVertices;
             }
             void Batcher::clear() {
-                numVertices = 0;
-                numIndexes = 0;
-                for (unsigned int i = 0; i < instances.size(); i++) {
-                    delete instances[i];
-                }
                 instances.clear();
             }
     }

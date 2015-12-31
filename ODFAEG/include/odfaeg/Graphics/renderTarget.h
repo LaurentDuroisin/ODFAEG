@@ -240,9 +240,7 @@ namespace odfaeg {
             ///
             ////////////////////////////////////////////////////////////
             void draw(const Vertex* vertices, unsigned int vertexCount, sf::PrimitiveType type,
-                      RenderStates states = RenderStates::Default, const sf::Vector3f* normals = nullptr, unsigned int normalCount = 0,
-                      const unsigned int* indexes = nullptr, unsigned int indexesCount = 0, const unsigned int* numIndexes = nullptr, unsigned int numIndexesCount = 0,
-                      const unsigned int* baseVertices = nullptr, unsigned int baseVerticesCount = 0, const unsigned int* baseIndexes = nullptr, unsigned int baseIndexesCount = 0);
+                      RenderStates states = RenderStates::Default);
 
                        ////////////////////////////////////////////////////////////
             /// \brief Return the size of the rendering region of the target
@@ -251,13 +249,6 @@ namespace odfaeg {
             ///
             ////////////////////////////////////////////////////////////
             virtual sf::Vector2u getSize() const = 0;
-
-            /** \fn bool isUsingDepthTest() const
-            *   \brief if the target is using the default opengl depthtest.
-            *   \return if the target is using the default depthtest.
-            */
-            virtual bool isUsingDepthTest() const = 0;
-
              ////////////////////////////////////////////////////////////
             /// \brief Save the current OpenGL render states and matrices
             ///
@@ -410,7 +401,6 @@ namespace odfaeg {
             struct StatesCache
             {
                 enum {VertexCacheSize = 4};
-
                 bool      glStatesSet; ///< Are our internal GL states set yet?
                 bool      viewChanged; ///< Has the current view changed since last draw?
                 sf::BlendMode lastBlendMode; ///< Cached blending mode
@@ -425,8 +415,6 @@ namespace odfaeg {
             View        m_defaultView; ///< Default view
             View        m_view;  ///< Current view
             StatesCache m_cache;  ///< Render states cache
-            static const int MVP_LOCATION = 10;
-            static unsigned int majorVersion, minorVersion;
         };
     }
 }

@@ -132,7 +132,6 @@ namespace odfaeg {
             TransformMatrix      transform; ///< Transform
             const Texture* texture; ///< Texture
             const Shader*  shader; ///< Shader
-            unsigned int vertexBufferId, normalBufferId, indexBufferId, mvpBufferId, numInstances; ///VBO index.
         };
     }
 }

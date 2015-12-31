@@ -5,7 +5,8 @@ namespace odfaeg {
         ////////////////////////////////////////////////////////////
         Sprite::Sprite() : Transformable(math::Vec3f(0, 0, 0), math::Vec3f(0, 0, 0), math::Vec3f(0, 0, 0)),
         m_texture    (NULL),
-        m_textureRect()
+        m_textureRect(),
+        m_vertices(Quads)
         {
         }
 
@@ -13,9 +14,9 @@ namespace odfaeg {
         ////////////////////////////////////////////////////////////
         Sprite::Sprite(const Texture& texture, math::Vec3f position, math::Vec3f size) : Transformable(position, size, position + size * 0.5f),
         m_texture    (NULL),
-        m_textureRect()
+        m_textureRect(),
+        m_vertices(Quads)
         {
-            m_vertices = VertexArray(TrianglesFan);
             setTexture(texture);
             Vertex v1 (Vector3f(position.x, position.y, position.z));
             Vertex v2 (Vector3f(position.x + size.x, position.y, position.z));
@@ -35,9 +36,9 @@ namespace odfaeg {
         ////////////////////////////////////////////////////////////
         Sprite::Sprite(const Texture& texture, math::Vec3f position, math::Vec3f size, const IntRect& rectangle) : Transformable(position, size, size * 0.5f),
         m_texture    (NULL),
-        m_textureRect()
+        m_textureRect(),
+        m_vertices(Quads)
         {
-           m_vertices = VertexArray(TrianglesFan);
            setTexture(texture);
            Vertex v1 (Vector3f(position.x, position.y, position.z));
            Vertex v2 (Vector3f(position.x + size.x, position.y, position.z));
@@ -88,7 +89,6 @@ namespace odfaeg {
             for (unsigned int i = 0; i < m_vertices.getVertexCount(); i++) {
                 m_vertices[i].color = color;
             }
-            m_vertices.updateVBOBuffer();
         }
 
 

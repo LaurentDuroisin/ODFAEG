@@ -315,6 +315,11 @@ namespace odfaeg {
                     ar(type.first);
                     ar(type.second);
                     ar(collisionVolume);
+                    ar(shadowCenter);
+                    ar(shadowScale);
+                    ar(shadowOrigin);
+                    ar(shadowRotationAngle);
+                    ar(shadowRotationAxis);
                     if (ar.isInputArchive())
                         onLoad();
                     alreadySerialized = true;
@@ -343,15 +348,32 @@ namespace odfaeg {
                         parent->getCombinedTransform(tm);
                     tm.combine(getTransform().getMatrix());
                 }
-                /** \fn virtual ~Entity();
-                *   \brief destructor.
+                 /**
+                  *\fn setShadowCenter(math::Vec3f shadowCenter)
+                  *\brief adjust the center of the generated shadow.
+                  *\param math::Vec3f shadowCenter : the center of the shadow.
                 */
-                virtual ~Entity();
+                void setShadowCenter(math::Vec3f shadowCenter);
+                /**
+                  *\fn getShadowCenter()
+                  *\brief get the center of the shadow.
+                  *\return math::Vec3f : the center of the shadow.
+                */
+                math::Vec3f getShadowCenter();
+                void setShadowScale(math::Vec3f shadowScale);
+                void setShadowRotation(float angle, math::Vec3f axis = math::Vec3f::zAxis);
+                math::Vec3f getShadowRotationAxis();
+                float getShadowRotationAngle();
+                math::Vec3f getShadowScale();
+                void setShadowOrigin(math::Vec3f origin);
+                math::Vec3f getShadowOrigin();
             protected :
-                std::vector<Face*> faces; /**> the faces of the entity.*/
+                math::Vec3f shadowCenter, shadowScale, shadowRotationAxis, shadowOrigin; /**> The center of the shadow of the entity.*/
+                float shadowRotationAngle;
+                std::vector<std::unique_ptr<Face>> faces; /**> the faces of the entity.*/
                 static std::map<int, std::string> *types; /** A list of the type's id and name's of the entities. */
                 std::pair<int, std::string> type; /** The type's id and the type's name of the entity.*/
-                std::vector<Entity*> children; /** the children of the entities. */
+                std::vector<std::unique_ptr<Entity>> children; /** the children of the entities. */
                 Entity* parent; /** the parent of the entity. */
                 int id; /** the id of the entity.*/
                 static int nbEntities, nbEntitiesTypes; /** the number of entities and the number of entities types.*/

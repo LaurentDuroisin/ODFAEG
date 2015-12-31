@@ -140,14 +140,6 @@ namespace odfaeg {
                 void vtserialize(Archive & ar) {
                     Entity::vtserialize(ar);
                 }
-                /**
-                * \fn  ~Tile()
-                * \brief destructor.
-                */
-                virtual ~Tile ();
-        private :
-                const Texture* m_texture; /**> the texture of the tile.*/
-                VertexArray m_vertex_array; /**> the vertex array of the tile.*/
         };
     }
 }

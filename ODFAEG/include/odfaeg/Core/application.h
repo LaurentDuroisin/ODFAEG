@@ -29,29 +29,27 @@ namespace odfaeg {
             *   \brief create a graphic odfaeg application.
             *   \param sf::VideoMode : the video mode. (the size of the window)
             *   \param std::string : the title of the window.
-            *   \param int : the number of render components used by the application.
-            *   \param bool : activate the default opengl depthtest.
             *   \param sf::Uint32 : the window's style.
             *   \param ContextSettings : advanced opengl settings.
             */
-            Application(sf::VideoMode vm, std::string title, bool useOpenCL = false, bool useThread = false, bool depthTest = true, sf::Uint32 style = sf::Style::Default, sf::ContextSettings settings = sf::ContextSettings())
+            Application(sf::VideoMode vm, std::string title, sf::Uint32 style = sf::Style::Default, sf::ContextSettings settings = sf::ContextSettings())
 
             {
                 clearColor = sf::Color::Black;
-                window = std::make_unique<graphic::RenderWindow>(vm, title, style, settings, useOpenCL, depthTest);
+                graphic::RenderWindow* window = new graphic::RenderWindow (vm, title, style, settings);
+                windows.push_back(window);
                 componentManager = std::make_unique<graphic::RenderComponentManager>(*window);
                 app = this;
                 running = false;
                 sf::Clock loopSpeed;
                 addClock(loopSpeed, "LoopTime");
-                listener = std::make_unique<Listener>(useThread);
+                listener = std::make_unique<Listener>();
                 eventContextActivated = true;
             }
             /** \fn Application()
             *   \brief create a console odfaeg application.
             */
             Application () {
-                window = nullptr;
                 app = this;
                 running = false;
                 sf::Clock loopTime;
@@ -59,6 +57,11 @@ namespace odfaeg {
                 sf::Clock timeClock;
                 addClock(timeClock, "TimeClock");
                 eventContextActivated = true;
+            }
+            void addWindow(graphic::RenderWindow* window) {
+                if (windows.size() != 0) {
+                    windows.push_back(window);
+                }
             }
             /** \fn int exec()
             *   \brief main loop of the odfaeg application.
@@ -72,14 +75,14 @@ namespace odfaeg {
                 //rendering_thread = std::thread(&Application::render, this);
                 while (running) {
                     //std::lock_guard<std::recursive_mutex> lock(rec_mutex);
-                    if (window != nullptr && window->isOpen()) {
+                    if (windows.size() != 0 && windows[0]->isOpen()) {
                         render();
                         update();
                     }
-                    if (network::Network::getCliInstance().isRunning() && !network::Network::getCliInstance().isUsingThread()) {
+                    if (network::Network::getCliInstance().isRunning()) {
                         network::Network::getCliInstance().checkMessages();
                     }
-                    if (network::Network::getSrvInstance().isRunning() && !network::Network::getSrvInstance().isUsingThread()) {
+                    if (network::Network::getSrvInstance().isRunning()) {
 
                         network::Network::getSrvInstance().checkMessages();
                     }
@@ -94,8 +97,8 @@ namespace odfaeg {
             void stop() {
                 running = false;
                 //rendering_thread.join();
-                if (window != nullptr)
-                    window->close();
+                for(unsigned int i = 0; i < windows.size(); i++)
+                    windows[i]->close();
             }
             /** \fn void load()
             *   \brief call the onLoad function, this is where all resources used by the application are loaded.
@@ -113,15 +116,20 @@ namespace odfaeg {
             *   \brief call the rendering functions used to render entities on components or on the window.
             */
             void render() {
-                if (window != nullptr && window->isOpen()) {
-                    window->clear(clearColor);
+                if (windows.size() != 0 && windows[0]->isOpen()) {
+                    for (unsigned int i = 0; i < windows.size(); i++)
+                        windows[i]->clear(clearColor);
                     onRender(componentManager.get());
                     componentManager->clearComponents();
+                    if (eventContextActivated) {
+                       listener->processEvents();
+                    }
                     componentManager->updateComponents();
                     componentManager->drawRenderComponents();
-                    onDisplay(window.get());
+                    onDisplay(windows[0]);
                     componentManager->drawGuiComponents();
-                    window->display();
+                    for (unsigned int i = 0; i < windows.size(); i++)
+                        windows[i]->display();
                 }
             }
             void setEventContextActivated(bool eventContextActivated) {
@@ -135,29 +143,28 @@ namespace odfaeg {
             *   filter the sf::Events and pass window events which are generated to the listener.
             */
             void update() {
-                if (window != nullptr) {
+                if (windows.size() != 0) {
                     sf::Event event;
                     events.clear();
-                    while (window->pollEvent(event)) {
-                        events.insert(events.begin(),event);
+                    for (unsigned int i = 0; i < windows.size(); i++) {
+                        if (windows[i]->hasFocus()) {
+                            while (windows[i]->pollEvent(event)) {
+                                events.insert(std::make_pair(windows[i], event));
+                            }
+                        }
                     }
                     if (events.size() > 0) {
-                        while (events.size() != 0) {
-                            event = events.back();
-                            onUpdate(event);
-                            if (eventContextActivated)
+                        for (it = events.begin(); it != events.end(); it++) {
+                            onUpdate(it->first, it->second);
+                            if (eventContextActivated) {
                                 listener->pushEvent(event);
+                            }
                             for (unsigned int i = 0; i < componentManager->getNbComponents(); i++) {
-                                componentManager->getComponent(i)->onUpdate(event);
+                                componentManager->getComponent(i)->onUpdate(it->first, it->second);
                                 if (componentManager->getComponent(i)->isEventContextActivated()) {
                                     componentManager->getComponent(i)->pushEvent(event);
                                 }
                             }
-                            events.pop_back();
-                        }
-                    } else {
-                        if (eventContextActivated) {
-                            listener->processEvents();
                         }
                     }
                 }
@@ -189,7 +196,7 @@ namespace odfaeg {
             * \brief function which can be redefined if the application have to update entities when window's events are generated.
             * \param the generated event.
             */
-            virtual void onUpdate (sf::Event& event) {}
+            virtual void onUpdate (graphic::RenderWindow* window, sf::Event& event) {}
             /**
             * \fn void onExec()
             * \brief function which can be redefined if the application need to do something at each loop.
@@ -221,7 +228,7 @@ namespace odfaeg {
             *   \return the render window of the application.
             */
             graphic::RenderWindow& getRenderWindow() {
-                return *window;
+                return *windows[0];
             }
             /** \fn RenderComponentManager& getRenderComponentManager()
             *   \brief return a reference to the render component manager.
@@ -235,14 +242,14 @@ namespace odfaeg {
             *   \return a reference to the view.
             */
             graphic::View& getView() {
-                return window->getView();
+                return windows[0]->getView();
             }
             /** \fn View& getDefaultView()
             *   \brief return the default view of the window.
             *   \return the default view.
             */
             graphic::View getDefaultView() {
-                return window->getDefaultView();
+                return windows[0]->getDefaultView();
             }
             /** \fn setClearColor (sf::Color clearColor)
             *   \brief define the clear color of the window.
@@ -261,6 +268,8 @@ namespace odfaeg {
             }
             ~Application() {
                 stop();
+                for (unsigned int i = 0; i < windows.size(); i++)
+                   delete windows[i];
             }
             static sf::Clock& getTimeClk() {
                 return timeClk;
@@ -268,15 +277,14 @@ namespace odfaeg {
             /** > a pointer to the current odfaeg application*/
             static Application* app;
         private :
-            std::unique_ptr<graphic::RenderWindow> window; /** > the render window*/
+            std::vector<graphic::RenderWindow*> windows; /** > the render window*/
             std::unique_ptr<graphic::RenderComponentManager> componentManager; /** > the render component manager which draw components on the window*/
             std::map<std::string, sf::Clock> clocks; /** > all the clocks used by the application to measure the time.*/
             bool running; /** > determine if the application running or not.*/
             sf::Color clearColor; /** > keep the clear color of the window*/
-            std::vector<sf::Event> events; /** > store the windows events generated by the application*/
-            std::vector<sf::Event>::iterator it; /** > an iterator to the sf::events generated by the application*/
+            std::multimap<graphic::RenderWindow*, sf::Event> events; /** > store the windows events generated by the application*/
+            std::multimap<graphic::RenderWindow*, sf::Event>::iterator it; /** > an iterator to the sf::events generated by the application*/
             std::unique_ptr<Listener> listener;
-            std::thread rendering_thread;
             bool eventContextActivated;
             static sf::Clock timeClk;
         };

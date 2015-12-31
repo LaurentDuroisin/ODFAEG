@@ -274,6 +274,17 @@ namespace odfaeg {
             * \brief serialize the object into the archive.
             * \param ar : the archive.
             */
+             /**
+            * \fn void combine (TransformMatrix &tm)
+            * \brief combine the transform with another transform.
+            * \param tm : the transform matrix.
+            */
+            void combine (TransformMatrix &tm){
+                tm.combine(tm.getMatrix());
+            }
+            void setTransform (math::Matrix4f matrix) {
+                tm.setMatrix(matrix);
+            }
             template <typename Archive>
             void serialize (Archive & ar) {
                 ar(m_position);
@@ -318,17 +329,6 @@ namespace odfaeg {
                 tm.setOrigin(m_origin);
                 tm.setRotation(math::Vec3f::zAxis, 0);
                 tm.setTranslation(m_center);
-            }
-            /**
-            * \fn void combine (TransformMatrix &tm)
-            * \brief combine the transform with another transform.
-            * \param tm : the transform matrix.
-            */
-            void combine (TransformMatrix &tm){
-                tm.combine(tm.getMatrix());
-            }
-            void setTransform (math::Matrix4f matrix) {
-                tm.setMatrix(matrix);
             }
             /**
             * \fn virtual void onRotate(float angle)

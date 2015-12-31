@@ -11,7 +11,7 @@ namespace odfaeg {
         namespace gui {
             class Button : public LightComponent {
                 public :
-                    Button (math::Vec3f position, math::Vec3f size, const Font* font, sf::String t, RenderWindow& rw);
+                    Button (math::Vec3f position, math::Vec3f size, const Font* font, std::string t, RenderWindow& rw);
                     void clear();
                     void draw(RenderTarget& target, RenderStates states=RenderStates::Default);
                     void setTextSize(unsigned int size);
@@ -21,11 +21,12 @@ namespace odfaeg {
                     bool isMouseInButton();
                     void pushEvent(sf::Event event);
                     void checkSubWindowEvents();
+                    void onUpdate(RenderWindow* window, sf::Event& event);
                 private :
                     Text text;
-                    RenderWindow& rw;
                     RectangleShape rect;
                     sf::Color background;
+                    math::Vec3f mousePos;
             };
         }
     }

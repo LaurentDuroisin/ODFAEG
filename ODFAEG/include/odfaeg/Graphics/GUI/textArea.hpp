@@ -11,7 +11,7 @@ namespace odfaeg {
         namespace gui {
             class TextArea : public LightComponent {
             public :
-                TextArea(math::Vec3f position, math::Vec3f size, const Font* font, sf::String s, RenderWindow& rw);
+                TextArea(math::Vec3f position, math::Vec3f size, const Font* font, std::string s, RenderWindow& rw);
                 void clear();
                 void draw(RenderTarget& target, RenderStates states);
                 void setTextSize(unsigned int size);
@@ -19,14 +19,13 @@ namespace odfaeg {
                 void addFocusListener(FocusListener* fl);
                 bool isMouseInTextArea();
                 void onTextEntered(char caracter);
-                void onUpdate(sf::Event& event);
+                void onUpdate(RenderWindow* window, sf::Event& event);
                 void pushEvent(sf::Event event);
                 void checkSubWindowEvents();
                 std::string getText();
             private :
                 std::string tmp_text;
                 Text text;
-                RenderWindow& rw;
                 RectangleShape rect;
                 sf::Color background;
             };

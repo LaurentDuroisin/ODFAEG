@@ -37,8 +37,7 @@ namespace odfaeg
         using namespace sf;
         ////////////////////////////////////////////////////////////
         RenderTexture::RenderTexture() :
-        m_impl(NULL),
-        vertexArrayId(0)
+        m_impl(NULL)
         {
 
         }
@@ -47,49 +46,18 @@ namespace odfaeg
         ////////////////////////////////////////////////////////////
         RenderTexture::~RenderTexture()
         {
-            if (vertexArrayId != 0) {
-                GLuint vao = reinterpret_cast<unsigned int>(vertexArrayId);
-                glCheck(glDeleteVertexArrays(1, &vao));
-            }
             delete m_impl;
         }
 
 
         ////////////////////////////////////////////////////////////
-        bool RenderTexture::create(unsigned int width, unsigned int height, ContextSettings settings,  bool depthAttachement, unsigned int nbChannels)
+        bool RenderTexture::create(unsigned int width, unsigned int height, ContextSettings settings)
         {
-            RenderTarget::setMajorVersion(settings.majorVersion);
-            RenderTarget::setMinorVersion(settings.minorVersion);
-            const GLubyte* glslversion = glGetString(GL_SHADING_LANGUAGE_VERSION);
-            if(glslversion) {
-                Shader::setVersionMajor(glslversion[0] - '0');
-                Shader::setVersionMinor(glslversion[1] - '0');
-            } else {
-                Shader::setVersionMajor(1);
-                Shader::setVersionMinor(3);
-            }
             // Create the texture
-            if (depthAttachement)
-                        settings.depthBits = 8;
-            useDepthTest = (settings.depthBits > 0) ? 1 : 0;
-            std::vector<unsigned int> textureIds(nbChannels);
-            m_textures.clear();
-            m_textures.resize(nbChannels);
-            for (unsigned int i = 0; i < nbChannels; i++) {
-                if (depthAttachement) {
-                    if (!m_textures[i].create(width, height, true))
-                    {
-                        err() << "Impossible to create render texture (failed to create the target texture)" << std::endl;
-                        return false;
-                    }
-                } else {
-                    if (!m_textures[i].create(width, height))
-                    {
-                        err() << "Impossible to create render texture (failed to create the target texture)" << std::endl;
-                        return false;
-                    }
-                }
-                textureIds[i] = m_textures[i].m_texture;
+            if(!m_texture.create(width, height))
+            {
+                err() << "Impossible to create render texture (failed to create the target texture)" << std::endl;
+                return false;
             }
             // We disable smoothing by default for render textures
             setSmooth(false);
@@ -108,16 +76,8 @@ namespace odfaeg
             }
 
             // Initialize the render texture
-            if (!m_impl->create(width, height, settings, depthAttachement, textureIds, nbChannels))
+            if (!m_impl->create(width, height, settings, m_texture.m_texture))
                 return false;
-            if (RenderTarget::getMajorVersion() >= 3 && RenderTarget::getMinorVersion() >= 3) {
-                GLuint vao;
-                glCheck(glGenVertexArrays(1, &vao));
-                vertexArrayId = reinterpret_cast<unsigned int>(vao);
-                glCheck(glBindVertexArray(vertexArrayId));
-            }
-
-
             // We can now initialize the render target part
             RenderTarget::initialize();
             return true;
@@ -127,28 +87,28 @@ namespace odfaeg
         ////////////////////////////////////////////////////////////
         void RenderTexture::setSmooth(bool smooth)
         {
-            m_textures[0].setSmooth(smooth);
+            m_texture.setSmooth(smooth);
         }
 
 
         ////////////////////////////////////////////////////////////
         bool RenderTexture::isSmooth() const
         {
-            return m_textures[0].isSmooth();
+            return m_texture.isSmooth();
         }
 
 
         ////////////////////////////////////////////////////////////
         void RenderTexture::setRepeated(bool repeated)
         {
-            m_textures[0].setRepeated(repeated);
+            m_texture.setRepeated(repeated);
         }
 
 
         ////////////////////////////////////////////////////////////
         bool RenderTexture::isRepeated() const
         {
-            return m_textures[0].isRepeated();
+            return m_texture.isRepeated();
         }
 
 
@@ -165,10 +125,8 @@ namespace odfaeg
             // Update the target texture
             if (setActive(true))
             {
-                for (unsigned int i = 0; i < m_textures.size(); i++) {
-                    m_impl->updateTexture(m_textures[i].m_texture);
-                    m_textures[i].m_pixelsFlipped = true;
-                }
+                m_impl->updateTexture(m_texture.m_texture);
+                m_texture.m_pixelsFlipped = true;
             }
         }
 
@@ -176,26 +134,19 @@ namespace odfaeg
         ////////////////////////////////////////////////////////////
         Vector2u RenderTexture::getSize() const
         {
-            return m_textures[0].getSize();
+            return m_texture.getSize();
         }
 
 
         ////////////////////////////////////////////////////////////
-        const std::vector<Texture> RenderTexture::getTextures() const
-        {
-            return m_textures;
-        }
         const Texture& RenderTexture::getTexture() const
         {
-            return m_textures[0];
+            return m_texture;
         }
         ////////////////////////////////////////////////////////////
         bool RenderTexture::activate(bool active)
         {
             return setActive(active);
         }
-        bool RenderTexture::isUsingDepthTest() const {
-            return useDepthTest;
-        } // namespace sf
     }
 }

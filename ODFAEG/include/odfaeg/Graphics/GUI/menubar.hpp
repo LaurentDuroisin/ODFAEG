@@ -13,7 +13,6 @@ namespace odfaeg {
                 void pushEvent(sf::Event event);
                 void checkSubWindowEvents();
             private :
-                RenderWindow& window;
                 RectangleShape rect;
                 sf::Color background;
                 std::vector<Menu*> menus;

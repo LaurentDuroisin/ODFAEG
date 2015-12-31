@@ -35,7 +35,7 @@ namespace odfaeg {
                 * \param useThread : use a thread to get messages from the server ?
                 * \param useSecurisedConnexion : use an SSL connexion. (For the tcp protocol)
                 */
-                static bool startCli (int portTCP, int portUDP, sf::IpAddress, bool useThread = false, bool useSecuredConnexion = true);
+                static bool startCli (int portTCP, int portUDP, sf::IpAddress, bool useSecuredConnexion = true);
                 /**
                 * \fn bool startSrv (int portTCP, int portUDP, bool useThread = false)
                 * \brief start the server.
@@ -43,7 +43,7 @@ namespace odfaeg {
                 * \param portUDP : the udp port of the server.
                 * \param useThread : use a thread to get the messages from the clients.
                 */
-                static bool startSrv (int portTCP, int portUDP, bool useThread = false);
+                static bool startSrv (int portTCP, int portUDP);
                 /**
                 * \fn void stopCli ()
                 * \brief stop the client.

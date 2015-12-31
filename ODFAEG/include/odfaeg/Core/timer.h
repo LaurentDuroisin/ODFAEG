@@ -18,15 +18,6 @@ namespace odfaeg {
         */
         class ODFAEG_CORE_API Timer {
         public :
-            /**\fn Timer()
-            *  \brief default constructor.
-            */
-            Timer(bool useThread) : useThread(useThread) {
-                if (useThread) {
-                   running = true;
-                   m_thread = std::thread (&Timer::run, this);
-                }
-            }
             /**
             *  \fn setInterval(sf::Time interval)
             *  \brief set an interval of time.
@@ -34,18 +25,6 @@ namespace odfaeg {
             */
             void setInterval(sf::Time interval) {
                 this->interval = interval;
-            }
-            /** \fn void stop()
-            *   \brief stop the thread.
-            */
-            void stop() {
-                running = false;
-               /* if (useThread) {
-                    m_thread.join();
-                }*/
-            }
-            bool isUsingThread() {
-                return useThread;
             }
             /** \fn void run()
             *   \brief lock the mutex and updates the scene at each time interval.
@@ -57,27 +36,13 @@ namespace odfaeg {
                     clock.restart();
                 }
             }
-            void run () {
-                while (running) {
-                    //std::cout<<"timer running"<<std::endl;
-                    std::chrono::microseconds dura(100);
-                    std::this_thread::sleep_for(dura);
-                    std::lock_guard<std::recursive_mutex> lock(rec_mutex);
-                    onUpdate();
-                }
-            }
             /** \fn virtual void onUpdate() = 0;
             *   \brief the function to redefine when updating the scene.
             */
             virtual void onUpdate() = 0;
-            bool isRunning () {
-                return running;
-            }
         private :
             sf::Clock clock; /**> A clock use to measure the time elapsed since the last update*/
             sf::Time interval; /**> The time interval between two updates.*/
-            std::thread m_thread; /**>The thread*/
-            bool running, useThread; /**> indicates if the thread is running (or not)*/
         };
     }
 }

@@ -16,7 +16,6 @@ namespace odfaeg {
                 void pushEvent(sf::Event event);
                 void checkSubWindowEvents();
             private :
-                RenderWindow& window;
                 RectangleShape rect;
                 Text text;
                 sf::Color background;

@@ -44,11 +44,6 @@ namespace odfaeg {
             */
             virtual void checkVisibleEntities () = 0;
             /**
-            * \fn void computeIntersectionsWithWalls()
-            * \brief virtual function to redefine to compute intersections between the lights and the walls.
-            */
-            virtual void computeIntersectionsWithWalls() = 0;
-            /**
             * \fn std::vector<Entity*>  getVisibleEntities (std::string expression)
             * \brief get the visible entities.
             * \return std::vector<Entity*> the visible entities.

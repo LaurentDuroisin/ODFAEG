@@ -29,22 +29,7 @@ namespace odfaeg {
         class ODFAEG_GRAPHICS_API VertexArray : public Drawable, protected sf::GlResource
         {
            public :
-
-            ////////////////////////////////////////////////////////////
-            /// \brief Default constructor
-            ///
-            /// Creates an empty vertex array.
-            ///
-            ////////////////////////////////////////////////////////////
-            VertexArray();
-            VertexArray(const VertexArray& va);
-            VertexArray(const VertexArray&& va);
-            VertexArray& operator= (const VertexArray& va);
-            VertexArray& operator= (const VertexArray&& va);
-            void computeNormals();
-            void addInstancedRenderingInfos(unsigned int numIndexes, unsigned int baseVertex, unsigned int baseIndice);
-            void addIndex(unsigned int index);
-            std::vector<unsigned int> getIndexes();
+            VertexArray() {}
             ////////////////////////////////////////////////////////////
             /// \brief Construct the vertex array with a type and an initial number of vertices
             ///
@@ -52,7 +37,7 @@ namespace odfaeg {
             /// \param vertexCount Initial number of vertices in the array
             ///
             ////////////////////////////////////////////////////////////
-            explicit VertexArray(sf::PrimitiveType type, unsigned int vertexCount = 0);
+            VertexArray(sf::PrimitiveType type, unsigned int vertexCount = 0);
 
             ////////////////////////////////////////////////////////////
             /// \brief Return the vertex count
@@ -93,11 +78,6 @@ namespace odfaeg {
             ///
             ////////////////////////////////////////////////////////////
             const Vertex& operator [](unsigned int index) const;
-            math::Vec3f getLocal(unsigned int index) const;
-            void setLocal(unsigned int index, math::Vec3f v);
-            std::vector<unsigned int> getBaseIndexes();
-            void remove (unsigned int index);
-
             ////////////////////////////////////////////////////////////
             /// \brief Clear the vertex array
             ///
@@ -155,23 +135,11 @@ namespace odfaeg {
             sf::PrimitiveType getPrimitiveType() const;
             physic::BoundingBox getBounds();
             bool operator== (VertexArray &other) const;
-            void updateVBOBuffer();
-            void transform(TransformMatrix tm);
             template <typename Archive>
             void serialize (Archive & ar) {
-                ar(m_indexes);
                 ar(m_vertices);
                 ar(m_primitiveType);
-                ar(m_locals);
-                if (ar.isInputArchive())
-                    onLoad();
             }
-            void onLoad() {
-                computeNormals();
-                updateVBOBuffer();
-            }
-            bool isLoop();
-            ~VertexArray();
         private :
 
             ////////////////////////////////////////////////////////////
@@ -186,22 +154,8 @@ namespace odfaeg {
             ////////////////////////////////////////////////////////////
             // Member data
             ////////////////////////////////////////////////////////////
-            std::vector<sf::Vector3f> m_normals;
-            std::vector<math::Vec3f> m_locals;
             std::vector<Vertex> m_vertices;      ///< Vertices contained in the array
             sf::PrimitiveType       m_primitiveType; ///< Type of primitives to draw
-            unsigned int vboVertexBuffer,vboNormalBuffer, vboIndexBuffer, oldVerticesSize;
-            bool needToUpdateVBOBuffer;
-            public :
-            std::vector<unsigned int> m_numIndexes;
-            std::vector<unsigned int> m_baseVertices;
-            std::vector<unsigned int> m_baseIndexes;
-            std::vector<unsigned int> m_indexes;
-            std::vector<float> m_vPosX, m_vPosY, m_vPosZ, m_vPosW;
-            std::vector<unsigned char> m_vcRed, m_vcBlue, m_vcGreen, m_vcAlpha;
-            std::vector<unsigned int> m_ctX, m_ctY;
-            unsigned int nbVerticesPerFace;
-            bool loop;
         };
     }
 } // namespace sf

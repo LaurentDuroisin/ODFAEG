@@ -78,7 +78,7 @@ namespace odfaeg
             /// \param settings Additional settings for the underlying OpenGL context
             ///
             ////////////////////////////////////////////////////////////
-            RenderWindow(sf::VideoMode mode, const sf::String& title, sf::Uint32 style = sf::Style::Default, const sf::ContextSettings& settings = sf::ContextSettings(), bool useOpenCL = false, bool useDepthTest = false);
+            RenderWindow(sf::VideoMode mode, const sf::String& title, sf::Uint32 style = sf::Style::Default, const sf::ContextSettings& settings = sf::ContextSettings());
 
             ////////////////////////////////////////////////////////////
             /// \brief Construct the window from an existing control
@@ -115,7 +115,6 @@ namespace odfaeg
             ///
             ////////////////////////////////////////////////////////////
             virtual sf::Vector2u getSize() const;
-            virtual bool isUsingDepthTest() const;
 
             ////////////////////////////////////////////////////////////
             /// \brief Copy the current contents of the window to an image
@@ -165,8 +164,6 @@ namespace odfaeg
             ///
             ////////////////////////////////////////////////////////////
             bool activate(bool active);
-            bool useDepthTest;
-            unsigned int vertexArrayId;
         };
     }
 

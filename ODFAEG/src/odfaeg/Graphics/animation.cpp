@@ -125,8 +125,6 @@ namespace odfaeg {
 
                             }
                         }
-                        if (interpLevels > 1)
-                            cva.updateVBOBuffer();
                         vas.push_back(cva);
                     }
                 }

@@ -22,14 +22,6 @@ memory
 iostream
 -
 
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/any.h
-typeinfo
--
-erreur.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/erreur.h
-export.hpp
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/export.hpp
-
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/archive.h
 vector
 -
@@ -184,28 +176,6 @@ factory.h
 mutex
 -
 
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/state.h
-vector
--
-erreur.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/erreur.h
-sstream
--
-stateParameter.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/stateParameter.h
-memory
--
-
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/stateExecutor.h
-state.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/state.h
-
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/stateParameter.h
-any.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/any.h
-string
--
-
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/utilities.h
 string
 -
@@ -248,11 +218,17 @@ OpenGL/glu.h
 GL/glu.h
 -
 
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/batcher.h
-vertexArray.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/vertexArray.h
-map
--
+/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/GUI/label.hpp
+../rectangleShape.h
+/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/rectangleShape.h
+../renderWindow.h
+/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/renderWindow.h
+../lightComponent.h
+/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/lightComponent.h
+../../Math/vec4.h
+/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/vec4.h
+../text.h
+/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/text.h
 
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/component.h
 drawable.h
@@ -261,40 +237,36 @@ transformable.h
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/transformable.h
 ../Core/listener.h
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/listener.h
+renderWindow.h
+/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/renderWindow.h
 
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/drawable.h
 renderStates.h
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/renderStates.h
 
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/entity.h
-transformable.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/transformable.h
-drawable.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/drawable.h
-../Core/state.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/state.h
-../Core/stateExecutor.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/stateExecutor.h
-renderTarget.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/renderTarget.h
-batcher.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/batcher.h
-../Math/computer.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/computer.h
-../Core/serialization.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/serialization.h
-vector
--
-
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/export.hpp
 ../config.hpp
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/config.hpp
 
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/heavyComponent.h
-component.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/component.h
-entity.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/entity.h
+/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/font.h
+export.hpp
+/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/export.hpp
+SFML/Graphics/Glyph.hpp
+-
+texture.h
+/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/texture.h
+SFML/Graphics/Rect.hpp
+-
+SFML/System/Vector2.hpp
+-
+SFML/System/String.hpp
+-
+map
+-
+string
+-
+vector
+-
 
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/lightComponent.h
 component.h
@@ -316,19 +288,11 @@ component.h
 export.hpp
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/export.hpp
 
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/renderComponentManager.h
-renderTexture.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/renderTexture.h
-renderWindow.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/renderWindow.h
-shader.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/shader.h
-../Graphics/tile.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/tile.h
-../../../include/odfaeg/Graphics/heavyComponent.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/heavyComponent.h
-../../../include/odfaeg/Graphics/lightComponent.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/lightComponent.h
+/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/rectangleShape.h
+export.hpp
+/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/export.hpp
+shape.h
+/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/shape.h
 
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/renderStates.h
 transformMatrix.h
@@ -354,14 +318,6 @@ SFML/Graphics/PrimitiveType.hpp
 shader.h
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/shader.h
 
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/renderTexture.h
-SFML/Graphics/Export.hpp
--
-texture.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/texture.h
-renderTarget.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/renderTarget.h
-
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/renderWindow.h
 export.hpp
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/export.hpp
@@ -371,8 +327,6 @@ SFML/Graphics/Image.hpp
 -
 string
 -
-
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/selectable.h
 
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/shader.h
 SFML/Graphics/Export.hpp
@@ -398,6 +352,38 @@ string
 ../../../include/odfaeg/Graphics/export.hpp
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/export.hpp
 
+/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/shape.h
+SFML/Graphics/Export.hpp
+-
+drawable.h
+/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/drawable.h
+transformable.h
+/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/transformable.h
+vertexArray.h
+/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/vertexArray.h
+../Physics/boundingBox.h
+/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Physics/boundingBox.h
+
+/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/text.h
+export.hpp
+/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/export.hpp
+drawable.h
+/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/drawable.h
+transformable.h
+/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/transformable.h
+font.h
+/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/font.h
+SFML/Graphics/Rect.hpp
+-
+vertexArray.h
+/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/vertexArray.h
+SFML/System/String.hpp
+-
+string
+-
+vector
+-
+
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/texture.h
 SFML/Graphics/Export.hpp
 -
@@ -413,20 +399,6 @@ typeinfo
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/archive.h
 ../Math/matrix4.h
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/matrix4.h
-
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/tile.h
-../Math/vec4.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/vec4.h
-../Math/maths.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/maths.h
-../Math/computer.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/computer.h
-vector
--
-entity.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/entity.h
-selectable.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/selectable.h
 
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/transformMatrix.h
 ../Math/vec4.h
@@ -646,9 +618,7 @@ vector
 
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/config.hpp
 
-/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/renderComponentManager.cpp
-../../../include/odfaeg/Graphics/renderComponentManager.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/renderComponentManager.h
-../../../include/odfaeg/Core/command.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/command.h
+/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/label.cpp
+../../../../include/odfaeg/Graphics/GUI/label.hpp
+/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/GUI/label.hpp
 

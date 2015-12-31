@@ -5,8 +5,6 @@ namespace odfaeg {
         using namespace std;
         using namespace sf;
         Rsa& EncryptedPacket::rsa = EncryptedPacket::getRsa();
-        bool EncryptedPacket::encryptWithPrKey = true;
-        bool EncryptedPacket::decryptWithPrKey = true;
         Rsa& EncryptedPacket::getRsa() {
             if (&rsa == nullptr) {
                 static Rsa rsa;
@@ -19,12 +17,6 @@ namespace odfaeg {
         }
         void EncryptedPacket::setCertificate(const unsigned char* in, int length) {
             rsa.ossl_setCertificate(in, length);
-        }
-        void EncryptedPacket::setEncryptWithPrKey(bool b) {
-            encryptWithPrKey = b;
-        }
-        void EncryptedPacket::setDecryptWithPrKey(bool b) {
-            decryptWithPrKey = b;
         }
         const void* EncryptedPacket::onSend (size_t& dataSize) {
             unsigned char* buffer = nullptr;

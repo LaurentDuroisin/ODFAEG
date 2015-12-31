@@ -47,7 +47,6 @@
 /usr/local/./include/odfaeg/Graphics/viewMatrix.h
 /usr/local/./include/odfaeg/Graphics/gridMap.h
 /usr/local/./include/odfaeg/Graphics/GlResource.hpp
-/usr/local/./include/odfaeg/Graphics/fastRenderComponent.h
 /usr/local/./include/odfaeg/Graphics/lightComponent.h
 /usr/local/./include/odfaeg/Graphics/view.h
 /usr/local/./include/odfaeg/Graphics/renderTarget.h
@@ -78,7 +77,6 @@
 /usr/local/./include/odfaeg/Graphics/viewMatrix.h~
 /usr/local/./include/odfaeg/Graphics/renderStates.h
 /usr/local/./include/odfaeg/Graphics/batcher.h
-/usr/local/./include/odfaeg/Graphics/shadow.h
 /usr/local/./include/odfaeg/Graphics/videoMode.h
 /usr/local/./include/odfaeg/Graphics/sprite.h
 /usr/local/./include/odfaeg/Graphics/graphics.hpp
@@ -94,13 +92,10 @@
 /usr/local/./include/odfaeg/Graphics/VideoModeImpl.hpp
 /usr/local/./include/odfaeg/Graphics/2D/tGround.h~
 /usr/local/./include/odfaeg/Graphics/2D/ambientLight.h
-/usr/local/./include/odfaeg/Graphics/2D/shadowWall.h
 /usr/local/./include/odfaeg/Graphics/2D/ponctualLight.h
 /usr/local/./include/odfaeg/Graphics/2D/decor.h
 /usr/local/./include/odfaeg/Graphics/2D/directionnalLight.h
 /usr/local/./include/odfaeg/Graphics/2D/wall.h
-/usr/local/./include/odfaeg/Graphics/2D/shadowTile.h
-/usr/local/./include/odfaeg/Graphics/cpuRenderComponent.hpp
 /usr/local/./include/odfaeg/Graphics/animationUpdater.h~
 /usr/local/./include/odfaeg/Graphics/transformMatrix.h
 /usr/local/./include/odfaeg/Graphics/entitiesUpdater.h
@@ -124,7 +119,10 @@
 /usr/local/./include/odfaeg/Graphics/GUI/textArea.hpp
 /usr/local/./include/odfaeg/Graphics/GUI/menubar.hpp
 /usr/local/./include/odfaeg/Graphics/GUI/menuItemListener.hpp
+/usr/local/./include/odfaeg/Graphics/GUI/panel.hpp
+/usr/local/./include/odfaeg/Graphics/GUI/filedialog.hpp
 /usr/local/./include/odfaeg/Graphics/GUI/actionListener.hpp
+/usr/local/./include/odfaeg/Graphics/GUI/label.hpp
 /usr/local/./include/odfaeg/Graphics/GUI/menuItem.hpp
 /usr/local/./include/odfaeg/Graphics/GUI/menu.hpp
 /usr/local/./include/odfaeg/Graphics/GUI/button.hpp

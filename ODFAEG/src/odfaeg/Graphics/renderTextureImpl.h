@@ -61,7 +61,7 @@ namespace odfaeg
                 /// \return True if creation has been successful
                 ///
                 ////////////////////////////////////////////////////////////
-                virtual bool create(unsigned int width, unsigned int height, sf::ContextSettings, bool depthAttachement, std::vector<unsigned int> textureIds, unsigned int nb_channels) = 0;
+                virtual bool create(unsigned int width, unsigned int height, sf::ContextSettings, unsigned int textureId) = 0;
 
                 ////////////////////////////////////////////////////////////
                 /// \brief Activate or deactivate the render texture for rendering

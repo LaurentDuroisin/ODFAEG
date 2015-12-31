@@ -317,7 +317,7 @@ namespace odfaeg {
             *  \brief add a vertex array to the instance.
             *
             */
-            void addVertexArray(VertexArray *va, TransformMatrix& tm, unsigned int baseVertex, unsigned int baseIndex);
+            void addVertexArray(VertexArray *va, TransformMatrix& tm);
             /**
             * \fn std::vector<VertexArray*> getVertexArrays()
             * \brief get the vertex arrays of the instance.
@@ -335,11 +335,6 @@ namespace odfaeg {
             * \return the transforms.
             */
             std::vector<std::reference_wrapper<TransformMatrix>> getTransforms();
-            /** \fn VertexArray& getVertexArray()
-            * \brief get the vertex array.
-            * \return the vertex array.
-            */
-            VertexArray& getVertexArray();
             /** \fn Material& getMaterial()
             * \brief get the material of the instance.
             * \return the material.
@@ -364,7 +359,6 @@ namespace odfaeg {
             ~Instance();
         private:
             Material& material; /**> the material of the instance.*/
-            VertexArray m_vertices; /**> the vertices of the instance.*/
             std::vector<VertexArray*> m_vertexArrays; /**> the vertex arrays of the instance.*/
             std::vector<std::reference_wrapper<TransformMatrix>> m_transforms; /**> the transformations of the instance.*/
             sf::PrimitiveType primType; /**>The primitive type of the instance.*/
@@ -420,7 +414,7 @@ namespace odfaeg {
         private :
             unsigned int numVertices; /**> the number of vertices.*/
             unsigned int numIndexes; /**> the number of indexes.*/
-            std::vector<Instance*> instances; /**> the instances.*/
+            std::vector<std::unique_ptr<Instance>> instances; /**> the instances.*/
         };
     }
 }

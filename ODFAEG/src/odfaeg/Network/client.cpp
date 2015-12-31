@@ -7,11 +7,7 @@ namespace odfaeg {
         using namespace std;
         SrkClient::SrkClient () {
             running = false;
-            useThread = false;
             remotePortUDP = 0;
-        }
-        bool SrkClient::isUsingThread() {
-            return useThread;
         }
         void SrkClient::getPublicKey () {
             Packet packet;
@@ -51,7 +47,6 @@ namespace odfaeg {
         bool SrkClient::startCli(int portTCP, int portUDP, IpAddress address, bool useThread, bool useSecuredConnexion) {
              if (!running) {
                 remotePortUDP = portUDP;
-                this->useThread = useThread;
                 this->srvAddress = address;
                 this->useSecuredConnexion = useSecuredConnexion;
                 if(clientTCP.connect(address, portTCP) != Socket::Done) {
@@ -71,10 +66,6 @@ namespace odfaeg {
                 selector.add(clientTCP);
                 selector.add(clientUDP);
                 running = true;
-                if (useThread)
-                    m_thread = thread (&SrkClient::run, this);
-                EncryptedPacket::setEncryptWithPrKey(false);
-                EncryptedPacket::setDecryptWithPrKey(false);
                 std::cout<<"Client started!"<<std::endl;
                 return true;
             } else {
@@ -85,8 +76,6 @@ namespace odfaeg {
         void SrkClient::stopCli() {
             if(running) {
                 running = false;
-                if (useThread)
-                    m_thread.join();
             } else {
                 cout<<"Client already stopped"<<endl;
             }
@@ -153,60 +142,6 @@ namespace odfaeg {
                                     Network::addResponse(message);
                                 }
                             }
-                        }
-                    }
-                }
-            }
-        }
-        void SrkClient::run() {
-            short unsigned int port;
-            IpAddress address;
-            while (running) {
-                if (selector.wait(milliseconds(100))) {
-                    lock_guard<recursive_mutex> locker(rec_mutex);
-                    if (selector.isReady(clientTCP)) {
-                        if (useSecuredConnexion) {
-                            SymEncPacket packet;
-                            if(clientTCP.receive(packet) == Socket::Done) {
-                                string message;
-                                packet>>message;
-                                Network::addResponse(message);
-
-                            }
-                        } else {
-                            Packet packet;
-                            if(clientTCP.receive(packet) == Socket::Done) {
-
-                                string message;
-                                packet>>message;
-                                Network::addResponse(message);
-
-                            }
-                        }
-                    }
-
-                    if (selector.isReady(clientUDP)) {
-                        Packet packet;
-                        if (clientUDP.receive(packet, address, port) == Socket::Done) {
-                            if (address == srvAddress) {
-                                string message;
-                                packet>>message;
-
-                                if (message == "PING") {
-                                    packet.clear();
-                                    packet<<"PONG";
-                                    Network::sendUdpPacket(packet);
-                                } else if (message == "GET_TIME") {
-                                    packet.clear();
-                                    packet<<"SET_TIME*"+core::conversionLongString(core::Application::getTimeClk().getElapsedTime().asMicroseconds());
-                                    Network::sendUdpPacket(packet);
-                                } else {
-                                    Network::addResponse(message);
-                                }
-                            } else {
-                                cout<<"This message don't provide from the server."<<endl;
-                            }
-
                         }
                     }
                 }

@@ -193,19 +193,15 @@ namespace odfaeg
 
             // Outline
             updateOutline();
-            m_vertices.updateVBOBuffer();
-            m_outlineVertices.updateVBOBuffer();
         }
 
 
         ////////////////////////////////////////////////////////////
         void Shape::draw(RenderTarget& target, RenderStates states)
         {
-            states.transform = getTransform();
+            states.transform.combine(getTransform().getMatrix());
             // Render the inside
             states.texture = m_texture;
-           /* m_vertices.transform(getTransform());
-            m_outlineVertices.transform(getTransform());*/
             target.draw(m_vertices, states);
             // Render the outline
             if (m_outlineThickness != 0)
@@ -221,7 +217,6 @@ namespace odfaeg
         {
             for (unsigned int i = 0; i < m_vertices.getVertexCount(); ++i)
                 m_vertices[i].color = m_fillColor;
-            m_vertices.updateVBOBuffer();
         }
 
 
@@ -290,7 +285,6 @@ namespace odfaeg
         {
             for (unsigned int i = 0; i < m_outlineVertices.getVertexCount(); ++i)
                 m_outlineVertices[i].color = m_outlineColor;
-            m_outlineVertices.updateVBOBuffer();
         }
     }
 } // namespace sf

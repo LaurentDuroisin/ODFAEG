@@ -30,8 +30,9 @@ namespace odfaeg {
         void RenderComponentManager::drawRenderComponents() {
             std::multimap<unsigned int, Component*, std::greater<unsigned int>>::iterator it;
             for (it = components.begin(); it != components.end(); it++) {
-                if (dynamic_cast<HeavyComponent*>(it->second) != nullptr && it->second->isVisible())
-                    window.draw(*it->second);
+                if (dynamic_cast<HeavyComponent*>(it->second) != nullptr && it->second->isVisible()) {
+                    it->second->getWindow().draw(*it->second);
+                }
             }
         }
         void RenderComponentManager::drawGuiComponents() {
@@ -43,26 +44,30 @@ namespace odfaeg {
             for (it = components.begin(); it != components.end(); it++) {
                 if (dynamic_cast<LightComponent*>(it->second) != nullptr && it->second->isVisible()) {
                     static_cast<LightComponent*>(it->second)->checkSubWindowEvents();
-                    window.draw(*it->second);
+                    it->second->getWindow().draw(*it->second);
                 }
             }
             window.setView(view);
         }
         HeavyComponent* RenderComponentManager::getRenderComponent(unsigned int layer) {
             std::multimap<unsigned int, Component*, std::greater<unsigned int>>::iterator it;
+            unsigned int i = 0;
             for (it = components.begin(); it != components.end(); it++) {
-               if (it->second->getId() == layer) {
+               if (i == layer) {
                    return dynamic_cast<HeavyComponent*>(it->second);
                }
+               i++;
             }
             return nullptr;
         }
         LightComponent* RenderComponentManager::getGuiComponent(unsigned int layer) {
             std::multimap<unsigned int, Component*, std::greater<unsigned int>>::iterator it;
+            unsigned int i = 0;
             for (it = components.begin(); it != components.end(); it++) {
-               if (it->second->getId() == layer) {
+               if (i == layer) {
                    return dynamic_cast<LightComponent*>(it->second);
                }
+               i++;
             }
             return nullptr;
         }
@@ -77,10 +82,12 @@ namespace odfaeg {
         }
         Component* RenderComponentManager::getComponent(unsigned int layer) {
            std::multimap<unsigned int, Component*, std::greater<unsigned int>>::iterator it;
+           unsigned int i = 0;
            for (it = components.begin(); it != components.end(); it++) {
-               if (it->second->getId() == layer) {
+               if (i == layer) {
                     return it->second;
                }
+               i++;
            }
         }
         void RenderComponentManager::clearComponents() {
@@ -94,7 +101,7 @@ namespace odfaeg {
         void RenderComponentManager::updateComponents() {
            std::multimap<unsigned int, Component*, std::greater<unsigned int>>::iterator it;
            for (it = components.begin(); it != components.end(); it++) {
-               if (it->second->isEventContextActivated() && !it->second->getListener().isUsingThread()) {
+               if (it->second->isEventContextActivated()) {
                    it->second->getListener().processEvents();
                }
            }

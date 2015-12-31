@@ -2,10 +2,9 @@
 #define ODFAEG_DECOR_2D_HPP
 #include <SFML/Graphics.hpp>
 #include "../tile.h"
-#include "shadowTile.h"
-#include "shadowWall.h"
 #include "../model.h"
 #include "../../Graphics/world.h"
+#include "../light.h"
 /**
   *\namespace odfaeg
   * the namespace of the Opensource Development Framework Adapted for Every Games.
@@ -28,11 +27,7 @@ namespace odfaeg {
                   * \brief constructor.
                   */
                 Decor() : Model(math::Vec3f(0, 0, 0), math::Vec3f(1, 1, 1), math::Vec3f(0.5f, 0.5f, 0.5f),"E_DECOR"){
-                    height = 0;
-                    shadowCenter = math::Vec3f(0.f, 0.f, 0.f);
-                    shadowScale = math::Vec3f(1.f, 1.f, 1.f);
-                    shadowRotationAxis = math::Vec3f::zAxis;
-                    shadowRotationAngle = 0.f;
+
                 }
                 /**
                   * \fn Decor(Tile *t, Light* light, int height, Shadow::SHADOW_TYPE shadowType)
@@ -42,7 +37,7 @@ namespace odfaeg {
                   * \param height : the height of the decor.
                   * \param Shadow::SHADOW_TYPE : the type of shadow to generate. (A shape, or a black sprite)
                   */
-                Decor(Tile *t, Light *light, int height, Shadow::SHADOW_TYPE shadowType);
+                Decor(Tile *t, Light *light);
                 bool operator== (Entity &other);
                 /**
                  *\fn void vtserialize(Archive & ar)
@@ -53,15 +48,8 @@ namespace odfaeg {
                 template <typename Archive>
                 void vtserialize(Archive & ar) {
                     Model::vtserialize(ar);
-                    ar(shadowCenter);
-                    ar(height);
-                    ar(shadowType);
-                    ar(shadowCenter);
-                    ar(shadowScale);
-                    ar(shadowRotationAxis);
-                    ar(shadowRotationAngle);
-                    ar(shadowOrigin);
                 }
+                void onMove(math::Vec3f& t);
                 /** \fn bool isAnimated
                 *   \brief return false because the class is not a class of an animated entity.
                 *   \return bool false. (unanimated entity)
@@ -97,39 +85,6 @@ namespace odfaeg {
                 bool isShadow() const {
                     return false;
                 }
-                /** \fn int getHeight()
-                *   \brief return the height of the entity.
-                *   \return int. (the height of the entity)
-                */
-                int getHeight() {
-                    return height;
-                }
-                void recreateShadow(Light* light);
-                 /**
-                  *\fn setShadowCenter(math::Vec3f shadowCenter)
-                  *\brief adjust the center of the generated shadow.
-                  *\param math::Vec3f shadowCenter : the center of the shadow.
-                */
-                void setShadowCenter(math::Vec3f shadowCenter);
-                /**
-                  *\fn getShadowCenter()
-                  *\brief get the center of the shadow.
-                  *\return math::Vec3f : the center of the shadow.
-                */
-                math::Vec3f getShadowCenter();
-                void setShadowScale(math::Vec3f shadowScale);
-                void setShadowRotation(float angle, math::Vec3f axis = math::Vec3f::zAxis);
-                math::Vec3f getShadowRotationAxis();
-                float getShadowRotationAngle();
-                math::Vec3f getShadowScale();
-                void setShadowOrigin(math::Vec3f origin);
-                math::Vec3f getShadowOrigin();
-                void onMove(math::Vec3f& t);
-            private:
-                int height; /**> The height of the entity*/
-                math::Vec3f shadowCenter, shadowScale, shadowRotationAxis, shadowOrigin; /**> The center of the shadow of the entity.*/
-                float shadowRotationAngle;
-                Shadow::SHADOW_TYPE shadowType; /** The type of the shadow of the entity.*/
             };
         }
     }

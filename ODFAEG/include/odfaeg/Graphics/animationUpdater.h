@@ -22,7 +22,7 @@ namespace odfaeg {
         */
         class ODFAEG_CORE_API AnimUpdater : public core::Timer {
         public :
-            AnimUpdater(bool useThread) : Timer(useThread) {}
+            AnimUpdater() : Timer() {}
             /**
             * \fn void addAnim(g2d::Anim *anim)
             * \brief add a 2D animation to the updater.

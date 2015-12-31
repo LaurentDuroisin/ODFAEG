@@ -7,8 +7,8 @@ namespace odfaeg {
         class EntityManager;
         class HeavyComponent : public Component {
             public :
-            HeavyComponent(math::Vec3f position, math::Vec3f size, math::Vec3f origin, bool useThread) :
-                Component(position, size, origin, useThread) {}
+            HeavyComponent(RenderWindow& window, math::Vec3f position, math::Vec3f size, math::Vec3f origin) :
+                Component(window, position, size, origin) {}
             virtual bool loadEntitiesOnComponent(std::vector<Entity*> entity) = 0;
             virtual std::vector<Entity*> getEntities() = 0;
             virtual std::string getExpression() = 0;

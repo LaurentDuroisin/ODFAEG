@@ -3,8 +3,6 @@
 
 #include "../../Math/maths.h"
 #include "../../Math/matrix2.h"
-#include "shadowWall.h"
-#include "shadowTile.h"
 #include "../light.h"
 #include "../model.h"
 #include "../../Graphics/world.h"
@@ -33,13 +31,7 @@ namespace odfaeg {
                     * \brief constructor.
                     */
                     Wall() : Model(math::Vec3f(0, 0, 0),math::Vec3f(1, 1, 1),math::Vec3f(0.5f, 0.5f, 0.5f), "E_WALL") {
-                        shadowType = Shadow::SHADOW_TYPE::SHADOW_WALL;
-                        type = 0;
-                        height = 0;
-                        shadowCenter = math::Vec3f(0, 0, 0);
-                        shadowScale = math::Vec3f(1.f, 1.f, 1.f);
-                        shadowRotationAxis = math::Vec3f::zAxis;
-                        shadowRotationAngle = 0.f;
+
                     }
                     /**
                     * \fn Wall (int imageId, int height, Tile *tile, Light *light, Shadow::SHADOW_TYPE shadowType);
@@ -50,7 +42,7 @@ namespace odfaeg {
                     * \param light : the light used to generate the shadow.
                     * \param sahdowType : the type of the shadow to generate.
                     */
-                    Wall (int imageId, int height, Tile *tile, Light *light, Shadow::SHADOW_TYPE shadowType);
+                    Wall (Tile *tile, Light *light);
                     void createShadow(Light& light);
                     /**
                     * \fn bool isLeaf() const;
@@ -131,32 +123,7 @@ namespace odfaeg {
                     template <typename Archive>
                     void vtserialize(Archive & ar) {
                         Model::vtserialize(ar);
-                        ar(type);
-                        ar(height);
-                        ar(shadowType);
-                        ar(shadowCenter);
-                        ar(shadowScale);
-                        ar(shadowRotationAxis);
-                        ar(shadowRotationAngle);
-                        ar(shadowOrigin);
                     }
-                    void setShadowScale(math::Vec3f shadowScale);
-                    void setShadowRotation(float angle, math::Vec3f axis = math::Vec3f::zAxis);
-                    math::Vec3f getShadowRotationAxis();
-                    float getShadowRotationAngle();
-                    math::Vec3f getShadowScale();
-                    void setShadowOrigin(math::Vec3f origin);
-                    math::Vec3f getShadowOrigin();
-                    /**
-                    * \fn virtual ~Wall ();
-                    * \brief destructor.
-                    */
-                    virtual ~Wall ();
-                private :
-                    math::Vec3f shadowCenter, shadowScale, shadowRotationAxis, shadowOrigin; /**> shadowCenter : the center of the shadow.*/
-                    float shadowRotationAngle;
-                    int type, height; /**> type and the height : the type of the wall.*/
-                    Shadow::SHADOW_TYPE shadowType; /**> shadowType the type of the wall.*/
             };
         }
     }

@@ -48,18 +48,12 @@ namespace odfaeg {
                 * \param portUDP : the udp port of the server.
                 * \param useThread : use a thread to get the received messages ?
                 */
-                bool startSrv(int portTCP, int portUDP, bool useThread = false);
+                bool startSrv(int portTCP, int portUDP);
                 /**
                 * \fn void stopSrv()
                 * \brief stop the server.
                 */
                 void stopSrv();
-                /**
-                * \fn bool isUsingThread()
-                * \brief if we use a thread to get the received messages.
-                * \return if we use a thread to get the received messages.
-                */
-                bool isUsingThread();
                 /**
                 * \fn void checkMessages()
                 * \brief check if messages are received and store them into the queue.
@@ -72,13 +66,11 @@ namespace odfaeg {
                 */
                 virtual ~SrkServer();
             private :
-                std::thread m_thread; /**>a thread.*/
                 /**
                 * \fn void run ()
                 * \brief method used by the thread to get messages.
                 */
-                void run ();
-                bool running, useThread; /**> if the thread is running, and if we use a thread.*/
+                bool running; /**> if the thread is running, and if we use a thread.*/
                 /**
                 * \fn void removeClient (sf::TcpSocket* socket);
                 * \brief remove a client from the server.

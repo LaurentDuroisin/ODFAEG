@@ -31,6 +31,7 @@
 #include <cassert>
 
 using namespace sf;
+using namespace std;
 namespace odfaeg
 {
     namespace graphic {
@@ -50,8 +51,8 @@ namespace odfaeg
 
 
         ////////////////////////////////////////////////////////////
-        Text::Text(const String& string, const Font& font, unsigned int characterSize) :
-        m_string            (string),
+        Text::Text(const string& str, const Font& font, unsigned int characterSize) :
+        m_string            (str),
         m_font              (&font),
         m_characterSize     (characterSize),
         m_style             (Regular),
@@ -65,11 +66,11 @@ namespace odfaeg
 
 
         ////////////////////////////////////////////////////////////
-        void Text::setString(const String& string)
+        void Text::setString(const string& str)
         {
-            if (m_string != string)
+            if (m_string != str)
             {
-                m_string = string;
+                m_string = str;
                 m_geometryNeedUpdate = true;
             }
         }
@@ -127,7 +128,7 @@ namespace odfaeg
 
 
         ////////////////////////////////////////////////////////////
-        const String& Text::getString() const
+        const string& Text::getString() const
         {
             return m_string;
         }
@@ -169,8 +170,8 @@ namespace odfaeg
                 return Vector2f();
 
             // Adjust the index if it's out of range
-            if (index > m_string.getSize())
-                index = m_string.getSize();
+            if (index > m_string.length())
+                index = m_string.length();
 
             // Precompute the variables needed by the algorithm
             bool  bold   = (m_style & Bold) != 0;
@@ -226,7 +227,7 @@ namespace odfaeg
             if (m_font)
             {
                 ensureGeometryUpdate();
-                states.transform = getTransform();
+                states.transform.combine(getTransform().getMatrix());
                 //m_vertices.transform(getTransform());
                 states.texture = &m_font->getTexture(m_characterSize);
                 target.draw(m_vertices, states);
@@ -253,7 +254,7 @@ namespace odfaeg
                 return;
 
             // No text: nothing to draw
-            if (m_string.isEmpty())
+            if (m_string == "")
                 return;
 
             // Compute values related to the text style
@@ -275,7 +276,7 @@ namespace odfaeg
             float maxX = 0.f;
             float maxY = 0.f;
             Uint32 prevChar = 0;
-            for (std::size_t i = 0; i < m_string.getSize(); ++i)
+            for (std::size_t i = 0; i < m_string.length(); ++i)
             {
                 Uint32 curChar = m_string[i];
 

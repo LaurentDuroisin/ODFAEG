@@ -121,6 +121,8 @@ namespace odfaeg {
             return invMat4f * vec3;
         }
         void TransformMatrix::combine(math::Matrix4f other) {
+            needToUpdate3D = true;
+            update();
             matrix4f =  matrix4f * other;
         }
         bool TransformMatrix::operator== (const TransformMatrix& other) {

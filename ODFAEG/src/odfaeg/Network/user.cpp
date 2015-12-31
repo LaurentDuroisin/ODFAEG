@@ -64,35 +64,17 @@ namespace odfaeg {
             return clientUDP;
         }
         void User::sendTcpPacket(Packet &packet) {
-            if (Network::getSrvInstance().isUsingThread()) {
-                std::lock_guard<std::recursive_mutex> lock(rec_mutex);
-                if(clientTCP.send(packet) != Socket::Done) {
-                    std::string message;
-                    packet>>message;
-                    cerr<<"Error : can't send this message : "<<message<<" !"<<endl;
-                }
-            } else {
-                if(clientTCP.send(packet) != Socket::Done) {
-                    std::string message;
-                    packet>>message;
-                    cerr<<"Error : can't send this message : "<<message<<" !"<<endl;
-                }
+            if(clientTCP.send(packet) != Socket::Done) {
+                std::string message;
+                packet>>message;
+                cerr<<"Error : can't send this message : "<<message<<" !"<<endl;
             }
         }
         void User::sendUdpPacket(Packet &packet) {
-            if (Network::getSrvInstance().isUsingThread()) {
-                std::lock_guard<std::recursive_mutex> lock(rec_mutex);
-                if (clientUDP.send(packet, address, remotePortUDP) != Socket::Done) {
-                    std::string message;
-                    packet>>message;
-                    cerr<<"Error : can't send this message : "<<message<<" !"<<endl;
-                }
-            } else {
-                if (clientUDP.send(packet, address, remotePortUDP) != Socket::Done) {
-                    std::string message;
-                    packet>>message;
-                    cerr<<"Error : can't send this message : "<<message<<" !"<<endl;
-                }
+            if (clientUDP.send(packet, address, remotePortUDP) != Socket::Done) {
+                std::string message;
+                packet>>message;
+                cerr<<"Error : can't send this message : "<<message<<" !"<<endl;
             }
         }
         void User::setUseSecuredConnexion(bool b) {

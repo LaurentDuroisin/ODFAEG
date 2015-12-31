@@ -3,8 +3,7 @@ namespace odfaeg {
     namespace graphic {
         namespace gui {
             MenuBar::MenuBar(RenderWindow& rw) :
-                LightComponent(math::Vec3f(0, 0, 0), math::Vec3f(rw.getSize().x+20, 20, 0), math::Vec3f(0, 0, 0), false),
-                window(rw) {
+                LightComponent(rw, math::Vec3f(0, 0, 0), math::Vec3f(rw.getSize().x+20, 20, 0), math::Vec3f(0, 0, 0)) {
                 rect = RectangleShape(math::Vec3f(rw.getSize().x+20, 20, 0));
                 background = sf::Color(50, 50, 50);
             }

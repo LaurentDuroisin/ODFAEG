@@ -66,31 +66,20 @@ namespace odfaeg {
                 */
                 void stopCli();
                 /**
-                * \fn void run()
-                * \brief run the thread.
-                */
-                void run ();
-                /**
                 * \fn void checkMessages();
                 * \brief check if messages are received and add them to the queue. (For non-threaded version)
                 */
                 void checkMessages();
-                /**
-                * \fn bool isUsingThread()
-                * \brief if the client is using a thread.
-                */
-                bool isUsingThread();
             private :
                 /**
                 * \fn void getPublicKey()
                 * \brief ask the public keys to the server. (For SSL connections)
                 */
                 void getPublicKey();
-                bool running, useThread; /**> if the client is running, and if the client is using a thread.*/
+                bool running; /**> if the client is running, and if the client is using a thread.*/
                 sf::TcpSocket clientTCP; /**>The tcp socket of the client.*/
                 sf::UdpSocket clientUDP; /**>The udp socket of the client.*/
                 sf::SocketSelector selector; /**>The selector.*/
-                std::thread m_thread; /**>The thread.*/
                 short unsigned int remotePortUDP; /**>the remote udp port.*/
                 sf::IpAddress srvAddress; /**> the ip address of the server.*/
                 bool useSecuredConnexion; /**>if the client is using an SSL connection.*/

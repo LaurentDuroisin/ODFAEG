@@ -30,14 +30,8 @@ namespace odfaeg {
             * \fn Listener()
             * \brief constructor.
             */
-             Listener(bool useThread) {
-                running = true, g_notified = true, one_triggered = false,
-                this->useThread = useThread;
-                if (useThread)
-                   t = std::thread(&Listener::run, this);
-             }
-             bool isUsingThread() {
-                 return useThread;
+             Listener() {
+
              }
              /**
              * \fn void connect (std::string key, Command command)
@@ -46,11 +40,7 @@ namespace odfaeg {
              * \param Command command : the command to add.
              */
              void connect(std::string key, Command command) {
-                 std::map<std::string, Command>::iterator it = commands.find(key);
-                 if (it != commands.end()) {
-                    throw Erreur (20, "This connection already exists!", 0);
-                 }
-                 commands.insert(std::pair<std::string, Command>(key, command));
+                toAdd.insert(std::make_pair(key, command));
              }
              /**
              * \fn void setCommandParams (std::string key,
@@ -102,27 +92,6 @@ namespace odfaeg {
                  }
                  return false;
              }
-             /**\fn bool void run()
-             *  \brief block the current thread, check if the command are triggered and execute them.
-             */
-             void run () {
-                 std::map<std::string, Command>::iterator it;
-                 while (running) {
-                     //std::cout<<"listener running"<<std::endl;
-
-                     std::unique_lock<std::mutex> locker(g_lock_listen);
-                     std::chrono::milliseconds dura(100);
-                     g_signal.wait_for(locker, dura, [&](){return one_triggered || !running;});
-                     for (it = commands.begin(); it != commands.end(); it++) {
-                        if (it->second.isTriggered())
-                            (it->second)();
-                     }
-                     Command::clearEventsStack();
-                     g_notified = true;
-                     one_triggered = false;
-                     g_signal.notify_all();
-                 }
-             }
              /** \fn void pushEvent (sf::Event event)
              *   \brief push an event into the event stack.
              *   \param sf::Event : the sf::event to pass into the stack.
@@ -137,56 +106,48 @@ namespace odfaeg {
                     if(action != nullptr) {
                         action->setPressed(event);
                     }
-
                  }
-                 processEvents();
              }
              /** \fn void processEvents ()
              *   \brief check if the commands are triggered and execute them.
              *   the current thread is blocked until this method is finished.
              */
              void processEvents() {
-                if (useThread) {
-                    if (!one_triggered) {
-                        g_notified = false;
-                        one_triggered = true;
-                        g_signal.notify_all();
-                        std::unique_lock<std::mutex> locker(g_lock_listen);
-                        g_signal.wait(locker, [&](){return g_notified;});
+                 std::map<std::string, Command>::iterator it;
+                 for (unsigned int i = 0; i < toRemove.size(); i++) {
+                    it = commands.find(toRemove[i]);
+                    if (it != commands.end()) {
+                        commands.erase(it);
                     }
-                } else {
-                     std::map<std::string, Command>::iterator it;
-                     for (it = commands.begin(); it != commands.end(); it++) {
-                        if (it->second.isTriggered()) {
-                            (it->second)();
-                        }
-                     }
-                     Command::clearEventsStack();
-                }
-             }
-             void stopListen()  {
-                 running = false;
-                 if (useThread) {
-                     g_signal.notify_all();
-                     t.join();
+                 }
+                 toRemove.clear();
+                 for (it = toAdd.begin(); it != toAdd.end(); it++) {
+                    commands.insert(std::make_pair(it->first, it->second));
+                 }
+                 toAdd.clear();
+                 for (it = commands.begin(); it != commands.end(); it++) {
+                    if (it->second.isTriggered()) {
+                        (it->second)();
+                    }
                  }
              }
-             /** \fn ~Listener()
-             * \brief destrucor : stop the thread.
-             */
-             ~Listener () {
-                 stopListen();
+             void removeLater(std::string name) {
+                toRemove.push_back(name);
+             }
+             void removeCommand(std::string name) {
+                std::map<std::string, Command>::iterator it;
+                it = commands.find(name);
+                if (it != commands.end()) {
+                    commands.erase(it);
+                }
              }
              private :
              /** \fn void stopListen()
              *   \brief stop the thread which triggers and execute commands.
              */
-
              std::map<std::string, Command> commands; /**> stores and execute commands.*/
-             std::thread t; /**> a thread with trigger and executes the commands.*/
-             bool running, g_notified, one_triggered, useThread; /**> tells if the thread is running, if we have to process the commands and if a command is triggered.*/
-             std::mutex g_lock_listen; /**> mutex used to avoid to have concurrent access to variables with multi threads*/
-             std::condition_variable g_signal; /** primitive synchronisation used to bloc the current thread while the commands are executed.*/
+             std::vector<std::string> toRemove;
+             std::map<std::string, Command> toAdd;
         };
     }
 }

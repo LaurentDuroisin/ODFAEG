@@ -104,7 +104,7 @@ namespace odfaeg
             /// \return True if creation was successful
             ///
             ////////////////////////////////////////////////////////////
-            bool create(unsigned int width, unsigned int height, bool depthText = false);
+            bool create(unsigned int width, unsigned int height);
 
             ////////////////////////////////////////////////////////////
             /// \brief Load the texture from a file on disk

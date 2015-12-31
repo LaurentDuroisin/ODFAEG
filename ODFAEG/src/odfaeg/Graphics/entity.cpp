@@ -21,6 +21,10 @@ namespace odfaeg {
             nbEntities++;
             alreadySerialized = false;
             collisionVolume = nullptr;
+            shadowCenter = math::Vec3f (0, 0, 0);
+            shadowScale = math::Vec3f(1.f, 1.f, 1.f);
+            shadowRotationAngle = 0;
+            shadowRotationAxis = math::Vec3f::zAxis;
         }
         std::string Entity::getRootType() {
             if (getParent() != nullptr) {
@@ -78,7 +82,9 @@ namespace odfaeg {
         }
         void Entity::addChild (Entity* child) {
             std::vector<math::Vec3f> vecs;
-            children.push_back(child);
+            std::unique_ptr<Entity> ptr;
+            ptr.reset(child);
+            children.push_back(std::move(ptr));
             for (unsigned int i = 0; i < children.size(); i++) {
                 vecs.push_back(children[i]->getPosition());
                 vecs.push_back(children[i]->getPosition() + children[i]->getSize());
@@ -91,10 +97,10 @@ namespace odfaeg {
             vecs.clear();
         }
         void Entity::removeChild (Entity *child) {
-            std::vector<Entity*>::iterator it;
+            std::vector<std::unique_ptr<Entity>>::iterator it;
             for (it = children.begin(); it != children.end();) {
-                if (*it == child) {
-                    delete *it;
+                if (it->get() == child) {
+                    delete it->release();
                     it = children.erase(it);
                 } else
                     it++;
@@ -115,7 +121,10 @@ namespace odfaeg {
         }
         //Return the children of the entities.
         std::vector<Entity*> Entity::getChildren() const {
-            return children;
+            std::vector<Entity*> childs;
+            for (unsigned int i = 0; i < children.size(); i++)
+                childs.push_back(children[i].get());
+            return childs;
         }
 
         //Return the number of entity's children.
@@ -151,15 +160,56 @@ namespace odfaeg {
             }
         }
         void Entity::addFace (Face* face) {
-            faces.push_back(face);
+            std::unique_ptr<Face> ptr;
+            ptr.reset(face);
+            faces.push_back(std::move(ptr));
         }
         std::vector<Face*> Entity::getFaces() const {
-            return faces;
+            std::vector<Face*> fcs;
+            for (unsigned int i = 0; i < faces.size(); i++) {
+                fcs.push_back(faces[i].get());
+            }
+            return fcs;
         }
-        Entity::~Entity() {
-            for (unsigned int i = 0; i < faces.size(); i++)
-                delete faces[i];
-            faces.clear();
-        }
+         void Entity::setShadowCenter(math::Vec3f shadowCenter) {
+                this->shadowCenter = shadowCenter;
+                for (unsigned int i = 0; i < children.size(); i++) {
+                    children[i]->setShadowCenter(shadowCenter);
+                }
+            }
+            math::Vec3f Entity::getShadowCenter() {
+                return shadowCenter;
+            }
+            void Entity::setShadowScale(math::Vec3f shadowScale) {
+                this->shadowScale = shadowScale;
+                for (unsigned int i = 0; i < children.size(); i++) {
+                    children[i]->setShadowScale(shadowScale);
+                }
+            }
+            math::Vec3f Entity::getShadowScale() {
+                return shadowScale;
+            }
+            void Entity::setShadowRotation(float angle, math::Vec3f axis) {
+                this->shadowRotationAngle = angle;
+                this->shadowRotationAxis = axis;
+                for (unsigned int i = 0; i < children.size(); i++) {
+                    children[i]->setShadowRotation(angle, axis);
+                }
+            }
+            math::Vec3f Entity::getShadowRotationAxis() {
+                return shadowRotationAxis;
+            }
+            float Entity::getShadowRotationAngle() {
+                return shadowRotationAngle;
+            }
+            void Entity::setShadowOrigin(math::Vec3f origin) {
+                shadowOrigin = origin;
+                for (unsigned int i = 0; i < children.size(); i++) {
+                    children[i]->setShadowOrigin(origin);
+                }
+            }
+            math::Vec3f Entity::getShadowOrigin() {
+                return shadowOrigin;
+            }
     }
 }

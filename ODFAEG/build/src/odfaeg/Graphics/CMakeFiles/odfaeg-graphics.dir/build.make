@@ -926,32 +926,9 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/gridMap.cpp.o.provides: src/o
 
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/gridMap.cpp.o.provides.build: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/gridMap.cpp.o
 
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/shadow.cpp.o: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/flags.make
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/shadow.cpp.o: ../src/odfaeg/Graphics/shadow.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/laurent/Développement/Projets-c++/ODFAEG/build/CMakeFiles $(CMAKE_PROGRESS_39)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/shadow.cpp.o"
-	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics && /usr/bin/clang++-3.6   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/odfaeg-graphics.dir/shadow.cpp.o -c /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/shadow.cpp
-
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/shadow.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/odfaeg-graphics.dir/shadow.cpp.i"
-	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics && /usr/bin/clang++-3.6  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/shadow.cpp > CMakeFiles/odfaeg-graphics.dir/shadow.cpp.i
-
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/shadow.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-graphics.dir/shadow.cpp.s"
-	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics && /usr/bin/clang++-3.6  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/shadow.cpp -o CMakeFiles/odfaeg-graphics.dir/shadow.cpp.s
-
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/shadow.cpp.o.requires:
-.PHONY : src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/shadow.cpp.o.requires
-
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/shadow.cpp.o.provides: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/shadow.cpp.o.requires
-	$(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/shadow.cpp.o.provides.build
-.PHONY : src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/shadow.cpp.o.provides
-
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/shadow.cpp.o.provides.build: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/shadow.cpp.o
-
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/map.cpp.o: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/flags.make
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/map.cpp.o: ../src/odfaeg/Graphics/map.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/laurent/Développement/Projets-c++/ODFAEG/build/CMakeFiles $(CMAKE_PROGRESS_40)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/laurent/Développement/Projets-c++/ODFAEG/build/CMakeFiles $(CMAKE_PROGRESS_39)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/map.cpp.o"
 	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics && /usr/bin/clang++-3.6   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/odfaeg-graphics.dir/map.cpp.o -c /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/map.cpp
 
@@ -974,7 +951,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/map.cpp.o.provides.build: src
 
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/tGround.cpp.o: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/flags.make
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/tGround.cpp.o: ../src/odfaeg/Graphics/tGround.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/laurent/Développement/Projets-c++/ODFAEG/build/CMakeFiles $(CMAKE_PROGRESS_41)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/laurent/Développement/Projets-c++/ODFAEG/build/CMakeFiles $(CMAKE_PROGRESS_40)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/tGround.cpp.o"
 	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics && /usr/bin/clang++-3.6   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/odfaeg-graphics.dir/tGround.cpp.o -c /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/tGround.cpp
 
@@ -997,7 +974,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/tGround.cpp.o.provides.build:
 
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/billBoard.cpp.o: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/flags.make
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/billBoard.cpp.o: ../src/odfaeg/Graphics/billBoard.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/laurent/Développement/Projets-c++/ODFAEG/build/CMakeFiles $(CMAKE_PROGRESS_42)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/laurent/Développement/Projets-c++/ODFAEG/build/CMakeFiles $(CMAKE_PROGRESS_41)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/billBoard.cpp.o"
 	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics && /usr/bin/clang++-3.6   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/odfaeg-graphics.dir/billBoard.cpp.o -c /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/billBoard.cpp
 
@@ -1020,7 +997,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/billBoard.cpp.o.provides.buil
 
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/sdlRenderWindow.cpp.o: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/flags.make
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/sdlRenderWindow.cpp.o: ../src/odfaeg/Graphics/sdlRenderWindow.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/laurent/Développement/Projets-c++/ODFAEG/build/CMakeFiles $(CMAKE_PROGRESS_43)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/laurent/Développement/Projets-c++/ODFAEG/build/CMakeFiles $(CMAKE_PROGRESS_42)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/sdlRenderWindow.cpp.o"
 	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics && /usr/bin/clang++-3.6   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/odfaeg-graphics.dir/sdlRenderWindow.cpp.o -c /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/sdlRenderWindow.cpp
 
@@ -1041,55 +1018,9 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/sdlRenderWindow.cpp.o.provide
 
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/sdlRenderWindow.cpp.o.provides.build: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/sdlRenderWindow.cpp.o
 
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/cpuRenderComponent.cpp.o: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/flags.make
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/cpuRenderComponent.cpp.o: ../src/odfaeg/Graphics/cpuRenderComponent.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/laurent/Développement/Projets-c++/ODFAEG/build/CMakeFiles $(CMAKE_PROGRESS_44)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/cpuRenderComponent.cpp.o"
-	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics && /usr/bin/clang++-3.6   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/odfaeg-graphics.dir/cpuRenderComponent.cpp.o -c /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/cpuRenderComponent.cpp
-
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/cpuRenderComponent.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/odfaeg-graphics.dir/cpuRenderComponent.cpp.i"
-	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics && /usr/bin/clang++-3.6  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/cpuRenderComponent.cpp > CMakeFiles/odfaeg-graphics.dir/cpuRenderComponent.cpp.i
-
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/cpuRenderComponent.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-graphics.dir/cpuRenderComponent.cpp.s"
-	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics && /usr/bin/clang++-3.6  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/cpuRenderComponent.cpp -o CMakeFiles/odfaeg-graphics.dir/cpuRenderComponent.cpp.s
-
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/cpuRenderComponent.cpp.o.requires:
-.PHONY : src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/cpuRenderComponent.cpp.o.requires
-
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/cpuRenderComponent.cpp.o.provides: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/cpuRenderComponent.cpp.o.requires
-	$(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/cpuRenderComponent.cpp.o.provides.build
-.PHONY : src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/cpuRenderComponent.cpp.o.provides
-
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/cpuRenderComponent.cpp.o.provides.build: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/cpuRenderComponent.cpp.o
-
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/fastRenderComponent.cpp.o: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/flags.make
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/fastRenderComponent.cpp.o: ../src/odfaeg/Graphics/fastRenderComponent.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/laurent/Développement/Projets-c++/ODFAEG/build/CMakeFiles $(CMAKE_PROGRESS_45)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/fastRenderComponent.cpp.o"
-	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics && /usr/bin/clang++-3.6   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/odfaeg-graphics.dir/fastRenderComponent.cpp.o -c /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/fastRenderComponent.cpp
-
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/fastRenderComponent.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/odfaeg-graphics.dir/fastRenderComponent.cpp.i"
-	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics && /usr/bin/clang++-3.6  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/fastRenderComponent.cpp > CMakeFiles/odfaeg-graphics.dir/fastRenderComponent.cpp.i
-
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/fastRenderComponent.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-graphics.dir/fastRenderComponent.cpp.s"
-	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics && /usr/bin/clang++-3.6  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/fastRenderComponent.cpp -o CMakeFiles/odfaeg-graphics.dir/fastRenderComponent.cpp.s
-
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/fastRenderComponent.cpp.o.requires:
-.PHONY : src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/fastRenderComponent.cpp.o.requires
-
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/fastRenderComponent.cpp.o.provides: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/fastRenderComponent.cpp.o.requires
-	$(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/fastRenderComponent.cpp.o.provides.build
-.PHONY : src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/fastRenderComponent.cpp.o.provides
-
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/fastRenderComponent.cpp.o.provides.build: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/fastRenderComponent.cpp.o
-
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/world.cpp.o: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/flags.make
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/world.cpp.o: ../src/odfaeg/Graphics/world.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/laurent/Développement/Projets-c++/ODFAEG/build/CMakeFiles $(CMAKE_PROGRESS_46)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/laurent/Développement/Projets-c++/ODFAEG/build/CMakeFiles $(CMAKE_PROGRESS_43)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/world.cpp.o"
 	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics && /usr/bin/clang++-3.6   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/odfaeg-graphics.dir/world.cpp.o -c /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/world.cpp
 
@@ -1112,7 +1043,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/world.cpp.o.provides.build: s
 
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/wall.cpp.o: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/flags.make
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/wall.cpp.o: ../src/odfaeg/Graphics/2D/wall.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/laurent/Développement/Projets-c++/ODFAEG/build/CMakeFiles $(CMAKE_PROGRESS_47)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/laurent/Développement/Projets-c++/ODFAEG/build/CMakeFiles $(CMAKE_PROGRESS_44)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/wall.cpp.o"
 	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics && /usr/bin/clang++-3.6   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/odfaeg-graphics.dir/2D/wall.cpp.o -c /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/2D/wall.cpp
 
@@ -1135,7 +1066,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/wall.cpp.o.provides.build:
 
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/ambientLight.cpp.o: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/flags.make
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/ambientLight.cpp.o: ../src/odfaeg/Graphics/2D/ambientLight.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/laurent/Développement/Projets-c++/ODFAEG/build/CMakeFiles $(CMAKE_PROGRESS_48)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/laurent/Développement/Projets-c++/ODFAEG/build/CMakeFiles $(CMAKE_PROGRESS_45)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/ambientLight.cpp.o"
 	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics && /usr/bin/clang++-3.6   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/odfaeg-graphics.dir/2D/ambientLight.cpp.o -c /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/2D/ambientLight.cpp
 
@@ -1158,7 +1089,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/ambientLight.cpp.o.provide
 
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/ponctualLight.cpp.o: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/flags.make
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/ponctualLight.cpp.o: ../src/odfaeg/Graphics/2D/ponctualLight.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/laurent/Développement/Projets-c++/ODFAEG/build/CMakeFiles $(CMAKE_PROGRESS_49)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/laurent/Développement/Projets-c++/ODFAEG/build/CMakeFiles $(CMAKE_PROGRESS_46)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/ponctualLight.cpp.o"
 	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics && /usr/bin/clang++-3.6   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/odfaeg-graphics.dir/2D/ponctualLight.cpp.o -c /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/2D/ponctualLight.cpp
 
@@ -1181,7 +1112,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/ponctualLight.cpp.o.provid
 
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/directionnalLight.cpp.o: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/flags.make
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/directionnalLight.cpp.o: ../src/odfaeg/Graphics/2D/directionnalLight.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/laurent/Développement/Projets-c++/ODFAEG/build/CMakeFiles $(CMAKE_PROGRESS_50)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/laurent/Développement/Projets-c++/ODFAEG/build/CMakeFiles $(CMAKE_PROGRESS_47)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/directionnalLight.cpp.o"
 	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics && /usr/bin/clang++-3.6   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/odfaeg-graphics.dir/2D/directionnalLight.cpp.o -c /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/2D/directionnalLight.cpp
 
@@ -1204,7 +1135,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/directionnalLight.cpp.o.pr
 
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/decor.cpp.o: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/flags.make
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/decor.cpp.o: ../src/odfaeg/Graphics/2D/decor.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/laurent/Développement/Projets-c++/ODFAEG/build/CMakeFiles $(CMAKE_PROGRESS_51)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/laurent/Développement/Projets-c++/ODFAEG/build/CMakeFiles $(CMAKE_PROGRESS_48)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/decor.cpp.o"
 	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics && /usr/bin/clang++-3.6   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/odfaeg-graphics.dir/2D/decor.cpp.o -c /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/2D/decor.cpp
 
@@ -1225,55 +1156,9 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/decor.cpp.o.provides: src/
 
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/decor.cpp.o.provides.build: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/decor.cpp.o
 
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/shadowTile.cpp.o: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/flags.make
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/shadowTile.cpp.o: ../src/odfaeg/Graphics/2D/shadowTile.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/laurent/Développement/Projets-c++/ODFAEG/build/CMakeFiles $(CMAKE_PROGRESS_52)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/shadowTile.cpp.o"
-	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics && /usr/bin/clang++-3.6   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/odfaeg-graphics.dir/2D/shadowTile.cpp.o -c /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/2D/shadowTile.cpp
-
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/shadowTile.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/odfaeg-graphics.dir/2D/shadowTile.cpp.i"
-	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics && /usr/bin/clang++-3.6  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/2D/shadowTile.cpp > CMakeFiles/odfaeg-graphics.dir/2D/shadowTile.cpp.i
-
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/shadowTile.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-graphics.dir/2D/shadowTile.cpp.s"
-	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics && /usr/bin/clang++-3.6  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/2D/shadowTile.cpp -o CMakeFiles/odfaeg-graphics.dir/2D/shadowTile.cpp.s
-
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/shadowTile.cpp.o.requires:
-.PHONY : src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/shadowTile.cpp.o.requires
-
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/shadowTile.cpp.o.provides: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/shadowTile.cpp.o.requires
-	$(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/shadowTile.cpp.o.provides.build
-.PHONY : src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/shadowTile.cpp.o.provides
-
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/shadowTile.cpp.o.provides.build: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/shadowTile.cpp.o
-
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/shadowWall.cpp.o: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/flags.make
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/shadowWall.cpp.o: ../src/odfaeg/Graphics/2D/shadowWall.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/laurent/Développement/Projets-c++/ODFAEG/build/CMakeFiles $(CMAKE_PROGRESS_53)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/shadowWall.cpp.o"
-	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics && /usr/bin/clang++-3.6   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/odfaeg-graphics.dir/2D/shadowWall.cpp.o -c /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/2D/shadowWall.cpp
-
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/shadowWall.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/odfaeg-graphics.dir/2D/shadowWall.cpp.i"
-	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics && /usr/bin/clang++-3.6  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/2D/shadowWall.cpp > CMakeFiles/odfaeg-graphics.dir/2D/shadowWall.cpp.i
-
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/shadowWall.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-graphics.dir/2D/shadowWall.cpp.s"
-	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics && /usr/bin/clang++-3.6  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/2D/shadowWall.cpp -o CMakeFiles/odfaeg-graphics.dir/2D/shadowWall.cpp.s
-
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/shadowWall.cpp.o.requires:
-.PHONY : src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/shadowWall.cpp.o.requires
-
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/shadowWall.cpp.o.provides: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/shadowWall.cpp.o.requires
-	$(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/shadowWall.cpp.o.provides.build
-.PHONY : src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/shadowWall.cpp.o.provides
-
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/shadowWall.cpp.o.provides.build: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/shadowWall.cpp.o
-
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/3D/cube.cpp.o: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/flags.make
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/3D/cube.cpp.o: ../src/odfaeg/Graphics/3D/cube.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/laurent/Développement/Projets-c++/ODFAEG/build/CMakeFiles $(CMAKE_PROGRESS_54)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/laurent/Développement/Projets-c++/ODFAEG/build/CMakeFiles $(CMAKE_PROGRESS_49)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/3D/cube.cpp.o"
 	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics && /usr/bin/clang++-3.6   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/odfaeg-graphics.dir/3D/cube.cpp.o -c /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/3D/cube.cpp
 
@@ -1296,7 +1181,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/3D/cube.cpp.o.provides.build:
 
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/button.cpp.o: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/flags.make
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/button.cpp.o: ../src/odfaeg/Graphics/GUI/button.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/laurent/Développement/Projets-c++/ODFAEG/build/CMakeFiles $(CMAKE_PROGRESS_55)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/laurent/Développement/Projets-c++/ODFAEG/build/CMakeFiles $(CMAKE_PROGRESS_50)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/button.cpp.o"
 	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics && /usr/bin/clang++-3.6   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/odfaeg-graphics.dir/GUI/button.cpp.o -c /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/button.cpp
 
@@ -1319,7 +1204,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/button.cpp.o.provides.bui
 
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.o: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/flags.make
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.o: ../src/odfaeg/Graphics/GUI/textArea.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/laurent/Développement/Projets-c++/ODFAEG/build/CMakeFiles $(CMAKE_PROGRESS_56)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/laurent/Développement/Projets-c++/ODFAEG/build/CMakeFiles $(CMAKE_PROGRESS_51)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.o"
 	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics && /usr/bin/clang++-3.6   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.o -c /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/textArea.cpp
 
@@ -1342,7 +1227,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.o.provides.b
 
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/optionPane.cpp.o: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/flags.make
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/optionPane.cpp.o: ../src/odfaeg/Graphics/GUI/optionPane.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/laurent/Développement/Projets-c++/ODFAEG/build/CMakeFiles $(CMAKE_PROGRESS_57)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/laurent/Développement/Projets-c++/ODFAEG/build/CMakeFiles $(CMAKE_PROGRESS_52)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/optionPane.cpp.o"
 	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics && /usr/bin/clang++-3.6   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/odfaeg-graphics.dir/GUI/optionPane.cpp.o -c /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/optionPane.cpp
 
@@ -1365,7 +1250,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/optionPane.cpp.o.provides
 
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menubar.cpp.o: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/flags.make
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menubar.cpp.o: ../src/odfaeg/Graphics/GUI/menubar.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/laurent/Développement/Projets-c++/ODFAEG/build/CMakeFiles $(CMAKE_PROGRESS_58)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/laurent/Développement/Projets-c++/ODFAEG/build/CMakeFiles $(CMAKE_PROGRESS_53)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menubar.cpp.o"
 	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics && /usr/bin/clang++-3.6   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/odfaeg-graphics.dir/GUI/menubar.cpp.o -c /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/menubar.cpp
 
@@ -1388,7 +1273,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menubar.cpp.o.provides.bu
 
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menu.cpp.o: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/flags.make
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menu.cpp.o: ../src/odfaeg/Graphics/GUI/menu.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/laurent/Développement/Projets-c++/ODFAEG/build/CMakeFiles $(CMAKE_PROGRESS_59)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/laurent/Développement/Projets-c++/ODFAEG/build/CMakeFiles $(CMAKE_PROGRESS_54)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menu.cpp.o"
 	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics && /usr/bin/clang++-3.6   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/odfaeg-graphics.dir/GUI/menu.cpp.o -c /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/menu.cpp
 
@@ -1411,7 +1296,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menu.cpp.o.provides.build
 
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menuItem.cpp.o: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/flags.make
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menuItem.cpp.o: ../src/odfaeg/Graphics/GUI/menuItem.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/laurent/Développement/Projets-c++/ODFAEG/build/CMakeFiles $(CMAKE_PROGRESS_60)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/laurent/Développement/Projets-c++/ODFAEG/build/CMakeFiles $(CMAKE_PROGRESS_55)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menuItem.cpp.o"
 	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics && /usr/bin/clang++-3.6   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/odfaeg-graphics.dir/GUI/menuItem.cpp.o -c /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/menuItem.cpp
 
@@ -1431,6 +1316,75 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menuItem.cpp.o.provides: 
 .PHONY : src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menuItem.cpp.o.provides
 
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menuItem.cpp.o.provides.build: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menuItem.cpp.o
+
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.o: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/flags.make
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.o: ../src/odfaeg/Graphics/GUI/filedialog.cpp
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/laurent/Développement/Projets-c++/ODFAEG/build/CMakeFiles $(CMAKE_PROGRESS_56)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.o"
+	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics && /usr/bin/clang++-3.6   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.o -c /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/filedialog.cpp
+
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.i"
+	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics && /usr/bin/clang++-3.6  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/filedialog.cpp > CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.i
+
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.s"
+	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics && /usr/bin/clang++-3.6  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/filedialog.cpp -o CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.s
+
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.o.requires:
+.PHONY : src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.o.requires
+
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.o.provides: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.o.requires
+	$(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.o.provides.build
+.PHONY : src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.o.provides
+
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.o.provides.build: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.o
+
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.o: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/flags.make
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.o: ../src/odfaeg/Graphics/GUI/label.cpp
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/laurent/Développement/Projets-c++/ODFAEG/build/CMakeFiles $(CMAKE_PROGRESS_57)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.o"
+	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics && /usr/bin/clang++-3.6   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.o -c /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/label.cpp
+
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.i"
+	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics && /usr/bin/clang++-3.6  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/label.cpp > CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.i
+
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.s"
+	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics && /usr/bin/clang++-3.6  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/label.cpp -o CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.s
+
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.o.requires:
+.PHONY : src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.o.requires
+
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.o.provides: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.o.requires
+	$(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.o.provides.build
+.PHONY : src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.o.provides
+
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.o.provides.build: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.o
+
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.o: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/flags.make
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.o: ../src/odfaeg/Graphics/GUI/panel.cpp
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/laurent/Développement/Projets-c++/ODFAEG/build/CMakeFiles $(CMAKE_PROGRESS_58)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.o"
+	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics && /usr/bin/clang++-3.6   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.o -c /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/panel.cpp
+
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.i"
+	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics && /usr/bin/clang++-3.6  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/panel.cpp > CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.i
+
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.s"
+	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics && /usr/bin/clang++-3.6  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/panel.cpp -o CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.s
+
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.o.requires:
+.PHONY : src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.o.requires
+
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.o.provides: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.o.requires
+	$(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.o.provides.build
+.PHONY : src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.o.provides
+
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.o.provides.build: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.o
 
 # Object files for target odfaeg-graphics
 odfaeg__graphics_OBJECTS = \
@@ -1472,28 +1426,26 @@ odfaeg__graphics_OBJECTS = \
 "CMakeFiles/odfaeg-graphics.dir/oitRenderComponent.cpp.o" \
 "CMakeFiles/odfaeg-graphics.dir/model.cpp.o" \
 "CMakeFiles/odfaeg-graphics.dir/gridMap.cpp.o" \
-"CMakeFiles/odfaeg-graphics.dir/shadow.cpp.o" \
 "CMakeFiles/odfaeg-graphics.dir/map.cpp.o" \
 "CMakeFiles/odfaeg-graphics.dir/tGround.cpp.o" \
 "CMakeFiles/odfaeg-graphics.dir/billBoard.cpp.o" \
 "CMakeFiles/odfaeg-graphics.dir/sdlRenderWindow.cpp.o" \
-"CMakeFiles/odfaeg-graphics.dir/cpuRenderComponent.cpp.o" \
-"CMakeFiles/odfaeg-graphics.dir/fastRenderComponent.cpp.o" \
 "CMakeFiles/odfaeg-graphics.dir/world.cpp.o" \
 "CMakeFiles/odfaeg-graphics.dir/2D/wall.cpp.o" \
 "CMakeFiles/odfaeg-graphics.dir/2D/ambientLight.cpp.o" \
 "CMakeFiles/odfaeg-graphics.dir/2D/ponctualLight.cpp.o" \
 "CMakeFiles/odfaeg-graphics.dir/2D/directionnalLight.cpp.o" \
 "CMakeFiles/odfaeg-graphics.dir/2D/decor.cpp.o" \
-"CMakeFiles/odfaeg-graphics.dir/2D/shadowTile.cpp.o" \
-"CMakeFiles/odfaeg-graphics.dir/2D/shadowWall.cpp.o" \
 "CMakeFiles/odfaeg-graphics.dir/3D/cube.cpp.o" \
 "CMakeFiles/odfaeg-graphics.dir/GUI/button.cpp.o" \
 "CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.o" \
 "CMakeFiles/odfaeg-graphics.dir/GUI/optionPane.cpp.o" \
 "CMakeFiles/odfaeg-graphics.dir/GUI/menubar.cpp.o" \
 "CMakeFiles/odfaeg-graphics.dir/GUI/menu.cpp.o" \
-"CMakeFiles/odfaeg-graphics.dir/GUI/menuItem.cpp.o"
+"CMakeFiles/odfaeg-graphics.dir/GUI/menuItem.cpp.o" \
+"CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.o" \
+"CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.o" \
+"CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.o"
 
 # External object files for target odfaeg-graphics
 odfaeg__graphics_EXTERNAL_OBJECTS =
@@ -1536,21 +1488,16 @@ lib/libodfaeg-graphics-s-d.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir
 lib/libodfaeg-graphics-s-d.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/oitRenderComponent.cpp.o
 lib/libodfaeg-graphics-s-d.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/model.cpp.o
 lib/libodfaeg-graphics-s-d.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/gridMap.cpp.o
-lib/libodfaeg-graphics-s-d.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/shadow.cpp.o
 lib/libodfaeg-graphics-s-d.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/map.cpp.o
 lib/libodfaeg-graphics-s-d.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/tGround.cpp.o
 lib/libodfaeg-graphics-s-d.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/billBoard.cpp.o
 lib/libodfaeg-graphics-s-d.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/sdlRenderWindow.cpp.o
-lib/libodfaeg-graphics-s-d.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/cpuRenderComponent.cpp.o
-lib/libodfaeg-graphics-s-d.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/fastRenderComponent.cpp.o
 lib/libodfaeg-graphics-s-d.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/world.cpp.o
 lib/libodfaeg-graphics-s-d.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/wall.cpp.o
 lib/libodfaeg-graphics-s-d.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/ambientLight.cpp.o
 lib/libodfaeg-graphics-s-d.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/ponctualLight.cpp.o
 lib/libodfaeg-graphics-s-d.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/directionnalLight.cpp.o
 lib/libodfaeg-graphics-s-d.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/decor.cpp.o
-lib/libodfaeg-graphics-s-d.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/shadowTile.cpp.o
-lib/libodfaeg-graphics-s-d.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/shadowWall.cpp.o
 lib/libodfaeg-graphics-s-d.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/3D/cube.cpp.o
 lib/libodfaeg-graphics-s-d.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/button.cpp.o
 lib/libodfaeg-graphics-s-d.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.o
@@ -1558,6 +1505,9 @@ lib/libodfaeg-graphics-s-d.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir
 lib/libodfaeg-graphics-s-d.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menubar.cpp.o
 lib/libodfaeg-graphics-s-d.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menu.cpp.o
 lib/libodfaeg-graphics-s-d.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menuItem.cpp.o
+lib/libodfaeg-graphics-s-d.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.o
+lib/libodfaeg-graphics-s-d.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.o
+lib/libodfaeg-graphics-s-d.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.o
 lib/libodfaeg-graphics-s-d.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make
 lib/libodfaeg-graphics-s-d.a: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --red --bold "Linking CXX static library ../../../lib/libodfaeg-graphics-s-d.a"
@@ -1606,21 +1556,16 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/requires: src/odfaeg/Graphics
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/requires: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/oitRenderComponent.cpp.o.requires
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/requires: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/model.cpp.o.requires
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/requires: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/gridMap.cpp.o.requires
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/requires: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/shadow.cpp.o.requires
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/requires: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/map.cpp.o.requires
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/requires: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/tGround.cpp.o.requires
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/requires: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/billBoard.cpp.o.requires
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/requires: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/sdlRenderWindow.cpp.o.requires
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/requires: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/cpuRenderComponent.cpp.o.requires
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/requires: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/fastRenderComponent.cpp.o.requires
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/requires: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/world.cpp.o.requires
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/requires: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/wall.cpp.o.requires
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/requires: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/ambientLight.cpp.o.requires
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/requires: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/ponctualLight.cpp.o.requires
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/requires: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/directionnalLight.cpp.o.requires
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/requires: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/decor.cpp.o.requires
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/requires: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/shadowTile.cpp.o.requires
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/requires: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/shadowWall.cpp.o.requires
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/requires: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/3D/cube.cpp.o.requires
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/requires: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/button.cpp.o.requires
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/requires: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.o.requires
@@ -1628,6 +1573,9 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/requires: src/odfaeg/Graphics
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/requires: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menubar.cpp.o.requires
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/requires: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menu.cpp.o.requires
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/requires: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menuItem.cpp.o.requires
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/requires: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.o.requires
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/requires: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.o.requires
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/requires: src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.o.requires
 .PHONY : src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/requires
 
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/clean:

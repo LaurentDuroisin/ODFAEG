@@ -39,8 +39,6 @@ namespace
 }
 namespace odfaeg {
     namespace graphic {
-        unsigned int RenderTarget::majorVersion = getMajorVersion();
-        unsigned int RenderTarget::minorVersion = getMinorVersion();
         using namespace sf;
         ////////////////////////////////////////////////////////////
         RenderTarget::RenderTarget() :
@@ -133,10 +131,7 @@ namespace odfaeg {
 
         ////////////////////////////////////////////////////////////
         void RenderTarget::draw(const Vertex* vertices, unsigned int vertexCount,
-                                PrimitiveType type, RenderStates states, const Vector3f* normals, unsigned int normalCount,
-                                const unsigned int* indexes, const unsigned int indexesCount,
-                                const unsigned int* numIndexes, unsigned int numIndexesCount, const unsigned int* baseVertices,
-                                unsigned int baseVerticesCount, const unsigned int* baseIndexes, unsigned int baseIndexesCount)
+                                PrimitiveType type, RenderStates states)
         {
 
             // Nothing to draw?
@@ -154,7 +149,7 @@ namespace odfaeg {
                     applyCurrentView();
                 // Check if the vertex count is low enough so that we can pre-transform them
                 bool useVertexCache = (vertexCount <= StatesCache::VertexCacheSize);
-                if (useVertexCache && !GLEW_ARB_vertex_buffer_object)
+                if (useVertexCache)
                 {
 
                     // Pre-transform the vertices and store them into the vertex cache
@@ -193,7 +188,7 @@ namespace odfaeg {
                     applyShader(states.shader);
 
                 // If we pre-transform the vertices, we must use our internal vertex cache
-                if (useVertexCache && !GLEW_ARB_vertex_buffer_object)
+                if (useVertexCache)
                 {
                     // ... and if we already used it previously, we don't need to set the pointers again
                     if (!m_cache.useVertexCache)
@@ -202,112 +197,18 @@ namespace odfaeg {
                         vertices = nullptr;
                 }
                 // Setup the pointers to the vertices' components
-                if (vertices && GLEW_ARB_vertex_buffer_object) {
-                    //In moddern opengl we need to use glVertexAttribPointer functions. (gl*Pointer is deprecated)
-                    if (majorVersion >= 3 && minorVersion >= 3) {
-                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, states.vertexBufferId));
-                        glCheck(glEnableVertexAttribArray(0));
-                        glCheck(glVertexAttribPointer(0, 3,GL_FLOAT,GL_FALSE,sizeof(Vertex), (GLvoid*) 0));
-                        glCheck(glEnableVertexAttribArray(1));
-                        glCheck(glVertexAttribPointer(1, 4,GL_UNSIGNED_BYTE,GL_TRUE,sizeof(Vertex),(GLvoid*) 12));
-                        glCheck(glEnableVertexAttribArray(2));
-                        glCheck(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) 16));
-                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, states.normalBufferId));
-                        glCheck(glEnableVertexAttribArray(3));
-                        glCheck(glVertexAttribPointer(3, 3,GL_FLOAT,GL_FALSE,sizeof(Vector3f), (GLvoid*) 0));
-                        static const GLenum modes[] = {GL_POINTS, GL_LINES, GL_LINE_STRIP, GL_TRIANGLES,
-                                                       GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_QUADS};
-                        GLenum mode = modes[type];
-                        if (indexes == nullptr) {
-                            glCheck(glDrawArrays(mode, 0, vertexCount));
-                        } else if (indexes != nullptr && (numIndexesCount == 0 || baseVerticesCount == 0 || baseIndexesCount == 0)) {
-                            glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, states.indexBufferId));
-                            glCheck(glDrawElements(mode, indexesCount,GL_UNSIGNED_INT,0));
-                        } else {
-                            // Find the OpenGL primitive type
-                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, states.mvpBufferId));
-                            for (unsigned int i = 0; i < 4 ; i++) {
-                                glCheck(glEnableVertexAttribArray(MVP_LOCATION + i));
-                                glCheck(glVertexAttribPointer(MVP_LOCATION + i, 4, GL_FLOAT, GL_FALSE, sizeof(math::Matrix4f),
-                                                    (const GLvoid*)(sizeof(GLfloat) * i * 4)));
-                                glCheck(glVertexAttribDivisor(MVP_LOCATION+ i, 1));
-                            }
-                            // Draw the primitives
-                            for (unsigned int i = 0; i < states.numInstances; i++) {
-
-                                glCheck(glDrawElementsInstancedBaseVertex(mode,
-                                                                          numIndexes[i],
-                                                                          GL_UNSIGNED_INT,
-                                                                          (void*)(sizeof(unsigned int) * baseIndexes[i]),
-                                                                          states.numInstances,
-                                                                          baseVertices[i]));
-                            }
-                            for (unsigned int i = 0; i < 4 ; i++) {
-                                glCheck(glDisableVertexAttribArray(MVP_LOCATION + i));
-                            }
-                        }
-                        glCheck(glDisableVertexAttribArray(3));
-                        glCheck(glDisableVertexAttribArray(2));
-                        glCheck(glDisableVertexAttribArray(1));
-                        glCheck(glDisableVertexAttribArray(0));
-                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
-                        glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
-                        states.vertexBufferId = 0;
-                        states.normalBufferId = 0;
-                        states.indexBufferId = 0;
-                    } else {
-                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, states.vertexBufferId));
-                        glCheck(glEnableClientState(GL_COLOR_ARRAY));
-                        glCheck(glEnableClientState(GL_NORMAL_ARRAY));
-                        glCheck(glEnableClientState(GL_TEXTURE_COORD_ARRAY));
-                        glCheck(glEnableClientState(GL_VERTEX_ARRAY));
-                        glCheck(glVertexPointer(3, GL_FLOAT, sizeof(Vertex), (GLvoid*) 0));
-                        glCheck(glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(Vertex), (GLvoid*) 12));
-                        glCheck(glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), (GLvoid*) 16));
-                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, states.normalBufferId));
-                        glCheck(glNormalPointer(GL_FLOAT,sizeof(Vector3f), (GLvoid*) 0));
-                        // Find the OpenGL primitive type
-                        static const GLenum modes[] = {GL_POINTS, GL_LINES, GL_LINE_STRIP, GL_TRIANGLES,
-                                                       GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_QUADS};
-                        GLenum mode = modes[type];
-                        // Draw the primitives
-                        if (indexes != nullptr) {
-                            glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, states.indexBufferId));
-                            glCheck(glDrawElements(mode,indexesCount,GL_UNSIGNED_INT,0));
-                        } else {
-                            glCheck(glDrawArrays(mode, 0, vertexCount));
-                        }
-                        glCheck(glDisableClientState(GL_COLOR_ARRAY));
-                        glCheck(glDisableClientState(GL_NORMAL_ARRAY));
-                        glCheck(glDisableClientState(GL_TEXTURE_COORD_ARRAY));
-                        glCheck(glDisableClientState(GL_VERTEX_ARRAY));
-                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
-                        glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
-                        states.vertexBufferId = 0;
-                        states.normalBufferId = 0;
-                    }
-                } else if (vertices) {
-                    glCheck(glEnableClientState(GL_COLOR_ARRAY));
-                    glCheck(glEnableClientState(GL_NORMAL_ARRAY));
-                    glCheck(glEnableClientState(GL_TEXTURE_COORD_ARRAY));
-                    glCheck(glEnableClientState(GL_VERTEX_ARRAY));
+               if (vertices) {
                     const char* data = reinterpret_cast<const char*>(vertices);
-                    const char* data2 = reinterpret_cast<const char*>(normals);
                     glCheck(glVertexPointer(3, GL_FLOAT, sizeof(Vertex), data + 0));
                     glCheck(glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(Vertex), data + 12));
                     glCheck(glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), data + 16));
-                    glCheck(glNormalPointer(GL_FLOAT,sizeof(Vector3f), data2 + 0));
-                    // Find the OpenGL primitive type
-                    static const GLenum modes[] = {GL_POINTS, GL_LINES, GL_LINE_STRIP, GL_TRIANGLES,
-                                                   GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_QUADS};
-                    GLenum mode = modes[type];
-                    // Draw the primitives
-                    glCheck(glDrawArrays(mode, 0, vertexCount));
-                    glCheck(glDisableClientState(GL_COLOR_ARRAY));
-                    glCheck(glDisableClientState(GL_NORMAL_ARRAY));
-                    glCheck(glDisableClientState(GL_TEXTURE_COORD_ARRAY));
-                    glCheck(glDisableClientState(GL_VERTEX_ARRAY));
                 }
+                // Find the OpenGL primitive type
+                static const GLenum modes[] = {GL_POINTS, GL_LINES, GL_LINE_STRIP, GL_TRIANGLES,
+                                                   GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_QUADS};
+                GLenum mode = modes[type];
+                // Draw the primitives
+                glCheck(glDrawArrays(mode, 0, vertexCount));
                 // Unbind the shader, if any
                 if (states.shader)
                     applyShader(nullptr);
@@ -371,17 +272,15 @@ namespace odfaeg {
 
                 #endif
                 // Define the default OpenGL states
+                glCheck(glEnableClientState(GL_COLOR_ARRAY));
+                glCheck(glEnableClientState(GL_TEXTURE_COORD_ARRAY));
+                glCheck(glEnableClientState(GL_VERTEX_ARRAY));
                 glCheck(glDisable(GL_CULL_FACE));
                 glCheck(glDisable(GL_LIGHTING));
-                if (isUsingDepthTest()) {
-                    glCheck(glEnable(GL_DEPTH_TEST));
-                    glCheck(glEnable(GL_ALPHA_TEST));
-                    glCheck(glAlphaFunc(GL_GREATER, 0.f));
-                    glCheck(glDepthFunc(GL_GREATER));
-                } else {
-                    glCheck(glDisable(GL_DEPTH_TEST));
-                    glCheck(glDisable(GL_ALPHA_TEST));
-                }
+                glCheck(glEnable(GL_DEPTH_TEST));
+                glCheck(glEnable(GL_ALPHA_TEST));
+                glCheck(glAlphaFunc(GL_GREATER, 0.f));
+                glCheck(glDepthFunc(GL_GREATER));
                 glCheck(glEnable(GL_TEXTURE_2D));
                 glCheck(glEnable(GL_BLEND));
                 glCheck(glClearDepth(0));
@@ -481,26 +380,6 @@ namespace odfaeg {
             float* matrix = tm.getGlMatrix();
             glCheck(glMultMatrixf(matrix));
             delete matrix;
-        }
-        void RenderTarget::setMajorVersion(unsigned int version) {
-             majorVersion = version;
-        }
-        void RenderTarget::setMinorVersion(unsigned int version) {
-             minorVersion = version;
-        }
-        unsigned int RenderTarget::getMajorVersion() {
-            const GLubyte* version = glGetString(GL_VERSION);
-            if (version)
-                return version[0] - '0';
-            return 2;
-        }
-        unsigned int RenderTarget::getMinorVersion() {
-            const GLubyte* version = glGetString(GL_VERSION);
-
-            if (version) {
-                return version[2] - '0';
-            }
-            return 0;
         }
         ////////////////////////////////////////////////////////////
         void RenderTarget::applyShader(const Shader* shader)

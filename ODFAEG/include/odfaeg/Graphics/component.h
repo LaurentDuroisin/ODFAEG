@@ -2,13 +2,16 @@
 #include "drawable.h"
 #include "transformable.h"
 #include "../Core/listener.h"
+#include "renderWindow.h"
 namespace odfaeg {
     namespace graphic {
         class Component : public Drawable, public Transformable {
         public :
-            Component(math::Vec3f position, math::Vec3f size, math::Vec3f origin, bool useThread, unsigned int priority=0)
+            Component(RenderWindow& window, math::Vec3f position, math::Vec3f size, math::Vec3f origin, unsigned int priority=0)
             : Transformable(position, size, origin),
-            listener(useThread), priority(priority) {
+            listener(),
+            priority(priority),
+            window(window) {
                 activateEventContext = true;
                 visible = true;
                 id = nbComponents;
@@ -16,7 +19,7 @@ namespace odfaeg {
             }
             virtual void clear() = 0;
             virtual void pushEvent(sf::Event event) = 0;
-            virtual void onUpdate(sf::Event& event) {}
+            virtual void onUpdate(RenderWindow* window, sf::Event& event) {}
             core::Listener& getListener() {
                 return listener;
             }
@@ -32,7 +35,11 @@ namespace odfaeg {
             }
             virtual void onVisibilityChanged(bool visible);
             virtual void onEventContextActivated(bool activate);
+            RenderWindow& getWindow() {
+                return window;
+            }
         private :
+            RenderWindow& window;
             core::Listener listener;
             bool activateEventContext;
             bool visible;

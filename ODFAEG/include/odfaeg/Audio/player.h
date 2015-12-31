@@ -2,6 +2,10 @@
 #define ODFAEG_PLAYER_HPP
 #include "stream.h"
 #include <memory>
+/**
+  *\namespace odfaeg
+  * the namespace of the Opensource Development Framework Adapted for Every Games.
+  */
 namespace odfaeg {
     namespace audio {
         class Player {

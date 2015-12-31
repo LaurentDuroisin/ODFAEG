@@ -17,111 +17,35 @@ namespace odfaeg {
             this->name = name;
             diagSize = math::Math::sqrt(math::Math::power(cellWidth, 2) + math::Math::power(cellHeight, 2));
             sf::Vector3i resolution;
+            View view = frcm->getWindow().getView();
+            physic::BoundingBox viewArea = view.getViewVolume();
+            math::Vec3f position (viewArea.getPosition().x,viewArea.getPosition().y, view.getPosition().z);
+            math::Vec3f size (viewArea.getWidth(), viewArea.getHeight(), 0);
             if (frcm != nullptr) {
-                shadowMap = new RenderTexture();
-                lightMap = new RenderTexture();
-                stencilBuffer = new RenderTexture();
-                normalMap = new RenderTexture();
-                refractionMap = new RenderTexture();
-                backDepthBuffer = new RenderTexture();
-                shadowMap->create(frcm->getWindow().getSize().x, frcm->getWindow().getSize().y,frcm->getWindow().getSettings());
-                lightMap->create(frcm->getWindow().getSize().x, frcm->getWindow().getSize().y,frcm->getWindow().getSettings());
-                stencilBuffer->create(frcm->getWindow().getSize().x, frcm->getWindow().getSize().y,frcm->getWindow().getSettings());
-                normalMap->create(frcm->getWindow().getSize().x, frcm->getWindow().getSize().y,frcm->getWindow().getSettings());
-                refractionMap->create(frcm->getWindow().getSize().x, frcm->getWindow().getSize().y,frcm->getWindow().getSettings());
-                backDepthBuffer->create(frcm->getWindow().getSize().x, frcm->getWindow().getSize().y,frcm->getWindow().getSettings());
-                resolution = sf::Vector3i ((int) frcm->getWindow().getSize().x, (int) frcm->getWindow().getSize().y, frcm->getWindow().getView().getSize().z);
-                perPixLightingShader = new Shader();
-                buildShadowMapShader = new Shader();
-                perPixShadowShader = new Shader();
-                buildNormalMapShader = new Shader();
-                buildRefractionMapShader = new Shader();
-                depthBufferGenShader = new Shader();
-                perPixShadowShader2 = new Shader();
-                if (Shader::getShadingLanguageVersionMajor() >= 3 && Shader::getShadingLanguageVersionMinor() >= 3) {
-                    const std::string perPixLightingVertexShader =
-                    "#version 330 core\n"
-                    "layout (location = 0) in vec3 vertex_position;"
-                    "layout (location = 1) in vec4 vertex_color;"
-                    "layout (location = 2) in vec2 vertex_texCoords0;"
-                    "layout (location = 3) in vec3 vertex_normal;"
-                    "uniform mat4 p;"
-                    "uniform mat4 v;"
-                    "out mat4 projMat;"
-                    "out vec2 texCoords;"
-                    "out vec4 color;"
-                    "void main () {"
-                            "gl_Position = p * v * vec4(vertex_position.xyz, 1);"
-                            "texCoords = vertex_texCoords0;"
-                            "color = vertex_color;"
-                            "projMat = p;"
-                    "}";
-                    const std::string perPixLightingFragmentShader =
-                    "#version 330 core\n"
-                    "layout(origin_upper_left, pixel_center_integer) in vec4 gl_FragCoord;"
-                    "const vec2 size = vec2(2.0,0.0);"
-                    "const ivec3 off = ivec3(-1,0,1);"
-                    "uniform sampler2D normalMap;"
-                    "uniform sampler2D lightMap;"
-                    "uniform sampler2D specularTexture;"
-                    "uniform sampler2D bumpMap;"
-                    "uniform vec3 resolution;"
-                    "uniform vec4 lightColor;"
-                    "uniform vec4 lightPos;"
-                    "in mat4 projMat;"
-                    "void main () { "
-                        "vec2 position = vec2 (gl_FragCoord.xy / resolution.xy);"
-                        "vec4 normal = texture (normalMap, position);"
-                        "vec4 bump = texture (bumpMap, position);"
-                        "vec4 specularInfos = texture (specularTexture, position);"
-                        "vec3 sLightPos = vec3 (lightPos.x, lightPos.y, -lightPos.z * (gl_DepthRange.far - gl_DepthRange.near));"
-                        "float radius = lightPos.w;"
-                        "vec3 pixPos = vec3 (gl_FragCoord.x, gl_FragCoord.y, -normal.w * (gl_DepthRange.far - gl_DepthRange.near));"
-                        "vec4 lightMapColor = texture2D(lightMap, position);"
-                        "vec3 viewPos = vec3(resolution.x * 0.5f, resolution.y * 0.5f, 0);"
-                        "float z = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
-                        "vec3 vertexToLight = sLightPos - pixPos;"
-                        "if (bump.x != 0 && bump.y != 0 && bump.z != 0) {"
-                            "float s01 = textureOffset(normalMap, position, off.xy).z;"
-                            "float s21 = textureOffset(normalMap, position, off.zy).z;"
-                            "float s10 = textureOffset(normalMap, position, off.yx).z;"
-                            "float s12 = textureOffset(normalMap, position, off.yz).z;"
-                            "vec3 tmpNormal = (normal.xyz);"
-                            "vec3 tangeant = normalize (vec3(size.xy, s21 - s01));"
-                            "vec3 binomial = normalize (vec3(size.yx, s12 - s10));"
-                            "normal.x = dot(vertexToLight, tangeant);"
-                            "normal.y = dot(vertexToLight, binomial);"
-                            "normal.z = dot(vertexToLight, tmpNormal);"
-                            "normal.w = bump.w;"
-                        "}"
-                        "if (z >= normal.w) {"
-                            "vec4 specularColor = vec4(0, 0, 0, 0);"
-                            "float attenuation = 1.f - length(vertexToLight) / radius;"
-                            "vec3 pixToView = pixPos - viewPos;"
-                            "float normalLength = dot(normal.xyz, vertexToLight);"
-                            "vec3 lightReflect = vertexToLight + 2 * (normal.xyz * normalLength - vertexToLight);"
-                            "float m = specularInfos.r;"
-                            "float p = specularInfos.g;"
-                            "float specularFactor = dot(normalize(pixToView), normalize(lightReflect));"
-                            "specularFactor = pow (specularFactor, p);"
-                            "if (specularFactor > 0) {"
-                                "specularColor = vec4(lightColor.rgb, 1) * m * specularFactor;"
-                            "}"
-                            "if (normal.x != 0 || normal.y != 0 || normal.z != 0 && vertexToLight.z > 0.f) {"
-                                "vec3 dirToLight = normalize(vertexToLight.xyz);"
-                                "float nDotl = dot (dirToLight, normal.xyz);"
-                                "attenuation *= nDotl;"
-                            "}"
-                            "gl_FragColor = vec4(lightColor.xyz, 1) * max(0.0f, attenuation) + specularColor;"
-                        "} else {"
-                            "gl_FragColor = lightMapColor;"
-                        "}"
-                    "}";
-                    if (!perPixLightingShader->loadFromMemory(perPixLightingVertexShader, perPixLightingFragmentShader)) {
-                        throw core::Erreur(53, "Error, failed to load per pixel lighting shader", 3);
-                    }
-
-                } else {
+                if (Shader::isAvailable()) {
+                    shadowMap = std::make_unique<RenderTexture>();
+                    lightMap = std::make_unique<RenderTexture>();
+                    stencilBuffer = std::make_unique<RenderTexture>();
+                    normalMap = std::make_unique<RenderTexture>();
+                    refractionMap = std::make_unique<RenderTexture>();
+                    backDepthBuffer = std::make_unique<RenderTexture>();
+                    shadowMap->create(frcm->getWindow().getSize().x, frcm->getWindow().getSize().y,frcm->getWindow().getSettings());
+                    lightMap->create(frcm->getWindow().getSize().x, frcm->getWindow().getSize().y,frcm->getWindow().getSettings());
+                    stencilBuffer->create(frcm->getWindow().getSize().x, frcm->getWindow().getSize().y,frcm->getWindow().getSettings());
+                    normalMap->create(frcm->getWindow().getSize().x, frcm->getWindow().getSize().y,frcm->getWindow().getSettings());
+                    refractionMap->create(frcm->getWindow().getSize().x, frcm->getWindow().getSize().y,frcm->getWindow().getSettings());
+                    backDepthBuffer->create(frcm->getWindow().getSize().x, frcm->getWindow().getSize().y,frcm->getWindow().getSettings());
+                    resolution = sf::Vector3i ((int) frcm->getWindow().getSize().x, (int) frcm->getWindow().getSize().y, frcm->getWindow().getView().getSize().z);
+                    perPixLightingShader = std::make_unique<Shader>();
+                    buildShadowMapShader = std::make_unique<Shader>();
+                    perPixShadowShader = std::make_unique<Shader>();
+                    buildNormalMapShader = std::make_unique<Shader>();
+                    buildRefractionMapShader = std::make_unique<Shader>();
+                    depthBufferGenShader = std::make_unique<Shader>();
+                    perPixShadowShader2 = std::make_unique<Shader>();
+                    shadowTile = std::make_unique<Tile> (&shadowMap->getTexture(),math::Vec3f(position.x, position.y, position.z), math::Vec3f(size.x, size.y, 0),sf::IntRect(0, 0, size.x, size.y));
+                    lightTile = std::make_unique<Tile>  (&lightMap->getTexture(), math::Vec3f(position.x, position.y, position.z), math::Vec3f(size.x, size.y, 0),sf::IntRect(0, 0, size.x, size.y));
+                    refractionTile = std::make_unique<Tile> (&refractionMap->getTexture(), math::Vec3f(position.x, position.y, position.z), math::Vec3f(size.x, size.y, 0),sf::IntRect(0, 0, size.x, size.y));
                     const std::string  depthGenVertexShader =
                     "#version 130 \n"
                     "out mat4 projMat;"
@@ -375,7 +299,7 @@ namespace odfaeg {
                     if (!perPixShadowShader->loadFromMemory(perPixShadowVertexShader, perPixShadowFragmentShader)) {
                         throw core::Erreur(54, "Error, failed to load per pix shadow map shader", 3);
                     }
-                     if (!perPixShadowShader2->loadFromMemory(perPixShadowVertexShader2, perPixShadowFragmentShader2)) {
+                    if (!perPixShadowShader2->loadFromMemory(perPixShadowVertexShader2, perPixShadowFragmentShader2)) {
                         throw core::Erreur(55, "Error, failed to load per pix shadow map shader", 3);
                     }
                     if (!perPixLightingShader->loadFromMemory(perPixLightingVertexShader, perPixLightingFragmentShader)) {
@@ -387,23 +311,25 @@ namespace odfaeg {
                     if (!depthBufferGenShader->loadFromMemory(depthGenVertexShader, depthGenFragShader)) {
                         throw core::Erreur(58, "Error, failed to load depth buffer generator shader", 3);
                     }
+                    buildNormalMapShader->setParameter("texture", Shader::CurrentTexture);
+                    perPixLightingShader->setParameter("resolution", resolution.x, resolution.y, resolution.z);
+                    perPixLightingShader->setParameter("lightMap",lightMap->getTexture());
+                    buildShadowMapShader->setParameter("texture", Shader::CurrentTexture);
+                    perPixShadowShader->setParameter("stencilBuffer", stencilBuffer->getTexture());
+                    perPixShadowShader->setParameter("texture", Shader::CurrentTexture);
+                    perPixShadowShader2->setParameter("shadowBuffer", shadowMap->getTexture());
+                    perPixShadowShader2->setParameter("texture", Shader::CurrentTexture);
+                    buildRefractionMapShader->setParameter("texture", Shader::CurrentTexture);
+                    buildRefractionMapShader->setParameter("resolution", resolution.x, resolution.y, resolution.z);
+                    buildRefractionMapShader->setParameter("refractionBuffer", refractionMap->getTexture());
+                    buildRefractionMapShader->setParameter("backdepthBuffer", backDepthBuffer->getTexture());
+                    buildRefractionMapShader->setParameter("refractionBuffer", refractionMap->getTexture());
+                    depthBufferGenShader->setParameter("resolution", resolution.x, resolution.y, resolution.z);
+                    depthBufferGenShader->setParameter("texture", Shader::CurrentTexture);
+                    depthBufferGenShader->setParameter("depthBuffer", backDepthBuffer->getTexture());
+                } else {
+                    throw core::Erreur(55, "Shader not supported!", 0);
                 }
-                buildNormalMapShader->setParameter("texture", Shader::CurrentTexture);
-                perPixLightingShader->setParameter("resolution", resolution.x, resolution.y, resolution.z);
-                perPixLightingShader->setParameter("lightMap",lightMap->getTexture());
-                buildShadowMapShader->setParameter("texture", Shader::CurrentTexture);
-                perPixShadowShader->setParameter("stencilBuffer", stencilBuffer->getTexture());
-                perPixShadowShader->setParameter("texture", Shader::CurrentTexture);
-                perPixShadowShader2->setParameter("shadowBuffer", shadowMap->getTexture());
-                perPixShadowShader2->setParameter("texture", Shader::CurrentTexture);
-                buildRefractionMapShader->setParameter("texture", Shader::CurrentTexture);
-                buildRefractionMapShader->setParameter("resolution", resolution.x, resolution.y, resolution.z);
-                buildRefractionMapShader->setParameter("refractionBuffer", refractionMap->getTexture());
-                buildRefractionMapShader->setParameter("backdepthBuffer", backDepthBuffer->getTexture());
-                buildRefractionMapShader->setParameter("refractionBuffer", refractionMap->getTexture());
-                depthBufferGenShader->setParameter("resolution", resolution.x, resolution.y, resolution.z);
-                depthBufferGenShader->setParameter("texture", Shader::CurrentTexture);
-                depthBufferGenShader->setParameter("depthBuffer", backDepthBuffer->getTexture());
             }
         }
         void Map::generate_map(std::vector<Tile*> tGround, std::vector<Tile*> walls, math::Vec2f tileSize, physic::BoundingBox &rect, bool terrain3D) {
@@ -426,30 +352,30 @@ namespace odfaeg {
                     math::Vec2f pos (projPos.x + startX, projPos.y + startY);
                     //Mur du coin en haut \E0 gauche.
                     if (x == startX && y == startY && walls.size() >= 4) {
-                        g2d::Wall *w = new g2d::Wall(3, 80, new Tile(*walls[3]),&g2d::AmbientLight::getAmbientLight(), Shadow::SHADOW_TYPE::SHADOW_WALL);
+                        g2d::Wall *w = new g2d::Wall(new Tile(*walls[3]),&g2d::AmbientLight::getAmbientLight());
                         w->setPosition(math::Vec3f(pos.x, pos.y, pos.y + walls[3]->getSize().y * 0.5f));
                         addEntity(w);
                         gridMap->getGridCellAt(math::Vec3f(w->getPosition().x, w->getPosition().y, 0))->setPassable(false);
 
                         //Mur du coin en haut \E0 droite.
                     } else if (x == endX - tileSize.x && y == startY && walls.size() >= 5) {
-                        g2d::Wall *w = new g2d::Wall(4, 80, new Tile(*walls[4]),&g2d::AmbientLight::getAmbientLight(), Shadow::SHADOW_TYPE::SHADOW_WALL);
+                        g2d::Wall *w = new g2d::Wall(new Tile(*walls[4]),&g2d::AmbientLight::getAmbientLight());
                         w->setPosition(math::Vec3f(pos.x, pos.y, pos.y + walls[4]->getSize().y * 0.5f));
                         addEntity(w);
                         gridMap->getGridCellAt(math::Vec3f(w->getPosition().x, w->getPosition().y, w->getPosition().z))->setPassable(false);
                         //Mur du coin en bas \E0 droite.
                     } else if (x == endX - tileSize.x && y == endY - tileSize.y && walls.size() >= 3) {
-                        g2d::Wall *w = new g2d::Wall(2, 80, new Tile(*walls[2]),&g2d::AmbientLight::getAmbientLight(), Shadow::SHADOW_TYPE::SHADOW_WALL);
+                        g2d::Wall *w = new g2d::Wall(new Tile(*walls[2]),&g2d::AmbientLight::getAmbientLight());
                         w->setPosition(math::Vec3f(pos.x, pos.y, pos.y + walls[2]->getSize().y * 0.5f));
                         addEntity(w);
                         gridMap->getGridCellAt(math::Vec3f(w->getPosition().x, w->getPosition().y, 0))->setPassable(false);
                     } else if (x == startX && y == endY - tileSize.y && walls.size() >= 6) {
-                        g2d::Wall *w = new g2d::Wall(5, 80, new Tile(*walls[5]),&g2d::AmbientLight::getAmbientLight(), Shadow::SHADOW_TYPE::SHADOW_WALL);
+                        g2d::Wall *w = new g2d::Wall(new Tile(*walls[5]),&g2d::AmbientLight::getAmbientLight());
                         w->setPosition(math::Vec3f(pos.x, pos.y, pos.y + walls[5]->getSize().y * 0.5f));
                         addEntity(w);
                         gridMap->getGridCellAt(math::Vec3f(w->getPosition().x, w->getPosition().y, 0))->setPassable(false);
                     } else if ((y == startY || y == endY - tileSize.y) && walls.size() >= 1) {
-                        g2d::Wall *w = new g2d::Wall(0, 80, new Tile(*walls[0]),&g2d::AmbientLight::getAmbientLight(), Shadow::SHADOW_TYPE::SHADOW_WALL);
+                        g2d::Wall *w = new g2d::Wall(new Tile(*walls[0]),&g2d::AmbientLight::getAmbientLight());
                         w->setPosition(math::Vec3f(pos.x, pos.y, pos.y + walls[0]->getSize().y * 0.5f));
                         addEntity(w);
                         if (y == endY - tileSize.y) {
@@ -460,7 +386,7 @@ namespace odfaeg {
                         }
                         gridMap->getGridCellAt(math::Vec3f(w->getPosition().x, w->getPosition().y, 0))->setPassable(false);
                     } else if ((x == startX || x == endX - tileSize.x) && walls.size() >= 2) {
-                        g2d::Wall *w = new g2d::Wall(1, 80, new Tile(*walls[1]),&g2d::AmbientLight::getAmbientLight(), Shadow::SHADOW_TYPE::SHADOW_WALL);
+                        g2d::Wall *w = new g2d::Wall(new Tile(*walls[1]),&g2d::AmbientLight::getAmbientLight());
                         w->setPosition(math::Vec3f(pos.x, pos.y, pos.y + walls[1]->getSize().y * 0.5f));
                         addEntity(w);
                         if (x == endX - tileSize.x) {
@@ -471,9 +397,14 @@ namespace odfaeg {
                         }
                         gridMap->getGridCellAt(math::Vec3f(w->getPosition().x, w->getPosition().y, 0))->setPassable(false);
                     } else {
-                        int i = math::Math::random(tGround.size());
-                        Tile *tile = new Tile(*tGround[i]);
-                        tile->setPosition(math::Vec3f(pos.x, pos.y, pos.y + tile->getSize().y * 0.5f));
+                        Tile *tile;
+                        if (tGround.size() > 0)  {
+                            int i = math::Math::random(tGround.size());
+                            tile = new Tile(*tGround[i]);
+                            tile->setPosition(math::Vec3f(pos.x, pos.y, pos.y + tile->getSize().y * 0.5f));
+                        } else {
+                            tile = new Tile(nullptr, math::Vec3f(pos.x, pos.y, pos.y + tileSize.y * 0.5f), math::Vec3f(tileSize.x, tileSize.y, 0), sf::IntRect(0, 0, tileSize.x, tileSize.y));
+                        }
                         if (terrain3D) {
                             float heights[4];
                             for (unsigned int j = 0; j < sizeof(heights) / sizeof(float); j++) {
@@ -991,36 +922,7 @@ namespace odfaeg {
              point = ray.getExt();
              return collide(entity, point);
         }
-        void Map::computeIntersectionsWithWalls () {
-             vector<Entity*> visibleLights = getEntities ("E_PONCTUAL_LIGHT");
-             vector<Entity*> visibleDecors = getEntities ("E_DECOR+E_WALL");
-             for (unsigned int i = 0; i < visibleLights.size(); i++) {
-                static_cast<g2d::PonctualLight*>(visibleLights[i])->initTriangles();
-             }
-             for (unsigned int i = 0; i < visibleDecors.size(); i++) {
-                 g2d::Decor *decor = static_cast<g2d::Decor*> (visibleDecors[i]);
-                 for (unsigned int j = 0; j < visibleLights.size(); j++) {
-                    g2d::PonctualLight *light = static_cast<g2d::PonctualLight*> (visibleLights[j]);
 
-                    physic::BoundingSphere bc (light->getCenter(), light->getSize().x * 0.5f);
-
-                    for (unsigned int s = 0; s < decor->getSegments().size(); s++) {
-                        math::Ray ray = *decor->getSegments()[s];
-                        physic::CollisionResultSet::Info info;
-                        if (bc.intersects(ray, true, info)) {
-                            int size = light->getTris().size();
-                            for (int n = 0; n < size; n++) {
-                                light->checkInterTri(n, ray);
-
-                            }
-                        }
-                        light->update();
-                    }
-                }
-            }
-            visibleLights.clear();
-            visibleDecors.clear();
-        }
         void Map::drawOnComponents(std::string expression, int layer, sf::BlendMode blendMode) {
             HeavyComponent* frc = frcm->getRenderComponent(layer);
             if (frc != nullptr) {
@@ -1043,7 +945,7 @@ namespace odfaeg {
                 stencilBuffer->setView(frcm->getWindow().getView());
                 stencilBuffer->clear(sf::Color::Transparent);
                 RenderStates states;
-                states.shader = buildShadowMapShader;
+                states.shader = buildShadowMapShader.get();
                 //states.blendMode = sf::BlendNone;
                 if (n != -1) {
                     std::vector<unsigned int> idsCompInt;
@@ -1157,12 +1059,10 @@ namespace odfaeg {
                                         if (p == 0) {
                                             math::Vec3f shadowCenter, shadowScale(1.f, 1.f, 1.f), shadowRotationAxis;
                                             float shadowRotationAngle = 0;
-                                            if (entities[k]->getParent() != nullptr && entities[k]->getParent()->isModel()) {
-                                                shadowCenter = static_cast<Model*>(entities[k]->getParent())->getShadowCenter();
-                                                shadowScale = static_cast<Model*>(entities[k]->getParent())->getShadowScale();
-                                                shadowRotationAxis = static_cast<Model*>(entities[k]->getParent())->getShadowRotationAxis();
-                                                shadowRotationAngle = static_cast<Model*>(entities[k]->getParent())->getShadowRotationAngle();
-                                            }
+                                            shadowCenter = entities[k]->getShadowCenter();
+                                            shadowScale = entities[k]->getShadowScale();
+                                            shadowRotationAxis = entities[k]->getShadowRotationAxis();
+                                            shadowRotationAngle = entities[k]->getShadowRotationAngle();
                                             TransformMatrix tm;
                                             tm.setOrigin(entities[k]->getPosition());
                                             tm.setScale(shadowScale);
@@ -1170,10 +1070,10 @@ namespace odfaeg {
                                             tm.setTranslation(entities[k]->getPosition() + shadowCenter);
                                             tm.update();
                                             perPixShadowShader->setParameter("shadowProjMat", tm.getMatrix().transpose());
-                                            states.shader = perPixShadowShader;
+                                            states.shader = perPixShadowShader.get();
                                             shadowMap->draw(*entities[k], states);
                                         } else {
-                                            states.shader = perPixShadowShader2;
+                                            states.shader = perPixShadowShader2.get();
                                             shadowMap->draw(*entities[k], states);
                                         }
                                     }
@@ -1189,7 +1089,7 @@ namespace odfaeg {
                 shadowMap->display();
             }
             va_end(args);
-            shadowTile = new Tile (&shadowMap->getTexture(),math::Vec3f(position.x, position.y, position.z), math::Vec3f(size.x, size.y, 0),sf::IntRect(0, 0, size.x, size.y));
+            shadowTile->setPosition(position);
             return *shadowTile;
         }
         Entity& Map::getLightTile (std::string expression, int n, va_list args) {
@@ -1228,14 +1128,14 @@ namespace odfaeg {
                                     normalMap->clear(sf::Color::Transparent);
                                     Tile& heightMapTile = frcm->getRenderComponent(i)->getDepthBufferTile();
                                     heightMapTile.setCenter(frcm->getRenderComponent(i)->getView().getPosition());
-                                    states.shader = buildNormalMapShader;
+                                    states.shader = buildNormalMapShader.get();
                                     states.blendMode = sf::BlendNone;
                                     normalMap->draw(heightMapTile, states);
                                     normalMap->display();
                                     perPixLightingShader->setParameter("specularTexture", frcm->getRenderComponent(i)->getSpecularTexture());
                                     perPixLightingShader->setParameter("normalMap", normalMap->getTexture());
                                     perPixLightingShader->setParameter("bumpMap", frcm->getRenderComponent(i)->getBumpTexture());
-                                    states.shader = perPixLightingShader;
+                                    states.shader = perPixLightingShader.get();
                                     states.blendMode = sf::BlendAdd;
                                     for (unsigned int j = 0; j < lights.size(); j++) {
                                         EntityLight* el = static_cast<EntityLight*> (lights[j]);
@@ -1252,7 +1152,7 @@ namespace odfaeg {
                 }
             }
             va_end(args);
-            lightTile = new Tile (&lightMap->getTexture(), math::Vec3f(position.x, position.y, position.z), math::Vec3f(size.x, size.y, 0),sf::IntRect(0, 0, size.x, size.y));
+            lightTile->setPosition(position);
             return *lightTile;
         }
         Entity& Map::getRefractionTile (std::string expression, int n, va_list args) {
@@ -1266,7 +1166,7 @@ namespace odfaeg {
             backDepthBuffer->clear(sf::Color::Black);
             backDepthBuffer->setView(frcm->getWindow().getView());
             RenderStates states;
-            states.shader = buildRefractionMapShader;
+            states.shader = buildRefractionMapShader.get();
             if (Shader::isAvailable()) {
                 if (n != -1) {
                        std::vector<unsigned int> idsCompInt;
@@ -1299,9 +1199,9 @@ namespace odfaeg {
                                                 depthBufferGenShader->setParameter("haveTexture", 0);
                                             }
                                         }
-                                        states.shader = buildRefractionMapShader;
+                                        states.shader = buildRefractionMapShader.get();
                                         refractionMap->draw(*entities[k], states);
-                                        states.shader = depthBufferGenShader;
+                                        states.shader = depthBufferGenShader.get();
                                         backDepthBuffer->draw(*entities[k], states);
                                     }
                                 }
@@ -1310,26 +1210,11 @@ namespace odfaeg {
                 }
             }
             refractionMap->display();
-            refractionTile = new Tile (&refractionMap->getTexture(), math::Vec3f(position.x, position.y, position.z), math::Vec3f(size.x, size.y, 0),sf::IntRect(0, 0, size.x, size.y));
+            refractionTile->setPosition(position);
             return *refractionTile;
         }
         BaseChangementMatrix Map::getBaseChangementMatrix() {
             return gridMap->getBaseChangementMatrix();
-        }
-        Map::~Map () {
-            delete gridMap;
-            delete lightTile;
-            delete shadowTile;
-            delete shadowMap;
-            delete lightMap;
-            delete buildShadowMapShader;
-            delete stencilBuffer;
-            delete stencilBufferTile;
-            delete perPixLightingShader;
-            delete perPixShadowShader;
-            delete perPixShadowShader2;
-            delete refractionMap;
-            delete buildRefractionMapShader;
         }
     }
 }

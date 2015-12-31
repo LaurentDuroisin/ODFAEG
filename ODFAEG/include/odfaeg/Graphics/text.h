@@ -82,7 +82,7 @@ namespace odfaeg
             /// \param characterSize  Base size of characters, in pixels
             ///
             ////////////////////////////////////////////////////////////
-            Text(const sf::String& string, const Font& font, unsigned int characterSize = 30);
+            Text(const std::string& string, const Font& font, unsigned int characterSize = 30);
 
             ////////////////////////////////////////////////////////////
             /// \brief Set the text's string
@@ -103,7 +103,7 @@ namespace odfaeg
             /// \see getString
             ///
             ////////////////////////////////////////////////////////////
-            void setString(const sf::String& string);
+            void setString(const std::string& string);
 
             ////////////////////////////////////////////////////////////
             /// \brief Set the text's font
@@ -177,7 +177,7 @@ namespace odfaeg
             /// \see setString
             ///
             ////////////////////////////////////////////////////////////
-            const sf::String& getString() const;
+            const std::string& getString() const;
 
             ////////////////////////////////////////////////////////////
             /// \brief Get the text's font
@@ -291,7 +291,7 @@ namespace odfaeg
             ////////////////////////////////////////////////////////////
             // Member data
             ////////////////////////////////////////////////////////////
-            sf::String              m_string;             ///< String to display
+            std::string              m_string;             ///< String to display
             const Font*         m_font;               ///< Font used to display the string
             unsigned int        m_characterSize;      ///< Base size of characters, in pixels
             sf::Uint32              m_style;              ///< Text style (see Style enum)

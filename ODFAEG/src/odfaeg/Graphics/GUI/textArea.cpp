@@ -2,9 +2,8 @@
 namespace odfaeg {
     namespace graphic {
         namespace gui {
-            TextArea::TextArea(math::Vec3f position, math::Vec3f size, const Font* font, sf::String t, RenderWindow& rw) :
-                rw(rw),
-                LightComponent(position, size, size * 0.5f, false) {
+            TextArea::TextArea(math::Vec3f position, math::Vec3f size, const Font* font, std::string t, RenderWindow& rw) :
+                LightComponent(rw, position, size, size * 0.5f) {
                 background = sf::Color::White;
                 text.setFont(*font);
                 text.setString(t);
@@ -39,7 +38,7 @@ namespace odfaeg {
             }
             bool TextArea::isMouseInTextArea() {
                 physic::BoundingBox bb = getGlobalBounds();
-                math::Vec2f mousePos = math::Vec2f(sf::Mouse::getPosition(rw).x, sf::Mouse::getPosition(rw).y);
+                math::Vec2f mousePos = math::Vec2f(sf::Mouse::getPosition(getWindow()).x, sf::Mouse::getPosition(getWindow()).y);
                 if (bb.isPointInside(mousePos)) {
                     return true;
                 }
@@ -52,8 +51,8 @@ namespace odfaeg {
                 core::Command cmd(a, trigger, slot);
                 getListener().connect("CTEXTAREACLICKED", cmd);
             }
-            void TextArea::onUpdate(sf::Event& event) {
-                if (event.type == sf::Event::TextEntered) {
+            void TextArea::onUpdate(RenderWindow* window, sf::Event& event) {
+                if (window == &getWindow() && event.type == sf::Event::TextEntered) {
                     getListener().bindCommandSlotParams("CTEXTENTERED", static_cast<char>(event.text.unicode));
                 }
             }
@@ -62,7 +61,7 @@ namespace odfaeg {
                     tmp_text.erase(tmp_text.length() - 1, 1);
                 else if (caracter != 8)
                     tmp_text.append(1, caracter);
-                text.setString(sf::String(tmp_text.c_str()));
+                text.setString(tmp_text);
             }
             void TextArea::pushEvent (sf::Event event) {
                 getListener().pushEvent(event);
