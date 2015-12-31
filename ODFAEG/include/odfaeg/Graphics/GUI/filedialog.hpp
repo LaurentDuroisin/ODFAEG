@@ -24,6 +24,7 @@ namespace odfaeg {
                     void pushEvent (sf::Event event);
                     void checkSubWindowEvents();
                     std::string getPathChosen();
+                    std::string getAppiDir();
                     void actionPerformed(Button* button);
                     void onVisibilityChanged(bool visible);
                 private :

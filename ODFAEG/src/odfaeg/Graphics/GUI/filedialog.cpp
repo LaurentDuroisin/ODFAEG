@@ -204,6 +204,9 @@ namespace odfaeg {
                 pathChosen = "";
                 return path;
             }
+            std::string FileDialog::getAppiDir() {
+                return appliDir;
+            }
             void FileDialog::pushEvent(sf::Event event) {
 
             }
