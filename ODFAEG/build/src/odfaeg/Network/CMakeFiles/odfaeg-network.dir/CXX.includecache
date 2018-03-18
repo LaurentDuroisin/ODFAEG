@@ -251,6 +251,12 @@ sstream
 -
 SFML/Config.hpp
 -
+dirent.h
+-
+unistd.h
+-
+sys/types.h
+-
 
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/variant.h
 cassert
@@ -741,7 +747,7 @@ stdlib.h
 -
 bigInt.hpp
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Network/bigInt.hpp
-array
+map
 -
 memory
 -
@@ -757,6 +763,14 @@ limits
 -
 ../../../include/odfaeg/Math/maths.h
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/maths.h
+
+/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Network/cliEncryptedPacket.hpp
+SFML/Network.hpp
+-
+rsa.h
+/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Network/rsa.h
+export.hpp
+/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Network/export.hpp
 
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Network/client.h
 SFML/Network.hpp
@@ -849,6 +863,8 @@ vector
 -
 encryptedPacket.h
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Network/encryptedPacket.h
+cliEncryptedPacket.hpp
+/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Network/cliEncryptedPacket.hpp
 export.hpp
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Network/export.hpp
 
@@ -921,6 +937,8 @@ vector
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Network/client.h
 ../../../include/odfaeg/Network/network.h
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Network/network.h
+../../../include/odfaeg/Network/cliEncryptedPacket.hpp
+/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Network/cliEncryptedPacket.hpp
 ../../../include/odfaeg/Core/application.h
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/application.h
 

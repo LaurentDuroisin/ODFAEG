@@ -48,7 +48,7 @@ namespace odfaeg {
             void OptionPane::clear() {
                 rw.clear(backgroundColor);
             }
-            void OptionPane::draw(RenderTarget& target, RenderStates states) {
+            void OptionPane::onDraw(RenderTarget& target, RenderStates states) {
                 if (rw.isOpen()) {
                     rw.draw(text, states);
                     if (type == CONFIRMATION_DIALOG)  {
@@ -91,7 +91,7 @@ namespace odfaeg {
             void OptionPane::setText(std::string t) {
                 text.setString(sf::String(t.c_str()));
             }
-            void OptionPane::pushEvent (sf::Event event) {
+            void OptionPane::onEventPushed (sf::Event event, RenderWindow& window) {
 
             }
             OptionPane::~OptionPane() {

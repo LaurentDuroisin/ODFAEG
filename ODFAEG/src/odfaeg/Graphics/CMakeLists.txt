@@ -137,7 +137,13 @@ set(SRC_GUI
 	${INCROOT}/GUI/label.hpp
 	${SRCROOT}/GUI/label.cpp
 	${INCROOT}/GUI/panel.hpp
-	${SRCROOT}/GUI/panel.cpp)
+	${SRCROOT}/GUI/panel.cpp
+	${INCROOT}/GUI/dropDownList.hpp
+	${SRCROOT}/GUI/dropDownList.cpp
+	${INCROOT}/GUI/passwordField.hpp
+	${SRCROOT}/GUI/passwordField.cpp
+	${INCROOT}/GUI/progressBar.hpp
+	${SRCROOT}/GUI/progressBar.cpp)
 source_group ("gui" FILES ${SRC_GUI})
 find_package (SFML 2 REQUIRED)
 find_package(Freetype REQUIRED)

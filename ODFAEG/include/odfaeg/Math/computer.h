@@ -167,7 +167,7 @@ namespace odfaeg {
                         std::cout<<"angle : "<<Math::abs(Math::toDegrees(dir1.getAngleBetween(dir2, dir1.cross(dir2))))<<std::endl;*/
                         //If the number of point is greater than 2, we need to check on which segment of the path our actual position is.
                         //If the directions are not the same it means that the point is not on this segment of the path.
-                        while (currentPathIndex < path.size() - 1 && !dir2.isNulVector() && !(Math::abs(Math::toDegrees(dir1.getAngleBetween(dir2, dir1.cross(dir2)))) == 0 && d2 < d1)) {
+                        while (currentPathIndex < path.size() - 1 && !dir2.isNulVector() && !(Math::abs(Math::toDegrees(dir1.getAngleBetween(dir2, dir1.cross(dir2)))) >= 1.f && d2 < d1)) {
                             //We need to check if the actual position is on the next segment of the path.
                             currentPathIndex++;
                             //If we are arrived on the last point of the path, we don't need to check anymore, it means that our position is not on the path. (Or we are already at the end of the path)
@@ -261,6 +261,7 @@ namespace odfaeg {
             }
             template <typename T>
             static Vec2f getPosOnPathFromTime(Vec2f actualPos, std::vector<Vec2f> path, T time, float speed) {
+                float txs = time * speed;
                 if (path.size() > 1) {
                         unsigned int currentPathIndex = 0;
                         //We check the direction of the first segment of the path and the direction between out actual position and the first point of the first segment of our path.
@@ -297,7 +298,7 @@ namespace odfaeg {
                             * the distance between the next position and the first point of the segment.
                             */
                             //dir1 = (path[currentPathIndex+1] - path[currentPathIndex]).normalize();
-                            Vec2f nextPos = actualPos + dir1 * speed * time;
+                            Vec2f nextPos = actualPos + dir1 * txs;
                             dir2 = (nextPos - path[currentPathIndex]).normalize();
                             d2 = (nextPos - path[currentPathIndex]).magnitude();
                             float aDot = Math::abs(dir1.dot(dir2));
@@ -339,7 +340,7 @@ namespace odfaeg {
                             //The same as above except that we need to check the distance between the last point of the segment of the path.
                             dir1 = (path[currentPathIndex] - path[currentPathIndex+1]).normalize();
                             d1 = (path[currentPathIndex] - path[currentPathIndex+1]).magnitude();
-                            Vec2f prevPos = actualPos - dir1 * speed * time;
+                            Vec2f prevPos = actualPos - dir1 * txs;
                             dir2 = (prevPos - path[currentPathIndex+1]).normalize();
                             d2 = (prevPos - path[currentPathIndex+1]).magnitude();
                             float aDot = Math::abs(dir1.dot(dir2));

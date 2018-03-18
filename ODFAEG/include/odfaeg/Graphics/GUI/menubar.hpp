@@ -9,8 +9,8 @@ namespace odfaeg {
                 MenuBar(RenderWindow& rw);
                 void addMenu(Menu* menu);
                 void clear();
-                void draw(RenderTarget& target, RenderStates states=RenderStates::Default);
-                void pushEvent(sf::Event event);
+                void onDraw(RenderTarget& target, RenderStates states=RenderStates::Default);
+                void onEventPushed(sf::Event event, RenderWindow& window);
                 void checkSubWindowEvents();
             private :
                 RectangleShape rect;

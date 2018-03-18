@@ -14,10 +14,11 @@ namespace odfaeg {
                 MenuItem(RenderWindow& rw, const Font* font, std::string text);
                 void clear();
                 void setPosition (math::Vec3f position);
-                void draw(RenderTarget& target, RenderStates states=RenderStates::Default);
+                void onDraw(RenderTarget& target, RenderStates states=RenderStates::Default);
                 bool isMouseOnMenu();
                 void addMenuItemListener (MenuItemListener *mil);
-                void pushEvent(sf::Event event);
+                std::string getText();
+                void onEventPushed(sf::Event event, RenderWindow& window);
                 void checkSubWindowEvents();
             private :
                 RectangleShape rect;

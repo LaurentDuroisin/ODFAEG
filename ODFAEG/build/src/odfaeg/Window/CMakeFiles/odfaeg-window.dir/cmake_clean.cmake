@@ -1,8 +1,8 @@
 FILE(REMOVE_RECURSE
   "CMakeFiles/odfaeg-window.dir/sdlWindow.cpp.o"
   "CMakeFiles/odfaeg-window.dir/x11Window.cpp.o"
-  "../../../lib/libodfaeg-window-s-d.pdb"
-  "../../../lib/libodfaeg-window-s-d.a"
+  "../../../lib/libodfaeg-window-s.pdb"
+  "../../../lib/libodfaeg-window-s.a"
 )
 
 # Per-language clean rules from dependency scanning.

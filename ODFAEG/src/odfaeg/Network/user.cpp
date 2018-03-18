@@ -108,6 +108,12 @@ namespace odfaeg {
         bool User::isCertifiate() {
             return certifiate;
         }
+        void User::setCliPbKeyReceived(bool b) {
+            cliPbKeyReceived = b;
+        }
+        bool User::isCliPbKeyReceived() {
+            return cliPbKeyReceived;
+        }
         User::~User () {
 
         }

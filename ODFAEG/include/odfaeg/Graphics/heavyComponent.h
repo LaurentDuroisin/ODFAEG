@@ -9,6 +9,18 @@ namespace odfaeg {
             public :
             HeavyComponent(RenderWindow& window, math::Vec3f position, math::Vec3f size, math::Vec3f origin) :
                 Component(window, position, size, origin) {}
+            void recomputeSize() {
+                std::cout<<"recompute size!"<<std::endl;
+                float sx, sy, npx, npy, nsx, nsy;
+                sx = getSize().x;
+                sy = getSize().y;
+                npx = getWindow().getSize().x * getRelPosition().x;
+                npy = getWindow().getSize().y * getRelPosition().y;
+                nsx = getWindow().getSize().x * getRelSize().x;
+                nsy = getWindow().getSize().y * getRelSize().y;
+                setScale(math::Vec3f(nsx / sx, nsy / sy, 1.f));
+                setPosition(math::Vec3f(npx, npy, getPosition().z));
+            }
             virtual bool loadEntitiesOnComponent(std::vector<Entity*> entity) = 0;
             virtual std::vector<Entity*> getEntities() = 0;
             virtual std::string getExpression() = 0;

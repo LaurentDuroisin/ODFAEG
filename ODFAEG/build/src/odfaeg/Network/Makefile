@@ -204,6 +204,30 @@ bigInt.cpp.s:
 	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/build.make src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/bigInt.cpp.s
 .PHONY : bigInt.cpp.s
 
+cliEncryptedPacket.o: cliEncryptedPacket.cpp.o
+.PHONY : cliEncryptedPacket.o
+
+# target to build an object file
+cliEncryptedPacket.cpp.o:
+	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/build.make src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/cliEncryptedPacket.cpp.o
+.PHONY : cliEncryptedPacket.cpp.o
+
+cliEncryptedPacket.i: cliEncryptedPacket.cpp.i
+.PHONY : cliEncryptedPacket.i
+
+# target to preprocess a source file
+cliEncryptedPacket.cpp.i:
+	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/build.make src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/cliEncryptedPacket.cpp.i
+.PHONY : cliEncryptedPacket.cpp.i
+
+cliEncryptedPacket.s: cliEncryptedPacket.cpp.s
+.PHONY : cliEncryptedPacket.s
+
+# target to generate assembly for a file
+cliEncryptedPacket.cpp.s:
+	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/build.make src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/cliEncryptedPacket.cpp.s
+.PHONY : cliEncryptedPacket.cpp.s
+
 client.o: client.cpp.o
 .PHONY : client.o
 
@@ -391,6 +415,9 @@ help:
 	@echo "... bigInt.o"
 	@echo "... bigInt.i"
 	@echo "... bigInt.s"
+	@echo "... cliEncryptedPacket.o"
+	@echo "... cliEncryptedPacket.i"
+	@echo "... cliEncryptedPacket.s"
 	@echo "... client.o"
 	@echo "... client.i"
 	@echo "... client.s"

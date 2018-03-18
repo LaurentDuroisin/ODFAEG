@@ -72,6 +72,7 @@ namespace odfaeg
             {
                 m_string = str;
                 m_geometryNeedUpdate = true;
+                ensureGeometryUpdate();
             }
         }
 
@@ -83,6 +84,7 @@ namespace odfaeg
             {
                 m_font = &font;
                 m_geometryNeedUpdate = true;
+                ensureGeometryUpdate();
             }
         }
 
@@ -94,6 +96,7 @@ namespace odfaeg
             {
                 m_characterSize = size;
                 m_geometryNeedUpdate = true;
+                ensureGeometryUpdate();
             }
         }
 
@@ -236,7 +239,7 @@ namespace odfaeg
 
 
         ////////////////////////////////////////////////////////////
-        void Text::ensureGeometryUpdate() const
+        void Text::ensureGeometryUpdate()  const
         {
             // Do nothing, if geometry has not changed
             if (!m_geometryNeedUpdate)
@@ -370,6 +373,7 @@ namespace odfaeg
             m_bounds.top = minY;
             m_bounds.width = maxX - minX;
             m_bounds.height = maxY - minY;
+            const_cast<Text*>(this)->setSize(math::Vec3f(m_bounds.width, m_bounds.height, 0));
         }
     }
 

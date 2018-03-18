@@ -6,7 +6,7 @@ namespace odfaeg {
             class TextArea;
             class FocusListener {
                 public :
-                virtual void gaignedFocus(TextArea* textArea) = 0;
+
             };
         }
     }

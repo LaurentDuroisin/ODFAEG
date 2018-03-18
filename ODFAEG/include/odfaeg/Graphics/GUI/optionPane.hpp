@@ -18,12 +18,12 @@ namespace odfaeg {
                 void setText(std::string text);
                 OPTION getOption();
                 OptionPane(math::Vec3f position, math::Vec3f size, const Font* font, sf::String t, TYPE type);
-                void draw(RenderTarget& target, RenderStates states);
+                void onDraw(RenderTarget& target, RenderStates states);
                 void onNoOption();
                 void onYesOption();
                 void onEnter();
                 void checkSubWindowEvents();
-                void pushEvent(sf::Event event);
+                void onEventPushed(sf::Event event, RenderWindow& window);
                 ~OptionPane();
             private :
                 sf::Color backgroundColor;

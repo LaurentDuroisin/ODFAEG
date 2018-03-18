@@ -127,6 +127,7 @@ namespace odfaeg {
             }
             template <typename Archive>
             void vtserialize(Archive & ar) {
+                BoundingVolume::vtserialize(ar);
                 ar(points);
                 ar(faceNormals);
                 ar(edgeNormals);

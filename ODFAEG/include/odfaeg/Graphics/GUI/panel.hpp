@@ -8,27 +8,28 @@ namespace odfaeg {
         namespace gui {
             class Panel : public LightComponent {
             public :
-                Panel(RenderWindow& window, math::Vec3f position, math::Vec3f size, LightComponent* parent = nullptr);
+                Panel(RenderWindow& window, math::Vec3f position, math::Vec3f size, int priority = 0, LightComponent* parent = nullptr);
                 void setBackgroundColor(sf::Color color);
                 void clear();
-                void draw(RenderTarget& target, RenderStates states);
+                void onDraw(RenderTarget& target, RenderStates states);
                 void addChild(LightComponent* child);
                 void addDrawable(Drawable* drawable);
-                std::vector<LightComponent*> getChildren();
                 void removeAll();
-                void pushEvent(sf::Event event);
                 void checkSubWindowEvents();
                 bool isOnXScroll();
                 bool isOnYScroll();
                 void moveXItems();
                 void moveYItems();
+                void setBorderThickness(float thickness);
+                void setBorderColor(sf::Color color);
+                void updateScrolls();
             private :
                 bool scrollX, scrollY;
                 RectangleShape rect;
                 RectangleShape vertScrollBar, horScrollBar, corner;
                 math::Vec3f maxSize;
                 int oldMouseX, oldMouseY, mouseDeltaX, mouseDeltaY;
-                sf::Color background;
+                sf::Color background, border;
                 std::vector<std::unique_ptr<LightComponent>> children;
                 std::vector<Drawable*> drawables;
             };

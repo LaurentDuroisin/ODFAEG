@@ -85,40 +85,42 @@ namespace odfaeg {
             }
             void clear() {
                 buffer.clear();
+                adresses.clear();
+                nbSerialized = 0;
             }
             /** \fn void compress_stdin
             *   \brief compress the data contained into the ouptut archive's buffer.
             */
             void compress_stdin(void)
             {
-              std::ostringstream output;
+              /*std::ostringstream output;
               output<<buffer;
               int i, out_len;
               char *buffer, *output_buffer;
-              i = output.str().size();
+              i = output.str().size();*/
               /* allocate input and output buffers */
-              buffer = new char[MAX_DECOMPRESSED_LENGTH];
-              output_buffer = new char [MAX_COMPRESSED_LENGTH];
+              /*buffer = new char[MAX_DECOMPRESSED_LENGTH];
+              output_buffer = new char [MAX_COMPRESSED_LENGTH];*/
 
               /* read input from stdin */
-              if (i == MAX_DECOMPRESSED_LENGTH)
+              /*if (i == MAX_DECOMPRESSED_LENGTH)
               {
                 std::cerr<<"ERROR: Input is too long!"<<std::endl;
                 return;
               }
               buffer = const_cast<char*> (output.str().c_str());
-              output.str("");
+              output.str("");*/
 
               /* each utf16 character is 2 bytes long so the input number of bytes must be odd */
-              if (i % 2 != 0)
-                fprintf(stderr, "WARNING: odd number of input bytes!\n");
+              /*if (i % 2 != 0)
+                fprintf(stderr, "WARNING: odd number of input bytes!\n");*/
 
               /* compress */
-              out_len = utf16_compress((u16 *)buffer, i / 2, (u8 *)output_buffer);
+              /*out_len = utf16_compress((u16 *)buffer, i / 2, (u8 *)output_buffer);
 
               //delete[] buffer;
               this->buffer.rdbuf()->pubsetbuf(output_buffer, out_len);
-              //delete[] output_buffer;
+              //delete[] output_buffer;*/
             }
             //Fundamentals.
             /**
@@ -238,9 +240,9 @@ namespace odfaeg {
                     std::size_t str_size = data.length();
                     buffer<<str_size<<std::endl;
                     const char* datas = data.c_str();
+                    nbSerialized++;
                     for (unsigned int i = 0; i < str_size; i++)
                         (*this)(datas[i]);
-                    nbSerialized++;
                 }
             }
             /**
@@ -268,9 +270,9 @@ namespace odfaeg {
                         std::size_t str_size = data->length();
                         buffer<<str_size<<std::endl;
                         const char* datas = data->c_str();
+                        nbSerialized++;
                         for (unsigned int i = 0; i < str_size; i++)
                             (*this)(datas[i]);
-                        nbSerialized++;
                     }
                 } else {
                     long long int id = -1;
@@ -606,9 +608,9 @@ namespace odfaeg {
             *   \return std::ostream& : the output stream where the datas are compressed.
             */
             friend std::ostream& operator<<(std::ostream& out, OTextArchive& oa) {
-                oa.compress_stdin();
+                /*oa.compress_stdin();
                 out<<oa.buffer;
-                return out;
+                return out;*/
             }
         private :
             std::ostream& buffer; /**< the output buffer containing the datas.*/
@@ -640,35 +642,37 @@ namespace odfaeg {
             }
             void clear() {
                 buffer.clear();
+                adresses.clear();
+                nbDeserialized = 0;
             }
             /**
             * reads compressed utf16 from stdin, decompress it and writes output to stdout
             */
             void decompress_stdin(void)
             {
-              std::ostringstream output;
-              output<<buffer;
+              /*std::ostringstream output;
+              output(buffer);
               int i, out_len;
               char *buffer, *output_buffer;
-              i = output.str().size();
+              i = output.str().size();*/
 
               /* allocate input and output buffers */
-              buffer = new char[MAX_COMPRESSED_LENGTH];
-              output_buffer = new char[MAX_DECOMPRESSED_LENGTH];
+              /*buffer = new char[MAX_COMPRESSED_LENGTH];
+              output_buffer = new char[MAX_DECOMPRESSED_LENGTH];*/
 
               /* read input from stdin */
-              if (i == MAX_DECOMPRESSED_LENGTH)
+              /*if (i == MAX_DECOMPRESSED_LENGTH)
               {
                   std::cerr<<"ERROR: Input is too long!"<<std::endl;
                   return;
               }
               buffer = const_cast<char*> (output.str().c_str());
-              output.str("");
+              output.str("");*/
               /* make decompression */
-              out_len = utf16_decompress((u8 *)buffer, i, (u16 *)output_buffer);
+              /*out_len = utf16_decompress((u8 *)buffer, i, (u16 *)output_buffer);
               //delete[] buffer;
               this->buffer.rdbuf()->pubsetbuf(output_buffer, out_len);
-              //delete[] output_buffer;
+              //delete[] output_buffer;*/
             }
             //Fundamentals.
             /**
@@ -948,6 +952,7 @@ namespace odfaeg {
                     char space;
                     buffer.get(space);
                     char* datas = new char[str_size];
+                    nbDeserialized++;
                     for (unsigned int i = 0; i < str_size; i++) {
                         (*this)(datas[i]);
                     }
@@ -956,7 +961,6 @@ namespace odfaeg {
                     oss<<typeid(data).name()<<"*"<<reinterpret_cast<unsigned long long int>(&data);
                     std::pair<long long int, std::string> newAddress (id, oss.str());
                     adresses.insert(newAddress);
-                    nbDeserialized++;
                 }
             }
             /**
@@ -987,6 +991,7 @@ namespace odfaeg {
                         char space;
                         buffer.get(space);
                         char* datas = new char [str_size];
+                        nbDeserialized++;
                         for (unsigned int i = 0; i < str_size; i++)
                             (*this)(datas[i]);
                         data = new std::string(datas, str_size);
@@ -994,7 +999,6 @@ namespace odfaeg {
                         oss<<typeid(*data).name()<<"*"<<reinterpret_cast<unsigned long long int>(data);
                         std::pair<long long int, std::string> newAddress (id, oss.str());
                         adresses.insert(newAddress);
-                        nbDeserialized++;
                     }
                 } else {
                     data = nullptr;
@@ -1349,13 +1353,13 @@ namespace odfaeg {
             *   \return the input stream where the datas are decompressed.
             */
             friend std::istream& operator>>(std::istream& in, ITextArchive& ia) {
-                std::streambuf * pbuf = in.rdbuf();
+                /*std::streambuf * pbuf = in.rdbuf();
                 long size = pbuf->pubseekoff(0,in.end);
                 char* contents = new char [size];
                 pbuf->sgetn (contents,size);
                 ia.buffer.rdbuf()->pubsetbuf(contents, size);
                 ia.decompress_stdin();
-                return in;
+                return in;*/
             }
         private :
             std::istream& buffer; /**< the buffer where to read the data.*/

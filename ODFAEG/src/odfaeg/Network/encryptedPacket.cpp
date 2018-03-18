@@ -21,18 +21,18 @@ namespace odfaeg {
         const void* EncryptedPacket::onSend (size_t& dataSize) {
             unsigned char* buffer = nullptr;
             if (Network::getSrvInstance().isRunning())
-                buffer = rsa.ossl_encryptWithPrKey(static_cast<const unsigned char*> (getData()), getDataSize(), reinterpret_cast<int&>(dataSize));
+                buffer = rsa.ossl_encryptWithPrKey(reinterpret_cast<const unsigned char*> (getData()), getDataSize(), reinterpret_cast<int&>(dataSize));
             else
-                buffer = rsa.ossl_encryptWithPbKey(static_cast<const unsigned char*> (getData()), getDataSize(), reinterpret_cast<int&>(dataSize));
+                buffer = rsa.ossl_encryptWithPbKey(reinterpret_cast<const unsigned char*> (getData()), getDataSize(), reinterpret_cast<int&>(dataSize));
             return &buffer[0];
         }
         void EncryptedPacket::onReceive (const void* data, size_t dataSize) {
             unsigned char* buffer = nullptr;
             std::size_t dstSize = 0;
             if (Network::getSrvInstance().isRunning())
-                buffer = rsa.ossl_decryptWithPrKey(static_cast<const unsigned char*> (data), dataSize, reinterpret_cast<int&>(dstSize));
+                buffer = rsa.ossl_decryptWithPrKey(reinterpret_cast<const unsigned char*> (data), dataSize, reinterpret_cast<int&>(dstSize));
             else
-                buffer = rsa.ossl_decryptWithPbKey(static_cast<const unsigned char*> (data), dataSize, reinterpret_cast<int&>(dstSize));
+                buffer = rsa.ossl_decryptWithPbKey(reinterpret_cast<const unsigned char*> (data), dataSize, reinterpret_cast<int&>(dstSize));
             append(&buffer[0], dstSize);
         }
     }

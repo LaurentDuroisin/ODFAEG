@@ -3,7 +3,7 @@ namespace odfaeg {
     namespace graphic {
         namespace gui {
             MenuBar::MenuBar(RenderWindow& rw) :
-                LightComponent(rw, math::Vec3f(0, 0, 0), math::Vec3f(rw.getSize().x+20, 20, 0), math::Vec3f(0, 0, 0)) {
+                LightComponent(rw, math::Vec3f(0, 0, 0), math::Vec3f(rw.getSize().x+20, 20, 0), math::Vec3f(0, 0, 0), -2) {
                 rect = RectangleShape(math::Vec3f(rw.getSize().x+20, 20, 0));
                 background = sf::Color(50, 50, 50);
             }
@@ -19,11 +19,13 @@ namespace odfaeg {
                 if (background != rect.getFillColor())
                     rect.setFillColor(background);
             }
-            void MenuBar::draw(RenderTarget& target, RenderStates states) {
-                target.draw(rect, states);
+            void MenuBar::onDraw(RenderTarget& target, RenderStates states) {
+                target.draw(rect);
             }
-            void MenuBar::pushEvent(sf::Event event) {
-                getListener().pushEvent(event);
+            void MenuBar::onEventPushed(sf::Event event, RenderWindow& window) {
+                if (&window == &getWindow()) {
+                    getListener().pushEvent(event);
+                }
             }
             void MenuBar::checkSubWindowEvents() {
             }

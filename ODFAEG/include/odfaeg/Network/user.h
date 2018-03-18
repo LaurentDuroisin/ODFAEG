@@ -140,6 +140,8 @@ namespace odfaeg {
                 void setCertificate(std::string certificate);
                 void setCertifiate(bool b);
                 bool isCertifiate();
+                void setCliPbKeyReceived(bool b);
+                bool isCliPbKeyReceived();
                 /**
                 * \fn ~User ()
                 * \brief destructor.
@@ -151,7 +153,7 @@ namespace odfaeg {
                 sf::UdpSocket &clientUDP; /**> The udp socket.*/
                 sf::IpAddress address; /**> The ip address of the user. */
                 short unsigned int remotePortUDP; /**> the remote upd port.*/
-                bool hasPbKey, hasPbKeyRsa, certifiate; /**> Have a public key for the rsa and for the aes encryption . */
+                bool hasPbKey, hasPbKeyRsa, certifiate, cliPbKeyReceived; /**> Have a public key for the rsa and for the aes encryption . */
                 std::vector<sf::Int64> pings; /**> The n last pings stored to make the average.*/
                 sf::Int64 pingAvg; /** >The average of n pings.*/
                 unsigned int nbPings; /**> the number of pings to store.*/

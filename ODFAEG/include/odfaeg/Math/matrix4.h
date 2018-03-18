@@ -19,7 +19,7 @@ namespace odfaeg {
           *
           * Manage a 3D matrix who is used to perform 3D transformations and projections.
           */
-        class ODFAEG_MATH_API Matrix4f : public core::Serializable {
+        class ODFAEG_MATH_API Matrix4f  {
             public :
             float m11, m12, m13, m14; /** < the elements of the first row matrix.*/
             float m21, m22, m23, m24; /** < the elements of the second row matrix.*/

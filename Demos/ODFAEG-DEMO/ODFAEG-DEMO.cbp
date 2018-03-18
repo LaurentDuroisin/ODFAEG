@@ -32,8 +32,8 @@
 			</Target>
 		</Build>
 		<Compiler>
-			<Add option="-std=c++11" />
 			<Add option="-Wall" />
+			<Add option="-std=c++11" />
 			<Add option="-std=c++14" />
 			<Add option="-DSFML_DYNAMIC" />
 			<Add option="-DODFAEG_STATIC" />
@@ -44,6 +44,7 @@
 			<Add library="../../../../../usr/local/lib/libodfaeg-network-s.a" />
 			<Add library="../../../../../usr/local/lib/libodfaeg-graphics-s.a" />
 			<Add library="../../../../../usr/local/lib/libodfaeg-physics-s.a" />
+			<Add library="../../../../../usr/local/lib/libodfaeg-window-s.a" />
 			<Add library="../../../../../usr/local/lib/libodfaeg-math-s.a" />
 			<Add library="../../../../../usr/local/lib/libodfaeg-core-s.a" />
 			<Add library="../../../../../usr/local/lib/libsfml-network.so" />
@@ -51,18 +52,18 @@
 			<Add library="../../../../../usr/local/lib/libsfml-graphics.so" />
 			<Add library="../../../../../usr/local/lib/libsfml-window.so" />
 			<Add library="../../../../../usr/local/lib/libsfml-system.so" />
-			<Add library="../../../../../usr/lib/x86_64-linux-gnu/libsndfile.so" />
-			<Add library="../../../../../usr/lib/x86_64-linux-gnu/libSDL2-2.0.so" />
-			<Add library="../../../../../usr/lib/x86_64-linux-gnu/libGLEW.a" />
-			<Add library="../../../../../usr/lib/x86_64-linux-gnu/libX11-xcb.so" />
-			<Add library="../../../../../usr/lib/x86_64-linux-gnu/libxcb.so" />
-			<Add library="../../../../../lib/x86_64-linux-gnu/libpthread-2.19.so" />
+			<Add library="../../../../../usr/lib/i386-linux-gnu/libsndfile.so" />
+			<Add library="../../../../../usr/lib/i386-linux-gnu/libSDL2-2.0.so" />
+			<Add library="../../../../../usr/lib/i386-linux-gnu/libGLEW.so" />
+			<Add library="../../../../../usr/lib/i386-linux-gnu/libX11-xcb.so" />
+			<Add library="../../../../../usr/lib/i386-linux-gnu/libxcb.so" />
+			<Add library="../../../../../lib/i386-linux-gnu/libpthread-2.19.so" />
 			<Add library="X11" />
-			<Add library="../../../../../usr/lib/x86_64-linux-gnu/libopenal.so" />
+			<Add library="../../../../../usr/lib/i386-linux-gnu/libopenal.so" />
 			<Add library="GL" />
 			<Add library="ssl" />
 			<Add library="crypto" />
-			<Add library="../../../../../usr/lib/x86_64-linux-gnu/libfreetype.so" />
+			<Add library="../../../../../usr/lib/i386-linux-gnu/libfreetype.so" />
 			<Add directory="../../../../../usr/local/lib" />
 			<Add directory="../../../../../usr/lib/x86_64-linux-gnu" />
 		</Linker>
@@ -72,7 +73,11 @@
 		<Unit filename="caracter.h" />
 		<Unit filename="delegate.h" />
 		<Unit filename="function.h" />
+		<Unit filename="hero.cpp" />
+		<Unit filename="hero.hpp" />
 		<Unit filename="main.cpp" />
+		<Unit filename="monster.cpp" />
+		<Unit filename="monster.hpp" />
 		<Unit filename="test.cpp" />
 		<Unit filename="test.hpp" />
 		<Extensions>

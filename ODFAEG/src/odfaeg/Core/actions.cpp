@@ -165,11 +165,11 @@ namespace odfaeg {
                         else
                             return !Command::equalEvent(events[i], startEvent);
                     } else {*/
+                        /*Sometimes the event stored to startEvent is deleted*/
                         if (!is_not && Command::equalEvent(events[i], startEvent) && !pressed) {
                             if (events[i].type == sf::Event::KeyPressed && startEvent.type == sf::Event::KeyPressed
                                 || events[i].type == sf::Event::MouseButtonPressed && startEvent.type == sf::Event::MouseButtonPressed)
                                 pressed = true;
-
                             return true;
                         } else if (is_not && !Command::equalEvent(events[i], startEvent) && !pressed) {
                             if (events[i].type == sf::Event::KeyPressed && startEvent.type == sf::Event::KeyPressed
@@ -201,41 +201,6 @@ namespace odfaeg {
 
         }
 
-        /*bool Action::equalEvent (sf::Event event, sf::Event other) {
-            if (event.type != other.type)
-                return false;
-            if (event.type == sf::Event::Resized) {
-                return event.size.width == other.size.width && event.size.height == other.size.height;
-            }
-            if (event.type == sf::Event::TextEntered) {
-                return event.text.unicode == other.text.unicode;
-            }
-            if (event.type == sf::Event::KeyPressed || event.type == sf::Event::KeyReleased) {
-                if (event.type == sf::Event::KeyPressed && event.key.code == other.key.code)
-                    pressed = true;
-                return event.key.code == other.key.code;
-            }
-            if (event.type == sf::Event::MouseWheelMoved) {
-                return event.mouseWheel.delta == other.mouseWheel.delta;
-            }
-            if (event.type == sf::Event::MouseButtonPressed || event.type == sf::Event::MouseButtonReleased) {
-                if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == other.mouseButton.button)
-                    pressed = true;
-                return event.mouseButton.button == other.mouseButton.button;
-            }
-            if (event.type == sf::Event::MouseMoved) {
-                return event.mouseMove.x == other.mouseMove.x && event.mouseMove.y == other.mouseMove.y;
-            }
-            if (event.type == sf::Event::JoystickButtonPressed || event.type == sf::Event::JoystickButtonReleased) {
-                return event.joystickButton.joystickId == other.joystickButton.joystickId
-                    && event.joystickButton.button == other.joystickButton.button;
-            }
-            if (event.type == sf::Event::JoystickMoved) {
-                return event.joystickMove.joystickId == other.joystickMove.joystickId
-                    && event.joystickMove.position == other.joystickMove.position;
-            }
-            return false;
-        }*/
         void Action::setPressed(sf::Event event) {
             if (!leaf) {
                 leftChild->setPressed(event);

@@ -1,5 +1,6 @@
 #include "../../../include/odfaeg/Network/client.h"
 #include "../../../include/odfaeg/Network/network.h"
+#include "../../../include/odfaeg/Network/cliEncryptedPacket.hpp"
 #include "../../../include/odfaeg/Core/application.h"
 namespace odfaeg {
     namespace network {
@@ -11,40 +12,68 @@ namespace odfaeg {
         }
         void SrkClient::getPublicKey () {
             Packet packet;
-            string message = "GetPbKeyRsa";
+            std::string message;
+           /* unsigned char* cliPbKey = nullptr;
+            int size = CliEncryptedPacket::getCertificate(&cliPbKey);
+            std::string cert (reinterpret_cast<char*>(cliPbKey), size);
+            std::string message = "SETCLIPBKEY"+cert;*/
+            message = "GetPbKeyRsa";
             packet<<message;
             clientTCP.send(packet);
             packet.clear();
-            bool done, pbKeyRsaReceived;
-            done = pbKeyRsaReceived = false;
+            bool done, pbKeyRsaReceived, certifiate;
+            done = pbKeyRsaReceived = certifiate = false;
             EncryptedPacket enc_packet;
 
             while (!done || !pbKeyRsaReceived) {
-
-                if (!pbKeyRsaReceived && !done) {
+                /*if (!certifiate && !pbKeyRsaReceived && !done) {
+                    CliEncryptedPacket cliEncryptedPacket;
+                    if (clientTCP.receive(cliEncryptedPacket)) {
+                        cliEncryptedPacket>>message;
+                        cliEncryptedPacket.clear();
+                        if (message == "GETCERTIFIATECLIENT") {
+                            message == Network::getCertifiateClientMess();
+                            cliEncryptedPacket<<message;
+                            clientTCP.send(cliEncryptedPacket);
+                        }
+                        if (message == "CERTIFIEDCLIENT") {
+                            message = "GetPbKeyRsa";
+                            packet<<message;
+                            clientTCP.send(packet);
+                            certifiate = true;
+                        }
+                    }
+                }*/
+                if (/*certifiate &&*/ !pbKeyRsaReceived && !done) {
                     if (clientTCP.receive(packet) == Socket::Done) {
                         packet>>message;
-                        Network::setPbKey(message);
-                        pbKeyRsaReceived = true;
-                        packet.clear();
-                        message = "GetPbKey";
-                        enc_packet<<message;
-                        clientTCP.send(enc_packet);
-                        enc_packet.clear();
+                        if (message.find("RSAKEY") != std::string::npos) {
+                            message.erase(0, 6);
+                            Network::setPbKey(message);
+                            pbKeyRsaReceived = true;
+                            packet.clear();
+                            message = "GetPbKey";
+                            enc_packet<<message;
+                            clientTCP.send(enc_packet);
+                            enc_packet.clear();
+                        }
                     }
                 }
-                if (pbKeyRsaReceived && !done) {
+                if (/*certifiate &&*/ pbKeyRsaReceived && !done) {
                     if (clientTCP.receive(enc_packet) == Socket::Done) {
                         string message;
                         enc_packet>>message;
-                        Network::setSymPbKey(message);
-                        done = true;
-                        enc_packet.clear();
+                        if (message.find("AESKEY")!= std::string::npos) {
+                            message.erase(0, 6);
+                            Network::setSymPbKey(message);
+                            done = true;
+                            enc_packet.clear();
+                        }
                     }
                 }
             }
         }
-        bool SrkClient::startCli(int portTCP, int portUDP, IpAddress address, bool useThread, bool useSecuredConnexion) {
+        bool SrkClient::startCli(int portTCP, int portUDP, IpAddress address, bool useSecuredConnexion) {
              if (!running) {
                 remotePortUDP = portUDP;
                 this->srvAddress = address;
@@ -57,12 +86,12 @@ namespace odfaeg {
                     cout<<"Erreur : impossible d'écouter sur le port : "<<portUDP<<endl;
                     return false;
                 }
-                if (useSecuredConnexion)
-                    getPublicKey();
                 Packet packet;
                 std::string message = "updateUdpPort*" + core::conversionIntString(clientUDP.getLocalPort());
                 packet<<message;
                 clientTCP.send(packet);
+                if (useSecuredConnexion)
+                    getPublicKey();
                 selector.add(clientTCP);
                 selector.add(clientUDP);
                 running = true;

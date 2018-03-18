@@ -10,10 +10,10 @@ namespace odfaeg {
                 void addMenuItem(MenuItem* item);
                 void clear();
                 void setPosition (math::Vec3f position);
-                void draw(RenderTarget& target, RenderStates states=RenderStates::Default);
+                void onDraw(RenderTarget& target, RenderStates states=RenderStates::Default);
                 void onClick();
                 bool isMouseOnMenu();
-                void pushEvent(sf::Event event);
+                void onEventPushed(sf::Event event, RenderWindow& window);
                 void checkSubWindowEvents();
             private :
                 RectangleShape rect;

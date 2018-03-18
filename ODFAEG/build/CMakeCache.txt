@@ -22,10 +22,10 @@ BUILD_SHARED_LIBS:BOOL=OFF
 CMAKE_AR:FILEPATH=/usr/bin/ar
 
 //i386 for 32 bits compilation
-CMAKE_ARCHITECTURE:STRING=i686
+CMAKE_ARCHITECTURE:STRING=i386
 
 //Choose the type of build (Debug or Release)
-CMAKE_BUILD_TYPE:STRING=Debug
+CMAKE_BUILD_TYPE:STRING=Release
 
 //Enable/Disable color output during build.
 CMAKE_COLOR_MAKEFILE:BOOL=ON
@@ -183,7 +183,7 @@ FREETYPE_INCLUDE_DIR_freetype2:PATH=/usr/include/freetype2
 FREETYPE_INCLUDE_DIR_ft2build:PATH=/usr/include/freetype2
 
 //Path to a library.
-FREETYPE_LIBRARY:FILEPATH=/usr/lib/x86_64-linux-gnu/libfreetype.so
+FREETYPE_LIBRARY:FILEPATH=/usr/lib/i386-linux-gnu/libfreetype.so
 
 //Value Computed by CMake
 ODFAEG_BINARY_DIR:STATIC=/home/laurent/Développement/Projets-c++/ODFAEG/build
@@ -202,13 +202,13 @@ ODFAEG_INSTALL_PKGCONFIG_FILES:BOOL=OFF
 ODFAEG_SOURCE_DIR:STATIC=/home/laurent/Développement/Projets-c++/ODFAEG
 
 //Path to a library.
-OPENSSL_CRYPTO_LIBRARY:FILEPATH=/usr/lib/x86_64-linux-gnu/libcrypto.so
+OPENSSL_CRYPTO_LIBRARY:FILEPATH=/usr/lib/i386-linux-gnu/libcrypto.so
 
 //Path to a file.
 OPENSSL_INCLUDE_DIR:PATH=/usr/include
 
 //Path to a library.
-OPENSSL_SSL_LIBRARY:FILEPATH=/usr/lib/x86_64-linux-gnu/libssl.so
+OPENSSL_SSL_LIBRARY:FILEPATH=/usr/lib/i386-linux-gnu/libssl.so
 
 //pkg-config executable
 PKG_CONFIG_EXECUTABLE:FILEPATH=/usr/bin/pkg-config
@@ -229,7 +229,7 @@ odfaeg-graphics_LIB_DEPENDS:STATIC=general;odfaeg-core;general;odfaeg-math;gener
 odfaeg-math_LIB_DEPENDS:STATIC=general;odfaeg-core;
 
 //Dependencies for the target
-odfaeg-network_LIB_DEPENDS:STATIC=general;odfaeg-core;general;/usr/lib/x86_64-linux-gnu/libssl.so;general;/usr/lib/x86_64-linux-gnu/libcrypto.so;
+odfaeg-network_LIB_DEPENDS:STATIC=general;odfaeg-core;general;/usr/lib/i386-linux-gnu/libssl.so;general;/usr/lib/i386-linux-gnu/libcrypto.so;
 
 //Dependencies for the target
 odfaeg-physics_LIB_DEPENDS:STATIC=general;odfaeg-core;general;odfaeg-math;
@@ -375,9 +375,9 @@ CMAKE_USE_RELATIVE_PATHS-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_VERBOSE_MAKEFILE
 CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
 //Details about finding Freetype
-FIND_PACKAGE_MESSAGE_DETAILS_Freetype:INTERNAL=[/usr/lib/x86_64-linux-gnu/libfreetype.so][/usr/include/freetype2;/usr/include/freetype2][v17.1.11()]
+FIND_PACKAGE_MESSAGE_DETAILS_Freetype:INTERNAL=[/usr/lib/i386-linux-gnu/libfreetype.so][/usr/include/freetype2;/usr/include/freetype2][v17.1.11()]
 //Details about finding OpenSSL
-FIND_PACKAGE_MESSAGE_DETAILS_OpenSSL:INTERNAL=[/usr/lib/x86_64-linux-gnu/libssl.so;/usr/lib/x86_64-linux-gnu/libcrypto.so][/usr/include][v1.0.1f(1)]
+FIND_PACKAGE_MESSAGE_DETAILS_OpenSSL:INTERNAL=[/usr/lib/i386-linux-gnu/libssl.so;/usr/lib/i386-linux-gnu/libcrypto.so][/usr/include][v1.0.1f(1)]
 //ADVANCED property for variable: FREETYPE_INCLUDE_DIR_freetype2
 FREETYPE_INCLUDE_DIR_freetype2-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: FREETYPE_INCLUDE_DIR_ft2build
@@ -400,7 +400,7 @@ _OPENSSL_INCLUDEDIR:INTERNAL=/usr/include
 _OPENSSL_INCLUDE_DIRS:INTERNAL=
 _OPENSSL_LDFLAGS:INTERNAL=-lssl;-lcrypto
 _OPENSSL_LDFLAGS_OTHER:INTERNAL=
-_OPENSSL_LIBDIR:INTERNAL=/usr/lib/x86_64-linux-gnu
+_OPENSSL_LIBDIR:INTERNAL=/usr/lib/i386-linux-gnu
 _OPENSSL_LIBRARIES:INTERNAL=ssl;crypto
 _OPENSSL_LIBRARY_DIRS:INTERNAL=
 _OPENSSL_LIBS:INTERNAL=
@@ -434,7 +434,7 @@ _PC_FREETYPE_INCLUDEDIR:INTERNAL="/usr/include/freetype2"
 _PC_FREETYPE_INCLUDE_DIRS:INTERNAL=/usr/include/freetype2
 _PC_FREETYPE_LDFLAGS:INTERNAL=-lfreetype
 _PC_FREETYPE_LDFLAGS_OTHER:INTERNAL=
-_PC_FREETYPE_LIBDIR:INTERNAL="/usr/lib/x86_64-linux-gnu"
+_PC_FREETYPE_LIBDIR:INTERNAL="/usr/lib/i386-linux-gnu"
 _PC_FREETYPE_LIBRARIES:INTERNAL=freetype
 _PC_FREETYPE_LIBRARY_DIRS:INTERNAL=
 _PC_FREETYPE_LIBS:INTERNAL=

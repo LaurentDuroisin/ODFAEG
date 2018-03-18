@@ -13,16 +13,18 @@ namespace odfaeg {
                 public :
                     Button (math::Vec3f position, math::Vec3f size, const Font* font, std::string t, RenderWindow& rw);
                     void clear();
-                    void draw(RenderTarget& target, RenderStates states=RenderStates::Default);
+                    void onDraw(RenderTarget& target, RenderStates states=RenderStates::Default);
                     void setTextSize(unsigned int size);
                     void setTextColor(sf::Color color);
                     std::string getText();
                     void addActionListener(ActionListener* al);
                     bool isMouseInButton();
-                    void pushEvent(sf::Event event);
+                    void onEventPushed(sf::Event event, RenderWindow& window);
                     void checkSubWindowEvents();
                     void onUpdate(RenderWindow* window, sf::Event& event);
                 private :
+                    void recomputeSize();
+                    math::Vec3f size;
                     Text text;
                     RectangleShape rect;
                     sf::Color background;

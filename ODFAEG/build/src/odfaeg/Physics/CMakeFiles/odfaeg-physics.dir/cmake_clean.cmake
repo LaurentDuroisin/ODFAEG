@@ -9,8 +9,8 @@ FILE(REMOVE_RECURSE
   "CMakeFiles/odfaeg-physics.dir/emitter.cpp.o"
   "CMakeFiles/odfaeg-physics.dir/particle.cpp.o"
   "CMakeFiles/odfaeg-physics.dir/particleSystem.cpp.o"
-  "../../../lib/libodfaeg-physics-s-d.pdb"
-  "../../../lib/libodfaeg-physics-s-d.a"
+  "../../../lib/libodfaeg-physics-s.pdb"
+  "../../../lib/libodfaeg-physics-s.a"
 )
 
 # Per-language clean rules from dependency scanning.

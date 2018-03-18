@@ -20,8 +20,8 @@ namespace odfaeg {
                     void onDirSelected(Label* label);
                     void onFileSelected(Label* label);
                     void clear();
-                    void draw(RenderTarget& target, RenderStates states = RenderStates::Default);
-                    void pushEvent (sf::Event event);
+                    void onDraw(RenderTarget& target, RenderStates states = RenderStates::Default);
+                    void onEventPushed (sf::Event event, RenderWindow& window);
                     void checkSubWindowEvents();
                     std::string getPathChosen();
                     std::string getAppiDir();

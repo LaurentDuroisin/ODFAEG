@@ -64,6 +64,7 @@ namespace odfaeg {
                 */
                 static User* getUser(sf::TcpSocket& socket);
                 static User* getUser(sf::IpAddress address, short unsigned int remoteUDPPort);
+                static std::vector<User*> getUsers();
                 /**
                 * \fn void removeUser(sf::IpAddress address)
                 * \brief remove a user from the network.
@@ -139,12 +140,15 @@ namespace odfaeg {
                 * \param pbKey : the public key.
                 */
                 static void setPbKey(std::string pbKey);
+                static void setCliPbKey(std::string cliPbKey);
                 /**
                 * \fn void setSymPbKey(std::string pbKey)
                 * \brief set the public key for aes encryption.
                 * \param pbKey : the public key.
                 */
                 static void setSymPbKey (std::string pbKey);
+                static void sendCertifiateClient(User &user);
+                static void sendClientCertifiate(User &user);
                 /**
                 * \fn bool hasPbKey(sf::IpAddress address)
                 * \brief if the user have the public key. (for aes encryption)
@@ -159,6 +163,8 @@ namespace odfaeg {
                 * \return if the user have the public key. (for aes encryption)
                 */
                 static bool hasPbKeyRsa(sf::TcpSocket& socket);
+                static bool isCliPbKeyReceived(sf::TcpSocket& socket);
+                static bool isAuthenticClient(sf::TcpSocket& socket);
                 /**
                 * \fn bool getResponse(std::string tag, std::string &response)
                 * \brief get a response with the given tag.
@@ -231,6 +237,7 @@ namespace odfaeg {
                 }
                 static void setCertifiateClientMess(std::string mess);
                 static std::string getCertifiateClientMess();
+                static bool simpleSHA256(unsigned char* input, unsigned long length, unsigned char* md);
             private :
                 static sf::Clock timeoutClk; /**>clock.*/
                 static SrkClient &cli; /**>The client.*/
@@ -243,6 +250,7 @@ namespace odfaeg {
                 static sf::Clock timeBtw2SyncClk;
                 static sf::Clock timeBtw2PingsClk; /**> clock measuring the interval between two pings.*/
                 static std::string certifiateClientMess;
+                static bool isServer;
         };
     }
 }

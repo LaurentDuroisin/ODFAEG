@@ -7,16 +7,9 @@ namespace odfaeg {
                 text.setFont(*font);
                 text.setString(t);
                 text.setSize(size);
-                unsigned int maxSize = std::max(size.x, size.y);
-                unsigned int nbChars = text.getString().length();
-                unsigned int char_size;
-                if (nbChars != 0)
-                    char_size = maxSize / nbChars;
-                while (char_size * nbChars > size.x || char_size > size.y) {
-                    char_size--;
-                }
+                unsigned int characterSize = size.y;
+                text.setCharacterSize(characterSize);
                 rect = RectangleShape (size);
-                rect.setPosition(position);
                 background = sf::Color::Black;
                 rect.setFillColor(background);
             }
@@ -37,46 +30,35 @@ namespace odfaeg {
                     rect.setFillColor(background);
                 }
             }
-            void Label::draw(RenderTarget& target, RenderStates states) {
-                states.transform = getTransform();
-                target.draw(rect, states);
-                target.draw(text, states);
+            void Label::onDraw(RenderTarget& target, RenderStates states) {
+                text.setPosition(getPosition());
+                rect.setPosition(getPosition());
+                text.setSize(getSize());
+                rect.setSize(getSize());
+                target.draw(rect);
+                target.draw(text);
             }
             void Label::setText(std::string t) {
                 text.setString(t);
-                unsigned int maxSize = std::max(getSize().x, getSize().y);
-                unsigned int minSize = std::min(getSize().x, getSize().y);
-                float s = (float) maxSize / (float) minSize;
-                math::Vec3f scale;
-                if (maxSize == getSize().x)
-                    scale = math::Vec3f(1.f, s, 1.f);
-                else
-                    scale = math::Vec3f(s, 1.f, 1.f);
-                text.setScale(scale);
-                unsigned int nbChars = text.getString().length();
-                unsigned int char_size;
-                if (nbChars != 0)
-                    char_size = maxSize / nbChars;
-                while (char_size * nbChars > getSize().x || char_size > getSize().y)
-                    char_size--;
-                text.setCharacterSize(char_size);
             }
             std::string Label::getText() {
                 return text.getString();
             }
             bool Label::isMouseInside() {
-                physic::BoundingBox bb(getPosition().x, getPosition().y, 0, getSize().x, getSize().y, getSize().z);
+                physic::BoundingBox bb(getPosition().x, getPosition().y, 0, getSize().x, getSize().y, 0);
                 return bb.isPointInside(mousePos);
             }
             void Label::onUpdate(RenderWindow* window, sf::Event& event) {
+                LightComponent::onUpdate(window, event);
                 if (&getWindow() == window) {
                     if (event.type == sf::Event::MouseButtonPressed) {
                         mousePos = math::Vec3f(event.mouseButton.x, event.mouseButton.y, 0);
                     }
                 }
             }
-            void Label::pushEvent (sf::Event event) {
-                getListener().pushEvent(event);
+            void Label::onEventPushed (sf::Event event, RenderWindow& window) {
+                if (&getWindow() == &window)
+                    getListener().pushEvent(event);
             }
             void Label::checkSubWindowEvents() {
             }

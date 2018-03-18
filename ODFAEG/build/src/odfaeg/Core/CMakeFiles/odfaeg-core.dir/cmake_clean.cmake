@@ -11,8 +11,8 @@ FILE(REMOVE_RECURSE
   "CMakeFiles/odfaeg-core.dir/actions.cpp.o"
   "CMakeFiles/odfaeg-core.dir/time.cpp.o"
   "CMakeFiles/odfaeg-core.dir/clock.cpp.o"
-  "../../../lib/libodfaeg-core-s-d.pdb"
-  "../../../lib/libodfaeg-core-s-d.a"
+  "../../../lib/libodfaeg-core-s.pdb"
+  "../../../lib/libodfaeg-core-s.a"
 )
 
 # Per-language clean rules from dependency scanning.

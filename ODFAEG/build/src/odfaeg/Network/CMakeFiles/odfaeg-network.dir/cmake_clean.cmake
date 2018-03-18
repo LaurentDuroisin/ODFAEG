@@ -8,8 +8,9 @@ FILE(REMOVE_RECURSE
   "CMakeFiles/odfaeg-network.dir/network.cpp.o"
   "CMakeFiles/odfaeg-network.dir/user.cpp.o"
   "CMakeFiles/odfaeg-network.dir/bigInt.cpp.o"
-  "../../../lib/libodfaeg-network-s-d.pdb"
-  "../../../lib/libodfaeg-network-s-d.a"
+  "CMakeFiles/odfaeg-network.dir/cliEncryptedPacket.cpp.o"
+  "../../../lib/libodfaeg-network-s.pdb"
+  "../../../lib/libodfaeg-network-s.a"
 )
 
 # Per-language clean rules from dependency scanning.

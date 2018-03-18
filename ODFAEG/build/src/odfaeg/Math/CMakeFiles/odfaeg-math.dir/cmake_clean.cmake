@@ -8,8 +8,8 @@ FILE(REMOVE_RECURSE
   "CMakeFiles/odfaeg-math.dir/vec4.cpp.o"
   "CMakeFiles/odfaeg-math.dir/distribution.cpp.o"
   "CMakeFiles/odfaeg-math.dir/ray.cpp.o"
-  "../../../lib/libodfaeg-math-s-d.pdb"
-  "../../../lib/libodfaeg-math-s-d.a"
+  "../../../lib/libodfaeg-math-s.pdb"
+  "../../../lib/libodfaeg-math-s.a"
 )
 
 # Per-language clean rules from dependency scanning.

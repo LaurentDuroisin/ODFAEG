@@ -13,21 +13,32 @@ namespace odfaeg {
             public :
                 TextArea(math::Vec3f position, math::Vec3f size, const Font* font, std::string s, RenderWindow& rw);
                 void clear();
-                void draw(RenderTarget& target, RenderStates states);
+                void onDraw(RenderTarget& target, RenderStates states);
                 void setTextSize(unsigned int size);
                 void setTextColor(sf::Color color);
-                void addFocusListener(FocusListener* fl);
+                void gaignedFocus();
+                void lostFocus();
+                void onGaignedFocus();
+                void onLostFocus();
                 bool isMouseInTextArea();
+                bool isMouseOutTextArea();
                 void onTextEntered(char caracter);
                 void onUpdate(RenderWindow* window, sf::Event& event);
-                void pushEvent(sf::Event event);
                 void checkSubWindowEvents();
                 std::string getText();
+                void setText(std::string text);
+                void setCursorPos();
+                bool hasFocus();
+                void onEventPushed(sf::Event event, RenderWindow& window);
             private :
-                std::string tmp_text;
+                unsigned int currentIndex;
+                std::string tmp_text, id_text;
+                math::Vec3f size;
                 Text text;
                 RectangleShape rect;
                 sf::Color background;
+                math::Vec3f cursorPos;
+                bool haveFocus;
             };
         }
     }

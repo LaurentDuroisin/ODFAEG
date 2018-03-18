@@ -90,6 +90,7 @@ src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/application.cpp.o
  /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/vec4.h
  /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Network/aes.h
  /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Network/bigInt.hpp
+ /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Network/cliEncryptedPacket.hpp
  /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Network/client.h
  /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Network/encryptedPacket.h
  /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Network/network.h

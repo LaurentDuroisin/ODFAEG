@@ -25,25 +25,36 @@
 #include "hero.h"
 #include "monster.h"
 #include <fstream>
-class MyAppli : public odfaeg::core::Application {
-private :
-    const float speed = 0.2f;
-    bool running;
-    odfaeg::graphic::g2d::Wall *w;
-    Caracter* caracter;
-    sf::Keyboard::Key actualKey, previousKey;
-    std::vector<odfaeg::graphic::Tile*> tiles;
-    std::vector<odfaeg::graphic::Tile*> walls;
-    odfaeg::graphic::Map* theMap;
-    odfaeg::graphic::g2d::PonctualLight* light2;
-    sf::Int64 sync_time;
-    sf::Time timeBtwnTwoSync = sf::seconds(1);
-    sf::Int64 last_srv_time;
-public :
-    MyAppli();
-    void onLoad();
-    void onInit ();
-    void onExec ();
-};
+#include "mysql_connection.h"
+
+#include <cppconn/driver.h>
+#include <cppconn/exception.h>
+#include <cppconn/resultset.h>
+#include <cppconn/statement.h>
+#include <cppconn/prepared_statement.h>
+namespace sorrok {
+    class MyAppli : public odfaeg::core::Application {
+    private :
+        const float speed = 0.2f;
+        bool running;
+        odfaeg::graphic::g2d::Wall *w;
+        Caracter* caracter;
+        sf::Keyboard::Key actualKey, previousKey;
+        std::vector<odfaeg::graphic::Tile*> tiles;
+        std::vector<odfaeg::graphic::Tile*> walls;
+        odfaeg::graphic::Map* theMap;
+        odfaeg::graphic::g2d::PonctualLight* light2;
+        static const unsigned int PATH_ERROR_MARGIN = 2;
+        odfaeg::math::Vec3f tmpPosition;
+        sql::Driver* driver;
+        sql::Connection* con;
+    public :
+        MyAppli();
+        ~MyAppli();
+        void onLoad();
+        void onInit ();
+        void onExec ();
+    };
+}
 #endif // MY_APPLI
 

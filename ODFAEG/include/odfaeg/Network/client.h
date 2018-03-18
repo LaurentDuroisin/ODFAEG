@@ -46,7 +46,7 @@ namespace odfaeg {
                 * \param useSecuredConnexion : tell if the client must use an SSL connection or not. (For the TCP protocol)
                 * \return if the client is connected.
                 */
-                bool startCli(int portTCP, int portUDP, sf::IpAddress adress, bool useThread = false, bool useSecuredConnexion = false);
+                bool startCli(int portTCP, int portUDP, sf::IpAddress adress, bool useSecuredConnexion = true);
                 /**
                 * \fn void sendTCPPacket(sf::Packet& packet)
                 * \brief send a packet with the tcp protocol.

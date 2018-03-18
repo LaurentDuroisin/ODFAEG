@@ -14,17 +14,21 @@ namespace odfaeg {
         std::vector<std::pair<User*, std::string>> Network::requests = std::vector<std::pair<User*, std::string>>();
         std::vector<User*> Network::users = std::vector<User*>();
         vector<string> Network::responses = vector<string>();
+        std::string Network::certifiateClientMess = std::string();
+        bool Network::isServer = false;
         bool Network::startCli (int portTCP, int portUDP, IpAddress address, bool useSecuredConnexion) {
 
             if (srv.isRunning()) {
                 return false;
             }
+            isServer = false;
             return cli.startCli(portTCP, portUDP, address, useSecuredConnexion);
         }
         bool Network::startSrv (int portTCP, int portUDP) {
             if (cli.isRunning()) {
                 return false;
             }
+            isServer = true;
             return srv.startSrv(portTCP, portUDP);
         }
         void Network::addRequest(User* user, std::string request) {
@@ -98,6 +102,22 @@ namespace odfaeg {
             }
             return false;
         }
+        bool Network::isAuthenticClient(TcpSocket& socket) {
+            for (unsigned int i = 0; i < users.size(); i++) {
+                if (&users[i]->getTcpSocket() == &socket) {
+                    return users[i]->isCertifiate();
+                }
+            }
+            return false;
+        }
+        bool Network::isCliPbKeyReceived(TcpSocket& socket) {
+            for (unsigned int i = 0; i < users.size(); i++) {
+                if (&users[i]->getTcpSocket() == &socket) {
+                    return users[i]->isCliPbKeyReceived();
+                }
+            }
+            return false;
+        }
         bool Network::hasResponse() {
             return responses.size() != 0;
         }
@@ -137,18 +157,34 @@ namespace odfaeg {
         void Network::sendPbKeyRsa(User &user) {
             unsigned char* out = nullptr;
             int length = EncryptedPacket::getCertificate(&out);
-            string response (reinterpret_cast<char*>(out), length);
+            std::string response (reinterpret_cast<char*>(out), length);
+            response.insert(0, "RSAKEY");
             Packet packet;
             packet<<response;
             user.getTcpSocket().send(packet);
             user.setHasPbKeyRsa(true);
         }
         void Network::sendPbKey(User &user) {
-            string response = string(SymEncPacket::getKey()) + "-" + string(SymEncPacket::getIv());
+            string response = /*SymEncPacket::getKeys();*/ string(SymEncPacket::getKey(), strlen(SymEncPacket::getKey())) + "-" + string(SymEncPacket::getIv(), strlen(SymEncPacket::getIv()));
+            response.insert(0, "AESKEY");
             EncryptedPacket packet;
             packet<<response;
             user.getTcpSocket().send(packet);
             user.setHasPbKey(true);
+        }
+        void Network::sendCertifiateClient(User &user) {
+            CliEncryptedPacket cliEncryptedPacket;
+            std::string response = "GETCERTIFIATECLIENT";
+            cliEncryptedPacket<<response;
+            user.getTcpSocket().send(cliEncryptedPacket);
+            user.setCliPbKeyReceived(true);
+        }
+        void Network::sendClientCertifiate(User &user) {
+            CliEncryptedPacket cliEncryptedPacket;
+            std::string response = "CERTIFIEDCLIENT";
+            cliEncryptedPacket<<response;
+            user.getTcpSocket().send(cliEncryptedPacket);
+            user.setCertifiate(true);
         }
         User* Network::getUser(sf::TcpSocket& socket) {
             for (unsigned int i = 0; i < users.size(); i++) {
@@ -165,6 +201,9 @@ namespace odfaeg {
                 }
             }
             return nullptr;
+        }
+        std::vector<User*> Network::getUsers () {
+            return users;
         }
         string Network::waitForLastResponse(string tag, sf::Time timeOut) {
             string response = "";
@@ -186,12 +225,35 @@ namespace odfaeg {
             return response;
         }
         void Network::setPbKey (string message) {
-            EncryptedPacket::setCertificate(reinterpret_cast<const unsigned char*>(message.c_str()), message.length());
+            EncryptedPacket::setCertificate(reinterpret_cast<const unsigned char*>(message.c_str()), message.size());
+        }
+        void Network::setCliPbKey(std::string message) {
+            CliEncryptedPacket::setCertificate(reinterpret_cast<const unsigned char*>(message.c_str()), message.length());
         }
         void Network::setSymPbKey (string pbKey) {
             vector<string> parts = core::split(pbKey, "-");
             SymEncPacket::setKey(const_cast<char*>(parts[0].c_str()));
             SymEncPacket::setIv(const_cast<char*>(parts[1].c_str()));
+            //SymEncPacket::updateKeys(pbKey);
+        }
+        void Network::setCertifiateClientMess(std::string mess) {
+            certifiateClientMess = mess;
+        }
+        bool Network::simpleSHA256(unsigned char* input, unsigned long length, unsigned char* md)
+        {
+            SHA256_CTX context;
+            if(!SHA256_Init(&context))
+                return false;
+
+            if(!SHA256_Update(&context, input, length))
+                return false;
+
+            if(!SHA256_Final(md, &context))
+                return false;
+            return true;
+        }
+        std::string Network::getCertifiateClientMess() {
+            return certifiateClientMess;
         }
     }
 }

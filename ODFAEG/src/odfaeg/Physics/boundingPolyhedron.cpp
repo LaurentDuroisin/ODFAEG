@@ -14,9 +14,7 @@ namespace odfaeg {
         }
         BoundingPolyhedron::BoundingPolyhedron (math::Vec3f p1, math::Vec3f p2, math::Vec3f p3, bool flat) {
             this->flat = flat;
-            points.push_back(p1);
-            points.push_back(p2);
-            points.push_back(p3);
+            addTriangle(p1, p2, p3);
         }
         bool BoundingPolyhedron::intersects(math::Ray& ray, bool segment, CollisionResultSet::Info& info) {
             for (unsigned int i = 0; i < points.size(); i+=3) {

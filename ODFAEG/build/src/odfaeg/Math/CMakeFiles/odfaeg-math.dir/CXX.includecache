@@ -40,10 +40,6 @@ string
 export.hpp
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/export.hpp
 
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/export.hpp
-../config.hpp
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/config.hpp
-
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/factory.h
 map
 -
@@ -143,6 +139,12 @@ sstream
 -
 SFML/Config.hpp
 -
+dirent.h
+-
+unistd.h
+-
+sys/types.h
+-
 
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/variant.h
 cassert
@@ -157,22 +159,6 @@ utility
 -
 mpl.h
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/mpl.h
-
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/transformMatrix.h
-../Math/vec4.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/vec4.h
-../Math/vec2f.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/vec2f.h
-../Math/matrix4.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/matrix4.h
-../Math/matrix3.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/matrix3.h
-../Math/maths.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/maths.h
-SFML/Graphics.hpp
--
-export.hpp
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/export.hpp
 
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/computer.h
 matrix3.h
@@ -192,26 +178,6 @@ export.hpp
 plane.h
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/plane.h
 
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/distribution.h
-functional
--
-type_traits
--
-../Graphics/transformMatrix.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/transformMatrix.h
-
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/distributions.h
-distribution.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/distribution.h
-export.hpp
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/export.hpp
-maths.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/maths.h
-SFML/System/Vector3.hpp
--
-SFML/System/Time.hpp
--
-
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/export.hpp
 ../config.hpp
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/config.hpp
@@ -226,12 +192,6 @@ random
 ctime
 -
 
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/matrix2.h
-vec2f.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/vec2f.h
-export.hpp
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/export.hpp
-
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/matrix3.h
 vec4.h
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/vec4.h
@@ -241,12 +201,6 @@ vec2f.h
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/erreur.h
 export.hpp
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/export.hpp
-
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/matrix4.h
-vec4.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/vec4.h
-../../../include/odfaeg/Core/erreur.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/erreur.h
 
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/plane.h
 vec4.h
@@ -291,44 +245,4 @@ vec2f.h
 /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Math/computer.cpp
 ../../../include/odfaeg/Math/computer.h
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/computer.h
-
-/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Math/distribution.cpp
-../../../include/odfaeg/Math/distributions.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/distributions.h
-cassert
--
-
-/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Math/maths.cpp
-../../../include/odfaeg/Math/maths.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/maths.h
-../../../include/odfaeg/Math/vec4.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/vec4.h
-
-/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Math/matrix2.cpp
-../../../include/odfaeg/Math/matrix2.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/matrix2.h
-
-/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Math/matrix3.cpp
-../../../include/odfaeg/Math/matrix3.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/matrix3.h
-
-/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Math/matrix4.cpp
-../../../include/odfaeg/Math/matrix4.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/matrix4.h
-
-/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Math/ray.cpp
-../../../include/odfaeg/Math/ray.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/ray.h
-
-/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Math/vec2.cpp
-../../../include/odfaeg/Math/vec2f.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/vec2f.h
-../../../include/odfaeg/Math/vec4.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/vec4.h
-
-/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Math/vec4.cpp
-../../../include/odfaeg/Math/vec4.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/vec4.h
-../../../include/odfaeg/Math/matrix4.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/matrix4.h
 

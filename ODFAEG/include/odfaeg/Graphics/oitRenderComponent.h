@@ -120,7 +120,12 @@ namespace odfaeg {
             */
             Tile& getDepthBufferTile();
             void changeVisibleEntities(Entity* toRemove, Entity* toAdd, EntityManager* em);
-            void pushEvent(sf::Event event);
+            /**
+            * \fn register an event to the event stack of the component.
+            * \param sf::Event : the event to register.
+            * \param Renderwindow : the window generating the event.
+            */
+            void pushEvent(sf::Event event, RenderWindow& window);
             private :
             std::vector<std::pair<std::reference_wrapper<Drawable>, RenderStates>> drawables;
             Batcher batcher; /**> A group of faces using the same materials and primitive type.*/

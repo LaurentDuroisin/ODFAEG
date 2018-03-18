@@ -20,7 +20,9 @@ set(SRC
 	${INCROOT}/network.h
 	${SRCROOT}/network.cpp
 	${INCROOT}/user.h
-	${SRCROOT}/user.cpp)	
+	${SRCROOT}/user.cpp
+	${INCROOT}/bigInt.hpp
+	${SRCROOT}/bigInt.cpp)	
 find_package (OpenSSL 1 REQUIRED)
 include_directories(${CMAKE_INCLUDE_PATH} ${OPENSSL_INCLUDE_DIR})
 link_directories(${CMAKE_LIBRARY_PATH})

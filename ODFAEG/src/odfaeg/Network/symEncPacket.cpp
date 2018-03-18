@@ -7,14 +7,13 @@ namespace odfaeg {
         AES_ENC SymEncPacket::aes = AES_ENC();
         const void* SymEncPacket::onSend (size_t& dataSize) {
             unsigned char* buffer;
-            buffer = aes.ossl_encrypt(static_cast<const unsigned char*> (getData()), getDataSize(), reinterpret_cast<int&>(dataSize));
+            buffer = aes.ossl_encrypt(reinterpret_cast<const unsigned char*> (getData()), getDataSize(), dataSize);
             return &buffer[0];
         }
         void SymEncPacket::onReceive (const void* data, size_t dataSize) {
             unsigned char* buffer;
             std::size_t dstSize = 0;
-            const unsigned char* datas = static_cast<const unsigned char*> (data);
-            buffer = aes.ossl_decrypt(static_cast<const unsigned char*> (data), dataSize, reinterpret_cast<int&>(dstSize));
+            buffer = aes.ossl_decrypt(reinterpret_cast<const unsigned char*> (data), dataSize, dstSize);
             append(&buffer[0], dstSize);
         }
     }

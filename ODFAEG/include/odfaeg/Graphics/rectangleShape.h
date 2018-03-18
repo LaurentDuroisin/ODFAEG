@@ -83,7 +83,7 @@ namespace odfaeg
             ///
             ////////////////////////////////////////////////////////////
             virtual sf::Vector3f getPoint(unsigned int index) const;
-
+            void onScale(math::Vec3f& scale);
         private :
 
             ////////////////////////////////////////////////////////////

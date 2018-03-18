@@ -120,7 +120,7 @@ namespace odfaeg {
                 return event.mouseButton.button == other.mouseButton.button;
             }
             if (event.type == sf::Event::MouseMoved) {
-                return event.mouseMove.x == other.mouseMove.x && event.mouseMove.y == other.mouseMove.y;
+                return true;
             }
             if (event.type == sf::Event::JoystickButtonPressed || event.type == sf::Event::JoystickButtonReleased) {
                 return event.joystickButton.joystickId == other.joystickButton.joystickId

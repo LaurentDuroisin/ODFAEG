@@ -126,7 +126,7 @@ namespace odfaeg {
                 * \param ar : the archive.
                 */
                 template <typename Archive>
-                void vtserialize(Archive & ar) {
+                void vrserialize(Archive & ar) {
                     EntityLight::vtserialize(ar);
                     ar(littleRadius);
                     ar(bigRadius);

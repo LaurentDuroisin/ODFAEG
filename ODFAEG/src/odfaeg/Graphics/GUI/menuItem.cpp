@@ -3,7 +3,7 @@ namespace odfaeg {
     namespace graphic {
         namespace gui {
             MenuItem::MenuItem(RenderWindow& rw, const Font* font, std::string t) :
-                LightComponent(rw, math::Vec3f(0, 0, 0), math::Vec3f(t.length() * 10, 20, 0), math::Vec3f(0, 0, 0), 1)
+                LightComponent(rw, math::Vec3f(0, 0, 0), math::Vec3f(t.length() * 10, 20, 0), math::Vec3f(0, 0, 0), -1)
                 {
                     text.setFont(*font);
                     text.setCharacterSize(15);
@@ -25,16 +25,18 @@ namespace odfaeg {
                     text.setPosition(position);
                     rect.setPosition(position);
                 }
-                void MenuItem::draw(RenderTarget& target, RenderStates states) {
-                    target.draw(rect, states);
-                    target.draw(text, states);
+                void MenuItem::onDraw(RenderTarget& target, RenderStates states) {
+                    rect.setPosition(getPosition());
+                    rect.setSize(getSize());
+                    target.draw(rect);
+                    target.draw(text);
                 }
                 void MenuItem::addMenuItemListener (MenuItemListener *mil) {
                     core::FastDelegate<bool> trigger(&MenuItem::isMouseOnMenu, this);
                     core::FastDelegate<void> slot(&MenuItemListener::actionPerformed,mil, this);
                     core::Action a (core::Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, sf::Mouse::Left);
                     core::Command cmd(a, trigger, slot);
-                    getListener().connect("CITEMCLICKED", cmd);
+                    getListener().connect("CITEMCLICKED"+getText(), cmd);
                 }
                 bool MenuItem::isMouseOnMenu() {
                     physic::BoundingBox bb = getGlobalBounds();
@@ -44,8 +46,12 @@ namespace odfaeg {
                     }
                     return false;
                 }
-                void MenuItem::pushEvent(sf::Event event) {
-                    getListener().pushEvent(event);
+                std::string MenuItem::getText() {
+                    return text.getString();
+                }
+                void MenuItem::onEventPushed(sf::Event event, RenderWindow& window) {
+                    if (&window == &getWindow())
+                        getListener().pushEvent(event);
                 }
                 void MenuItem::checkSubWindowEvents() {
                 }

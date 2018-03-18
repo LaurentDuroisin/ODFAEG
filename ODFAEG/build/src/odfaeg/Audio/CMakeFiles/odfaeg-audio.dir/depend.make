@@ -6,9 +6,11 @@ src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/SoundFile.cpp.o: ../src/odfaeg/Audi
 
 src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/player.cpp.o: ../include/odfaeg/Audio/player.h
 src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/player.cpp.o: ../include/odfaeg/Audio/stream.h
+src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/player.cpp.o: ../include/odfaeg/Core/time.h
 src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/player.cpp.o: ../src/odfaeg/Audio/player.cpp
 
 src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/stream.cpp.o: ../include/odfaeg/Audio/stream.h
+src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/stream.cpp.o: ../include/odfaeg/Core/time.h
 src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/stream.cpp.o: ../src/odfaeg/Audio/SoundFile.hpp
 src/odfaeg/Audio/CMakeFiles/odfaeg-audio.dir/stream.cpp.o: ../src/odfaeg/Audio/stream.cpp
 

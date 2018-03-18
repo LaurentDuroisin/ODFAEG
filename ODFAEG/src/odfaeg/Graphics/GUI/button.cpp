@@ -9,15 +9,8 @@ namespace odfaeg {
                 text.setString(t);
                 text.setColor(sf::Color::Black);
                 text.setSize(size);
-                unsigned int maxSize = std::max(size.x, size.y);
-                unsigned int nbChars = text.getString().length();
-                unsigned int char_size;
-                if (nbChars != 0)
-                    char_size = maxSize / nbChars;
-                while (char_size * nbChars > size.x || char_size > size.y) {
-                    char_size--;
-                }
-                text.setCharacterSize(char_size);
+                unsigned int characterSize = size.y;
+                text.setCharacterSize(characterSize);
                 rect = RectangleShape(size);
                 rect.setOutlineThickness(5.f);
                 rect.setOutlineColor(sf::Color::Red);
@@ -32,15 +25,26 @@ namespace odfaeg {
             void Button::setTextColor(sf::Color color) {
                 text.setColor(color);
             }
-            void Button::draw(RenderTarget& target, RenderStates states) {
-                states.transform = getTransform();
-                target.draw(rect, states);
-                target.draw(text, states);
+            void Button::recomputeSize() {
+                unsigned int characterSize = getSize().y;
+                text.setCharacterSize(characterSize);
+                size = getSize();
+            }
+            void Button::onDraw(RenderTarget& target, RenderStates states) {
+                if (size != getSize())
+                    recomputeSize();
+                text.setPosition(getPosition());
+                rect.setPosition(getPosition());
+                text.setSize(getSize());
+                rect.setSize(getSize());
+                target.draw(rect);
+                target.draw(text);
             }
             std::string Button::getText() {
                 return text.getString();
             }
             bool Button::isMouseInButton() {
+
                 physic::BoundingBox bb = getGlobalBounds();
                 //math::Vec2f mousePos = math::Vec2f(sf::Mouse::getPosition(getWindow()).x, sf::Mouse::getPosition(getWindow()).y);
                 if (bb.isPointInside(mousePos)) {
@@ -53,10 +57,11 @@ namespace odfaeg {
                 core::FastDelegate<void> slot(&ActionListener::actionPerformed,al, this);
                 core::Action a (core::Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, sf::Mouse::Left);
                 core::Command cmd(a, trigger, slot);
-                getListener().connect("CBUTTONCLICKED", cmd);
+                getListener().connect("CBUTTONCLICKED"+getText(), cmd);
             }
-            void Button::pushEvent (sf::Event event) {
-                getListener().pushEvent(event);
+            void Button::onEventPushed (sf::Event event, RenderWindow& window) {
+                if (&getWindow() == &window)
+                    getListener().pushEvent(event);
             }
             void Button::onUpdate (RenderWindow* window, sf::Event& event) {
                 if (&getWindow() == window) {

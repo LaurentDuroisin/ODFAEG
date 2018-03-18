@@ -157,12 +157,12 @@ namespace odfaeg {
                         for (it = events.begin(); it != events.end(); it++) {
                             onUpdate(it->first, it->second);
                             if (eventContextActivated) {
-                                listener->pushEvent(event);
+                                listener->pushEvent(it->second);
                             }
                             for (unsigned int i = 0; i < componentManager->getNbComponents(); i++) {
                                 componentManager->getComponent(i)->onUpdate(it->first, it->second);
                                 if (componentManager->getComponent(i)->isEventContextActivated()) {
-                                    componentManager->getComponent(i)->pushEvent(event);
+                                    componentManager->getComponent(i)->pushEvent(it->second, *(it->first));
                                 }
                             }
                         }
@@ -227,8 +227,11 @@ namespace odfaeg {
             *   \brief return a reference to the windows of the appliation
             *   \return the render window of the application.
             */
-            graphic::RenderWindow& getRenderWindow() {
-                return *windows[0];
+            graphic::RenderWindow& getRenderWindow(unsigned int i = 0) {
+                return *windows[i];
+            }
+            unsigned int getNbWindows() {
+                return windows.size();
             }
             /** \fn RenderComponentManager& getRenderComponentManager()
             *   \brief return a reference to the render component manager.
@@ -266,7 +269,7 @@ namespace odfaeg {
             */
             virtual void onDisconnected(network::User* user) {
             }
-            ~Application() {
+            virtual ~Application() {
                 stop();
                 for (unsigned int i = 0; i < windows.size(); i++)
                    delete windows[i];

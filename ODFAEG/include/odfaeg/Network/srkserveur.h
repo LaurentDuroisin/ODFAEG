@@ -4,6 +4,7 @@
 #include <thread>
 #include <vector>
 #include "encryptedPacket.h"
+#include "cliEncryptedPacket.hpp"
 #include "export.hpp"
 /**
   *\namespace odfaeg

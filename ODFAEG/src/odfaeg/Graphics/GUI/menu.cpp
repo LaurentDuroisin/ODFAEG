@@ -3,7 +3,7 @@ namespace odfaeg {
     namespace graphic {
         namespace gui {
             Menu::Menu(RenderWindow& rw, const Font* font, std::string t) :
-                LightComponent(rw, math::Vec3f(0, 0, 0), math::Vec3f(t.length() * 10, 20, 0), math::Vec3f(0, 0, 0))
+                LightComponent(rw, math::Vec3f(0, 0, 0), math::Vec3f(t.length() * 10, 20, 0), math::Vec3f(0, 0, 0), -2)
 {
                 text.setString(sf::String(t.c_str()));
                 text.setCharacterSize(15);
@@ -14,7 +14,8 @@ namespace odfaeg {
                 rect.setOutlineColor(sf::Color::Black);
                 core::Action a (odfaeg::core::Action::MOUSE_BUTTON_PRESSED_ONCE, sf::Mouse::Left);
                 core::Command menuSelected (a, core::FastDelegate<void>(&Menu::onClick, this));
-                getListener().connect("MenuSelected", menuSelected);
+                //La fonction connect n'est pas appelée.
+                getListener().connect("MenuSelected"+t, menuSelected);
                 background = sf::Color(50, 50, 50);
             }
             void Menu::clear() {
@@ -39,20 +40,26 @@ namespace odfaeg {
                     yPos += items[i]->getSize().y;
                 }
             }
-            void Menu::draw(RenderTarget& target, RenderStates states) {
-                target.draw(rect, states);
-                target.draw(text, states);
+            void Menu::onDraw(RenderTarget& target, RenderStates states) {
+                rect.setPosition(getPosition());
+                rect.setSize(getSize());
+                text.setPosition(getPosition());
+                text.setSize(getSize());
+                target.draw(rect);
+                target.draw(text);
             }
             void Menu::onClick() {
                 if (isMouseOnMenu()) {
                     for (unsigned int i = 0; i < items.size(); i++) {
                         items[i]->setVisible(true);
                         items[i]->setEventContextActivated(true);
+                        std::cout<<"on item cliqued!"<<std::endl;
                     }
                 } else {
                     for (unsigned int i = 0; i < items.size(); i++) {
                         items[i]->setVisible(false);
                         items[i]->setEventContextActivated(false);
+                        std::cout<<"not on item cliqued!"<<std::endl;
                     }
                 }
             }
@@ -64,8 +71,10 @@ namespace odfaeg {
                 }
                 return false;
             }
-            void Menu::pushEvent(sf::Event event) {
-                getListener().pushEvent(event);
+            void Menu::onEventPushed(sf::Event event, RenderWindow& window) {
+                if (&getWindow() == &window) {
+                    getListener().pushEvent(event);
+                }
             }
             void Menu::checkSubWindowEvents() {
             }

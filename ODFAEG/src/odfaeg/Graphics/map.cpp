@@ -17,11 +17,11 @@ namespace odfaeg {
             this->name = name;
             diagSize = math::Math::sqrt(math::Math::power(cellWidth, 2) + math::Math::power(cellHeight, 2));
             sf::Vector3i resolution;
-            View view = frcm->getWindow().getView();
-            physic::BoundingBox viewArea = view.getViewVolume();
-            math::Vec3f position (viewArea.getPosition().x,viewArea.getPosition().y, view.getPosition().z);
-            math::Vec3f size (viewArea.getWidth(), viewArea.getHeight(), 0);
             if (frcm != nullptr) {
+                View view = frcm->getWindow().getView();
+                physic::BoundingBox viewArea = view.getViewVolume();
+                math::Vec3f position (viewArea.getPosition().x,viewArea.getPosition().y, view.getPosition().z);
+                math::Vec3f size (viewArea.getWidth(), viewArea.getHeight(), 0);
                 if (Shader::isAvailable()) {
                     shadowMap = std::make_unique<RenderTexture>();
                     lightMap = std::make_unique<RenderTexture>();
@@ -552,9 +552,9 @@ namespace odfaeg {
                     int x = view.getPosition().x;
                     int y = view.getPosition().y;
                     int z = view.getPosition().z;
-                    int endX = view.getPosition().x + view.getWidth();
-                    int endY = view.getPosition().y + view.getHeight();
-                    int endZ = view.getDepth();
+                    int endX = view.getPosition().x + view.getWidth() + 100;
+                    int endY = view.getPosition().y + view.getHeight() + 100;
+                    int endZ = view.getDepth() + 100;
                     physic::BoundingBox bx (x, y, z, endX-view.getPosition().x, endY-view.getPosition().y, endZ);
 
                     for (int i = x; i <= endX; i+=gridMap->getOffsetX()) {
@@ -567,13 +567,7 @@ namespace odfaeg {
                                        Entity* entity = cell->getEntityInside(n);
                                        if (!containsVisibleParentEntity(entity)) {
                                             visibleParentEntities.push_back(entity);
-                                            /*if (entity->isAnimated()) {
-                                                if (!containsAnimatedVisibleEntity(static_cast<AnimatedEntity*>(entity))) {
-                                                    animatedVisibleEntities.push_back(static_cast<AnimatedEntity*>(entity));
-                                                }
-                                            } else {*/
-                                                insertVisibleEntity(entity, bx);
-                                            //}
+                                            insertVisibleEntity(entity, bx);
                                         }
                                     }
                                 //}
@@ -758,7 +752,7 @@ namespace odfaeg {
             for (unsigned int i = 0; i < children.size(); i++) {
                 if (children[i]->getChildren().size() != 0)
                     getChildren(children[i], children, type);
-                if (type.at(0) == '*') {
+                if (type.size() > 0 && type.at(0) == '*') {
                     std::string types;
                     if (type.find("-") != string::npos)
                         types = type.substr(2, type.size() - 3);
@@ -785,7 +779,7 @@ namespace odfaeg {
         vector<Entity*> Map::getEntities(string type) {
             vector<Entity*> entities;
             vector<Entity*> allEntities = gridMap->getEntities();
-            if (type.at(0) == '*') {
+            if (type.size() > 0 && type.at(0) == '*') {
                 if (type.find("-") != string::npos)
                     type = type.substr(2, type.size() - 3);
                 vector<string> excl = core::split(type, "-");
@@ -819,7 +813,7 @@ namespace odfaeg {
 
         vector<Entity*> Map::getVisibleEntities (std::string type) {
             std::vector<Entity*> entities;
-            if (type.at(0) == '*') {
+            if (type.size() > 0 && type.at(0) == '*') {
                 VEntitiesByType it;
                 if (type.find("-") != string::npos)
                     type = type.substr(2, type.size() - 2);

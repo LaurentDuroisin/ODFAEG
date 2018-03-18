@@ -12,17 +12,20 @@ namespace odfaeg {
                 public :
                 Label (RenderWindow& window, math::Vec3f position, math::Vec3f size, const Font* font, std::string text);
                 void clear();
-                void draw (RenderTarget& target, RenderStates states = RenderStates::Default);
+                void onDraw (RenderTarget& target, RenderStates states = RenderStates::Default);
                 void setBackgroundColor(sf::Color color);
                 sf::Color getBackgroundColor();
                 void setForegroundColor(sf::Color color);
                 sf::Color getForegroundColor();
-                void pushEvent(sf::Event event);
+                void onEventPushed(sf::Event event, RenderWindow& window);
                 void checkSubWindowEvents();
                 void setText(std::string text);
                 std::string getText();
                 bool isMouseInside();
                 void onUpdate(RenderWindow* window, sf::Event& event);
+                unsigned int getCharacterSize() {
+                    return text.getCharacterSize();
+                }
                 private :
                 math::Vec3f mousePos;
                 RectangleShape rect;

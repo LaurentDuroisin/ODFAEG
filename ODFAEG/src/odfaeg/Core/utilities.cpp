@@ -74,5 +74,26 @@ namespace odfaeg {
         int conversionStringToHex(std::string str) {
             return strtoul(str.c_str(), NULL, 16);
         }
+        void findFiles (std::string keyword, std::vector<std::string>& files, std::string startDir) {
+            if (DIR* current = opendir(startDir.c_str())) {
+                dirent* ent;
+                while ((ent = readdir(current)) != NULL) {
+                    if (strcmp(ent->d_name, ".") && strcmp(ent->d_name, "..")) {
+                        std::string path(ent->d_name);
+                        if (ent->d_type == DT_DIR) {
+                            findFiles(keyword, files, path);
+                        } else if (path.find(keyword) != std::string::npos) {
+                            files.push_back(path);
+                        }
+                    }
+                }
+                closedir(current);
+            }
+        }
+        std::string getCurrentPath() {
+            char cCurrentPath[FILENAME_MAX];
+            getcwd(cCurrentPath,sizeof(cCurrentPath));
+            return std::string(cCurrentPath);
+        }
     }
 }

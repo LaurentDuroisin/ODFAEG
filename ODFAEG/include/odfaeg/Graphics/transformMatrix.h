@@ -27,7 +27,7 @@ namespace odfaeg
           * The construction of the transformations matrix depend on the translation, scale, rotation and origin provided.
           * The matrix is constructed only when it's necessary.
           */
-        class ODFAEG_GRAPHICS_API TransformMatrix : public core::Serializable
+        class ODFAEG_GRAPHICS_API TransformMatrix
         {
         private :
             math::Matrix4f matrix4f; /**< the 3D transformation matrix*/

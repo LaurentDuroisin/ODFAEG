@@ -16,9 +16,55 @@ namespace odfaeg {
                 visible = true;
                 id = nbComponents;
                 nbComponents++;
+                autoResize = false;
             }
+            /** \fn set the relative position relative to the top-left of the parent's component.
+            * if the component haven't any parent, the parent is the window.
+            * \param x : the relative position for x axis : 1 = 100%, 0 = 0%.
+            * \param y ; the relative position for y axis : 1 = 100%, 0 = 0%.
+            */
+            void setRelPosition(float x, float y)  {
+                relPosX = x;
+                relPosY = y;
+                autoResize = (autoResize ==  false) ? true : autoResize;
+            }
+            /** \fn set the size relative to the size of the parent's component.
+            * \param w : the relative width for x axis : 1 = 100%, 0 = 0%
+            * \param h : the relative height for y axis : 1 = 100%, 0 = 0%.
+            */
+            void setRelSize (float w, float h) {
+                relSizeX = w;
+                relSizeY = h;
+                autoResize = (autoResize ==  false) ? true : autoResize;
+            }
+            /** \fn get the relative position.
+            * \return Vec2f : the relative position.
+            */
+            math::Vec2f getRelPosition() {
+                return math::Vec2f(relPosX, relPosY);
+            }
+            /** \fn get the relative size.
+            * \return Vec2f the relative size.
+            */
+            math::Vec2f getRelSize() {
+                return math::Vec2f (relSizeX, relSizeY);
+            }
+            /**
+            * \fn isAutoResized : return if the composant is autoresize of not.
+            * \return if the component is autoresized.
+            */
+            bool isAutoResized () {
+                return autoResize;
+            }
+            void onScale(math::Vec3f scale) {
+                autoResize = (autoResize == true) ? false : autoResize;
+            }
+            /**
+            * \fn recompute the size relative to the parent component if the parent component is resized.
+            */
+            virtual void recomputeSize() = 0;
             virtual void clear() = 0;
-            virtual void pushEvent(sf::Event event) = 0;
+            virtual void pushEvent(sf::Event event, RenderWindow& window) = 0;
             virtual void onUpdate(RenderWindow* window, sf::Event& event) {}
             core::Listener& getListener() {
                 return listener;
@@ -35,6 +81,7 @@ namespace odfaeg {
             }
             virtual void onVisibilityChanged(bool visible);
             virtual void onEventContextActivated(bool activate);
+            virtual void processEvents();
             RenderWindow& getWindow() {
                 return window;
             }
@@ -46,6 +93,8 @@ namespace odfaeg {
             int id;
             static int nbComponents;
             unsigned int priority;
+            float relPosX, relPosY, relSizeX, relSizeY;
+            bool autoResize;
         };
     }
 }

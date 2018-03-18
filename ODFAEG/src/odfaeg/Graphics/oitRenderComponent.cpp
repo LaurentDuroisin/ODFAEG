@@ -192,8 +192,13 @@ namespace odfaeg {
                 throw core::Erreur(55, "Shader not supported!", 0);
             }
         }
-        void OITRenderComponent::pushEvent(sf::Event event) {
-            getListener().pushEvent(event);
+        void OITRenderComponent::pushEvent(sf::Event event, RenderWindow& rw) {
+            if (event.type == sf::Event::Resized && &getWindow() == &rw && isAutoResized()) {
+                std::cout<<"recompute size"<<std::endl;
+                recomputeSize();
+                getListener().pushEvent(event);
+                getView().reset(physic::BoundingBox(getView().getViewport().getPosition().x, getView().getViewport().getPosition().y, getView().getViewport().getPosition().z, event.size.width, event.size.height, getView().getViewport().getDepth()));
+            }
         }
         bool OITRenderComponent::needToUpdate() {
             return update;

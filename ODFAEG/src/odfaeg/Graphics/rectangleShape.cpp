@@ -44,11 +44,11 @@ namespace odfaeg
 
 
         ////////////////////////////////////////////////////////////
-        /*void RectangleShape::onScale(math::Vec3f& scale)
+        void RectangleShape::onScale(math::Vec3f& scale)
         {
-           //m_size = m_size * scale;
-           //update();
-        }*/
+           m_size = getSize();
+           update();
+        }
 
         ////////////////////////////////////////////////////////////
         unsigned int RectangleShape::getPointCount() const

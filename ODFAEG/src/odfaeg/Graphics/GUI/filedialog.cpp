@@ -13,10 +13,15 @@ namespace odfaeg {
             bChoose (position, size, font, "Choose", rw),
             bCancel (position, size, font, "Cancel", rw),
             font(font) {
-                pTop.setRelToParentLayout(math::Vec3f(0, 0, 1, 0.1));
-                pDirectories.setRelToParentLayout(math::Vec3f(0, 0.1, 0.5, 0.8));
-                pFiles.setRelToParentLayout(math::Vec3f(0.5, 0.1, 0.5, 0.8));
-                pBottom.setRelToParentLayout(math::Vec3f(0, 0.9, 1, 0.1));
+                pTop.setRelPosition(0.f, 0.f);
+                pTop.setRelSize(1.f, 0.1f);
+                pDirectories.setRelPosition(0.f, 0.1f);
+                pDirectories.setRelSize(0.5f, 0.8f);
+
+                pFiles.setRelPosition(0.5f, 0.1f);
+                pFiles.setRelSize(0.5f, 0.8f);
+                pBottom.setRelPosition(0.f, 0.9f);
+                pBottom.setRelSize(1.f, 0.1f);
                 lTop.setParent(&pTop);
                 bChoose.setParent(&pBottom);
                 bCancel.setParent(&pBottom);
@@ -24,10 +29,12 @@ namespace odfaeg {
                 bCancel.addActionListener(this);
                 char cCurrentPath[FILENAME_MAX];
                 getcwd(cCurrentPath,sizeof(cCurrentPath));
-                lTop.setRelToParentLayout(math::Vec3f(0, 0, 1, 1));
+                lTop.setRelPosition(0.f, 0.f);
+                lTop.setRelSize(1.f, 1.f);
                 pTop.addChild(&lTop);
                 std::string currentPath (cCurrentPath);
                 lTop.setText(currentPath);
+                lTop.setBackgroundColor(sf::Color::Red);
                 appliDir = lTop.getText();
                 std::string textDir;
                 if (DIR* root = opendir("/")) {
@@ -38,10 +45,11 @@ namespace odfaeg {
                             textDir = std::string(ent->d_name);
                             Label* lDirectory = new Label(rw, position, size, font, "");
                             lDirectory->setParent(&pDirectories);
-                            lDirectory->setRelToParentLayout(math::Vec3f(0, 0.04 * i, 1, 0.04));
+                            lDirectory->setRelPosition(0.f, 0.04f * i);
+                            lDirectory->setRelSize(1, 0.04f);
                             pDirectories.addChild(lDirectory);
                             lDirectory->setText(sf::String(textDir));
-                            core::Action a (core::Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, sf::Mouse::Right);
+                            core::Action a (core::Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, sf::Mouse::Left);
                             core::Command cmd (a, core::FastDelegate<bool>(&Label::isMouseInside, lDirectory), core::FastDelegate<void>(&FileDialog::onDirSelected, this, lDirectory));
                             if(ent->d_type == DT_DIR) {
                                 lDirectory->setForegroundColor(sf::Color::Red);
@@ -63,10 +71,11 @@ namespace odfaeg {
                             fileNames = std::string(ent->d_name);
                             Label* lFile = new Label(rw, position, size, font, "");
                             lFile->setParent(&pFiles);
-                            lFile->setRelToParentLayout(math::Vec3f(0, 0.04 * i, 1, 0.04));
+                            lFile->setRelPosition(0.f, 0.04f);
+                            lFile->setRelSize(1.f, 0.04f);
                             pFiles.addChild(lFile);
                             lFile->setText(sf::String(fileNames));
-                            core::Action a (core::Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, sf::Mouse::Right);
+                            core::Action a (core::Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, sf::Mouse::Left);
                             core::Command cmd (a, core::FastDelegate<bool>(&Label::isMouseInside, lFile), core::FastDelegate<void>(&FileDialog::onFileSelected, this, lFile));
                             if(ent->d_type == DT_DIR) {
                                 lFile->setForegroundColor(sf::Color::Red);
@@ -78,9 +87,11 @@ namespace odfaeg {
                         }
                     }
                 }
-                bChoose.setRelToParentLayout(math::Vec3f(0.7, 0.1, 0.1, 0.8));
+                bChoose.setRelPosition(0.7f, 0.1f);
+                bChoose.setRelSize(0.1f, 0.8f);
                 pBottom.addChild(&bChoose);
-                bCancel.setRelToParentLayout(math::Vec3f(0.85, 0.1, 0.1, 0.8));
+                bCancel.setRelPosition(0.85f, 0.1f);
+                bCancel.setRelSize(0.1f, 0.8f);
                 pBottom.addChild(&bCancel);
                 View defaultView = rw.getDefaultView();
                 defaultView.setCenter(math::Vec3f(rw.getSize().x * 0.5f, rw.getSize().y * 0.5f, 0));
@@ -93,12 +104,12 @@ namespace odfaeg {
                 pDirectories.clear();
                 pFiles.clear();
             }
-            void FileDialog::draw(RenderTarget& target, RenderStates states) {
+            void FileDialog::onDraw(RenderTarget& target, RenderStates states) {
                 if (rw.isOpen()) {
                     rw.draw(pTop, states);
-                    rw.draw(pBottom, states);
                     rw.draw(pDirectories, states);
                     rw.draw(pFiles, states);
+                    rw.draw(pBottom, states);
                     rw.display();
                 }
             }
@@ -128,10 +139,11 @@ namespace odfaeg {
                                 fileNames = std::string(ent->d_name);
                                 Label* lFile = new Label(rw, getPosition(), getSize(), font, "");
                                 lFile->setParent(&pFiles);
-                                lFile->setRelToParentLayout(math::Vec3f(0, 0.04 * i, 1, 0.04));
+                                lFile->setRelPosition(0.f, 0.04f * i);
+                                lFile->setRelSize(1.f, 0.04f);
                                 pFiles.addChild(lFile);
                                 lFile->setText(fileNames);
-                                core::Action a (core::Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, sf::Mouse::Right);
+                                core::Action a (core::Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, sf::Mouse::Left);
                                 core::Command cmd (a, core::FastDelegate<bool>(&Label::isMouseInside, lFile), core::FastDelegate<void>(&FileDialog::onFileSelected, this, lFile));
                                 if(ent->d_type == DT_DIR) {
                                     lFile->setForegroundColor(sf::Color::Red);
@@ -176,10 +188,11 @@ namespace odfaeg {
                                 fileNames = std::string(ent->d_name);
                                 Label* lFile = new Label(rw, getPosition(), getSize(), font, "");
                                 lFile->setParent(&pFiles);
-                                lFile->setRelToParentLayout(math::Vec3f(0, 0.04 * i, 1, 0.04));
+                                lFile->setRelPosition(0.f, 0.04f * i);
+                                lFile->setRelSize(1.f, 0.04f);
                                 pFiles.addChild(lFile);
                                 lFile->setText(fileNames);
-                                core::Action a (core::Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, sf::Mouse::Right);
+                                core::Action a (core::Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, sf::Mouse::Left);
                                 core::Command cmd (a, core::FastDelegate<bool>(&Label::isMouseInside, lFile), core::FastDelegate<void>(&FileDialog::onFileSelected, this, lFile));
                                 if(ent->d_type == DT_DIR) {
                                     lFile->setForegroundColor(sf::Color::Red);
@@ -207,7 +220,7 @@ namespace odfaeg {
             std::string FileDialog::getAppiDir() {
                 return appliDir;
             }
-            void FileDialog::pushEvent(sf::Event event) {
+            void FileDialog::onEventPushed(sf::Event event, RenderWindow& window) {
 
             }
             void FileDialog::checkSubWindowEvents() {

@@ -259,6 +259,29 @@ src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/bigInt.cpp.o.provides: src/odfa
 
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/bigInt.cpp.o.provides.build: src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/bigInt.cpp.o
 
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/cliEncryptedPacket.cpp.o: src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/flags.make
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/cliEncryptedPacket.cpp.o: ../src/odfaeg/Network/cliEncryptedPacket.cpp
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/laurent/Développement/Projets-c++/ODFAEG/build/CMakeFiles $(CMAKE_PROGRESS_10)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/cliEncryptedPacket.cpp.o"
+	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Network && /usr/bin/clang++-3.6   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/odfaeg-network.dir/cliEncryptedPacket.cpp.o -c /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Network/cliEncryptedPacket.cpp
+
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/cliEncryptedPacket.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/odfaeg-network.dir/cliEncryptedPacket.cpp.i"
+	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Network && /usr/bin/clang++-3.6  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Network/cliEncryptedPacket.cpp > CMakeFiles/odfaeg-network.dir/cliEncryptedPacket.cpp.i
+
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/cliEncryptedPacket.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/odfaeg-network.dir/cliEncryptedPacket.cpp.s"
+	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Network && /usr/bin/clang++-3.6  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Network/cliEncryptedPacket.cpp -o CMakeFiles/odfaeg-network.dir/cliEncryptedPacket.cpp.s
+
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/cliEncryptedPacket.cpp.o.requires:
+.PHONY : src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/cliEncryptedPacket.cpp.o.requires
+
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/cliEncryptedPacket.cpp.o.provides: src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/cliEncryptedPacket.cpp.o.requires
+	$(MAKE) -f src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/build.make src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/cliEncryptedPacket.cpp.o.provides.build
+.PHONY : src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/cliEncryptedPacket.cpp.o.provides
+
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/cliEncryptedPacket.cpp.o.provides.build: src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/cliEncryptedPacket.cpp.o
+
 # Object files for target odfaeg-network
 odfaeg__network_OBJECTS = \
 "CMakeFiles/odfaeg-network.dir/aes.cpp.o" \
@@ -269,28 +292,30 @@ odfaeg__network_OBJECTS = \
 "CMakeFiles/odfaeg-network.dir/srkserveur.cpp.o" \
 "CMakeFiles/odfaeg-network.dir/network.cpp.o" \
 "CMakeFiles/odfaeg-network.dir/user.cpp.o" \
-"CMakeFiles/odfaeg-network.dir/bigInt.cpp.o"
+"CMakeFiles/odfaeg-network.dir/bigInt.cpp.o" \
+"CMakeFiles/odfaeg-network.dir/cliEncryptedPacket.cpp.o"
 
 # External object files for target odfaeg-network
 odfaeg__network_EXTERNAL_OBJECTS =
 
-lib/libodfaeg-network-s-d.a: src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/aes.cpp.o
-lib/libodfaeg-network-s-d.a: src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/rsa.cpp.o
-lib/libodfaeg-network-s-d.a: src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/encryptedPacket.cpp.o
-lib/libodfaeg-network-s-d.a: src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/symEncPacket.cpp.o
-lib/libodfaeg-network-s-d.a: src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.o
-lib/libodfaeg-network-s-d.a: src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.o
-lib/libodfaeg-network-s-d.a: src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.o
-lib/libodfaeg-network-s-d.a: src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/user.cpp.o
-lib/libodfaeg-network-s-d.a: src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/bigInt.cpp.o
-lib/libodfaeg-network-s-d.a: src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/build.make
-lib/libodfaeg-network-s-d.a: src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --red --bold "Linking CXX static library ../../../lib/libodfaeg-network-s-d.a"
+lib/libodfaeg-network-s.a: src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/aes.cpp.o
+lib/libodfaeg-network-s.a: src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/rsa.cpp.o
+lib/libodfaeg-network-s.a: src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/encryptedPacket.cpp.o
+lib/libodfaeg-network-s.a: src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/symEncPacket.cpp.o
+lib/libodfaeg-network-s.a: src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/client.cpp.o
+lib/libodfaeg-network-s.a: src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/srkserveur.cpp.o
+lib/libodfaeg-network-s.a: src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.o
+lib/libodfaeg-network-s.a: src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/user.cpp.o
+lib/libodfaeg-network-s.a: src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/bigInt.cpp.o
+lib/libodfaeg-network-s.a: src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/cliEncryptedPacket.cpp.o
+lib/libodfaeg-network-s.a: src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/build.make
+lib/libodfaeg-network-s.a: src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/link.txt
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --red --bold "Linking CXX static library ../../../lib/libodfaeg-network-s.a"
 	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Network && $(CMAKE_COMMAND) -P CMakeFiles/odfaeg-network.dir/cmake_clean_target.cmake
 	cd /home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Network && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/odfaeg-network.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
-src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/build: lib/libodfaeg-network-s-d.a
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/build: lib/libodfaeg-network-s.a
 .PHONY : src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/build
 
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/requires: src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/aes.cpp.o.requires
@@ -302,6 +327,7 @@ src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/requires: src/odfaeg/Network/CM
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/requires: src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/network.cpp.o.requires
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/requires: src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/user.cpp.o.requires
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/requires: src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/bigInt.cpp.o.requires
+src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/requires: src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/cliEncryptedPacket.cpp.o.requires
 .PHONY : src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/requires
 
 src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/clean:

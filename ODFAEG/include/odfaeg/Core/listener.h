@@ -52,31 +52,27 @@ namespace odfaeg {
              void setCommandSigParams (std::string key, A&&... args) {
 
                  std::map<std::string, Command>::iterator it = commands.find(key);
-                 if (it == commands.end())
-                    throw Erreur(2, "No such connexion!", 6);
-                 it->second.setSigParams(std::forward<A>(args)...);
+                 if (it != commands.end())
+                    it->second.setSigParams(std::forward<A>(args)...);
              }
              template <typename...A>
              void setCommandSlotParams (std::string key, A&&... args) {
 
                  std::map<std::string, Command>::iterator it = commands.find(key);
-                 if (it == commands.end())
-                    throw Erreur(2, "No such connexion!", 6);
-                 it->second.setSlotParams(std::forward<A>(args)...);
+                 if (it != commands.end())
+                    it->second.setSlotParams(std::forward<A>(args)...);
              }
              template <typename...A>
              void bindCommandSigParams (std::string key, A&&... args) {
                  std::map<std::string, Command>::iterator it = commands.find(key);
-                 if (it == commands.end())
-                    throw Erreur(2, "No such connexion!", 6);
-                 it->second.bindSigParams(std::forward<A>(args)...);
+                 if (it != commands.end())
+                    it->second.bindSigParams(std::forward<A>(args)...);
              }
              template <typename...A>
              void bindCommandSlotParams (std::string key, A&&... args) {
                  std::map<std::string, Command>::iterator it = commands.find(key);
-                 if (it == commands.end())
-                    throw Erreur(2, "No such connexion!", 6);
-                 it->second.bindSlotParams(std::forward<A>(args)...);
+                 if (it != commands.end())
+                    it->second.bindSlotParams(std::forward<A>(args)...);
              }
              /** bool isOneTriggered()
              *   \fn bool isOneTriggered()
@@ -128,6 +124,14 @@ namespace odfaeg {
                  for (it = commands.begin(); it != commands.end(); it++) {
                     if (it->second.isTriggered()) {
                         (it->second)();
+                    }
+                    Action* action = it->second.getAction();
+                    if (action != nullptr) {
+                        std::vector<sf::Event> events;
+                        action->getEvents(events);
+                        for (unsigned int i = 0; i < events.size(); i++) {
+                            Command::removeEvent(events[i]);
+                        }
                     }
                  }
              }
