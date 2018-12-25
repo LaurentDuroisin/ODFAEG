@@ -158,14 +158,23 @@ namespace odfaeg {
             bool Face::useSamePrimType (Face &other) {
                 return m_vertices.getPrimitiveType() == other.m_vertices.getPrimitiveType();
             }
-            Instance::Instance (Material& material, sf::PrimitiveType pType) : material(material) {
+            Instance::Instance (Material& material, sf::PrimitiveType pType, Entity* entity) : material(material) {
                 primType = pType;
+                this->entity = entity;
                 numInstances = 0;
+                vertices = VertexArray(pType);
             }
             void Instance::addVertexArray(VertexArray *va, TransformMatrix& tm) {
 
                 m_transforms.push_back(std::ref(tm));
                 m_vertexArrays.push_back(va);
+                for (unsigned int i = 0; i < va->getVertexCount(); i++) {
+                    Vertex v (tm.transform(math::Vec3f((*va)[i].position.x, (*va)[i].position.y, (*va)[i].position.z)), (*va)[i].color, (*va)[i].texCoords);
+                    vertices.append(v);
+                }
+            }
+            VertexArray& Instance::getAllVertices() {
+                return vertices;
             }
             std::vector<VertexArray*> Instance::getVertexArrays() {
                 return m_vertexArrays;
@@ -186,6 +195,9 @@ namespace odfaeg {
             unsigned int Instance::getNumInstances() {
                 return numInstances;
             }
+            Entity* Instance::getEntity() {
+                return entity;
+            }
             Instance::~Instance() {
                 m_transforms.clear();
                 m_vertexArrays.clear();
@@ -195,7 +207,7 @@ namespace odfaeg {
                 numVertices = 0;
                 numIndexes = 0;
             }
-            void Batcher::addFace(Face* face) {
+            void Batcher::addFace(Face* face, Entity* entity) {
                 bool added = false;
                 for (unsigned int i = 0; i < instances.size() && !added; i++) {
                     if (instances[i]->getMaterial() == face->getMaterial()
@@ -205,7 +217,7 @@ namespace odfaeg {
                     }
                 }
                 if (!added) {
-                    Instance* instance = new Instance(face->getMaterial(), face->getVertexArray().getPrimitiveType());
+                    Instance* instance = new Instance(face->getMaterial(), face->getVertexArray().getPrimitiveType(), entity);
                     instance->addVertexArray(&face->getVertexArray(),face->getTransformMatrix());
                     std::unique_ptr<Instance> ptr;
                     ptr.reset(instance);

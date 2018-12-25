@@ -1,9 +1,9 @@
 # The set of languages for which implicit dependencies are needed:
-SET(CMAKE_DEPENDS_LANGUAGES
+set(CMAKE_DEPENDS_LANGUAGES
   "CXX"
   )
 # The set of files for implicit dependencies of each language:
-SET(CMAKE_DEPENDS_CHECK_CXX
+set(CMAKE_DEPENDS_CHECK_CXX
   "/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Network/aes.cpp" "/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/aes.cpp.o"
   "/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Network/bigInt.cpp" "/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/bigInt.cpp.o"
   "/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Network/cliEncryptedPacket.cpp" "/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/cliEncryptedPacket.cpp.o"
@@ -15,24 +15,24 @@ SET(CMAKE_DEPENDS_CHECK_CXX
   "/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Network/symEncPacket.cpp" "/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/symEncPacket.cpp.o"
   "/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Network/user.cpp" "/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Network/CMakeFiles/odfaeg-network.dir/user.cpp.o"
   )
-SET(CMAKE_CXX_COMPILER_ID "Clang")
+set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # Preprocessor definitions for this target.
-SET(CMAKE_TARGET_DEFINITIONS
+set(CMAKE_TARGET_DEFINITIONS
   "GLEW_STATIC"
   "ODFAEG_STATIC"
   )
 
 # Targets to which this target links.
-SET(CMAKE_TARGET_LINKED_INFO_FILES
+set(CMAKE_TARGET_LINKED_INFO_FILES
   "/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/DependInfo.cmake"
   )
 
 # The include file search paths:
-SET(CMAKE_C_TARGET_INCLUDE_PATH
+set(CMAKE_C_TARGET_INCLUDE_PATH
   "../include"
   "../include/Core/boost"
   )
-SET(CMAKE_CXX_TARGET_INCLUDE_PATH ${CMAKE_C_TARGET_INCLUDE_PATH})
-SET(CMAKE_Fortran_TARGET_INCLUDE_PATH ${CMAKE_C_TARGET_INCLUDE_PATH})
-SET(CMAKE_ASM_TARGET_INCLUDE_PATH ${CMAKE_C_TARGET_INCLUDE_PATH})
+set(CMAKE_CXX_TARGET_INCLUDE_PATH ${CMAKE_C_TARGET_INCLUDE_PATH})
+set(CMAKE_Fortran_TARGET_INCLUDE_PATH ${CMAKE_C_TARGET_INCLUDE_PATH})
+set(CMAKE_ASM_TARGET_INCLUDE_PATH ${CMAKE_C_TARGET_INCLUDE_PATH})

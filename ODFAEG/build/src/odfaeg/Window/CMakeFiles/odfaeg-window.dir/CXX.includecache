@@ -198,6 +198,12 @@ string
 iEvent.hpp
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Window/iEvent.hpp
 
+/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Window/sdlWindow.hpp
+SDL2/SDL.h
+-
+string
+-
+
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Window/x11Window.hpp
 X11/Xlib.h
 -
@@ -205,6 +211,12 @@ iWindow.hpp
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Window/iWindow.hpp
 
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/config.hpp
+
+/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Window/sdlWindow.cpp
+../../../include/odfaeg/Window/sdlWindow.hpp
+/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Window/sdlWindow.hpp
+iostream
+-
 
 /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Window/x11Window.cpp
 ../../../include/odfaeg/Window/x11Window.hpp

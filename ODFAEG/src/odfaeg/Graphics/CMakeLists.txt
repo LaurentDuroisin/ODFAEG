@@ -79,6 +79,8 @@ set(SRC_GRAPHICS
 	${SRCROOT}/tile.cpp
 	${INCROOT}/oitRenderComponent.h
 	${SRCROOT}/oitRenderComponent.cpp
+	${INCROOT}/shadowRenderComponent.hpp
+	${SRCROOT}/shadowRenderCompoenent.cpp
 	${INCROOT}/animatedEntity.h	
 	${INCROOT}/model.h
 	${SRCROOT}/model.cpp

@@ -1,4 +1,4 @@
-FILE(REMOVE_RECURSE
+file(REMOVE_RECURSE
   "CMakeFiles/odfaeg-audio.dir/player.cpp.o"
   "CMakeFiles/odfaeg-audio.dir/stream.cpp.o"
   "CMakeFiles/odfaeg-audio.dir/SoundFile.cpp.o"
@@ -7,6 +7,6 @@ FILE(REMOVE_RECURSE
 )
 
 # Per-language clean rules from dependency scanning.
-FOREACH(lang CXX)
-  INCLUDE(CMakeFiles/odfaeg-audio.dir/cmake_clean_${lang}.cmake OPTIONAL)
-ENDFOREACH(lang)
+foreach(lang CXX)
+  include(CMakeFiles/odfaeg-audio.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()

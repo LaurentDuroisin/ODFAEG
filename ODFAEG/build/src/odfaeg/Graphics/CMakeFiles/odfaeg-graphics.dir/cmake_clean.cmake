@@ -1,4 +1,4 @@
-FILE(REMOVE_RECURSE
+file(REMOVE_RECURSE
   "CMakeFiles/odfaeg-graphics.dir/baseChangementMatrix.cpp.o"
   "CMakeFiles/odfaeg-graphics.dir/transformMatrix.cpp.o"
   "CMakeFiles/odfaeg-graphics.dir/viewMatrix.cpp.o"
@@ -35,6 +35,7 @@ FILE(REMOVE_RECURSE
   "CMakeFiles/odfaeg-graphics.dir/animation.cpp.o"
   "CMakeFiles/odfaeg-graphics.dir/tile.cpp.o"
   "CMakeFiles/odfaeg-graphics.dir/oitRenderComponent.cpp.o"
+  "CMakeFiles/odfaeg-graphics.dir/shadowRenderCompoenent.cpp.o"
   "CMakeFiles/odfaeg-graphics.dir/model.cpp.o"
   "CMakeFiles/odfaeg-graphics.dir/gridMap.cpp.o"
   "CMakeFiles/odfaeg-graphics.dir/map.cpp.o"
@@ -65,6 +66,6 @@ FILE(REMOVE_RECURSE
 )
 
 # Per-language clean rules from dependency scanning.
-FOREACH(lang CXX)
-  INCLUDE(CMakeFiles/odfaeg-graphics.dir/cmake_clean_${lang}.cmake OPTIONAL)
-ENDFOREACH(lang)
+foreach(lang CXX)
+  include(CMakeFiles/odfaeg-graphics.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()

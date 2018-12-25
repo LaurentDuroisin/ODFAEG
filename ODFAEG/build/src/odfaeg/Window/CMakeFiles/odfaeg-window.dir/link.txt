@@ -1,2 +1,2 @@
-/usr/bin/ar cr ../../../lib/libodfaeg-window-s.a  CMakeFiles/odfaeg-window.dir/sdlWindow.cpp.o CMakeFiles/odfaeg-window.dir/x11Window.cpp.o
+/usr/bin/ar cq ../../../lib/libodfaeg-window-s.a  CMakeFiles/odfaeg-window.dir/sdlWindow.cpp.o CMakeFiles/odfaeg-window.dir/x11Window.cpp.o
 /usr/bin/ranlib ../../../lib/libodfaeg-window-s.a

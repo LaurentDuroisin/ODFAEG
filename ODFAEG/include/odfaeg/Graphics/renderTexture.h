@@ -90,7 +90,6 @@ namespace odfaeg {
             ///
             ////////////////////////////////////////////////////////////
             bool create(unsigned int width, unsigned int height, sf::ContextSettings = sf::ContextSettings());
-
             ////////////////////////////////////////////////////////////
             /// \brief Enable or disable texture smoothing
             ///

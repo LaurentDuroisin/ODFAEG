@@ -311,7 +311,7 @@ namespace odfaeg {
             *   \param material : the material.
             *   \param pType : the primitive type.
             */
-            Instance (Material& material, sf::PrimitiveType pType);
+            Instance (Material& material, sf::PrimitiveType pType, Entity* entity);
             /**
             *  \fn void addVertexArray(VertexArray *va, TransformMatrix& tm, unsigned int baseVertex, unsigned int baseIndex)
             *  \brief add a vertex array to the instance.
@@ -356,6 +356,8 @@ namespace odfaeg {
             * \fn ~Instance()
             * \brief destructor.
             */
+            Entity* getEntity();
+            VertexArray& getAllVertices();
             ~Instance();
         private:
             Material& material; /**> the material of the instance.*/
@@ -363,6 +365,8 @@ namespace odfaeg {
             std::vector<std::reference_wrapper<TransformMatrix>> m_transforms; /**> the transformations of the instance.*/
             sf::PrimitiveType primType; /**>The primitive type of the instance.*/
             unsigned int numInstances; /**>The number of instances.*/
+            Entity* entity;
+            VertexArray vertices;
         };
         /**
           * \file face.h
@@ -387,7 +391,7 @@ namespace odfaeg {
             * \brief add a face to the facegroup.
             * \param face : the face to add.
             */
-            void addFace(Face* face);
+            void addFace(Face* face, Entity* entity);
             /**
             * \fn std::vector<Instance*> getInstances()
             * \brief return the instances.

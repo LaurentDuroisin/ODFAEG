@@ -1,9 +1,9 @@
 # The set of languages for which implicit dependencies are needed:
-SET(CMAKE_DEPENDS_LANGUAGES
+set(CMAKE_DEPENDS_LANGUAGES
   "CXX"
   )
 # The set of files for implicit dependencies of each language:
-SET(CMAKE_DEPENDS_CHECK_CXX
+set(CMAKE_DEPENDS_CHECK_CXX
   "/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/2D/ambientLight.cpp" "/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/ambientLight.cpp.o"
   "/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/2D/decor.cpp" "/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/decor.cpp.o"
   "/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/2D/directionnalLight.cpp" "/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/2D/directionnalLight.cpp.o"
@@ -50,6 +50,7 @@ SET(CMAKE_DEPENDS_CHECK_CXX
   "/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/renderWindow.cpp" "/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/renderWindow.cpp.o"
   "/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/sdlRenderWindow.cpp" "/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/sdlRenderWindow.cpp.o"
   "/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/shader.cpp" "/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/shader.cpp.o"
+  "/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/shadowRenderCompoenent.cpp" "/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/shadowRenderCompoenent.cpp.o"
   "/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/shape.cpp" "/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/shape.cpp.o"
   "/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/sprite.cpp" "/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/sprite.cpp.o"
   "/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/tGround.cpp" "/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/tGround.cpp.o"
@@ -66,27 +67,27 @@ SET(CMAKE_DEPENDS_CHECK_CXX
   "/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/viewport.cpp" "/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/viewport.cpp.o"
   "/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/world.cpp" "/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/world.cpp.o"
   )
-SET(CMAKE_CXX_COMPILER_ID "Clang")
+set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # Preprocessor definitions for this target.
-SET(CMAKE_TARGET_DEFINITIONS
+set(CMAKE_TARGET_DEFINITIONS
   "GLEW_STATIC"
   "ODFAEG_STATIC"
   )
 
 # Targets to which this target links.
-SET(CMAKE_TARGET_LINKED_INFO_FILES
+set(CMAKE_TARGET_LINKED_INFO_FILES
   "/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/DependInfo.cmake"
   "/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Math/CMakeFiles/odfaeg-math.dir/DependInfo.cmake"
   "/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Physics/CMakeFiles/odfaeg-physics.dir/DependInfo.cmake"
   )
 
 # The include file search paths:
-SET(CMAKE_C_TARGET_INCLUDE_PATH
+set(CMAKE_C_TARGET_INCLUDE_PATH
   "../include"
   "../include/Core/boost"
   "/usr/include/freetype2"
   )
-SET(CMAKE_CXX_TARGET_INCLUDE_PATH ${CMAKE_C_TARGET_INCLUDE_PATH})
-SET(CMAKE_Fortran_TARGET_INCLUDE_PATH ${CMAKE_C_TARGET_INCLUDE_PATH})
-SET(CMAKE_ASM_TARGET_INCLUDE_PATH ${CMAKE_C_TARGET_INCLUDE_PATH})
+set(CMAKE_CXX_TARGET_INCLUDE_PATH ${CMAKE_C_TARGET_INCLUDE_PATH})
+set(CMAKE_Fortran_TARGET_INCLUDE_PATH ${CMAKE_C_TARGET_INCLUDE_PATH})
+set(CMAKE_ASM_TARGET_INCLUDE_PATH ${CMAKE_C_TARGET_INCLUDE_PATH})

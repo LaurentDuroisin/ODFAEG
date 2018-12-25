@@ -1,4 +1,4 @@
-FILE(REMOVE_RECURSE
+file(REMOVE_RECURSE
   "CMakeFiles/odfaeg-physics.dir/collisionResultSet.cpp.o"
   "CMakeFiles/odfaeg-physics.dir/boundingSphere.cpp.o"
   "CMakeFiles/odfaeg-physics.dir/boundingEllipsoid.cpp.o"
@@ -14,6 +14,6 @@ FILE(REMOVE_RECURSE
 )
 
 # Per-language clean rules from dependency scanning.
-FOREACH(lang CXX)
-  INCLUDE(CMakeFiles/odfaeg-physics.dir/cmake_clean_${lang}.cmake OPTIONAL)
-ENDFOREACH(lang)
+foreach(lang CXX)
+  include(CMakeFiles/odfaeg-physics.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()

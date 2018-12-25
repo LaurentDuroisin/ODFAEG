@@ -31,7 +31,7 @@ CMAKE_BUILD_TYPE:STRING=Release
 CMAKE_COLOR_MAKEFILE:BOOL=ON
 
 //CXX compiler.
-CMAKE_CXX_COMPILER:FILEPATH=/usr/bin/clang++-3.6
+CMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++-4.9
 
 //Flags used by the compiler during all build types.
 CMAKE_CXX_FLAGS:STRING=
@@ -39,19 +39,18 @@ CMAKE_CXX_FLAGS:STRING=
 //Flags used by the compiler during debug builds.
 CMAKE_CXX_FLAGS_DEBUG:STRING=-g
 
-//Flags used by the compiler during release minsize builds.
+//Flags used by the compiler during release builds for minimum
+// size.
 CMAKE_CXX_FLAGS_MINSIZEREL:STRING=-Os -DNDEBUG
 
-//Flags used by the compiler during release builds (/MD /Ob1 /Oi
-// /Ot /Oy /Gs will produce slightly less optimized but smaller
-// files).
+//Flags used by the compiler during release builds.
 CMAKE_CXX_FLAGS_RELEASE:STRING=-O3 -DNDEBUG
 
-//Flags used by the compiler during Release with Debug Info builds.
+//Flags used by the compiler during release builds with debug info.
 CMAKE_CXX_FLAGS_RELWITHDEBINFO:STRING=-O2 -g -DNDEBUG
 
-//C compiler.
-CMAKE_C_COMPILER:FILEPATH=/usr/bin/clang-3.6
+//C compiler
+CMAKE_C_COMPILER:FILEPATH=/usr/bin/cc
 
 //Flags used by the compiler during all build types.
 CMAKE_C_FLAGS:STRING=
@@ -59,19 +58,18 @@ CMAKE_C_FLAGS:STRING=
 //Flags used by the compiler during debug builds.
 CMAKE_C_FLAGS_DEBUG:STRING=-g
 
-//Flags used by the compiler during release minsize builds.
+//Flags used by the compiler during release builds for minimum
+// size.
 CMAKE_C_FLAGS_MINSIZEREL:STRING=-Os -DNDEBUG
 
-//Flags used by the compiler during release builds (/MD /Ob1 /Oi
-// /Ot /Oy /Gs will produce slightly less optimized but smaller
-// files).
+//Flags used by the compiler during release builds.
 CMAKE_C_FLAGS_RELEASE:STRING=-O3 -DNDEBUG
 
-//Flags used by the compiler during Release with Debug Info builds.
+//Flags used by the compiler during release builds with debug info.
 CMAKE_C_FLAGS_RELWITHDEBINFO:STRING=-O2 -g -DNDEBUG
 
 //Flags used by the linker.
-CMAKE_EXE_LINKER_FLAGS:STRING=' '
+CMAKE_EXE_LINKER_FLAGS:STRING=
 
 //Flags used by the linker during debug builds.
 CMAKE_EXE_LINKER_FLAGS_DEBUG:STRING=
@@ -98,7 +96,7 @@ CMAKE_LINKER:FILEPATH=/usr/bin/ld
 CMAKE_MAKE_PROGRAM:FILEPATH=/usr/bin/make
 
 //Flags used by the linker during the creation of modules.
-CMAKE_MODULE_LINKER_FLAGS:STRING=' '
+CMAKE_MODULE_LINKER_FLAGS:STRING=
 
 //Flags used by the linker during debug builds.
 CMAKE_MODULE_LINKER_FLAGS_DEBUG:STRING=
@@ -128,7 +126,7 @@ CMAKE_PROJECT_NAME:STATIC=ODFAEG
 CMAKE_RANLIB:FILEPATH=/usr/bin/ranlib
 
 //Flags used by the linker during the creation of dll's.
-CMAKE_SHARED_LINKER_FLAGS:STRING=' '
+CMAKE_SHARED_LINKER_FLAGS:STRING=
 
 //Flags used by the linker during debug builds.
 CMAKE_SHARED_LINKER_FLAGS_DEBUG:STRING=
@@ -213,6 +211,9 @@ OPENSSL_SSL_LIBRARY:FILEPATH=/usr/lib/i386-linux-gnu/libssl.so
 //pkg-config executable
 PKG_CONFIG_EXECUTABLE:FILEPATH=/usr/bin/pkg-config
 
+//The directory containing a CMake configuration file for SFML.
+SFML_DIR:PATH=/usr/local/lib/cmake/SFML
+
 //Path to a file.
 SFML_INCLUDE_DIR:PATH=/usr/local/include
 
@@ -244,18 +245,14 @@ odfaeg-window_LIB_DEPENDS:STATIC=general;odfaeg-core;general;odfaeg-math;
 
 //ADVANCED property for variable: CMAKE_AR
 CMAKE_AR-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: CMAKE_BUILD_TOOL
-CMAKE_BUILD_TOOL-ADVANCED:INTERNAL=1
-//What is the target build tool cmake is generating for.
-CMAKE_BUILD_TOOL:INTERNAL=/usr/bin/make
 //This is the directory where this CMakeCache.txt was created
 CMAKE_CACHEFILE_DIR:INTERNAL=/home/laurent/Développement/Projets-c++/ODFAEG/build
 //Major version of cmake used to create the current loaded cache
-CMAKE_CACHE_MAJOR_VERSION:INTERNAL=2
+CMAKE_CACHE_MAJOR_VERSION:INTERNAL=3
 //Minor version of cmake used to create the current loaded cache
-CMAKE_CACHE_MINOR_VERSION:INTERNAL=8
+CMAKE_CACHE_MINOR_VERSION:INTERNAL=2
 //Patch version of cmake used to create the current loaded cache
-CMAKE_CACHE_PATCH_VERSION:INTERNAL=12
+CMAKE_CACHE_PATCH_VERSION:INTERNAL=2
 //ADVANCED property for variable: CMAKE_COLOR_MAKEFILE
 CMAKE_COLOR_MAKEFILE-ADVANCED:INTERNAL=1
 //Path to CMake executable.
@@ -304,8 +301,12 @@ CMAKE_EXE_LINKER_FLAGS_RELEASE-ADVANCED:INTERNAL=1
 CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_EXPORT_COMPILE_COMMANDS
 CMAKE_EXPORT_COMPILE_COMMANDS-ADVANCED:INTERNAL=1
+//Name of external makefile project generator.
+CMAKE_EXTRA_GENERATOR:INTERNAL=
 //Name of generator.
 CMAKE_GENERATOR:INTERNAL=Unix Makefiles
+//Name of generator platform.
+CMAKE_GENERATOR_PLATFORM:INTERNAL=
 //Name of generator toolset.
 CMAKE_GENERATOR_TOOLSET:INTERNAL=
 //Start directory with the top level CMakeLists.txt file for this
@@ -338,7 +339,7 @@ CMAKE_OBJDUMP-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_RANLIB
 CMAKE_RANLIB-ADVANCED:INTERNAL=1
 //Path to CMake installation.
-CMAKE_ROOT:INTERNAL=/usr/share/cmake-2.8
+CMAKE_ROOT:INTERNAL=/usr/share/cmake-3.2
 //ADVANCED property for variable: CMAKE_SHARED_LINKER_FLAGS
 CMAKE_SHARED_LINKER_FLAGS-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_SHARED_LINKER_FLAGS_DEBUG
@@ -375,7 +376,7 @@ CMAKE_USE_RELATIVE_PATHS-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_VERBOSE_MAKEFILE
 CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
 //Details about finding Freetype
-FIND_PACKAGE_MESSAGE_DETAILS_Freetype:INTERNAL=[/usr/lib/i386-linux-gnu/libfreetype.so][/usr/include/freetype2;/usr/include/freetype2][v17.1.11()]
+FIND_PACKAGE_MESSAGE_DETAILS_Freetype:INTERNAL=[/usr/lib/i386-linux-gnu/libfreetype.so][/usr/include/freetype2][v2.5.2()]
 //Details about finding OpenSSL
 FIND_PACKAGE_MESSAGE_DETAILS_OpenSSL:INTERNAL=[/usr/lib/i386-linux-gnu/libssl.so;/usr/lib/i386-linux-gnu/libcrypto.so][/usr/include][v1.0.1f(1)]
 //ADVANCED property for variable: FREETYPE_INCLUDE_DIR_freetype2
@@ -426,40 +427,5 @@ _OPENSSL_openssl_INCLUDEDIR:INTERNAL=
 _OPENSSL_openssl_LIBDIR:INTERNAL=
 _OPENSSL_openssl_PREFIX:INTERNAL=
 _OPENSSL_openssl_VERSION:INTERNAL=
-_PC_FREETYPE_CFLAGS:INTERNAL=-I/usr/include/freetype2
-_PC_FREETYPE_CFLAGS_I:INTERNAL=
-_PC_FREETYPE_CFLAGS_OTHER:INTERNAL=
-_PC_FREETYPE_FOUND:INTERNAL=1
-_PC_FREETYPE_INCLUDEDIR:INTERNAL="/usr/include/freetype2"
-_PC_FREETYPE_INCLUDE_DIRS:INTERNAL=/usr/include/freetype2
-_PC_FREETYPE_LDFLAGS:INTERNAL=-lfreetype
-_PC_FREETYPE_LDFLAGS_OTHER:INTERNAL=
-_PC_FREETYPE_LIBDIR:INTERNAL="/usr/lib/i386-linux-gnu"
-_PC_FREETYPE_LIBRARIES:INTERNAL=freetype
-_PC_FREETYPE_LIBRARY_DIRS:INTERNAL=
-_PC_FREETYPE_LIBS:INTERNAL=
-_PC_FREETYPE_LIBS_L:INTERNAL=
-_PC_FREETYPE_LIBS_OTHER:INTERNAL=
-_PC_FREETYPE_LIBS_PATHS:INTERNAL=
-_PC_FREETYPE_PREFIX:INTERNAL="/usr"
-_PC_FREETYPE_STATIC_CFLAGS:INTERNAL=-I/usr/include/freetype2
-_PC_FREETYPE_STATIC_CFLAGS_I:INTERNAL=
-_PC_FREETYPE_STATIC_CFLAGS_OTHER:INTERNAL=
-_PC_FREETYPE_STATIC_INCLUDE_DIRS:INTERNAL=/usr/include/freetype2
-_PC_FREETYPE_STATIC_LDFLAGS:INTERNAL=-lfreetype;-lz;-lpng12
-_PC_FREETYPE_STATIC_LDFLAGS_OTHER:INTERNAL=
-_PC_FREETYPE_STATIC_LIBDIR:INTERNAL=
-_PC_FREETYPE_STATIC_LIBRARIES:INTERNAL=freetype;z;png12
-_PC_FREETYPE_STATIC_LIBRARY_DIRS:INTERNAL=
-_PC_FREETYPE_STATIC_LIBS:INTERNAL=
-_PC_FREETYPE_STATIC_LIBS_L:INTERNAL=
-_PC_FREETYPE_STATIC_LIBS_OTHER:INTERNAL=
-_PC_FREETYPE_STATIC_LIBS_PATHS:INTERNAL=
-_PC_FREETYPE_VERSION:INTERNAL=17.1.11
-_PC_FREETYPE_freetype2_INCLUDEDIR:INTERNAL=
-_PC_FREETYPE_freetype2_LIBDIR:INTERNAL=
-_PC_FREETYPE_freetype2_PREFIX:INTERNAL=
-_PC_FREETYPE_freetype2_VERSION:INTERNAL=
 __pkg_config_checked__OPENSSL:INTERNAL=1
-__pkg_config_checked__PC_FREETYPE:INTERNAL=1
 

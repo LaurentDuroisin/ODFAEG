@@ -18,7 +18,9 @@ namespace odfaeg {
             specularTexture = std::make_unique<RenderTexture>();
             bumpTexture = std::make_unique<RenderTexture>();
             refractionTexture = std::make_unique<RenderTexture>();
-            depthBuffer->create(resolution.x, resolution.y,window.getSettings());
+            ContextSettings settings = window.getSettings();
+            settings.depthBits = 32;
+            depthBuffer->create(resolution.x, resolution.y,settings);
             frameBuffer->create(resolution.x, resolution.y,window.getSettings());
             specularTexture->create(resolution.x, resolution.y,window.getSettings());
             bumpTexture->create(resolution.x, resolution.y,window.getSettings());
@@ -34,6 +36,10 @@ namespace odfaeg {
             bumpTexture->clear(sf::Color::Transparent);
             frameBufferTile = std::make_unique<Tile>(&frameBuffer->getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
             depthBufferTile = std::make_unique<Tile>(&depthBuffer->getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
+            core::FastDelegate<bool> signal (&OITRenderComponent::needToUpdate, this);
+            core::FastDelegate<void> slot (&OITRenderComponent::drawNextFrame, this);
+            core::Command cmd(signal, slot);
+            getListener().connect("UPDATE", cmd);
             if (Shader::isAvailable()) {
                 frameBufferGenerator = std::make_unique<Shader>();
                 depthBufferGenerator = std::make_unique<Shader>();
@@ -76,14 +82,9 @@ namespace odfaeg {
                 "}";
                 const std::string depthGenFragShader =
                 "#version 130 \n"
-                "uniform sampler2D depthBuffer;"
                 "uniform sampler2D texture;"
-                "uniform vec3 resolution;"
                 "uniform float haveTexture;"
-                "in mat4 projMat;"
                 "void main () {"
-                    "vec2 position = ( gl_FragCoord.xy / resolution.xy );"
-                    "vec4 previous_depth_alpha = texture2D(depthBuffer, position);"
                     "vec4 texel = texture2D(texture, gl_TexCoord[0].xy);"
                     "vec4 colors[2];"
                     "colors[1] = texel * gl_Color;"
@@ -91,10 +92,7 @@ namespace odfaeg {
                     "bool b = (haveTexture == 1);"
                     "float current_alpha = colors[int(b)].a;"
                     "float current_depth = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
-                    "colors[1] = vec4(current_depth, current_alpha, current_depth, current_alpha);"
-                    "colors[0] = vec4(current_depth, current_alpha, previous_depth_alpha.z, previous_depth_alpha.a);"
-                    "b = (current_depth >= previous_depth_alpha.z && current_alpha != 0);"
-                    "gl_FragColor = colors[int(b)];"
+                    "gl_FragColor = vec4(0, 0, current_depth, current_alpha);"
                 "}";
                 const std::string frameBufferGenFragShader =
                 "#version 130 \n"
@@ -170,8 +168,6 @@ namespace odfaeg {
                 frameBufferGenerator->setParameter("depthBuffer", depthBuffer->getTexture());
                 frameBufferGenerator->setParameter("frameBuffer", frameBuffer->getTexture());
                 frameBufferGenerator->setParameter("texture", Shader::CurrentTexture);
-                depthBufferGenerator->setParameter("resolution",resolution.x, resolution.y, resolution.z);
-                depthBufferGenerator->setParameter("depthBuffer", depthBuffer->getTexture());
                 depthBufferGenerator->setParameter("texture", Shader::CurrentTexture);
                 specularTextureGenerator->setParameter("resolution",resolution.x, resolution.y, resolution.z);
                 specularTextureGenerator->setParameter("specularTexture",specularTexture->getTexture());
@@ -183,10 +179,6 @@ namespace odfaeg {
                 bumpTextureGenerator->setParameter("texture",Shader::CurrentTexture);
                 refractionTextureGenerator->setParameter("resolution",resolution.x, resolution.y, resolution.z);
                 refractionTextureGenerator->setParameter("bumpTexture",bumpTexture->getTexture());
-                core::FastDelegate<bool> signal (&OITRenderComponent::needToUpdate, this);
-                core::FastDelegate<void> slot (&OITRenderComponent::drawNextFrame, this);
-                core::Command cmd(signal, slot);
-                getListener().connect("UPDATE", cmd);
                 backgroundColor = sf::Color::Transparent;
             } else {
                 throw core::Erreur(55, "Shader not supported!", 0);
@@ -204,12 +196,14 @@ namespace odfaeg {
             return update;
         }
         void OITRenderComponent::changeVisibleEntities(Entity* toRemove, Entity* toAdd, EntityManager* em) {
-            bool removed;
-            em->removeAnimatedVisibleEntity(toRemove, visibleEntities, view, removed);
-            if (removed) {
-                em->insertAnimatedVisibleEntity(toAdd, visibleEntities, view);
-                loadEntitiesOnComponent(visibleEntities);
-                update = true;
+            if (expression.find(toAdd->getRootType())) {
+                bool removed;
+                em->removeAnimatedVisibleEntity(toRemove, visibleEntities, view, removed);
+                if (removed) {
+                    em->insertAnimatedVisibleEntity(toAdd, visibleEntities, view);
+                    loadEntitiesOnComponent(visibleEntities);
+                    update = true;
+                }
             }
         }
         std::string OITRenderComponent::getExpression() {
@@ -247,7 +241,7 @@ namespace odfaeg {
             for (unsigned int i = 0; i < vEntities.size(); i++) {
                 if ( vEntities[i]->isLeaf()) {
                     for (unsigned int j = 0; j <  vEntities[i]->getFaces().size(); j++) {
-                         batcher.addFace( vEntities[i]->getFaces()[j]);
+                         batcher.addFace( vEntities[i]->getFaces()[j], vEntities[i]);
                     }
                 }
             }
@@ -292,13 +286,13 @@ namespace odfaeg {
                 } else {
                     bumpTextureGenerator->setParameter("haveTexture", 0.f);
                 }
+                currentStates.texture = m_instances[i]->getMaterial().getTexture();
+                currentStates.shader = depthBufferGenerator.get();
+                depthBuffer->draw(m_instances[i]->getAllVertices(), currentStates);
                 for (unsigned int j = 0; j < m_instances[i]->getVertexArrays().size(); j++) {
-                    currentStates.texture = m_instances[i]->getMaterial().getTexture();
                     currentStates.transform = m_instances[i]->getTransforms()[j].get();
                     currentStates.shader = frameBufferGenerator.get();
                     frameBuffer->draw(*m_instances[i]->getVertexArrays()[j], currentStates);
-                    currentStates.shader = depthBufferGenerator.get();
-                    depthBuffer->draw(*m_instances[i]->getVertexArrays()[j], currentStates);
                     currentStates.shader = bumpTextureGenerator.get();
                     currentStates.texture = m_instances[i]->getMaterial().getBumpTexture();
                     bumpTexture->draw(*m_instances[i]->getVertexArrays()[j], currentStates);
