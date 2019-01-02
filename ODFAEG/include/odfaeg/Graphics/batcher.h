@@ -1,6 +1,7 @@
 #ifndef ODFAEG_FACE_HPP
 #define ODFAEG_FACE_HPP
 #include "vertexArray.h"
+#include "view.h"
 #include <map>
 /**
   *\namespace odfaeg
@@ -265,6 +266,7 @@ namespace odfaeg {
             * \return the vertex array.
             */
             VertexArray& getVertexArray();
+            void setVertexArray (VertexArray va);
             /**
             * \fn bool useSameMaterial(Face& other)
             * \brief check if two faces are using the same material.
@@ -311,19 +313,20 @@ namespace odfaeg {
             *   \param material : the material.
             *   \param pType : the primitive type.
             */
-            Instance (Material& material, sf::PrimitiveType pType, Entity* entity);
+            Instance (Material& material, sf::PrimitiveType pType);
             /**
             *  \fn void addVertexArray(VertexArray *va, TransformMatrix& tm, unsigned int baseVertex, unsigned int baseIndex)
             *  \brief add a vertex array to the instance.
             *
             */
-            void addVertexArray(VertexArray *va, TransformMatrix& tm);
+            void addVertexArray(VertexArray va, TransformMatrix tm);
+            void sortVertexArrays(View& view);
             /**
             * \fn std::vector<VertexArray*> getVertexArrays()
             * \brief get the vertex arrays of the instance.
             * \return the vertex arrays.
             */
-            std::vector<VertexArray*> getVertexArrays();
+            std::vector<VertexArray> getVertexArrays();
             /**
             * \fn void clear()
             * \brief clear all the vertex arrays of the instances.
@@ -334,7 +337,7 @@ namespace odfaeg {
             * \brief get the transformations of every vertex arrays of the instances.
             * \return the transforms.
             */
-            std::vector<std::reference_wrapper<TransformMatrix>> getTransforms();
+            std::vector<TransformMatrix> getTransforms();
             /** \fn Material& getMaterial()
             * \brief get the material of the instance.
             * \return the material.
@@ -356,16 +359,14 @@ namespace odfaeg {
             * \fn ~Instance()
             * \brief destructor.
             */
-            Entity* getEntity();
             VertexArray& getAllVertices();
             ~Instance();
         private:
             Material& material; /**> the material of the instance.*/
-            std::vector<VertexArray*> m_vertexArrays; /**> the vertex arrays of the instance.*/
-            std::vector<std::reference_wrapper<TransformMatrix>> m_transforms; /**> the transformations of the instance.*/
+            std::vector<VertexArray> m_vertexArrays; /**> the vertex arrays of the instance.*/
+            std::vector<TransformMatrix> m_transforms; /**> the transformations of the instance.*/
             sf::PrimitiveType primType; /**>The primitive type of the instance.*/
             unsigned int numInstances; /**>The number of instances.*/
-            Entity* entity;
             VertexArray vertices;
         };
         /**
@@ -391,13 +392,13 @@ namespace odfaeg {
             * \brief add a face to the facegroup.
             * \param face : the face to add.
             */
-            void addFace(Face* face, Entity* entity);
+            void addFace(Face* face);
             /**
             * \fn std::vector<Instance*> getInstances()
             * \brief return the instances.
             * \return the instances.
             */
-            std::vector<Instance*> getInstances();
+            std::vector<Instance> getInstances();
             /**
             * \fn unsigned int getNumIndexes()
             * \brief get the number of indexes.
@@ -418,7 +419,7 @@ namespace odfaeg {
         private :
             unsigned int numVertices; /**> the number of vertices.*/
             unsigned int numIndexes; /**> the number of indexes.*/
-            std::vector<std::unique_ptr<Instance>> instances; /**> the instances.*/
+            std::vector<Instance> instances; /**> the instances.*/
         };
     }
 }

@@ -101,9 +101,11 @@ namespace sorrok {
             baseAnimIndex = TIPPING_OVER;
             anims[baseAnimIndex + currentAnimIndex]->play(false);
             restartRespawn();
+            //World::update();
         } else if (alive == false && b == true){
             baseAnimIndex = WALKING;
             setLife(getMaxLife());
+            //World::update();
         }
         alive = b;
     }

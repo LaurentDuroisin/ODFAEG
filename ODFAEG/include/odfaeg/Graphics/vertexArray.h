@@ -21,7 +21,7 @@
   */
 namespace odfaeg {
     namespace graphic {
-
+        class Entity;
         ////////////////////////////////////////////////////////////
         /// \brief Define a set of one or more 2D primitives
         ///
@@ -37,8 +37,9 @@ namespace odfaeg {
             /// \param vertexCount Initial number of vertices in the array
             ///
             ////////////////////////////////////////////////////////////
-            VertexArray(sf::PrimitiveType type, unsigned int vertexCount = 0);
-
+            VertexArray(sf::PrimitiveType type, unsigned int vertexCount = 0, Entity* entity = nullptr);
+            Entity* getEntity();
+            void setEntity(Entity* entity);
             ////////////////////////////////////////////////////////////
             /// \brief Return the vertex count
             ///
@@ -156,6 +157,7 @@ namespace odfaeg {
             ////////////////////////////////////////////////////////////
             std::vector<Vertex> m_vertices;      ///< Vertices contained in the array
             sf::PrimitiveType       m_primitiveType; ///< Type of primitives to draw
+            Entity* m_entity;
         };
     }
 } // namespace sf

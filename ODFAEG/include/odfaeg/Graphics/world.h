@@ -115,6 +115,11 @@ namespace odfaeg {
                 */
                 static bool containsVisibleEntity(Entity *ae) {
                     if (currentEntityManager != nullptr)
+                        return currentEntityManager->containsVisibleEntity(ae);
+                    return false;
+                }
+                static bool containsVisibleParentEntity(Entity *ae) {
+                    if (currentEntityManager != nullptr)
                         return currentEntityManager->containsVisibleParentEntity(ae);
                     return false;
                 }
@@ -379,6 +384,11 @@ namespace odfaeg {
                         return currentEntityManager->getEntity(id);
                     }
                     return nullptr;
+                }
+                static void updateParticle() {
+                    if (currentEntityManager != nullptr) {
+                        currentEntityManager->updateParticles();
+                    }
                 }
             private :
                 static Cache cache;

@@ -10,7 +10,7 @@ namespace odfaeg {
 
         }
         Tile::Tile (const Tile& tile) : Entity (tile.getPosition(), tile.getSize(), tile.getSize() * 0.5f, "E_TILE"){
-            VertexArray va(sf::Quads);
+            VertexArray va(sf::Quads, 4, this);
             Vertex v1(sf::Vector3f(0, 0, 0));
             Vertex v2(sf::Vector3f(tile.getSize().x, 0, 0));
             Vertex v3(sf::Vector3f(tile.getSize().x, tile.getSize().y, 0));
@@ -20,10 +20,10 @@ namespace odfaeg {
             v2.texCoords = sf::Vector2f(subRect.left + subRect.width, subRect.top);
             v3.texCoords = sf::Vector2f(subRect.left + subRect.width, subRect.top + subRect.height);
             v4.texCoords = sf::Vector2f(subRect.left, subRect.top + subRect.height);
-            va.append(v1);
-            va.append(v2);
-            va.append(v3);
-            va.append(v4);
+            va[0] = v1;
+            va[1] = v2;
+            va[2] = v3;
+            va[3] = v4;
             Material material;
             material.addTexture(tile.getFaces()[0]->getMaterial().getTexture(), subRect);
             material.setTexId(tile.getFaces()[0]->getMaterial().getTexId());
@@ -36,7 +36,7 @@ namespace odfaeg {
         }
         Tile::Tile (const Texture *image, math::Vec3f position, math::Vec3f size, sf::IntRect subRect, sf::Color color, Entity *parent)
         : Entity (position, size, size * 0.5f, "E_TILE") {
-            VertexArray va(sf::Quads);
+            VertexArray va(sf::Quads, 4, this);
             Vertex v1(sf::Vector3f(0, 0, 0));
             Vertex v2(sf::Vector3f(size.x, 0, 0));
             Vertex v3(sf::Vector3f(size.x, size.y, 0));
@@ -46,10 +46,10 @@ namespace odfaeg {
             v3.texCoords = sf::Vector2f(subRect.left + subRect.width, subRect.top + subRect.height);
             v4.texCoords = sf::Vector2f(subRect.left, subRect.top + subRect.height);
             v1.color = v2.color = v3.color = v4.color = color;
-            va.append(v1);
-            va.append(v2);
-            va.append(v3);
-            va.append(v4);
+            va[0] = v1;
+            va[1] = v2;
+            va[2] = v3;
+            va[3] = v4;
             Material material;
             material.addTexture(image, subRect);
             Face* face = new Face(va, material,getTransform());

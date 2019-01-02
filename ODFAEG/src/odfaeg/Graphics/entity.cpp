@@ -32,6 +32,11 @@ namespace odfaeg {
             }
             return getType();
         }
+        Entity* Entity::getRootEntity() {
+            if (parent == nullptr)
+                return this;
+            parent->getRootEntity();
+        }
         int Entity::getNbEntities () {
             return nbEntities;
         }

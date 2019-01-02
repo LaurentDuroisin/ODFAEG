@@ -1,3 +1,3 @@
-file(REMOVE_RECURSE
-  "../../../lib/libodfaeg-graphics-s.a"
+FILE(REMOVE_RECURSE
+  "../../../lib/libodfaeg-graphics-s-d.a"
 )

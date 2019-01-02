@@ -1,4 +1,6 @@
-file(REMOVE_RECURSE
+FILE(REMOVE_RECURSE
+  "CMakeFiles/odfaeg-graphics.dir/zSortingRenderComponent.cpp.o"
+  "CMakeFiles/odfaeg-graphics.dir/lightRenderComponent.cpp.o"
   "CMakeFiles/odfaeg-graphics.dir/baseChangementMatrix.cpp.o"
   "CMakeFiles/odfaeg-graphics.dir/transformMatrix.cpp.o"
   "CMakeFiles/odfaeg-graphics.dir/viewMatrix.cpp.o"
@@ -61,11 +63,11 @@ file(REMOVE_RECURSE
   "CMakeFiles/odfaeg-graphics.dir/GUI/dropDownList.cpp.o"
   "CMakeFiles/odfaeg-graphics.dir/GUI/passwordField.cpp.o"
   "CMakeFiles/odfaeg-graphics.dir/GUI/progressBar.cpp.o"
-  "../../../lib/libodfaeg-graphics-s.pdb"
-  "../../../lib/libodfaeg-graphics-s.a"
+  "../../../lib/libodfaeg-graphics-s-d.pdb"
+  "../../../lib/libodfaeg-graphics-s-d.a"
 )
 
 # Per-language clean rules from dependency scanning.
-foreach(lang CXX)
-  include(CMakeFiles/odfaeg-graphics.dir/cmake_clean_${lang}.cmake OPTIONAL)
-endforeach()
+FOREACH(lang CXX)
+  INCLUDE(CMakeFiles/odfaeg-graphics.dir/cmake_clean_${lang}.cmake OPTIONAL)
+ENDFOREACH(lang)

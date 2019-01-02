@@ -7,7 +7,7 @@ set(SRC
 	
 	${INCROOT}/export.hpp
 	${INCROOT}/collisionResultSet.hpp
-	${SRCROOT}/collisionResultSet.hpp
+	${SRCROOT}/collisionResultSet.cpp
 	${INCROOT}/boundingVolume.h
 	${INCROOT}/boundingSphere.h
 	${SRCROOT}/boundingSphere.cpp
@@ -26,7 +26,7 @@ set(SRC
 	${SRCROOT}/emitter.cpp
 	${INCROOT}/particule.h
         ${SRCROOT}/particle.cpp
-        ${INCROOT}/particuleSystem.h
+        ${INCROOT}/particleSystem.h
 	${SRCROOT}/particleSystem.cpp)
 include_directories(${CMAKE_INCLUDE_PATH})
 link_directories(${CMAKE_LIBRARY_PATH})

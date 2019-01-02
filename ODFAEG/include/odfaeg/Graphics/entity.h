@@ -53,6 +53,7 @@ namespace odfaeg {
                 *  \return the type/group name of the entity.
                 */
                 std::string getType() const;
+                Entity* getRootEntity();
                 //Get the type's id of the entity.
                 /**
                 *  \fn int getTypeInt()

@@ -31,7 +31,9 @@ namespace odfaeg {
                     backDepthBuffer = std::make_unique<RenderTexture>();
                     shadowMap->create(frcm->getWindow().getSize().x, frcm->getWindow().getSize().y,frcm->getWindow().getSettings());
                     lightMap->create(frcm->getWindow().getSize().x, frcm->getWindow().getSize().y,frcm->getWindow().getSettings());
-                    stencilBuffer->create(frcm->getWindow().getSize().x, frcm->getWindow().getSize().y,frcm->getWindow().getSettings());
+                    sf::ContextSettings settings = frcm->getWindow().getSettings();
+                    settings.depthBits = 32;
+                    stencilBuffer->create(frcm->getWindow().getSize().x, frcm->getWindow().getSize().y,settings);
                     normalMap->create(frcm->getWindow().getSize().x, frcm->getWindow().getSize().y,frcm->getWindow().getSettings());
                     refractionMap->create(frcm->getWindow().getSize().x, frcm->getWindow().getSize().y,frcm->getWindow().getSettings());
                     backDepthBuffer->create(frcm->getWindow().getSize().x, frcm->getWindow().getSize().y,frcm->getWindow().getSettings());
@@ -46,6 +48,7 @@ namespace odfaeg {
                     shadowTile = std::make_unique<Tile> (&shadowMap->getTexture(),math::Vec3f(position.x, position.y, position.z), math::Vec3f(size.x, size.y, 0),sf::IntRect(0, 0, size.x, size.y));
                     lightTile = std::make_unique<Tile>  (&lightMap->getTexture(), math::Vec3f(position.x, position.y, position.z), math::Vec3f(size.x, size.y, 0),sf::IntRect(0, 0, size.x, size.y));
                     refractionTile = std::make_unique<Tile> (&refractionMap->getTexture(), math::Vec3f(position.x, position.y, position.z), math::Vec3f(size.x, size.y, 0),sf::IntRect(0, 0, size.x, size.y));
+                    stencilBufferTile = std::make_unique<Tile> (&stencilBuffer->getTexture(), math::Vec3f(position.x, position.y, position.z), math::Vec3f(size.x, size.y, 0),sf::IntRect(0, 0, size.x, size.y));
                     const std::string  depthGenVertexShader =
                     "#version 130 \n"
                     "out mat4 projMat;"
@@ -473,17 +476,20 @@ namespace odfaeg {
         }
         bool Map::addEntity(Entity *entity) {
             std::vector<Entity*> tiles;
-
             getChildren(entity, tiles, "*");
             if (tiles.size() != 0) {
                 for (unsigned int i = 0; i < tiles.size(); i++) {
                    for (unsigned int j = 0; j < tiles[i]->getFaces().size(); j++) {
-                        increaseComptImg(tiles[i]->getFaces()[j]->getMaterial().getTexture());
+                        if (tiles[i]->getFaces()[j]->getMaterial().getTexture() != nullptr) {
+                            increaseComptImg(tiles[i]->getFaces()[j]->getMaterial().getTexture());
+                        }
                    }
                 }
             } else {
                for (unsigned int j = 0; j < entity->getFaces().size(); j++) {
-                    increaseComptImg(entity->getFaces()[j]->getMaterial().getTexture());
+                    if (entity->getFaces()[j]->getMaterial().getTexture() != nullptr) {
+                        increaseComptImg(entity->getFaces()[j]->getMaterial().getTexture());
+                    }
                }
             }
 
@@ -565,8 +571,8 @@ namespace odfaeg {
                                 if (cell != nullptr) {
                                     for (unsigned int n = 0; n < cell->getEntitiesInside().size(); n++) {
                                        Entity* entity = cell->getEntityInside(n);
-                                       if (!containsVisibleParentEntity(entity)) {
-                                            visibleParentEntities.push_back(entity);
+                                       if (!containsVisibleParentEntity(entity->getRootEntity())) {
+                                            visibleParentEntities.push_back(entity->getRootEntity());
                                             insertVisibleEntity(entity, bx);
                                         }
                                     }
@@ -593,39 +599,44 @@ namespace odfaeg {
         }
         void Map::insertVisibleEntity(Entity *entity, physic::BoundingBox bx) {
             if (entity->isAnimated()) {
-                insertVisibleEntity(static_cast<AnimatedEntity*>(entity)->getCurrentFrame(), bx);
-            }
-            if (!entity->isAnimated()) {
+                if (!containsVisibleEntity(entity)) {
+                    VEntitiesByType it = vEntitiesByType.find(entity->getType());
+                    if (it == vEntitiesByType.end()) {
+                        std::pair<std::string, std::vector<Entity*>> newEntitiesType(entity->getType(), std::vector<Entity*>());
+                        vEntitiesByType.insert(newEntitiesType);
+                        it = vEntitiesByType.find(entity->getType());
+                    }
+                    it->second.push_back(entity);
+                    insertVisibleEntity(static_cast<AnimatedEntity*>(entity)->getCurrentFrame(), bx);
+                }
+            } else {
+               if (!containsVisibleEntity(entity)) {
+                    physic::BoundingBox bx2 = entity->getGlobalBounds();
+                    if (bx.intersects(bx2)) {
+                        VEntitiesByType it = vEntitiesByType.find(entity->getType());
+                        if (it == vEntitiesByType.end()) {
+                            std::pair<std::string, std::vector<Entity*>> newEntitiesType(entity->getType(), std::vector<Entity*>());
+                            vEntitiesByType.insert(newEntitiesType);
+                            it = vEntitiesByType.find(entity->getType());
+                        }
+                        it->second.push_back(entity);
+                    }
+                }
                 vector<Entity*> children;
                 getChildren(entity, children, "*");
-                VEntitiesByType it = vEntitiesByType.find(entity->getType());
-
-                if (it == vEntitiesByType.end()) {
-                    std::pair<std::string, std::vector<Entity*>> newEntitiesType(entity->getType(), std::vector<Entity*>());
-                    vEntitiesByType.insert(newEntitiesType);
-                    it = vEntitiesByType.find(entity->getType());
-                }
-                //std::cout<<"view volume : "<<view.getPosition()<<" "<<view.getWidth()<<" "<<view.getHeight()<<" "<<view.getDepth()<<std::endl;
-                if (children.size() != 0) {
-
-                    for (unsigned int i = 0; i < children.size(); i++) {
-                        if (!containsVisibleEntity(children[i])) {
-                            physic::BoundingBox bx2  = children[i]->getGlobalBounds();
-                            //std::cout<<"view volume : "<<bx2.getPosition()<<" "<<bx2.getWidth()<<" "<<bx2.getHeight()<<" "<<bx2.getDepth()<<std::endl;
-                            if (bx.intersects(bx2)) {
-                                it->second.push_back(children[i]);
+                for (unsigned int i = 0; i < children.size(); i++) {
+                    if (!containsVisibleEntity(children[i])) {
+                        physic::BoundingBox bx2  = children[i]->getGlobalBounds();
+                        //std::cout<<"view volume : "<<bx2.getPosition()<<" "<<bx2.getWidth()<<" "<<bx2.getHeight()<<" "<<bx2.getDepth()<<std::endl;
+                        if (bx.intersects(bx2)) {
+                            VEntitiesByType it = vEntitiesByType.find(entity->getType());
+                            if (it == vEntitiesByType.end()) {
+                                std::pair<std::string, std::vector<Entity*>> newEntitiesType(entity->getType(), std::vector<Entity*>());
+                                vEntitiesByType.insert(newEntitiesType);
+                                it = vEntitiesByType.find(entity->getType());
                             }
+                            it->second.push_back(children[i]);
                         }
-                    }
-
-                } else {
-                    if (!containsVisibleEntity(entity)) {
-
-                        //physic::BoundingBox bx2 = entity->getGlobalBounds();
-                        //if (bx.intersects(bx2)) {
-                            //std::cout<<"add "<<std::endl;
-                            it->second.push_back(entity);
-                        //}
                     }
                 }
             }
@@ -636,16 +647,21 @@ namespace odfaeg {
         void Map::insertAnimatedVisibleEntity (Entity *ae, std::vector<Entity*>& entities, View& view) {
             if (ae->isAnimated()) {
                 insertAnimatedVisibleEntity(static_cast<AnimatedEntity*> (ae)->getCurrentFrame(), entities, view);
-            }
-            if (!ae->isAnimated()) {
+            } else {
+                physic::BoundingBox bx (view.getViewVolume().getPosition().x,view.getViewVolume().getPosition().y,view.getViewVolume().getPosition().z,view.getViewVolume().getWidth(), view.getViewVolume().getHeight(), view.getViewVolume().getDepth());
                 vector<Entity*> children;
                 getChildren(ae, children, "*");
+                if (!containsVisibleEntity(ae)) {
+                    physic::BoundingBox bx2 = ae->getGlobalBounds();
+                    if (bx.intersects(bx2)) {
 
-                if (children.size() == 0 && !containsVisibleEntity(ae)) {
-                    entities.push_back(ae);
-                } else {
-                    for (unsigned int i = 0; i < children.size(); i++) {
-                        if (!containsVisibleEntity(children[i])) {
+                        entities.push_back(ae);
+                    }
+                }
+                for (unsigned int i = 0; i < children.size(); i++) {
+                    if (!containsVisibleEntity(children[i])) {
+                        physic::BoundingBox bx2 = children[i]->getGlobalBounds();
+                        if (bx.intersects(bx2)) {
                             entities.push_back(children[i]);
                         }
                     }
@@ -653,93 +669,78 @@ namespace odfaeg {
             }
         }
         void Map::changeVisibleEntity(Entity* toRemove, Entity* toAdd) {
-            for (unsigned int i = 0; i < frcm->getNbComponents(); i++) {
-                if (frcm->getRenderComponent(i) != nullptr)
-                    frcm->getRenderComponent(i)->changeVisibleEntities(toRemove, toAdd, this);
-            }
             View view = frcm->getWindow().getView();
             physic::BoundingBox bx (view.getViewVolume().getPosition().x,view.getViewVolume().getPosition().y,view.getViewVolume().getPosition().z,view.getViewVolume().getWidth(), view.getViewVolume().getHeight(), view.getViewVolume().getDepth());
             VEntitiesByType it = vEntitiesByType.find(toRemove->getType());
             std::vector<Entity*>::iterator it2;
             vector<Entity*> children;
             getChildren(toRemove, children, "*");
-            if (children.size() != 0) {
-                for (unsigned int i = 0; i < children.size(); i++) {
-                    physic::BoundingBox bx2 = children[i]->getGlobalBounds();
-                    if (bx.intersects(bx2)) {
-                        for (it2 = it->second.begin(); it2 != it->second.end();) {
-                            if (*it2 == children[i]) {
-                                it2 = it->second.erase(it2);
-                            } else {
-                                it2++;
-                            }
-                        }
-                    }
+            for (it2 = it->second.begin(); it2 != it->second.end();) {
+                if (*it2 == toRemove) {
+                    it2 = it->second.erase(it2);
+                } else {
+                    it2++;
                 }
-            } else {
-                physic::BoundingBox bx2 = toRemove->getGlobalBounds();
-                if (bx.intersects(bx2)) {
-                    for (it2 = it->second.begin(); it2 != it->second.end();) {
-                        if (*it2 == toRemove) {
-                            it2 = it->second.erase(it2);
-                        } else {
-                            it2++;
-                        }
+            }
+            for (unsigned int i = 0; i < children.size(); i++) {
+                for (it2 = it->second.begin(); it2 != it->second.end();) {
+                    if (*it2 == children[i]) {
+                        it2 = it->second.erase(it2);
+                    } else {
+                        it2++;
                     }
                 }
             }
             getChildren(toAdd, children, "*");
-            it = vEntitiesByType.find(toRemove->getType());
-            if (children.size() == 0 && !containsVisibleEntity(toAdd)) {
-                it->second.push_back(toAdd);
+            it = vEntitiesByType.find(toAdd->getType());
+            if (!containsVisibleEntity(toAdd)) {
+                physic::BoundingBox bx2 = toAdd->getGlobalBounds();
+                if (bx.intersects(bx2)) {
+                    it->second.push_back(toAdd);
+                }
             } else {
                 for (unsigned int i = 0; i < children.size(); i++) {
                     if (!containsVisibleEntity(children[i])) {
-                        it->second.push_back(children[i]);
+                        physic::BoundingBox bx2 = children[i]->getGlobalBounds();
+                        if (bx.intersects(bx2)) {
+                            it->second.push_back(children[i]);
+                        }
                     }
+                }
+            }
+            for (unsigned int i = 0; i < frcm->getNbComponents(); i++) {
+                if (frcm->getRenderComponent(i) != nullptr) {
+                    frcm->getRenderComponent(i)->changeVisibleEntities(toRemove, toAdd, this);
                 }
             }
         }
         void Map::removeAnimatedVisibleEntity(Entity *toRemove, std::vector<Entity*>& entities, View& view, bool& removed) {
             if (toRemove->isAnimated()) {
                 removeAnimatedVisibleEntity(static_cast<AnimatedEntity*>(toRemove)->getCurrentFrame(), entities, view, removed);
-            }
-
-            if (!toRemove->isAnimated()) {
+            } else {
                 vector<Entity*>::iterator it2;
                 vector<Entity*> children;
                 getChildren(toRemove, children, "*");
-                physic::BoundingBox bx (view.getViewVolume().getPosition().x,view.getViewVolume().getPosition().y,view.getViewVolume().getPosition().z,view.getViewVolume().getWidth(), view.getViewVolume().getHeight(), view.getViewVolume().getDepth());
-                if (children.size() != 0) {
-                    for (unsigned int i = 0; i < children.size(); i++) {
-                        physic::BoundingBox bx2 = children[i]->getGlobalBounds();
-                        if (bx.intersects(bx2)) {
-                            for (it2 = entities.begin(); it2 != entities.end();) {
-                                if (*it2 == children[i]) {
-                                    removed = true;
-                                    it2 = entities.erase(it2);
-                                } else {
-                                    it2++;
-                                }
-                            }
-                        }
+                for (it2 = entities.begin(); it2 != entities.end();) {
+                    if (*it2 == toRemove) {
+                        removed = true;
+                        it2 = entities.erase(it2);
+                    } else {
+                        it2++;
                     }
-                } else {
-                    physic::BoundingBox bx2 = toRemove->getGlobalBounds();
-                    if (bx.intersects(bx2)) {
-                        for (it2 = entities.begin(); it2 != entities.end();) {
-                            if (*it2 == toRemove) {
-                                removed = true;
-                                it2 = entities.erase(it2);
-                            } else {
-                                it2++;
-                            }
+                }
+                for (unsigned int i = 0; i < children.size(); i++) {
+                    for (it2 = entities.begin(); it2 != entities.end();) {
+                        if (*it2 == children[i]) {
+                            removed = true;
+                            it2 = entities.erase(it2);
+                        } else {
+                            it2++;
                         }
                     }
                 }
             }
         }
-
         Entity* Map::getEntity(int id) {
             return gridMap->getEntity(id);
         }
@@ -887,10 +888,15 @@ namespace odfaeg {
         }
         bool Map::containsVisibleEntity(Entity* entity) {
             VEntitiesByType it;
-            it = vEntitiesByType.find(entity->getRootType());
+            it = vEntitiesByType.find(entity->getType());
             if (it == vEntitiesByType.end())
                 return false;
+            if (it->first == "E_HERO")
+                std::cout<<"E_HERO found"<<std::endl;
             for (unsigned int i = 0; i < it->second.size(); i++) {
+                if (entity->getType() == "E_HERO") {
+                    std::cout<<"entity found."<<std::endl;
+                }
                 if (it->second[i] == entity) {
                     return true;
                 }
@@ -968,9 +974,9 @@ namespace odfaeg {
                             math::Matrix4f depthBiasMatrix = biasMatrix * view.getViewMatrix().getMatrix() * view.getProjMatrix().getMatrix();
                             perPixShadowShader->setParameter("depthBiasMatrix", depthBiasMatrix.transpose());
                             for (unsigned int k = 0; k < entities.size(); k++) {
-                                forward = entities[k]->getCenter() - view.getPosition();
+                                /*forward = entities[k]->getCenter() - view.getPosition();
                                 target = view.getPosition() + forward;
-                                view.lookAt(target.x, target.y, target.z);
+                                view.lookAt(target.x, target.y, target.z);*/
                                 if (entities[k]->getFaces().size() > 0) {
                                     if (entities[k]->getFaces()[0]->getMaterial().getTexture() != nullptr) {
                                         buildShadowMapShader->setParameter("haveTexture", 1);
@@ -1001,6 +1007,7 @@ namespace odfaeg {
                 }
                 va_end(args);
                 stencilBuffer->display();
+                stencilBufferTile->setPosition(position);
             }
         }
 
@@ -1087,7 +1094,6 @@ namespace odfaeg {
             return *shadowTile;
         }
         Entity& Map::getLightTile (std::string expression, int n, va_list args) {
-
             std::vector<Entity*> lights = getVisibleEntities(expression);
             View view = frcm->getWindow().getView();
             physic::BoundingBox viewArea = view.getViewVolume();
@@ -1120,24 +1126,26 @@ namespace odfaeg {
                                     lightMap->setView(frcm->getRenderComponent(i)->getView());
                                     normalMap->setView(frcm->getRenderComponent(i)->getView());
                                     normalMap->clear(sf::Color::Transparent);
-                                    Tile& heightMapTile = frcm->getRenderComponent(i)->getDepthBufferTile();
-                                    heightMapTile.setCenter(frcm->getRenderComponent(i)->getView().getPosition());
-                                    states.shader = buildNormalMapShader.get();
-                                    states.blendMode = sf::BlendNone;
-                                    normalMap->draw(heightMapTile, states);
-                                    normalMap->display();
-                                    perPixLightingShader->setParameter("specularTexture", frcm->getRenderComponent(i)->getSpecularTexture());
-                                    perPixLightingShader->setParameter("normalMap", normalMap->getTexture());
-                                    perPixLightingShader->setParameter("bumpMap", frcm->getRenderComponent(i)->getBumpTexture());
-                                    states.shader = perPixLightingShader.get();
-                                    states.blendMode = sf::BlendAdd;
-                                    for (unsigned int j = 0; j < lights.size(); j++) {
-                                        EntityLight* el = static_cast<EntityLight*> (lights[j]);
-                                        math::Vec3f center = frcm->getWindow().mapCoordsToPixel(el->getLightCenter(), frcm->getRenderComponent(i)->getView());
-                                        center.w = el->getSize().x * 0.5f;
-                                        perPixLightingShader->setParameter("lightPos", center.x, center.y, center.z, center.w);
-                                        perPixLightingShader->setParameter("lightColor", el->getColor().r, el->getColor().g,el->getColor().b,el->getColor().a);
-                                        lightMap->draw(*el, states);
+                                    if (dynamic_cast<OITRenderComponent*>(frcm->getRenderComponent(i)) != nullptr) {
+                                        Tile& heightMapTile = static_cast<OITRenderComponent*>(frcm->getRenderComponent(i))->getDepthBufferTile();
+                                        heightMapTile.setCenter(frcm->getRenderComponent(i)->getView().getPosition());
+                                        states.shader = buildNormalMapShader.get();
+                                        states.blendMode = sf::BlendNone;
+                                        normalMap->draw(heightMapTile, states);
+                                        normalMap->display();
+                                        perPixLightingShader->setParameter("specularTexture", static_cast<OITRenderComponent*>(frcm->getRenderComponent(i))->getSpecularTexture());
+                                        perPixLightingShader->setParameter("normalMap", normalMap->getTexture());
+                                        perPixLightingShader->setParameter("bumpMap", static_cast<OITRenderComponent*>(frcm->getRenderComponent(i))->getBumpTexture());
+                                        states.shader = perPixLightingShader.get();
+                                        states.blendMode = sf::BlendAdd;
+                                        for (unsigned int j = 0; j < lights.size(); j++) {
+                                            EntityLight* el = static_cast<EntityLight*> (lights[j]);
+                                            math::Vec3f center = frcm->getWindow().mapCoordsToPixel(el->getLightCenter(), frcm->getRenderComponent(i)->getView());
+                                            center.w = el->getSize().x * 0.5f;
+                                            perPixLightingShader->setParameter("lightPos", center.x, center.y, center.z, center.w);
+                                            perPixLightingShader->setParameter("lightColor", el->getColor().r, el->getColor().g,el->getColor().b,el->getColor().a);
+                                            lightMap->draw(*el, states);
+                                        }
                                     }
                                 }
                            }
@@ -1181,22 +1189,24 @@ namespace odfaeg {
                                     view.lookAt(-forward.x, -forward.y, -forward.z);
                                     refractionMap->setView(view);
                                     backDepthBuffer->setView(view);
-                                    buildRefractionMapShader->setParameter("refractionTexture",frcm->getRenderComponent(i)->getRefractionTexture());
-                                    buildRefractionMapShader->setParameter("frameBuffer",frcm->getRenderComponent(i)->getFrameBufferTexture());
-                                    for (unsigned int k = 0; k < entities.size(); k++) {
-                                        if (entities[k]->getFaces().size() > 0) {
-                                            if (entities[k]->getFaces()[0]->getMaterial().getTexture() != nullptr) {
-                                                perPixShadowShader->setParameter("haveTexture", 1);
-                                                depthBufferGenShader->setParameter("haveTexture", 1);
-                                            } else {
-                                                perPixShadowShader->setParameter("haveTexture", 0);
-                                                depthBufferGenShader->setParameter("haveTexture", 0);
+                                    if (dynamic_cast<OITRenderComponent*>(frcm->getRenderComponent(i)) != nullptr) {
+                                        buildRefractionMapShader->setParameter("refractionTexture",static_cast<OITRenderComponent*>(frcm->getRenderComponent(i))->getRefractionTexture());
+                                        buildRefractionMapShader->setParameter("frameBuffer",static_cast<OITRenderComponent*>(frcm->getRenderComponent(i))->getFrameBufferTexture());
+                                        for (unsigned int k = 0; k < entities.size(); k++) {
+                                            if (entities[k]->getFaces().size() > 0) {
+                                                if (entities[k]->getFaces()[0]->getMaterial().getTexture() != nullptr) {
+                                                    perPixShadowShader->setParameter("haveTexture", 1);
+                                                    depthBufferGenShader->setParameter("haveTexture", 1);
+                                                } else {
+                                                    perPixShadowShader->setParameter("haveTexture", 0);
+                                                    depthBufferGenShader->setParameter("haveTexture", 0);
+                                                }
                                             }
+                                            states.shader = buildRefractionMapShader.get();
+                                            refractionMap->draw(*entities[k], states);
+                                            states.shader = depthBufferGenShader.get();
+                                            backDepthBuffer->draw(*entities[k], states);
                                         }
-                                        states.shader = buildRefractionMapShader.get();
-                                        refractionMap->draw(*entities[k], states);
-                                        states.shader = depthBufferGenShader.get();
-                                        backDepthBuffer->draw(*entities[k], states);
                                     }
                                 }
                             }
@@ -1209,6 +1219,13 @@ namespace odfaeg {
         }
         BaseChangementMatrix Map::getBaseChangementMatrix() {
             return gridMap->getBaseChangementMatrix();
+        }
+        void Map::updateParticles() {
+            for (unsigned int i = 0; i < frcm->getNbComponents(); i++) {
+                if (frcm->getRenderComponent(i) != nullptr) {
+                    frcm->getRenderComponent(i)->updateParticleSystems();
+                }
+            }
         }
     }
 }

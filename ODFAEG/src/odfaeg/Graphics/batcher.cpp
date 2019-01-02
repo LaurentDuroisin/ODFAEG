@@ -151,6 +151,9 @@ namespace odfaeg {
             VertexArray& Face::getVertexArray() {
                 return m_vertices;
             }
+            void Face::setVertexArray(VertexArray va) {
+                m_vertices = va;
+            }
             bool Face::useSameMaterial(Face& other) {
                 return m_material == other.m_material;
 
@@ -158,32 +161,60 @@ namespace odfaeg {
             bool Face::useSamePrimType (Face &other) {
                 return m_vertices.getPrimitiveType() == other.m_vertices.getPrimitiveType();
             }
-            Instance::Instance (Material& material, sf::PrimitiveType pType, Entity* entity) : material(material) {
+            Instance::Instance (Material& material, sf::PrimitiveType pType) : material(material) {
                 primType = pType;
-                this->entity = entity;
                 numInstances = 0;
                 vertices = VertexArray(pType);
             }
-            void Instance::addVertexArray(VertexArray *va, TransformMatrix& tm) {
+            void Instance::addVertexArray(VertexArray va, TransformMatrix tm) {
 
-                m_transforms.push_back(std::ref(tm));
+                m_transforms.push_back(tm);
                 m_vertexArrays.push_back(va);
-                for (unsigned int i = 0; i < va->getVertexCount(); i++) {
-                    Vertex v (tm.transform(math::Vec3f((*va)[i].position.x, (*va)[i].position.y, (*va)[i].position.z)), (*va)[i].color, (*va)[i].texCoords);
+                for (unsigned int i = 0; i < va.getVertexCount(); i++) {
+                    Vertex v (tm.transform(math::Vec3f(va[i].position.x, va[i].position.y, va[i].position.z)), va[i].color, va[i].texCoords);
                     vertices.append(v);
+                }
+            }
+            void Instance::sortVertexArrays(View& view) {
+                vertices.clear();
+                std::multimap<float, VertexArray> sortedVA;
+                std::multimap<float, TransformMatrix> sortedTM;
+                for (unsigned int i = 0; i < m_vertexArrays.size(); i++) {
+                    odfaeg::math::Vec3f center;
+                    for (unsigned int j = 0; j < m_vertexArrays[i].getVertexCount(); j++) {
+                        center += m_transforms[i].transform(odfaeg::math::Vec3f(m_vertexArrays[i][j].position.x,m_vertexArrays[i][j].position.y,m_vertexArrays[i][j].position.z));
+                    }
+                    center = center / m_vertexArrays[i].getVertexCount();
+                    //center = view.getViewMatrix().transform(center);
+                    sortedVA.insert(std::make_pair(center.z, m_vertexArrays[i]));
+                    sortedTM.insert(std::make_pair(center.z, m_transforms[i]));
+                }
+                m_vertexArrays.clear();
+                m_transforms.clear();
+                std::multimap<float, VertexArray>::iterator it;
+                std::multimap<float, TransformMatrix>::iterator it2;
+                for (it = sortedVA.begin(), it2 = sortedTM.begin(); it != sortedVA.end(); it++, it2++) {
+                    VertexArray va = it->second;
+                    TransformMatrix tm = it2->second;
+                    m_vertexArrays.push_back(va);
+                    m_transforms.push_back(tm);
+                    for (unsigned int i = 0; i < va.getVertexCount(); i++) {
+                        Vertex v (tm.transform(math::Vec3f(va[i].position.x, va[i].position.y, va[i].position.z)), va[i].color, va[i].texCoords);
+                        vertices.append(v);
+                    }
                 }
             }
             VertexArray& Instance::getAllVertices() {
                 return vertices;
             }
-            std::vector<VertexArray*> Instance::getVertexArrays() {
+            std::vector<VertexArray> Instance::getVertexArrays() {
                 return m_vertexArrays;
             }
             void Instance::clear() {
                 m_transforms.clear();
                 m_vertexArrays.clear();
             }
-            std::vector<std::reference_wrapper<TransformMatrix>> Instance::getTransforms() {
+            std::vector<TransformMatrix> Instance::getTransforms() {
                  return m_transforms;
             }
             Material& Instance::getMaterial() {
@@ -195,9 +226,6 @@ namespace odfaeg {
             unsigned int Instance::getNumInstances() {
                 return numInstances;
             }
-            Entity* Instance::getEntity() {
-                return entity;
-            }
             Instance::~Instance() {
                 m_transforms.clear();
                 m_vertexArrays.clear();
@@ -207,27 +235,25 @@ namespace odfaeg {
                 numVertices = 0;
                 numIndexes = 0;
             }
-            void Batcher::addFace(Face* face, Entity* entity) {
+            void Batcher::addFace(Face* face) {
                 bool added = false;
                 for (unsigned int i = 0; i < instances.size() && !added; i++) {
-                    if (instances[i]->getMaterial() == face->getMaterial()
-                        && instances[i]->getPrimitiveType() == face->getVertexArray().getPrimitiveType()) {
+                    if (instances[i].getMaterial() == face->getMaterial()
+                        && instances[i].getPrimitiveType() == face->getVertexArray().getPrimitiveType()) {
                             added = true;
-                            instances[i]->addVertexArray(&face->getVertexArray(),face->getTransformMatrix());
+                            instances[i].addVertexArray(face->getVertexArray(),face->getTransformMatrix());
                     }
                 }
                 if (!added) {
-                    Instance* instance = new Instance(face->getMaterial(), face->getVertexArray().getPrimitiveType(), entity);
-                    instance->addVertexArray(&face->getVertexArray(),face->getTransformMatrix());
-                    std::unique_ptr<Instance> ptr;
-                    ptr.reset(instance);
-                    instances.push_back(std::move(ptr));
+                    Instance instance (face->getMaterial(), face->getVertexArray().getPrimitiveType());
+                    instance.addVertexArray(face->getVertexArray(),face->getTransformMatrix());
+                    instances.push_back(instance);
                 }
             }
-            std::vector<Instance*> Batcher::getInstances() {
-                std::vector<Instance*> insts;
+            std::vector<Instance> Batcher::getInstances() {
+                std::vector<Instance> insts;
                 for (unsigned int i = 0; i < instances.size(); i++) {
-                    insts.push_back(instances[i].get());
+                    insts.push_back(instances[i]);
                 }
                 return insts;
             }

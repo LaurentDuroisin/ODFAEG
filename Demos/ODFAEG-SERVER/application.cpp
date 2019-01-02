@@ -15,9 +15,9 @@ namespace sorrok {
     void MyAppli::onInit () {
         Network::startSrv(10'000, 10'001);
         theMap = new Map(nullptr, "Map test", 100, 50);
-        sql::Driver* driver = get_driver_instance();
-        sql::Connection* con = driver->connect("localhost", "root","Kirokofu457$");
-        con->setSchema("SORROK");
+        /*sql::Driver* driver = get_driver_instance();
+        sql::Connection* con = driver->connect("localhost", "root","Kirokofu457$");*/
+        //con->setSchema("SORROK");
         BaseChangementMatrix bcm;
         bcm.set2DIsoMatrix();
         theMap->setBaseChangementMatrix(bcm);
@@ -133,9 +133,9 @@ namespace sorrok {
         tmpPosition = pos;
         monster->setCenter(pos);
         World::addEntity(monster);
-        driver = get_driver_instance();
+        /*driver = get_driver_instance();
         con = driver->connect("tcp://127.0.0.1:3306", "root", "Kirokofu457$");
-        con->setSchema("SORROK");
+        con->setSchema("SORROK");*/
         std::cout<<"server is ready!"<<std::endl;
     }
     void MyAppli::onExec () {
@@ -316,7 +316,7 @@ namespace sorrok {
                 hero->setIsMovingFromKeyboard(false);
                 hero->setAttacking(false);
                 hero->setFightingMode(false);
-            } else if (request == "CONNECT") {
+            } /*else if (request == "CONNECT") {
                 std::string pseudo = infos[1];
                 std::string pswd = infos[2];
                 sql::Statement* stmt = con->createStatement();
@@ -330,7 +330,7 @@ namespace sorrok {
                 }
                 delete stmt;
                 delete result;
-            }
+            }*/
         }
         if (getClock("LoopTime").getElapsedTime().asMilliseconds() < 100)
                 sf::sleep(sf::milliseconds(100 - getClock("LoopTime").getElapsedTime().asMilliseconds()));
@@ -578,6 +578,6 @@ namespace sorrok {
            RenderWindow* window = &getRenderWindow(i);
            delete window;
         }
-        delete con;
+        //delete con;
     }
 }

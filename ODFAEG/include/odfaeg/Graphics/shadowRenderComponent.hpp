@@ -8,6 +8,7 @@
 #include "2D/ambientLight.h"
 #include "model.h"
 #include "rectangleShape.h"
+#include "../Physics/particuleSystem.h"
 /**
   *\namespace odfaeg
   * the namespace of the Opensource Development Framework Adapted for Every Games.
@@ -24,10 +25,12 @@ namespace odfaeg {
           */
         class ODFAEG_GRAPHICS_API ShadowRenderComponent : public HeavyComponent {
             public :
-                ShadowRenderComponent (RenderWindow& window, int layer, std::string expression);
+                ShadowRenderComponent (RenderWindow& window, int layer, std::string expression,sf::ContextSettings settings = sf::ContextSettings(0, 0, 4, 3, 0));
                 void drawNextFrame();
                 std::vector<Entity*> getEntities();
                 void draw(RenderTarget& target, RenderStates states);
+                void draw(Drawable& drawable, RenderStates states) {
+                }
                 void pushEvent(sf::Event event, RenderWindow& rw);
                 bool needToUpdate();
                 View& getView();
@@ -37,13 +40,15 @@ namespace odfaeg {
                 Tile& getFrameBufferTile ();
                 Tile& getDepthBufferTile();
                 void setExpression(std::string expression);
+                std::string getExpression();
                 void setView(View view);
                 bool loadEntitiesOnComponent(std::vector<Entity*> vEntities);
                 void clear();
                 void changeVisibleEntities(Entity* toRemove, Entity* toAdd, EntityManager* em);
+                void updateParticleSystems();
             private :
                 Batcher batcher; /**> A group of faces using the same materials and primitive type.*/
-                std::vector<Instance*> m_instances; /**> Instances to draw. (Instanced rendering.) */
+                std::vector<Instance> m_instances; /**> Instances to draw. (Instanced rendering.) */
                 std::vector<Entity*> visibleEntities; /**> Entities loaded*/
                 std::unique_ptr<RenderTexture> stencilBuffer; /**> the stencil buffer.*/
                 std::unique_ptr<RenderTexture> shadowMap; /**> the shadow map.*/

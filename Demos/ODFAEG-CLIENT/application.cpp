@@ -6,7 +6,7 @@ using namespace odfaeg::math;
 using namespace odfaeg::network;
 namespace sorrok {
     MyAppli::MyAppli(sf::VideoMode wm, std::string title) : Application (wm, title, sf::Style::Default, sf::ContextSettings(0, 0, 4, 3, 0)) {
-        running = false;
+        /*running = false;
         actualKey = sf::Keyboard::Key::Unknown;
         previousKey = sf::Keyboard::Key::Unknown;
         getView().setScale(1, -1, 1);
@@ -16,7 +16,7 @@ namespace sorrok {
         monster = nullptr;
         received = false;
         Network::setCertifiateClientMess("SORROKCLIENT");
-        isClientAuthentified = true;
+        isClientAuthentified = true;*/
     }
     void MyAppli::keyHeldDown (sf::Keyboard::Key key) {
         //BoundingRectangle rect (pos.x, pos.y, getView().getSize().x, getView().getSize().y);
@@ -143,9 +143,6 @@ namespace sorrok {
             return true;
         }
         return false;
-    }
-    void MyAppli::onMouseInside (sf::Vector2f mousePos) {
-        std::cout<<"Mouse inside : "<<mousePos.x<<" "<<mousePos.y<<std::endl;
     }
     void MyAppli::onLoad() {
         TextureManager<> tm;
@@ -400,19 +397,32 @@ namespace sorrok {
         light2 = new g2d::PonctualLight(Vec3f(50, 160, 160), 100, 50, 50, 255, sf::Color::Yellow, 16);
         World::addEntity(light1);
         World::addEntity(light2);
-        OITRenderComponent *frc1 = new OITRenderComponent(getRenderWindow(),0, "");
-        OITRenderComponent *frc2 = new OITRenderComponent(getRenderWindow(),1, "");
-        frc1->setRelPosition(0.f, 0.f);
+        ZSortingRenderComponent *frc1 = new ZSortingRenderComponent(getRenderWindow(),0, "E_BIGTILE");
+        ShadowRenderComponent *frc2 = new ShadowRenderComponent(getRenderWindow(),1, "E_WALL+E_DECOR");
+        /*OITRenderComponent* frc3 = new OITRenderComponent(getRenderWindow(),2,"E_WALL+E_DECOR");
+        LightRenderComponent* frc4 = new LightRenderComponent(getRenderWindow(),3,"E_WALL+E_DECOR+E_PONCTUAL_LIGHT");*/
+        /*View view = getView();
+        frc1->setView(view);*/
+        /*frc2->setView(view);
+        frc3->setView(view);
+        frc4->setView(view);*/
+        /*frc1->setRelPosition(0.f, 0.f);
         frc1->setRelSize(1.f, 1.f);
-        frc2->setRelPosition(0.f, 0.f);
+        /*frc2->setRelPosition(0.f, 0.f);
         frc2->setRelSize(1.f, 1.f);
+        frc3->setRelPosition(0.f, 0.f);
+        frc3->setRelSize(1.f, 1.f);
+        frc4->setRelPosition(0.f, 0.f);
+        frc4->setRelSize(1.f, 1.f);*/
         getRenderComponentManager().addComponent(frc1);
         getRenderComponentManager().addComponent(frc2);
+        /*getRenderComponentManager().addComponent(frc3);
+        getRenderComponentManager().addComponent(frc4);*/
         //getView().move(d.x * 0.5f, d.y * 0.5f, 0);
         //World::computeIntersectionsWithWalls();
-        World::update();
+        //World::update();
         //World::computeIntersectionsWithWalls();
-        Action a1 (Action::EVENT_TYPE::KEY_HELD_DOWN, sf::Keyboard::Key::Z);
+        /*Action a1 (Action::EVENT_TYPE::KEY_HELD_DOWN, sf::Keyboard::Key::Z);
         Action a2 (Action::EVENT_TYPE::KEY_HELD_DOWN, sf::Keyboard::Key::Q);
         Action a3 (Action::EVENT_TYPE::KEY_HELD_DOWN, sf::Keyboard::Key::S);
         Action a4 (Action::EVENT_TYPE::KEY_HELD_DOWN, sf::Keyboard::Key::D);
@@ -422,8 +432,6 @@ namespace sorrok {
         Command moveAction(combined, FastDelegate<void>(&MyAppli::keyHeldDown, this, sf::Keyboard::Key::Unknown));
         getListener().connect("MoveAction", moveAction);
         g2d::AmbientLight::getAmbientLight().setColor(sf::Color(0, 0, 255));
-        Command mouseInsideAction(FastDelegate<bool>(&MyAppli::mouseInside,this, sf::Vector2f(-1, -1)), FastDelegate<void>(&MyAppli::onMouseInside, this, sf::Vector2f(-1,-1)));
-        getListener().connect("MouseInside",mouseInsideAction);
         Command leftMouseButtonPressedCommand (a5, FastDelegate<void>(&MyAppli::leftMouseButtonPressed, this, sf::Vector2f(-1, -1)));
         Command rightMouseButtonPressedCommand (a6, FastDelegate<void>(&MyAppli::rightMouseButtonPressed, this, sf::Vector2f(-1, -1)));
         getListener().connect("LeftMouseButtonPressedAction", leftMouseButtonPressedCommand);
@@ -433,21 +441,22 @@ namespace sorrok {
         hero->getClkTransfertTime().restart();
         getClock("RequestTime").restart();
         Network::sendTcpPacket(packet);
-        received = false;
-        wResuHero = new RenderWindow (sf::VideoMode(400, 300), "Create ODFAEG Application", sf::Style::Titlebar, sf::ContextSettings(0, 0, 0, 3, 0));
+        received = false;*/
+        wResuHero = new RenderWindow (sf::VideoMode(400, 300), "Create ODFAEG Application", sf::Style::Titlebar, sf::ContextSettings(24, 0, 4, 3, 0));
         View wView = wResuHero->getDefaultView();
         wView.setCenter(Vec3f(wResuHero->getSize().x * 0.5f, wResuHero->getSize().y * 0.5f, 0));
         wResuHero->setView(wView);
-        label = new gui::Label(*wResuHero, Vec3f(0, 0, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"5");
+        /*label = new gui::Label(*wResuHero, Vec3f(0, 0, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"5");
         getRenderComponentManager().addComponent(label);
         button = new gui::Button(Vec3f(0, 200, 0), Vec3f(400, 100, 0), fm.getResourceByAlias(Fonts::Serif),"Respawn", *wResuHero);
         getRenderComponentManager().addComponent(button);
         button->setEventContextActivated(false);
-        button->addActionListener(this);
+        button->addActionListener(this);*/
         wResuHero->setVisible(false);
         wResuHero->setPosition(sf::Vector2i(500, 400));
-        addWindow(wResuHero);
-        wIdentification = new RenderWindow(sf::VideoMode(400, 300), "Identification", sf::Style::Titlebar, sf::ContextSettings(0, 0, 0, 3, 0));
+        World::update();
+        //addWindow(wResuHero);
+        /*wIdentification = new RenderWindow(sf::VideoMode(400, 300), "Identification", sf::Style::Titlebar, sf::ContextSettings(24, 0, 4, 3, 0));
         View iView = wIdentification->getDefaultView();
         iView.setCenter(Vec3f(wIdentification->getSize().x * 0.5f, wIdentification->getSize().y * 0.5f, 0));
         wIdentification->setView(iView);
@@ -476,25 +485,23 @@ namespace sorrok {
         xpBar->setMinimum(0);
         xpBar->setValue(0);
         getRenderComponentManager().addComponent(hpBar);
-        getRenderComponentManager().addComponent(xpBar);
-        //setEventContextActivated(false);
+        getRenderComponentManager().addComponent(xpBar);*/
+        //setEventContextActivated(false);*/
     }
     void MyAppli::onRender(RenderComponentManager *cm) {
         // draw everything here...
-        if (isClientAuthentified) {
+        //if (isClientAuthentified) {
             World::drawOnComponents("E_BIGTILE", 0);
-            World::drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_CARACTER+E_MONSTER", 1);
-        } else {
+            World::drawOnComponents("E_WALL+E_DECOR", 1);
+            /*World::drawOnComponents("E_WALL+E_DECOR", 2);
+            World::drawOnComponents("E_WALL+E_DECOR+E_PONCTUAL_LIGHT", 3);*/
+        /*} else {
             World::drawOnComponents("", 0);
             World::drawOnComponents("", 1);
-        }
+        }*/
     }
     void MyAppli::onDisplay(RenderWindow* window) {
-            if (isClientAuthentified) {
-                RenderStates states(sf::BlendMultiply);
-                Entity* shadowMap = World::getShadowMap("E_WALL+E_DECOR+E_ANIMATION+E_CARACTER+E_MONSTER", 2, 1);
-                window->draw(*shadowMap,states);
-            }
+
     }
     void MyAppli::onUpdate (RenderWindow* window, sf::Event& event) {
         // check all the window's events that were triggered since the last iteration of the loop
@@ -518,10 +525,6 @@ namespace sorrok {
             packet<<message;
             Network::sendTcpPacket(packet);
         }
-        /*if (event.type == sf::Event::MouseMoved) {
-            Vector2f mousePos = Vector2f(event.mouseMove.x, event.mouseMove.y);
-            InputSystem::getListener().setCommandParams("MouseInside", this, this, mousePos);
-        }*/
         if (event.type == sf::Event::MouseButtonPressed && window == &getRenderWindow()) {
             sf::Vector2f mousePos (event.mouseButton.x, event.mouseButton.y);
             getListener().setCommandSlotParams("LeftMouseButtonPressedAction", this, mousePos);
@@ -529,7 +532,7 @@ namespace sorrok {
         }
     }
     void MyAppli::onExec () {
-        if (getClock("RequestTime").getElapsedTime().asSeconds() >= timeBtwnTwoReq.asSeconds()) {
+        /*if (getClock("RequestTime").getElapsedTime().asSeconds() >= timeBtwnTwoReq.asSeconds()) {
             std::string request = "GETCARPOS";
             sf::Packet packet;
             packet<<request;
@@ -593,9 +596,6 @@ namespace sorrok {
             caracter->setAttacking(isAttacking);
             caracter->setAlive(isAlive);
             if (static_cast<Hero*> (caracter) && static_cast<Hero*>(caracter)->isMovingFromKeyboard()) {
-                /*Au début du programme isMovingFromKeyboard renvoie true hors que je l'ai initialisé à false.
-                 et je n'ai pressé aucune touche du clavier de ce fait le personnage bouge tout seul aléatoirement,
-                 mais après l'avoir bougé, ça va.*/
                 newPos = newPos + Vec3f(caracter->getDir().x, caracter->getDir().y, 0) * caracter->getSpeed() * elapsedTime;
             } else if (caracter->isMoving()) {
                 newPos = Computer::getPosOnPathFromTime(newPos, caracter->getPath(),elapsedTime, caracter->getSpeed());
@@ -637,10 +637,7 @@ namespace sorrok {
             Caracter* caracter = static_cast<Caracter*>(World::getEntity(id));
             caracter->setDamages(damages);
        }
-        /*sf::Int64 srvElapsedTime = Network::getSrvTime() - oldSrvTime;
-        sf::Int64 elapsedTime = getClock("LoopTime").getElapsedTime().asMicroseconds();
-        sf::Int64 duration = (elapsedTime > srvElapsedTime) ? elapsedTime - srvElapsedTime : 0;*/
-        if (getClock("LoopTime").getElapsedTime().asMilliseconds() < 100)
+       if (getClock("LoopTime").getElapsedTime().asMilliseconds() < 100)
             sf::sleep(sf::milliseconds(100 - getClock("LoopTime").getElapsedTime().asMilliseconds()));
 
        std::vector<Entity*> caracters = World::getEntities("E_MONSTER+E_HERO");
@@ -711,8 +708,10 @@ namespace sorrok {
                         caracter->getFocusedCaracter()->setFightingMode(true);
                         caracter->getFocusedCaracter()->setFocusedCaracter(caracter);
                     }
-                    if (!caracter->isAttacking())
+                    if (!caracter->isAttacking()) {
                         caracter->setAttacking(true);
+                        World::update();
+                    }
                     Vec2f dir = Vec2f(caracter->getFocusedCaracter()->getCenter().x, caracter->getFocusedCaracter()->getCenter().y) - Vec2f(caracter->getCenter().x, caracter->getCenter().y);
                     dir = dir.normalize();
                     caracter->setDir(dir);
@@ -807,7 +806,7 @@ namespace sorrok {
             idButton->setEventContextActivated(false);
             invButton->setEventContextActivated(false);
             setEventContextActivated(true);
-        }
+        }*/
     }
     void MyAppli::actionPerformed(gui::Button* item) {
         if (item->getText() == "Respawn") {

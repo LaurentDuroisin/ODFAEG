@@ -6,6 +6,9 @@
 #ifndef MY_APPLI
 #define MY_APPLI
 #include "odfaeg/Graphics/fastRenderComponent.hpp"
+#include "odfaeg/Graphics/zSortingRenderComponent.hpp"
+#include "odfaeg/Graphics/shadowRenderComponent.hpp"
+#include "odfaeg/Graphics/lightRenderComponent.hpp"
 #include "odfaeg/Core/application.h"
 #include "odfaeg/Graphics/convexShape.h"
 #include "odfaeg/Graphics/rectangleShape.h"
@@ -48,7 +51,7 @@ namespace sorrok {
         unsigned int fpsCounter;
         bool day;
         odfaeg::physic::UniversalEmitter emitter;
-        odfaeg::physic::ParticleSystem ps;
+        odfaeg::physic::ParticleSystem* ps;
         odfaeg::audio::Player player;
         odfaeg::audio::Player pfire;
         odfaeg::graphic::gui::OptionPane* op;

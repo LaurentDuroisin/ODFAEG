@@ -7,6 +7,7 @@
 #include "odfaeg/Graphics/anim.h"
 #include "odfaeg/Graphics/tile.h"
 #include "odfaeg/Graphics/GUI/progressBar.hpp"
+#include "odfaeg/Graphics/world.h"
 #include <string>
 #include <SFML/Graphics.hpp>
 namespace sorrok {

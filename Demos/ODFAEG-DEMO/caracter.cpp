@@ -221,7 +221,7 @@ namespace sorrok {
         if (clockAtkSpeed.getElapsedTime().asMicroseconds() > attackSpeed) {
             clockAtkSpeed.restart();
             anims[baseAnimIndex + currentAnimIndex]->play(false);
-            focusedCaracter->setLife(focusedCaracter->getLife() - attack);
+            //focusedCaracter->setLife(focusedCaracter->getLife() - attack);
         }
     }
     Caracter::~Caracter() {

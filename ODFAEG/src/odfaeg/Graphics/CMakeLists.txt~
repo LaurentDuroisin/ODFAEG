@@ -4,6 +4,8 @@ set(INCROOT ${PROJECT_SOURCE_DIR}/include/odfaeg/Graphics)
 set(SRCROOT ${PROJECT_SOURCE_DIR}/src/odfaeg/Graphics)
 
 set(SRC_GRAPHICS
+	${INCROOT}/lightRenderComponent.hpp
+	${SRCROOT}/lightRenderComponent.cpp
 	${INCROOT}/baseChangementMatrix.h
 	${SRCROOT}/baseChangementMatrix.cpp
 	${INCROOT}/transformMatrix.h	
@@ -79,6 +81,8 @@ set(SRC_GRAPHICS
 	${SRCROOT}/tile.cpp
 	${INCROOT}/oitRenderComponent.h
 	${SRCROOT}/oitRenderComponent.cpp
+	${INCROOT}/shadowRenderComponent.hpp
+	${SRCROOT}/shadowRenderCompoenent.cpp
 	${INCROOT}/animatedEntity.h	
 	${INCROOT}/model.h
 	${SRCROOT}/model.cpp

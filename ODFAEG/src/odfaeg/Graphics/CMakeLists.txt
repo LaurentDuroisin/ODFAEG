@@ -4,6 +4,10 @@ set(INCROOT ${PROJECT_SOURCE_DIR}/include/odfaeg/Graphics)
 set(SRCROOT ${PROJECT_SOURCE_DIR}/src/odfaeg/Graphics)
 
 set(SRC_GRAPHICS
+	${INCROOT}/zSortingRenderComponent.hpp
+	${SRCROOT}/zSortingRenderComponent.cpp
+	${INCROOT}/lightRenderComponent.hpp
+	${SRCROOT}/lightRenderComponent.cpp
 	${INCROOT}/baseChangementMatrix.h
 	${SRCROOT}/baseChangementMatrix.cpp
 	${INCROOT}/transformMatrix.h	

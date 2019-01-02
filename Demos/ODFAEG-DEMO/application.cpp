@@ -17,6 +17,7 @@ namespace sorrok {
         //addClock(sf::Clock(), "FPS");
         day = false;
         sf::Listener::setUpVector(0.f, 0.f, 1.f);
+        ps = new ParticleSystem(Vec3f(0, 0, 150), Vec3f(0, 0, 0));
     }
     void MyAppli::gaignedFocus(gui::TextArea* textArea) {
         std::cout<<"gaigned focus"<<std::endl;
@@ -32,6 +33,7 @@ namespace sorrok {
                 }
                 hero->setMoving(true);
                 hero->setIsMovingFromKeyboard(true);
+                hero->setAttacking(false);
             }
         } else if (actualKey != sf::Keyboard::Key::Unknown && key == sf::Keyboard::Key::Q) {
             if (!hero->isMoving()) {
@@ -42,6 +44,7 @@ namespace sorrok {
                 }
                 hero->setMoving(true);
                 hero->setIsMovingFromKeyboard(true);
+                hero->setAttacking(false);
             }
         } else if (actualKey != sf::Keyboard::Key::Unknown && actualKey == sf::Keyboard::Key::S) {
             if (!hero->isMoving()) {
@@ -52,6 +55,7 @@ namespace sorrok {
                 }
                 hero->setMoving(true);
                 hero->setIsMovingFromKeyboard(true);
+                hero->setAttacking(false);
             }
         } else if (actualKey != sf::Keyboard::Key::Unknown && key == sf::Keyboard::Key::D) {
             if (!hero->isMoving()) {
@@ -62,6 +66,7 @@ namespace sorrok {
                 }
                 hero->setIsMovingFromKeyboard(true);
                 hero->setMoving(true);
+                hero->setAttacking(false);
             }
         }
     }
@@ -76,6 +81,7 @@ namespace sorrok {
             hero->setPath(path);
             hero->setIsMovingFromKeyboard(false);
             hero->setMoving(true);
+            hero->setAttacking(false);
         }
     }
     bool MyAppli::mouseInside (sf::Vector2f mousePos) {
@@ -113,8 +119,8 @@ namespace sorrok {
         cache.addResourceManager(fm, "FontManager");
     }
     void MyAppli::onInit () {
-        if (day)
-            g2d::AmbientLight::getAmbientLight().setColor(sf::Color::White);
+        if (!day)
+            g2d::AmbientLight::getAmbientLight().setColor(sf::Color::Blue);
         TextureManager<> &tm = cache.resourceManager<Texture, std::string>("TextureManager");
         FontManager<> &fm = cache.resourceManager<Font, std::string>("FontManager");
         Vec2f pos (getView().getPosition().x - getView().getSize().x * 0.5f, getView().getPosition().y - getView().getSize().y * 0.5f);
@@ -144,7 +150,7 @@ namespace sorrok {
         walls[3]->getFaces()[0]->getMaterial().setTexId("WALLS");
         walls[4]->getFaces()[0]->getMaterial().setTexId("WALLS");
         walls[5]->getFaces()[0]->getMaterial().setTexId("WALLS");
-        std::ifstream ifs("FichierDeSerialisation");
+        /*std::ifstream ifs("FichierDeSerialisation");
         if(ifs) {
             ITextArchive ia(ifs);
             std::vector<Entity*> entities;
@@ -189,7 +195,7 @@ namespace sorrok {
                 }
             }
             ifs.close();
-        } else {
+        } else {*/
             BoundingBox mapZone(0, 0, 0, 1500, 1000, 0);
             World::generate_map(tiles, walls, Vec2f(100, 50), mapZone, false);
             Tile* thouse = new Tile(tm.getResourceByAlias("HOUSE"), Vec3f(0, 0, 0), Vec3f(250, 300, 0), sf::IntRect(0, 0, 250, 300));
@@ -232,10 +238,10 @@ namespace sorrok {
             w = new g2d::Wall(walls[3],&g2d::AmbientLight::getAmbientLight());
             w->setPosition(Vec3f(0, 130, 130 + w->getSize().y * 0.5f));
             World::addEntity(w);
-        }
-        ps.setTexture(*tm.getResourceByAlias("PARTICLE"));
+        //}
+        ps->setTexture(*tm.getResourceByAlias("PARTICLE"));
         for (unsigned int i = 0; i < 10; i++) {
-            ps.addTextureRect(sf::IntRect(i*10, 0, 10, 10));
+            ps->addTextureRect(sf::IntRect(i*10, 0, 10, 10));
         }
         emitter.setEmissionRate(30);
         emitter.setParticleLifetime(Distributions::uniform(sf::seconds(5), sf::seconds(7)));
@@ -248,22 +254,29 @@ namespace sorrok {
        /* sf::Vector3f acceleration(0, -1, 0);
         ForceAffector affector(acceleration);
         billboard->getParticleSystem().addAffector(affector);*/
-        ps.addEmitter(refEmitter(emitter));
+        ps->addEmitter(refEmitter(emitter));
+        World::addEntity(ps);
         View view = getView();
         //view.rotate(0, 0, 20);
-        OITRenderComponent *frc1 = new OITRenderComponent(getRenderWindow(),0, "E_BIGTILE");
-        OITRenderComponent *frc2 = new OITRenderComponent(getRenderWindow(),0, "E_WALL+E_DECOR+E_ANIMATION+E_hero");
+        ZSortingRenderComponent *frc1 = new ZSortingRenderComponent(getRenderWindow(),0, "E_BIGTILE");
+        ShadowRenderComponent *frc2 = new ShadowRenderComponent(getRenderWindow(), 1, "E_WALL+E_DECOR+E_HERO");
+        OITRenderComponent *frc3 = new OITRenderComponent(getRenderWindow(),2, "E_WALL+E_DECOR+E_HERO+E_PARTICLES");
+        LightRenderComponent *frc4 = new LightRenderComponent(getRenderWindow(), 3, "E_WALL+E_DECOR+E_HERO+E_PONCTUAL_LIGHT");
         gui::TextArea* textArea = new gui::TextArea(Vec3f(350, 275, 0),Vec3f(100, 50, 0),fm.getResourceByAlias("FreeSerif"), "Test",getRenderWindow());
         textArea->setVisible(false);
         textArea->setEventContextActivated(false);
         frc1->setView(view);
         frc2->setView(view);
+        frc3->setView(view);
+        frc4->setView(view);
         op = new gui::OptionPane(Vec2f(200, 175), Vec2f(400, 200), fm.getResourceByAlias("FreeSerif"), "Test",gui::OptionPane::TYPE::CONFIRMATION_DIALOG);
         std::this_thread::sleep_for(std::chrono::seconds(1));
         op->setVisible(false);
         op->setEventContextActivated(false);
         getRenderComponentManager().addComponent(frc1);
         getRenderComponentManager().addComponent(frc2);
+        getRenderComponentManager().addComponent(frc3);
+        getRenderComponentManager().addComponent(frc4);
         getRenderComponentManager().addComponent(textArea);
         getRenderComponentManager().addComponent(op);
 
@@ -281,7 +294,7 @@ namespace sorrok {
                 Tile *tile = new Tile(text, Vec3f(-25, -50, 0), Vec3f(textRectWidth, textRectHeight, 0), textRect);
                 tile->getFaces()[0]->getMaterial().setTexId("VLADSWORD");
                 g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight());
-                frame->setShadowCenter(Vec3f(0, 100, 100));
+                frame->setShadowCenter(Vec3f(0, 200, 0));
                 textRectX += textRectWidth;
                 if (textRectX + textRectWidth > textWidth) {
                     textRectX = 0;
@@ -292,10 +305,29 @@ namespace sorrok {
             hero->addAnimation(animation);
             au->addAnim(animation);
         }
+        for (unsigned int i = 0; i < 8; i++) {
+            Anim* animation = new Anim(0.1f, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), 0);
+            for (unsigned int j = 0; j < 12; j++) {
+                sf::IntRect textRect (textRectX, textRectY, textRectWidth, textRectHeight);
+                Tile *tile = new Tile(text, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), textRect);
+                tile->getFaces()[0]->getMaterial().setTexId("VLADSWORD");
+                g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight());
+                frame->setShadowCenter(Vec3f(0, 200, 0));
+                if (textRectX + textRectWidth > textWidth) {
+                    textRectX = 0;
+                    textRectY += textRectHeight;
+                } else {
+                    textRectX += textRectWidth;
+                }
+                animation->addFrame(frame);
+            }
+            hero->addAnimation(animation);
+            au->addAnim(animation);
+        }
         BoundingVolume* bb2 = new BoundingBox(hero->getGlobalBounds().getPosition().x, hero->getGlobalBounds().getPosition().y + hero->getGlobalBounds().getSize().y * 0.4f, 0,
         hero->getGlobalBounds().getSize().x, hero->getGlobalBounds().getSize().y * 0.25f, 0);
         hero->setCollisionVolume(bb2);
-        hero->setCenter(Vec3f(getView().getPosition().x, getView().getPosition().y, 300));
+        hero->setCenter(Vec3f(getView().getPosition().x, getView().getPosition().y, getView().getPosition().y + hero->getSize().y * 0.5f));
         //std::cout<<bb2->getPosition()<<" "<<bb2->getSize()<<std::endl;
         g2d::PonctualLight* light1 = new g2d::PonctualLight(Vec3f(-50, 420, 420), 100, 50, 0, 255, sf::Color::Yellow, 16);
         light2 = new g2d::PonctualLight(Vec3f(50, 160, 160), 100, 50, 0, 255, sf::Color::Yellow, 16);
@@ -314,8 +346,6 @@ namespace sorrok {
         Action combined  = a1 || a2 || a3 || a4;
         Command moveAction(combined, FastDelegate<void>(&MyAppli::keyHeldDown, this, sf::Keyboard::Unknown));
         getListener().connect("MoveAction", moveAction);
-        if (!day)
-            g2d::AmbientLight::getAmbientLight().setColor(sf::Color(0, 0, 255));
         Command mouseInsideAction(a5, FastDelegate<bool>(&MyAppli::mouseInside,this, sf::Vector2f(-1, -1)), FastDelegate<void>(&MyAppli::onMouseInside, this, sf::Vector2f(-1,-1)));
         getListener().connect("MouseInside",mouseInsideAction);
         Command leftMouseButtonPressedAction (a5, FastDelegate<void>(&MyAppli::leftMouseButtonPressed, this, sf::Vector2f(-1, -1)));
@@ -340,7 +370,9 @@ namespace sorrok {
         World::drawOnComponents("E_BIGTILE", 0);
         /*Entity* shadowMap = World::getShadowMap("E_WALL+E_DECOR+E_ANIMATION+E_hero", 2, 1);
         World::drawOnComponents(*shadowMap,0,sf::BlendMultiply);*/
-        World::drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_hero", 1);
+        World::drawOnComponents("E_WALL+E_DECOR+E_HERO", 1);
+        World::drawOnComponents("E_WALL+E_DECOR+E_HERO+E_PARTICLES", 2);
+        World::drawOnComponents("E_WALL+E_DECOR+E_HERO+E_PONCTUAL_LIGHT", 3);
         fpsCounter++;
         /*if (getClock("FPS").getElapsedTime() >= sf::seconds(1.f)) {
             std::cout<<"FPS : "<<fpsCounter<<std::endl;
@@ -352,10 +384,10 @@ namespace sorrok {
         /*Entity* shadowMap = World::getShadowMap("E_WALL+E_DECOR+E_ANIMATION+E_hero", 2, 1);
         window->draw(*shadowMap, sf::BlendMultiply);*/
         //getView().rotate(0, 0, 20);
-        window->draw(ps);
+        //window->draw(*ps);
         //getView().rotate(0, 0, 0);
-        Entity* lightMap = World::getLightMap("E_PONCTUAL_LIGHT", 2, 1);
-        window->draw(*lightMap, sf::BlendMultiply);
+        /*Entity* lightMap = World::getLightMap("E_PONCTUAL_LIGHT", 3, 2);
+        window->draw(*lightMap, sf::BlendMultiply);*/
         //window->draw(point);
         /*View view = getView();
         Entity& normalMap = theMap->getNormalMapTile();
@@ -378,13 +410,11 @@ namespace sorrok {
         window->draw(shape);*/
         //window->draw(World::getLightMap<Entity>());
         /*std::vector<Entity*> entities = World::getVisibleEntities("E_BIGTILE");
-        //std::cout<<entities.size()<<std::endl;
         for (unsigned int i = 0; i < entities.size(); i++) {
             window->draw(*entities[i]);
         }
         entities = World::getVisibleEntities("E_WALL+E_DECOR+E_ANIMATION+E_hero");
         for (unsigned int i = 0; i < entities.size(); i++) {
-        if(entities[i]->getType() != "E_SHADOW_WALL" && entities[i]->getType() != "E_SHADOW_TILE")
             window->draw(*entities[i]);
         }*/
         /*g2d::Entity* decor = World::getEntities<g2d::Entity>("E_DECOR")[0];
@@ -424,7 +454,6 @@ namespace sorrok {
         }
         if (event.type == sf::Event::MouseButtonPressed) {
             sf::Vector2f mousePos (event.mouseButton.x, event.mouseButton.y);
-
             getListener().setCommandSlotParams("LeftMouseButtonPressedAction", this, mousePos);
         }
     }
@@ -481,6 +510,12 @@ namespace sorrok {
             }
             World::update();
         }
-        ps.update(getClock("LoopTime").getElapsedTime());
+        ps->update(getClock("LoopTime").getElapsedTime());
+        World::updateParticle();
+        if (!hero->isMoving()) {
+            hero->setAttacking(true);
+            hero->attackFocusedCaracter();
+	    World::update();
+        }
     }
 }

@@ -5,6 +5,7 @@
 #include "tile.h"
 #include "entityManager.h"
 #include "heavyComponent.h"
+#include "../Physics/particuleSystem.h"
 /**
   *\namespace odfaeg
   * the namespace of the Opensource Development Framework Adapted for Every Games.
@@ -27,7 +28,7 @@ namespace odfaeg {
             * \param RenderWindow& window : the render window.
             * \param int layer : the layer's position.
             */
-            OITRenderComponent (RenderWindow& window, int layer, std::string expression);
+            OITRenderComponent (RenderWindow& window, int layer, std::string expression, sf::ContextSettings settings = sf::ContextSettings(0, 0, 4, 3, 0));
             /**
             * \fn bool loadEntitiesOnComponent(std::vector<Entity*> visibleEntities)
             * \brief load the given entities onto the component.
@@ -126,11 +127,12 @@ namespace odfaeg {
             * \param Renderwindow : the window generating the event.
             */
             void pushEvent(sf::Event event, RenderWindow& window);
+            void updateParticleSystems();
             private :
             std::vector<std::pair<std::reference_wrapper<Drawable>, RenderStates>> drawables;
             Batcher batcher; /**> A group of faces using the same materials and primitive type.*/
             sf::Color backgroundColor; /**> The background color.*/
-            std::vector<Instance*> m_instances; /**> Instances to draw. (Instanced rendering.) */
+            std::vector<Instance> m_instances; /**> Instances to draw. (Instanced rendering.) */
             std::vector<std::unique_ptr<Face>> additionalFaces;
             std::vector<Entity*> visibleEntities; /**> Entities loaded*/
             std::unique_ptr<RenderTexture> frameBuffer; /**> the frame buffer.*/

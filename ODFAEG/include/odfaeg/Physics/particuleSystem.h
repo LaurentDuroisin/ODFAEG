@@ -40,6 +40,8 @@
 #include <SFML/Graphics/Rect.hpp>
 #include "../Graphics/drawable.h"
 #include "../Graphics/vertexArray.h"
+#include "../Graphics/entity.h"
+#include "../Math/vec4.h"
 
 #include <vector>
 #include <utility>
@@ -61,7 +63,7 @@ namespace odfaeg
         /// how particles are generated and modified over time. To represent particles graphically, a particle system requires a texture,
         /// and optionally one or multiple texture rectangles.
         /// @n@n This class is noncopyable.
-        class ODFAEG_PHYSICS_API ParticleSystem : public graphic::Drawable, private sf::NonCopyable, private EmissionInterface
+        class ODFAEG_PHYSICS_API ParticleSystem : public graphic::Entity, private sf::NonCopyable, private EmissionInterface
         {
         // ---------------------------------------------------------------------------------------------------------------------------
         // Private types
@@ -97,11 +99,12 @@ namespace odfaeg
         public:
         /// @brief Default constructor
         /// @details Requires a call to setTexture() and possibly addTextureRect() before the particle system can be used.
-        ParticleSystem();
+        ParticleSystem(math::Vec3f position, math::Vec3f size);
 
         /// @brief Swaps the contents of two instances in constant time.
         ///
         void	swap(ParticleSystem& other);
+        //void update();
 
         /// @brief Sets the used texture.
         /// @details Only one texture can be used at a time. If you need multiple particle representations, specify different texture
@@ -165,7 +168,7 @@ namespace odfaeg
         ///
         void	clearParticles();
 
-
+        void update();
         // ---------------------------------------------------------------------------------------------------------------------------
         // Private member functions
         private:
@@ -188,7 +191,32 @@ namespace odfaeg
         void	computeQuads() const;
         void	computeQuad(Quad& quad, const sf::IntRect& textureRect) const;
         void removeEmitter (std::function<void(EmissionInterface&, sf::Time)>& em);
-
+        bool operator== (Entity& other) {
+            if (dynamic_cast<ParticleSystem*> (&other) != nullptr) {
+                ParticleSystem& ps = static_cast<ParticleSystem&> (other);
+                return mParticles == ps.mParticles && mTexture == ps.mTexture;
+            } else {
+                return false;
+            }
+        }
+        bool isAnimated () const {
+            return false;
+        }
+        bool isModel() const {
+            return false;
+        }
+        bool selectable() const {
+            return true;
+        }
+        bool isLight() const {
+            return false;
+        }
+        bool isShadow() const {
+            return false;
+        }
+        bool isLeaf() const {
+            return true;
+        }
         // ---------------------------------------------------------------------------------------------------------------------------
         // Private variables
         private:

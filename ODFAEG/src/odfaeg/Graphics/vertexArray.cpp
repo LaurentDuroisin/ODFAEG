@@ -1,25 +1,31 @@
 #include "../../../include/odfaeg/Graphics/vertexArray.h"
 #include "../../../include/odfaeg/Graphics/renderTarget.h"
-
+#include "../../../include/odfaeg/Graphics/entity.h"
 #include "glCheck.h"
 #include <string.h>
 namespace odfaeg {
     namespace graphic {
         using namespace sf;
         ////////////////////////////////////////////////////////////
-        VertexArray::VertexArray(PrimitiveType type, unsigned int vertexCount) :
+        VertexArray::VertexArray(PrimitiveType type, unsigned int vertexCount, Entity* entity) :
         m_vertices     (vertexCount),
-        m_primitiveType(type)
+        m_primitiveType(type),
+        m_entity(entity)
         {
-
+             std::cout<<"set vertex array entity adr : "<<entity<<std::endl;
         }
         ///////////////////////////////////////////////////////////
         unsigned int VertexArray::getVertexCount() const
         {
             return static_cast<unsigned int>(m_vertices.size());
         }
-
-
+        Entity* VertexArray::getEntity() {
+            return m_entity;
+        }
+        void VertexArray::setEntity(Entity* entity) {
+            m_entity = entity;
+            std::cout<<"set vertex array entity adr : "<<entity<<std::endl;
+        }
         ////////////////////////////////////////////////////////////
         Vertex& VertexArray::operator [](unsigned int index)
         {

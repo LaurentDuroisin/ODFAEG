@@ -41,10 +41,10 @@ namespace odfaeg {
                     v1 = Vector3f (0, 0, 0);
                     v2 = Vector3f (getSize().x * 0.5f * math::Math::cosinus (i * angle), getSize().y * 0.5f * math::Math::sinus (i * angle), 0);
                     v3 = Vector3f (getSize().x * 0.5f * math::Math::cosinus ((i + 1) * angle), getSize().y * 0.5f * math::Math::sinus ((i + 1) * angle), 0);
-                    VertexArray *triangle = new VertexArray (Triangles);
-                    triangle->append(Vertex(v1, color));
-                    triangle->append(Vertex(v2, color2));
-                    triangle->append(Vertex(v3, color2));
+                    VertexArray *triangle = new VertexArray (Triangles, 3, this);
+                    (*triangle)[0] = Vertex(v1, color);
+                    (*triangle)[1] = Vertex(v2, color);
+                    (*triangle)[2] = Vertex(v3, color);
                     addTriangle(triangle);
                 }
             }
@@ -55,6 +55,9 @@ namespace odfaeg {
                 //Plus nécessaire avec la SFML 2.0.
                 /*triangle->EnableFill(true);
                 triangle->EnableOutline(false);*/
+                Material material;
+                Face* face = new Face(*triangle,material,getTransform());
+                addFace(face);
                 triangles.push_back(triangle);
             }
 

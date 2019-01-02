@@ -94,6 +94,35 @@ int main(int argc, char* argv[])
     EXPORT_CLASS_GUID(EntityHero, Entity, Hero)
     MyAppli app(sf::VideoMode(800, 600, 32), "Test odfaeg");
     return app.exec();
+    RenderWindow window(sf::VideoMode(800, 600), "odfaeg test", sf::Style::Default, sf::ContextSettings(24, 0, 4, 3, 0));
+    Texture tex;
+    tex.loadFromFile("tilesets/maison.png");
+    Texture tex2;
+    tex2.loadFromFile("tilesets/vlad_sword.png");
+    Tile* tile = new Tile(&tex, Vec3f(0, 0, 150), Vec3f(250, 300, 0), sf::IntRect(0, 0, 250, 300));
+    Tile* tile2 = new Tile(&tex2, Vec3f(100, 125, 175), Vec3f(50, 100, 0), sf::IntRect(0, 0, 50, 100));
+    Entity* light1 = new g2d::PonctualLight(Vec3f(-50, 420, 420), 100, 50, 0, 255, sf::Color::Yellow, 16);
+    std::cout<<light1->isLight()<<std::endl;
+    ShadowRenderComponent component(window, 0, "E_TILE");
+    std::vector <Entity*> vEntities;
+    vEntities.push_back(tile);
+    vEntities.push_back(tile2);
+    component.loadEntitiesOnComponent(vEntities);
+    while (window.isOpen()) {
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed) {
+                window.close();
+            }
+        }
+        window.clear();
+        component.drawNextFrame();
+        window.draw(component);
+        window.display();
+    }
+    delete tile;
+    delete tile2;
+    return 0;
 }
 
 

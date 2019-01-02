@@ -82,6 +82,7 @@ namespace odfaeg {
             * \param Entity* entity : the entity to add.
             */
             virtual bool addEntity(Entity *entity) = 0;
+	    virtual bool containsVisibleEntity(Entity* ae) = 0;
             /**
             * \fn bool containsAnimatedVisibleEntity(AnimatedEntity *ae)
             * \brief virtual function to redefine to check if the entity manager contains an animated entity.
@@ -149,6 +150,7 @@ namespace odfaeg {
             virtual bool removeEntity(Entity* entity) = 0;
             virtual bool deleteEntity(Entity* entity) = 0;
             virtual Entity* getEntity(int id) = 0;
+            virtual void updateParticles() = 0;
             std::string getName() {
                 return name;
             }

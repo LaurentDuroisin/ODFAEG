@@ -298,6 +298,7 @@ class ODFAEG_GRAPHICS_API Map : public EntityManager {
         */
         std::vector<math::Vec2f> getPath(Entity* entity, math::Vec2f finalPos);
         void setBaseChangementMatrix(BaseChangementMatrix bm);
+        void updateParticles();
     private :
         /**
         * \fn void insertAnimatedVisibleEntity(Entity* ae, std::vector<Entity*>& visibleEntities);

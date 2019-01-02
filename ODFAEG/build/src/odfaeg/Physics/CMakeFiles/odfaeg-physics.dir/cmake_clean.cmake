@@ -1,4 +1,4 @@
-file(REMOVE_RECURSE
+FILE(REMOVE_RECURSE
   "CMakeFiles/odfaeg-physics.dir/collisionResultSet.cpp.o"
   "CMakeFiles/odfaeg-physics.dir/boundingSphere.cpp.o"
   "CMakeFiles/odfaeg-physics.dir/boundingEllipsoid.cpp.o"
@@ -9,11 +9,11 @@ file(REMOVE_RECURSE
   "CMakeFiles/odfaeg-physics.dir/emitter.cpp.o"
   "CMakeFiles/odfaeg-physics.dir/particle.cpp.o"
   "CMakeFiles/odfaeg-physics.dir/particleSystem.cpp.o"
-  "../../../lib/libodfaeg-physics-s.pdb"
-  "../../../lib/libodfaeg-physics-s.a"
+  "../../../lib/libodfaeg-physics-s-d.pdb"
+  "../../../lib/libodfaeg-physics-s-d.a"
 )
 
 # Per-language clean rules from dependency scanning.
-foreach(lang CXX)
-  include(CMakeFiles/odfaeg-physics.dir/cmake_clean_${lang}.cmake OPTIONAL)
-endforeach()
+FOREACH(lang CXX)
+  INCLUDE(CMakeFiles/odfaeg-physics.dir/cmake_clean_${lang}.cmake OPTIONAL)
+ENDFOREACH(lang)

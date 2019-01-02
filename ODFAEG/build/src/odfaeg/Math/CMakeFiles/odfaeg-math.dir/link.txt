@@ -1,2 +1,2 @@
-/usr/bin/ar cq ../../../lib/libodfaeg-math-s.a  CMakeFiles/odfaeg-math.dir/computer.cpp.o CMakeFiles/odfaeg-math.dir/maths.cpp.o CMakeFiles/odfaeg-math.dir/matrix2.cpp.o CMakeFiles/odfaeg-math.dir/matrix3.cpp.o CMakeFiles/odfaeg-math.dir/matrix4.cpp.o CMakeFiles/odfaeg-math.dir/vec2.cpp.o CMakeFiles/odfaeg-math.dir/vec4.cpp.o CMakeFiles/odfaeg-math.dir/distribution.cpp.o CMakeFiles/odfaeg-math.dir/ray.cpp.o
-/usr/bin/ranlib ../../../lib/libodfaeg-math-s.a
+/usr/bin/ar cr ../../../lib/libodfaeg-math-s-d.a  CMakeFiles/odfaeg-math.dir/computer.cpp.o CMakeFiles/odfaeg-math.dir/maths.cpp.o CMakeFiles/odfaeg-math.dir/matrix2.cpp.o CMakeFiles/odfaeg-math.dir/matrix3.cpp.o CMakeFiles/odfaeg-math.dir/matrix4.cpp.o CMakeFiles/odfaeg-math.dir/vec2.cpp.o CMakeFiles/odfaeg-math.dir/vec4.cpp.o CMakeFiles/odfaeg-math.dir/distribution.cpp.o CMakeFiles/odfaeg-math.dir/ray.cpp.o
+/usr/bin/ranlib ../../../lib/libodfaeg-math-s-d.a

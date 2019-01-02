@@ -37,11 +37,10 @@ namespace odfaeg {
             */
             void onUpdate() {
                 for (unsigned int i = 0; i < anims.size(); i++) {
-
                     if (anims[i]->isRunning() &&
                         anims[i]->getElapsedTime().asSeconds() > anims[i]->getFrameRate()) {
                         anims[i]->computeNextFrame();
-                        if (anims[i]->isCurrentFrameChanged() && graphic::World::containsVisibleEntity(anims[i])) {
+                        if (anims[i]->isCurrentFrameChanged() && graphic::World::containsVisibleParentEntity(anims[i]->getRootEntity())) {
                             graphic::World::changeVisibleEntity(anims[i]->getPreviousFrame(), anims[i]->getCurrentFrame());
                         }
                         anims[i]->setCurrentFrameChanged(false);

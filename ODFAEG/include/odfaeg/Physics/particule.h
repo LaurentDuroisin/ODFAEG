@@ -54,9 +54,13 @@ namespace odfaeg
         /// @brief Constructor
         /// @param totalLifetime How long the particle totally exists.
         explicit	Particle(sf::Time totalLifetime);
-
-
-        // ---------------------------------------------------------------------------------------------------------------------------
+        bool operator== (const Particle& other) const {
+            return position.x == other.position.x && position.y == other.position.y && position.z == other.position.z
+                   && velocity.x == other.velocity.x && velocity.y == other.velocity.y && velocity.z == other.velocity.z
+                   && rotation == other.rotation && rotationSpeed == other.rotationSpeed && scale.x == other.scale.x
+                   && scale.y == other.scale.y && scale.z == other.scale.z && color.a == other.color.a && color.b == other.color.b
+                   && color.g == other.color.g && color.r == other.color.r && textureIndex == other.textureIndex;
+        }        // ---------------------------------------------------------------------------------------------------------------------------
         // Public variables
         public:
         sf::Vector3f	position;	///< Current position.

@@ -24,6 +24,9 @@
 #include "hero.h"
 #include "monster.h"
 #include "odfaeg/Network/network.h"
+#include "odfaeg/Graphics/zSortingRenderComponent.hpp"
+#include "odfaeg/Graphics/shadowRenderComponent.hpp"
+#include "odfaeg/Graphics/lightRenderComponent.hpp"
 #include "odfaeg/Graphics/GUI/label.hpp"
 #include "odfaeg/Graphics/GUI/button.hpp"
 #include "odfaeg/Graphics/GUI/textArea.hpp"
@@ -31,8 +34,8 @@
 #include "odfaeg/Graphics/GUI/progressBar.hpp"
 #include <fstream>
 namespace sorrok {
-    class MyAppli : public odfaeg::core::Application,
-                    public odfaeg::graphic::gui::ActionListener {
+    class MyAppli : public odfaeg::core::Application/*,
+                    public odfaeg::graphic::gui::ActionListener*/ {
     private :
         const float speed = 0.2f;
         odfaeg::graphic::EntitiesUpdater *eu;

@@ -28,7 +28,6 @@
 
 #include "../../../include/odfaeg/Graphics/renderWindow.h"
 #include "../../../include/odfaeg/Graphics/texture.h"
-
 #include <algorithm>
 #include <array>
 #include <cmath>
@@ -63,8 +62,8 @@ namespace odfaeg
         // ---------------------------------------------------------------------------------------------------------------------------
 
 
-        ParticleSystem::ParticleSystem()
-        : mParticles()
+        ParticleSystem::ParticleSystem(math::Vec3f position, math::Vec3f size)
+        : graphic::Entity(position, size, size*0.5f, "E_PARTICLES"), mParticles()
         , mAffectors()
         , mEmitters()
         , mTexture(nullptr)
@@ -74,11 +73,15 @@ namespace odfaeg
         , mQuads()
         , mNeedsQuadUpdate(true)
         {
+            graphic::Material material;
+            graphic::Face* face = new graphic::Face(mVertices, material, getTransform());
+            addFace(face);
         }
 
         void ParticleSystem::setTexture(const graphic::Texture& texture)
         {
             mTexture = &texture;
+            getFaces()[0]->getMaterial().addTexture(mTexture, sf::IntRect(0, 0, 0, 0));
             mNeedsQuadUpdate = true;
         }
 
@@ -207,7 +210,6 @@ namespace odfaeg
             int endZ = view.getDepth();
             BoundingBox bx (x, y, z, endX, endY, endZ);
             BoundingBox bx2 = mVertices.getBounds();
-            bx2.setSize(bx2.getSize().x, bx2.getSize().y, endZ);
             CollisionResultSet::Info info;
             if (bx.intersects(bx2, info)) {
                 // Draw the vertex array with our texture
@@ -227,12 +229,26 @@ namespace odfaeg
             particle.position += dt.asSeconds() * particle.velocity;
             particle.rotation += dt.asSeconds() * particle.rotationSpeed;
         }
+        void ParticleSystem::update () {
+            // Check cached rectangles
+            if (mNeedsQuadUpdate)
+            {
+                computeQuads();
+                mNeedsQuadUpdate = false;
+            }
 
+            // Check cached vertices
+            if (mNeedsVertexUpdate)
+            {
+                computeVertices();
+                mNeedsVertexUpdate = false;
+            }
+        }
         void ParticleSystem::computeVertices() const
         {
             // Clear vertex array (keeps memory allocated)
             mVertices.clear();
-
+            mVertices.setEntity(const_cast<ParticleSystem*>(this));
             // Fill vertex array
             ParticleContainer::const_iterator it;
             graphic::TransformMatrix tm;
@@ -254,6 +270,7 @@ namespace odfaeg
                     vertex.color = it->color;
                     mVertices.append(vertex);
                 }
+                getFaces()[0]->setVertexArray(mVertices);
                 tm.reset3D();
             }
         }
