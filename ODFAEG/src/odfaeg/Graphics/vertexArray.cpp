@@ -12,7 +12,7 @@ namespace odfaeg {
         m_primitiveType(type),
         m_entity(entity)
         {
-             std::cout<<"set vertex array entity adr : "<<entity<<std::endl;
+
         }
         ///////////////////////////////////////////////////////////
         unsigned int VertexArray::getVertexCount() const
@@ -24,7 +24,6 @@ namespace odfaeg {
         }
         void VertexArray::setEntity(Entity* entity) {
             m_entity = entity;
-            std::cout<<"set vertex array entity adr : "<<entity<<std::endl;
         }
         ////////////////////////////////////////////////////////////
         Vertex& VertexArray::operator [](unsigned int index)

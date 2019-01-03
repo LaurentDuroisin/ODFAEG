@@ -43,6 +43,8 @@ namespace odfaeg {
                 running = false;
                 sf::Clock loopSpeed;
                 addClock(loopSpeed, "LoopTime");
+                sf::Clock timeClock;
+                addClock(timeClock, "TimeClock");
                 listener = std::make_unique<Listener>();
                 eventContextActivated = true;
             }

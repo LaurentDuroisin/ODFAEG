@@ -43,7 +43,7 @@ namespace odfaeg {
                 *    \return the value of the parameter.
                 */
                 template <typename T>  void setValue (T value) {
-                    value.set (value);
+                    this->value.set (std::forward<T>(value));
                 }
                 /** \fn std::string getName() const
                 *   \return the name of the parameter.

@@ -891,12 +891,7 @@ namespace odfaeg {
             it = vEntitiesByType.find(entity->getType());
             if (it == vEntitiesByType.end())
                 return false;
-            if (it->first == "E_HERO")
-                std::cout<<"E_HERO found"<<std::endl;
             for (unsigned int i = 0; i < it->second.size(); i++) {
-                if (entity->getType() == "E_HERO") {
-                    std::cout<<"entity found."<<std::endl;
-                }
                 if (it->second[i] == entity) {
                     return true;
                 }

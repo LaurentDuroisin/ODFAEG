@@ -143,22 +143,19 @@ namespace odfaeg {
                         states.transform = m_instances[i].getTransforms()[j];
                         math::Vec3f shadowOrigin, shadowCenter, shadowScale(1.f, 1.f, 1.f), shadowRotationAxis;
                         float shadowRotationAngle = 0;
-                        std::cout<<"entity adr : "<<m_instances[i].getVertexArrays()[j].getEntity()<<std::endl;
-                        if (m_instances[i].getVertexArrays()[j].getEntity() != nullptr && m_instances[i].getVertexArrays()[j].getEntity()->getParent() != nullptr) {
-                            Entity* entity = m_instances[i].getVertexArrays()[j].getEntity()->getParent();
-                            if (entity->isModel()) {
-                                shadowCenter = static_cast<Model*>(entity)->getShadowCenter();
-                                shadowScale = static_cast<Model*>(entity)->getShadowScale();
-                                shadowRotationAxis = static_cast<Model*>(entity)->getShadowRotationAxis();
-                                shadowRotationAngle = static_cast<Model*>(entity)->getShadowRotationAngle();
-                                shadowOrigin = static_cast<Model*>(entity)->getShadowOrigin();
-                            }
+                        Entity* entity = m_instances[i].getVertexArrays()[j].getEntity()->getParent();
+                        if (entity->isModel()) {
+                            shadowCenter = static_cast<Model*>(entity)->getShadowCenter();
+                            shadowScale = static_cast<Model*>(entity)->getShadowScale();
+                            shadowRotationAxis = static_cast<Model*>(entity)->getShadowRotationAxis();
+                            shadowRotationAngle = static_cast<Model*>(entity)->getShadowRotationAngle();
+                            shadowOrigin = static_cast<Model*>(entity)->getShadowOrigin();
                         }
                         TransformMatrix tm;
-                        tm.setOrigin(shadowOrigin);
+                        tm.setOrigin(entity->getPosition());
                         tm.setScale(shadowScale);
                         tm.setRotation(shadowRotationAxis, shadowRotationAngle);
-                        tm.setTranslation(shadowOrigin + shadowCenter);
+                        tm.setTranslation(entity->getPosition() + shadowCenter);
                         tm.update();
                         perPixShadowShader->setParameter("shadowProjMat", tm.getMatrix().transpose());
                         shadowMap->draw(m_instances[i].getVertexArrays()[j], states);

@@ -167,7 +167,7 @@ namespace odfaeg {
                         std::cout<<"angle : "<<Math::abs(Math::toDegrees(dir1.getAngleBetween(dir2, dir1.cross(dir2))))<<std::endl;*/
                         //If the number of point is greater than 2, we need to check on which segment of the path our actual position is.
                         //If the directions are not the same it means that the point is not on this segment of the path.
-                        while (currentPathIndex < path.size() - 1 && !dir2.isNulVector() && !(Math::abs(Math::toDegrees(dir1.getAngleBetween(dir2, dir1.cross(dir2)))) >= 1.f && d2 < d1)) {
+                        while (currentPathIndex < path.size() - 1 && !dir2.isNulVector() && !(Math::abs(Math::toDegrees(dir1.getAngleBetween(dir2, dir1.cross(dir2)))) >= 1 && d2 < d1)) {
                             //We need to check if the actual position is on the next segment of the path.
                             currentPathIndex++;
                             //If we are arrived on the last point of the path, we don't need to check anymore, it means that our position is not on the path. (Or we are already at the end of the path)

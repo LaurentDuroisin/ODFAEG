@@ -236,9 +236,6 @@ namespace odfaeg {
                 template <typename T> bool addAttribute (std::string name, T value) {
                     return entityState.addParameter(name, value);
                 }
-                template <typename T> bool addAttribute (std::string name, T* value) {
-                    return entityState.addParameter(name, value);
-                }
                 /** \fn const StateParameter& getAttribute (const std::string name)
                 *   \brief get an attribute of the entity.
                 *   \param std::string name : the name of the attribute of the entity.

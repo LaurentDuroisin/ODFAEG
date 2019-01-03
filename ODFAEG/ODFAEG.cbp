@@ -5,6 +5,7 @@
 		<Option title="ODFAEG" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
+		<Option virtualFolders="include/odfaeg/Graphics/;include/odfaeg/Network/;" />
 		<Build>
 			<Target title="Debug">
 				<Option output="SFGL" prefix_auto="1" extension_auto="1" />
@@ -137,6 +138,7 @@
 		<Unit filename="include/odfaeg/Graphics/heavyComponent.h" />
 		<Unit filename="include/odfaeg/Graphics/light.h" />
 		<Unit filename="include/odfaeg/Graphics/lightComponent.h" />
+		<Unit filename="include/odfaeg/Graphics/lightRenderComponent.hpp" />
 		<Unit filename="include/odfaeg/Graphics/line.hpp" />
 		<Unit filename="include/odfaeg/Graphics/map.h" />
 		<Unit filename="include/odfaeg/Graphics/model.h" />
@@ -151,6 +153,7 @@
 		<Unit filename="include/odfaeg/Graphics/sdlRenderWindow.hpp" />
 		<Unit filename="include/odfaeg/Graphics/selectable.h" />
 		<Unit filename="include/odfaeg/Graphics/shader.h" />
+		<Unit filename="include/odfaeg/Graphics/shadowRenderComponent.hpp" />
 		<Unit filename="include/odfaeg/Graphics/shape.h" />
 		<Unit filename="include/odfaeg/Graphics/sprite.h" />
 		<Unit filename="include/odfaeg/Graphics/tGround.h" />
@@ -209,7 +212,9 @@
 		<Unit filename="include/odfaeg/Window/sdlWindowImpl.hpp" />
 		<Unit filename="include/odfaeg/Window/sfmlWindowImpl.hpp" />
 		<Unit filename="include/odfaeg/Window/x11Window.hpp" />
-		<Unit filename="include/odfaeg/config.hpp" />
+		<Unit filename="include/odfaeg/config.hpp">
+			<Option virtualFolder="include/odfaeg/Graphics/" />
+		</Unit>
 		<Unit filename="src/odfaeg/Audio/ALCheck.cpp" />
 		<Unit filename="src/odfaeg/Audio/ALCheck.hpp" />
 		<Unit filename="src/odfaeg/Audio/AudioDevice.cpp" />
@@ -262,6 +267,7 @@
 		<Unit filename="src/odfaeg/Graphics/glCheck.cpp" />
 		<Unit filename="src/odfaeg/Graphics/glCheck.h" />
 		<Unit filename="src/odfaeg/Graphics/gridMap.cpp" />
+		<Unit filename="src/odfaeg/Graphics/lightRenderComponent.cpp" />
 		<Unit filename="src/odfaeg/Graphics/map.cpp" />
 		<Unit filename="src/odfaeg/Graphics/model.cpp" />
 		<Unit filename="src/odfaeg/Graphics/oitRenderComponent.cpp" />
@@ -280,6 +286,7 @@
 		<Unit filename="src/odfaeg/Graphics/renderWindow.cpp" />
 		<Unit filename="src/odfaeg/Graphics/sdlRenderWindow.cpp" />
 		<Unit filename="src/odfaeg/Graphics/shader.cpp" />
+		<Unit filename="src/odfaeg/Graphics/shadowRenderCompoenent.cpp" />
 		<Unit filename="src/odfaeg/Graphics/shape.cpp" />
 		<Unit filename="src/odfaeg/Graphics/sprite.cpp" />
 		<Unit filename="src/odfaeg/Graphics/tGround.cpp" />
@@ -296,6 +303,7 @@
 		<Unit filename="src/odfaeg/Graphics/viewMatrix.cpp" />
 		<Unit filename="src/odfaeg/Graphics/viewport.cpp" />
 		<Unit filename="src/odfaeg/Graphics/world.cpp" />
+		<Unit filename="src/odfaeg/Graphics/zSortingRenderComponent.cpp" />
 		<Unit filename="src/odfaeg/Math/Segment.cpp" />
 		<Unit filename="src/odfaeg/Math/computer.cpp" />
 		<Unit filename="src/odfaeg/Math/distribution.cpp" />
@@ -314,7 +322,9 @@
 		<Unit filename="src/odfaeg/Network/encryptedPacket.cpp" />
 		<Unit filename="src/odfaeg/Network/network.cpp" />
 		<Unit filename="src/odfaeg/Network/rsa.cpp" />
-		<Unit filename="src/odfaeg/Network/srkserveur.cpp" />
+		<Unit filename="src/odfaeg/Network/srkserveur.cpp">
+			<Option virtualFolder="include/odfaeg/Network/" />
+		</Unit>
 		<Unit filename="src/odfaeg/Network/symEncPacket.cpp" />
 		<Unit filename="src/odfaeg/Network/user.cpp" />
 		<Unit filename="src/odfaeg/Physics/affector.cpp" />

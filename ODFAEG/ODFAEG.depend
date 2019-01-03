@@ -5839,7 +5839,7 @@
 1545667622 source:/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Core/application.cpp
 	"../../../include/odfaeg/Core/application.h"
 
-1546436398 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/application.h
+1546500250 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/application.h
 	"resourceCache.h"
 	"../Graphics/renderWindow.h"
 	"../Graphics/renderStates.h"
@@ -6048,7 +6048,7 @@
 	"../entity.h"
 	"selectable.h"
 
-1545667618 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/computer.h
+1546484394 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/computer.h
 	"matrix3.h"
 	"vec4.h"
 	<limits.h>
@@ -6076,7 +6076,7 @@
 1545667618 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/drawable.h
 	"renderStates.h"
 
-1545667618 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/state.h
+1546501982 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/state.h
 	<vector>
 	"erreur.h"
 	<sstream>
@@ -6094,7 +6094,7 @@
 	"vertexArray.h"
 	<map>
 
-1546448586 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/vertexArray.h
+1546456659 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/vertexArray.h
 	"GL/glew.h"
 	<SFML/OpenGL.hpp>
 	"vertex.h"
@@ -6913,7 +6913,7 @@
 	"../../../include/odfaeg/Physics/boundingPolyhedron.h"
 	"../../../include/odfaeg/Graphics/transformMatrix.h"
 
-1545667623 source:/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Physics/particleSystem.cpp
+1546026376 source:/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Physics/particleSystem.cpp
 	"../../../include/odfaeg/Physics/particuleSystem.h"
 	"../../../include/odfaeg/Graphics/renderWindow.h"
 	"../../../include/odfaeg/Graphics/texture.h"
@@ -7320,7 +7320,7 @@
 1545916618 source:/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/entity.cpp
 	"../../../include/odfaeg/Graphics/entity.h"
 
-1545916637 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/entity.h
+1546501945 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/entity.h
 	"transformable.h"
 	"drawable.h"
 	"../Core/state.h"
@@ -7517,7 +7517,7 @@
 1545667622 source:/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/cellMap.cpp
 	"../../../include/odfaeg/Graphics/cellMap.h"
 
-1546430345 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/animationUpdater.h
+1546465138 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/animationUpdater.h
 	"anim.h"
 	"../Graphics/world.h"
 	"../Core/timer.h"
@@ -9310,7 +9310,7 @@
 	"../lightComponent.h"
 	"../../Math/vec4.h"
 
-1546447827 source:/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/shadowRenderCompoenent.cpp
+1546448881 source:/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/shadowRenderCompoenent.cpp
 	"../../../include/odfaeg/Graphics/shadowRenderComponent.hpp"
 	"glCheck.h"
 	<memory.h>
@@ -9341,4 +9341,13 @@
 	"entityLight.h"
 	"../Physics/particuleSystem.h"
 	"rectangleShape.h"
+
+1546449043 source:/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/zSortingRenderComponent.cpp
+	"../../../include/odfaeg/Graphics/zSortingRenderComponent.hpp"
+
+1546019494 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/zSortingRenderComponent.hpp
+	"renderWindow.h"
+	"entityManager.h"
+	"heavyComponent.h"
+	"../Physics/particuleSystem.h"
 

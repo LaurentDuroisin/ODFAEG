@@ -140,6 +140,7 @@ namespace odfaeg {
             void serialize (Archive & ar) {
                 ar(m_vertices);
                 ar(m_primitiveType);
+                ar(m_entity);
             }
         private :
 

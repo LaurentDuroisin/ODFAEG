@@ -56,25 +56,6 @@ namespace odfaeg {
                     parameters.push_back(p);
                     return true;
                 }
-                /**\fn  bool addParameter (std::string name, T* value)
-                *  \brief add a parameter to the state.
-                *  \param std::string name : the name of the parameter.
-                *  \param T* value : the value of the state's parameter.
-                */
-                template <typename T> bool addParameter (std::string name, T* value) {
-
-                    StateParameter* p = new StateParameter (value, name);
-
-                    for (unsigned int i = 0; i < parameters.size(); i++) {
-                        if (parameters[i]->getName() == name) {
-                            delete parameters[i];
-                            return false;
-                        }
-                    }
-
-                    parameters.push_back(p);
-                    return true;
-                }
                 /**\fn  bool removeParameter (std::string name)
                 *  \brief remove a parameter to the state.
                 *  \param std::string name : the name of the parameter.
@@ -94,7 +75,7 @@ namespace odfaeg {
                 *  \param std::string name : the name of the parameter.
                 *  \param T* value : the value of the parameter.
                 */
-                template <typename T> void changeParameter (const std::string name, T* value) {
+                template <typename T> void changeParameter (const std::string name, T value) {
                     StateParameter& parameter = getParameter(name);
                     parameter.setValue(value);
                 }

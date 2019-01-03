@@ -55,7 +55,7 @@ namespace odfaeg {
             std::multimap<int, Component*, std::greater<int>>::iterator it;
             unsigned int i = 0;
             for (it = components.begin(); it != components.end(); it++) {
-               if (i == layer) {
+               if (i == layer && dynamic_cast<HeavyComponent*>(it->second) != nullptr) {
                    return dynamic_cast<HeavyComponent*>(it->second);
                }
                i++;
@@ -66,7 +66,7 @@ namespace odfaeg {
             std::multimap<int, Component*, std::greater<int>>::iterator it;
             unsigned int i = 0;
             for (it = components.begin(); it != components.end(); it++) {
-               if (i == layer) {
+               if (i == layer && dynamic_cast<LightComponent*>(it->second) != nullptr) {
                    return dynamic_cast<LightComponent*>(it->second);
                }
                i++;
