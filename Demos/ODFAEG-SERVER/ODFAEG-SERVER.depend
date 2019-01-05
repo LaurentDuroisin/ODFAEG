@@ -1,13 +1,14 @@
 # depslib dependency file v1.0
-1521371260 source:/home/laurent/Développement/Projets-c++/ODFAEG-SERVER/caracter.cpp
+1546509076 source:/home/laurent/Développement/Projets-c++/ODFAEG-SERVER/caracter.cpp
 	"caracter.h"
 	<iostream>
 
-1521371230 /home/laurent/Développement/Projets-c++/ODFAEG-SERVER/caracter.h
+1546508066 /home/laurent/Développement/Projets-c++/ODFAEG-SERVER/caracter.h
 	<vector>
 	"odfaeg/Math/vec2f.h"
 	"odfaeg/Graphics/anim.h"
 	"odfaeg/Graphics/tile.h"
+	"odfaeg/Network/user.h"
 	<string>
 	<SFML/Graphics.hpp>
 
@@ -15,7 +16,7 @@
 	"application.h"
 	<stdlib.h>
 
-1546378613 /home/laurent/Développement/Projets-c++/ODFAEG-SERVER/application.h
+1546517946 /home/laurent/Développement/Projets-c++/ODFAEG-SERVER/application.h
 	<iostream>
 	<string>
 	<vector>
@@ -581,7 +582,7 @@
 	<unistd.h>
 	<sys/types.h>
 
-1545667618 /usr/local/include/odfaeg/Math/computer.h
+1546518613 /usr/local/include/odfaeg/Math/computer.h
 	"matrix3.h"
 	"vec4.h"
 	<limits.h>
@@ -944,14 +945,14 @@
 	<string>
 	"../../../include/odfaeg/Graphics/export.hpp"
 
-1545667618 /usr/local/include/odfaeg/Core/state.h
+1546502270 /usr/local/include/odfaeg/Core/state.h
 	<vector>
 	"erreur.h"
 	<sstream>
 	"stateParameter.h"
 	<memory>
 
-1545667618 /usr/local/include/odfaeg/Core/stateParameter.h
+1546504066 /usr/local/include/odfaeg/Core/stateParameter.h
 	"any.h"
 	<string>
 
@@ -1012,7 +1013,7 @@
 	"vertexArray.h"
 	<map>
 
-1545920796 /usr/local/include/odfaeg/Graphics/vertexArray.h
+1546456659 /usr/local/include/odfaeg/Graphics/vertexArray.h
 	"GL/glew.h"
 	<SFML/OpenGL.hpp>
 	"vertex.h"
@@ -1089,7 +1090,7 @@
 
 1414585118 /usr/local/include/odfaeg/Graphics/2D/selectable.h
 
-1545667618 /usr/local/include/odfaeg/Core/application.h
+1546648643 /usr/local/include/odfaeg/Core/application.h
 	"resourceCache.h"
 	"../Graphics/renderWindow.h"
 	"../Graphics/renderStates.h"
@@ -1893,7 +1894,7 @@
 	"entity.h"
 	"selectable.h"
 
-1545916637 /usr/local/include/odfaeg/Graphics/entity.h
+1546502080 /usr/local/include/odfaeg/Graphics/entity.h
 	"transformable.h"
 	"drawable.h"
 	"../Core/state.h"
@@ -1904,7 +1905,7 @@
 	"../Core/serialization.h"
 	<vector>
 
-1546026305 /usr/local/include/odfaeg/Graphics/batcher.h
+1546448627 /usr/local/include/odfaeg/Graphics/batcher.h
 	"vertexArray.h"
 	"view.h"
 	<map>
@@ -2012,7 +2013,7 @@
 	"entity.h"
 	"selectable.h"
 
-1545916637 /usr/local/include/odfaeg/Graphics//entity.h
+1546502080 /usr/local/include/odfaeg/Graphics//entity.h
 	"transformable.h"
 	"drawable.h"
 	"../Core/state.h"
@@ -2114,12 +2115,12 @@
 	"../Math/vec2f.h"
 	"export.hpp"
 
-1546026305 /usr/local/include/odfaeg/Graphics//batcher.h
+1546448627 /usr/local/include/odfaeg/Graphics//batcher.h
 	"vertexArray.h"
 	"view.h"
 	<map>
 
-1545920796 /usr/local/include/odfaeg/Graphics//vertexArray.h
+1546456659 /usr/local/include/odfaeg/Graphics//vertexArray.h
 	"GL/glew.h"
 	<SFML/OpenGL.hpp>
 	"vertex.h"
@@ -2201,13 +2202,13 @@
 	"../Graphics/world.h"
 	"export.hpp"
 
-1546430345 /usr/local/include/odfaeg/Graphics/animationUpdater.h
+1546465138 /usr/local/include/odfaeg/Graphics/animationUpdater.h
 	"anim.h"
 	"../Graphics/world.h"
 	"../Core/timer.h"
 	"export.hpp"
 
-1546378663 source:/home/laurent/Développement/Projets-c++/ODFAEG-SERVER/application.cpp
+1546534427 source:/home/laurent/Développement/Projets-c++/ODFAEG-SERVER/application.cpp
 	"application.h"
 
 1418677931 /usr/include/SFML/System/String.inl
@@ -2751,10 +2752,11 @@
 	<vector>
 	"../Math/vec4.h"
 
-1469041910 /home/laurent/Développement/Projets-c++/ODFAEG-SERVER/hero.h
+1546488378 /home/laurent/Développement/Projets-c++/ODFAEG-SERVER/hero.h
 	"caracter.h"
+	"odfaeg/Network/network.h"
 
-1490440866 source:/home/laurent/Développement/Projets-c++/ODFAEG-SERVER/hero.cpp
+1546488136 source:/home/laurent/Développement/Projets-c++/ODFAEG-SERVER/hero.cpp
 	"hero.h"
 
 1455650747 /usr/include/x86_64-linux-gnu/sys/cdefs.h
@@ -2997,7 +2999,7 @@
 	<limits>
 	"../../../include/odfaeg/Math/maths.h"
 
-1545667618 /usr/local/include/odfaeg/Graphics/renderComponentManager.h
+1546648232 /usr/local/include/odfaeg/Graphics/renderComponentManager.h
 	"renderTexture.h"
 	"renderWindow.h"
 	"shader.h"
@@ -3005,7 +3007,7 @@
 	"../../../include/odfaeg/Graphics/heavyComponent.h"
 	"../../../include/odfaeg/Graphics/lightComponent.h"
 
-1546025410 /usr/local/include/odfaeg/Graphics/oitRenderComponent.h
+1546434058 /usr/local/include/odfaeg/Graphics/oitRenderComponent.h
 	"renderWindow.h"
 	"renderTexture.h"
 	"tile.h"
