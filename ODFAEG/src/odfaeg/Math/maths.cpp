@@ -18,6 +18,11 @@ namespace odfaeg {
             std::uniform_real_distribution<float> distribution(min, max);
             return distribution(mrs);
         }
+        unsigned long long int Math::ullirandom(unsigned long long int min, unsigned long long int max) {
+
+            std::uniform_int_distribution<unsigned long long int> distribution(min, max);
+            return distribution(mrs);
+        }
 
         float Math::acosinus(float value) {
            float result;
@@ -125,6 +130,11 @@ namespace odfaeg {
 
             numberToRound = numberToRound - lastChiffer;
             return numberToRound / mult;;
+        }
+        int Math::roundToInt(float value) {
+            int pe = value;
+            int pd = value - pe;
+            return value - pd;
         }
         //Renvoie l'exponetielle d'un nombre.
         float Math::exp (float value) {

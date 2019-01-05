@@ -12,46 +12,54 @@ namespace odfaeg {
         }
         void SrkClient::getPublicKey () {
             Packet packet;
-            std::string message;
-           /* unsigned char* cliPbKey = nullptr;
+            unsigned char* cliPbKey = nullptr;
             int size = CliEncryptedPacket::getCertificate(&cliPbKey);
-            std::string cert (reinterpret_cast<char*>(cliPbKey), size);
-            std::string message = "SETCLIPBKEY"+cert;*/
-            message = "GetPbKeyRsa";
+            std::string message (reinterpret_cast<char*>(cliPbKey), size);
+            message.insert(0, "SETCLIPBKEY");
             packet<<message;
             clientTCP.send(packet);
-            packet.clear();
-            bool done, pbKeyRsaReceived, certifiate;
-            done = pbKeyRsaReceived = certifiate = false;
+            bool certifiateMessageSend, pbKeyReceived, pbIvReceived, pbKeyRsaReceived, certifiate;
+            certifiateMessageSend = pbKeyReceived = pbIvReceived = pbKeyRsaReceived = certifiate = false;
             EncryptedPacket enc_packet;
 
-            while (!done || !pbKeyRsaReceived) {
-                /*if (!certifiate && !pbKeyRsaReceived && !done) {
+            while (!certifiate || !certifiateMessageSend || !pbKeyReceived || !pbIvReceived || !pbKeyRsaReceived) {
+                if (!certifiate && !certifiateMessageSend && !pbKeyRsaReceived && !pbKeyReceived && !pbIvReceived) {
                     CliEncryptedPacket cliEncryptedPacket;
-                    if (clientTCP.receive(cliEncryptedPacket)) {
-                        cliEncryptedPacket>>message;
+                    if (clientTCP.receive(cliEncryptedPacket) == Socket::Done) {
+                        std::string response;
+                        cliEncryptedPacket>>response;
                         cliEncryptedPacket.clear();
-                        if (message == "GETCERTIFIATECLIENT") {
-                            message == Network::getCertifiateClientMess();
+                        if (response == "GETCERTIFIATECLIENT") {
+                            message = Network::getCertifiateClientMess();
                             cliEncryptedPacket<<message;
                             clientTCP.send(cliEncryptedPacket);
+                            certifiateMessageSend = true;
                         }
-                        if (message == "CERTIFIEDCLIENT") {
+                    }
+                }
+                if (!certifiate && certifiateMessageSend && !pbKeyRsaReceived && !pbKeyReceived && !pbIvReceived) {
+                    CliEncryptedPacket cliEncryptedPacket;
+                    if (clientTCP.receive(cliEncryptedPacket) == sf::Socket::Done) {
+                        std::string response;
+                        cliEncryptedPacket>>response;
+                        cliEncryptedPacket.clear();
+                        if (response == "CERTIFIEDCLIENT") {
                             message = "GetPbKeyRsa";
-                            packet<<message;
-                            clientTCP.send(packet);
+                            cliEncryptedPacket<<message;
+                            clientTCP.send(cliEncryptedPacket);
                             certifiate = true;
                         }
                     }
-                }*/
-                if (/*certifiate &&*/ !pbKeyRsaReceived && !done) {
+                }
+                if (certifiate && certifiateMessageSend && !pbKeyRsaReceived && !pbKeyReceived && !pbIvReceived) {
+                    packet.clear();
                     if (clientTCP.receive(packet) == Socket::Done) {
-                        packet>>message;
-                        if (message.find("RSAKEY") != std::string::npos) {
-                            message.erase(0, 6);
-                            Network::setPbKey(message);
+                        std::string response;
+                        packet>>response;
+                        if (response.find("RSAKEY") != std::string::npos) {
+                            response.erase(0, 6);
+                            Network::setPbKey(response);
                             pbKeyRsaReceived = true;
-                            packet.clear();
                             message = "GetPbKey";
                             enc_packet<<message;
                             clientTCP.send(enc_packet);
@@ -59,14 +67,30 @@ namespace odfaeg {
                         }
                     }
                 }
-                if (/*certifiate &&*/ pbKeyRsaReceived && !done) {
+                if (certifiate && certifiateMessageSend &&  pbKeyRsaReceived && !pbKeyReceived && !pbIvReceived)  {
                     if (clientTCP.receive(enc_packet) == Socket::Done) {
-                        string message;
-                        enc_packet>>message;
-                        if (message.find("AESKEY")!= std::string::npos) {
-                            message.erase(0, 6);
-                            Network::setSymPbKey(message);
-                            done = true;
+                        std::string response;
+                        enc_packet>>response;
+                        if (response.find("AESKEY")!= std::string::npos) {
+                            response.erase(0, 6);
+                            Network::setSymPbKey(response);
+                            pbKeyReceived = true;
+                            enc_packet.clear();
+                            message = "GetPbIv";
+                            enc_packet<<message;
+                            clientTCP.send(enc_packet);
+                            enc_packet.clear();
+                        }
+                    }
+                }
+                if (certifiate && certifiateMessageSend && pbKeyRsaReceived && pbKeyReceived && !pbIvReceived) {
+                    if (clientTCP.receive(enc_packet) == Socket::Done) {
+                        string response;
+                        enc_packet>>response;
+                        if (response.find("AESIV")!= std::string::npos) {
+                            response.erase(0, 5);
+                            Network::setSymPbIv(message);
+                            pbIvReceived = true;
                             enc_packet.clear();
                         }
                     }

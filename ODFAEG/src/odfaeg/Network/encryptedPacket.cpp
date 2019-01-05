@@ -5,6 +5,10 @@ namespace odfaeg {
         using namespace std;
         using namespace sf;
         Rsa& EncryptedPacket::rsa = EncryptedPacket::getRsa();
+        bool EncryptedPacket::isSrvRunning = false;
+        void EncryptedPacket::setServerRunning (bool serverRunning) {
+            isSrvRunning = serverRunning;
+        }
         Rsa& EncryptedPacket::getRsa() {
             if (&rsa == nullptr) {
                 static Rsa rsa;
@@ -20,7 +24,7 @@ namespace odfaeg {
         }
         const void* EncryptedPacket::onSend (size_t& dataSize) {
             unsigned char* buffer = nullptr;
-            if (Network::getSrvInstance().isRunning())
+            if (isSrvRunning)
                 buffer = rsa.ossl_encryptWithPrKey(reinterpret_cast<const unsigned char*> (getData()), getDataSize(), reinterpret_cast<int&>(dataSize));
             else
                 buffer = rsa.ossl_encryptWithPbKey(reinterpret_cast<const unsigned char*> (getData()), getDataSize(), reinterpret_cast<int&>(dataSize));
@@ -29,7 +33,7 @@ namespace odfaeg {
         void EncryptedPacket::onReceive (const void* data, size_t dataSize) {
             unsigned char* buffer = nullptr;
             std::size_t dstSize = 0;
-            if (Network::getSrvInstance().isRunning())
+            if (isSrvRunning)
                 buffer = rsa.ossl_decryptWithPrKey(reinterpret_cast<const unsigned char*> (data), dataSize, reinterpret_cast<int&>(dstSize));
             else
                 buffer = rsa.ossl_decryptWithPbKey(reinterpret_cast<const unsigned char*> (data), dataSize, reinterpret_cast<int&>(dstSize));

@@ -22,7 +22,9 @@ set(SRC
 	${INCROOT}/user.h
 	${SRCROOT}/user.cpp
 	${INCROOT}/bigInt.hpp
-	${SRCROOT}/bigInt.cpp)	
+	${SRCROOT}/bigInt.cpp
+	${INCROOT}/cliEncryptedPacket.hpp
+	${SRCROOT}/cliEncryptedPacket.cpp)	
 find_package (OpenSSL 1 REQUIRED)
 include_directories(${CMAKE_INCLUDE_PATH} ${OPENSSL_INCLUDE_DIR})
 link_directories(${CMAKE_LIBRARY_PATH})

@@ -28,7 +28,7 @@ namespace sorrok {
         alive = true;
         regenHpSpeed = 1.f;
         regenHpAmountMin = 1;
-        regenHpAmountMax = 2;
+        regenHpAmountMax = 5;
         focusedCaracter = nullptr;
         timeBefLastRespawn = sf::seconds(10.f);
     }
@@ -246,7 +246,7 @@ namespace sorrok {
     int Caracter::getCriticalAddDamagesRate () {
         return criticalAddDamagesRate;
     }
-    vector<int> Caracter::getDamages() {
+    vector<int>& Caracter::getDamages() {
         return damages;
     }
     void Caracter::setDamages(std::vector<int> damages) {
@@ -255,7 +255,7 @@ namespace sorrok {
     void Caracter::setRegen(std::vector<int> regen) {
         this->regen = regen;
     }
-    std::vector<int> Caracter::getRegen() {
+    std::vector<int>& Caracter::getRegen() {
         return regen;
     }
     void Caracter::restartRegenHP() {

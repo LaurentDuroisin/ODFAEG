@@ -430,42 +430,43 @@ namespace sorrok {
                             packet<<"SETATTACKING"<<conversionIntString(caracter->getId());
                             Network::sendTcpPacket(packet);
                         }
+                        if (caracter->getDamages().empty()) {
+                            std::cout<<"send damages"<<std::endl;
+                            std::vector<int> damages;
+                            int nb = 10.f / caracter->getAttackSpeed();
+                            for (unsigned int i = 0; i < nb; i++) {
+                                int damage = 0;
+                                int flee = Math::random(0, 100);
+                                if (flee > caracter->getFocusedCaracter()->getFleeRate()) {
+                                    int critical = Math::random(0, 100);
+                                    int atk = 0;
+                                    if (critical <= caracter->getCriticalChanceRate()) {
+                                        atk = Math::random(caracter->getAttackMin(), caracter->getAttackMax());
+                                        atk += atk * caracter->getCriticalAddDamagesRate();
+                                    } else {
+                                        atk = Math::random(caracter->getAttackMin(), caracter->getAttackMax());
+                                    }
+                                    int def = Math::random(caracter->getFocusedCaracter()->getDefMin(), caracter->getFocusedCaracter()->getDefMax());
+                                    damage = atk - def;
+                                }
+                                damage = (damage < 0) ? 0 : damage;
+                                std::cout<<"damage : "<<damage<<std::endl;
+                                damages.push_back(damage);
+                            }
+                            caracter->setDamages(damages);
+                            SymEncPacket packet;
+                            int size = damages.size();
+                            std::string response = "DMG"+conversionIntString(caracter->getId())+"*"+conversionIntString(size)+"*";
+                            for(unsigned int i = 0; i < damages.size(); i++) {
+                                response += conversionIntString(damages[i]);
+                                if (i != damages.size() - 1)
+                                    response += "*";
+                            }
+                            packet<<response;
+                            Network::sendTcpPacket(packet);
+                        }
                         if (caracter->getTimeOfLastAttack().asSeconds() >= caracter->getAttackSpeed()) {
                             caracter->restartAttackSpeed();
-                            if (caracter->getDamages().empty()) {
-                                std::cout<<"send damages"<<std::endl;
-                                std::vector<int> damages;
-                                int nb = 10.f / caracter->getAttackSpeed();
-                                for (unsigned int i = 0; i < nb; i++) {
-                                    int damage = 0;
-                                    int flee = Math::random(0, 100);
-                                    if (flee > caracter->getFocusedCaracter()->getFleeRate()) {
-                                        int critical = Math::random(0, 100);
-                                        int atk = 0;
-                                        if (critical < caracter->getCriticalChanceRate()) {
-                                            atk = Math::random(caracter->getAttackMin(), caracter->getAttackMax());
-                                            atk += atk / 100.f * caracter->getCriticalAddDamagesRate();
-                                        } else {
-                                            atk = Math::random(caracter->getAttackMin(), caracter->getAttackMax());
-                                        }
-                                        int def = Math::random(caracter->getFocusedCaracter()->getDefMin(), caracter->getFocusedCaracter()->getDefMax());
-                                        damage = atk - def;
-                                        damage = (damage < 0) ? 0 : damage;
-                                        damages.push_back(damage);
-                                    }
-                                }
-                                caracter->setDamages(damages);
-                                SymEncPacket packet;
-                                int size = damages.size();
-                                std::string response = "DMG"+conversionIntString(caracter->getId())+"*"+conversionIntString(size)+"*";
-                                for(unsigned int i = 0; i < damages.size(); i++) {
-                                    response += conversionIntString(damages[i]);
-                                    if (i != damages.size() - 1)
-                                        response += "*";
-                                }
-                                packet<<response;
-                                Network::sendTcpPacket(packet);
-                            }
                             int dmg = caracter->getDamages().back();
                             caracter->getDamages().pop_back();
                             caracter->attackFocusedCaracter(dmg);
@@ -479,6 +480,7 @@ namespace sorrok {
                 }
                 if (!caracter->isInFightingMode() && !caracter->isMoving()) {
                     if (caracter->getRegen().empty()) {
+                        std::cout<<"send régèn!"<<std::endl;
                         std::vector<int> regen;
                         int nb = 10.f / caracter->getRegenHpSpeed();
                         std::string response = "RGN"+conversionIntString(caracter->getId())+"*"+conversionIntString(nb)+"*";

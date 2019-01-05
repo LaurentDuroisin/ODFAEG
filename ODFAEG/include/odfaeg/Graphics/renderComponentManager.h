@@ -36,6 +36,7 @@ namespace odfaeg {
             * \param component : the render component to add.
             */
             void addComponent(graphic::Component* component);
+            void addWindow(RenderWindow& window);
             bool removeComponent(unsigned int layer);
             /**
             * \fn RenderWindow& getWindow()
@@ -95,7 +96,7 @@ namespace odfaeg {
             void updateComponents();
         protected :
             std::multimap<int, Component*, std::greater<int>> components; /**> the components.*/
-            RenderWindow& window; /**> the window.*/
+            std::vector<RenderWindow*> windows; /**> the window.*/
         };
     }
 }

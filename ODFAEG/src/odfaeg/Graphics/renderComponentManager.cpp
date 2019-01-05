@@ -2,8 +2,11 @@
 #include "../../../include/odfaeg/Core/command.h"
 namespace odfaeg {
     namespace graphic {
-        RenderComponentManager::RenderComponentManager(RenderWindow& window) : window (window) {
-
+        RenderComponentManager::RenderComponentManager(RenderWindow& window) {
+            windows.push_back(&window);
+        }
+        void RenderComponentManager::addWindow(RenderWindow& window) {
+            windows.push_back(&window);
         }
         void RenderComponentManager::addComponent(Component* component) {
             if (component->isAutoResized())
@@ -23,7 +26,7 @@ namespace odfaeg {
             return false;
         }
         RenderWindow& RenderComponentManager::getWindow() {
-            return window;
+            return *windows[0];
         }
         unsigned int RenderComponentManager::getNbComponents() {
             return components.size();
@@ -33,23 +36,31 @@ namespace odfaeg {
             std::multimap<int, Component*, std::greater<int>>::iterator it;
             for (it = components.begin(); it != components.end(); it++) {
                 if (dynamic_cast<HeavyComponent*>(it->second) != nullptr && it->second->isVisible()) {
-                    it->second->getWindow().draw(*it->second);
+                    for (unsigned int i = 0; i < windows.size(); i++) {
+                        if (windows[i] == &it->second->getWindow()) {
+                            it->second->getWindow().draw(*it->second);
+                        }
+                    }
                 }
             }
         }
         void RenderComponentManager::drawGuiComponents() {
-            View view = window.getView();
-            View defaultView = window.getDefaultView();
-            defaultView.setCenter(math::Vec3f(window.getSize().x * 0.5f, window.getSize().y * 0.5f, 0));
-            window.setView(defaultView);
             std::multimap<int, Component*, std::greater<int>>::iterator it;
             for (it = components.begin(); it != components.end(); it++) {
                 if (dynamic_cast<LightComponent*>(it->second) != nullptr && it->second->isVisible()) {
                     static_cast<LightComponent*>(it->second)->checkSubWindowEvents();
-                    it->second->getWindow().draw(*it->second);
+                    for (unsigned int i = 0; i < windows.size(); i++) {
+                        if (windows[i] == &it->second->getWindow()) {
+                            View view = it->second->getWindow().getView();
+                            View defaultView = it->second->getWindow().getDefaultView();
+                            defaultView.setCenter(math::Vec3f(it->second->getWindow().getSize().x * 0.5f, it->second->getWindow().getSize().y * 0.5f, 0));
+                            it->second->getWindow().setView(defaultView);
+                            it->second->getWindow().draw(*it->second);
+                            it->second->getWindow().setView(view);
+                        }
+                    }
                 }
             }
-            window.setView(view);
         }
         HeavyComponent* RenderComponentManager::getRenderComponent(unsigned int layer) {
             std::multimap<int, Component*, std::greater<int>>::iterator it;

@@ -25,6 +25,8 @@ namespace odfaeg {
                     cout<<"Server started!"<<endl;
                     selector.add(listener);
                     running = true;
+                    CliEncryptedPacket::setServerRunning(running);
+                    EncryptedPacket::setServerRunning(running);
                     return true;
                 }
 
@@ -75,7 +77,6 @@ namespace odfaeg {
                     Network::getTimeBtw2SyncClk().restart();
                 }
                 if (selector.wait(sf::milliseconds(10))) {
-                    lock_guard<recursive_mutex> locker (rec_mutex);
                     if (selector.isReady(listener)) {
                         TcpSocket *client = new TcpSocket();
                         if (listener.accept(*client) == Socket::Done) {
@@ -90,12 +91,14 @@ namespace odfaeg {
                     for (it = clients.begin(); it != clients.end();it++) {
                         TcpSocket& client = **it;
                         if (selector.isReady(client)) {
-                            bool pbKeyRsaSend = Network::hasPbKeyRsa(client);
-                            bool pbKeySend = Network::hasPbKey(client);
                             User* user = Network::getUser(client);
-                            /*bool authentic = Network::isAuthenticClient(client);
-                            bool cliPbKeyReceived = Network::isCliPbKeyReceived(client);
-                            if (!authentic && !cliPbKeyReceived) {
+                            bool pbKeyRsaSend = user->hPbKeyRsa();
+                            bool pbKeySend = user->hPbKey();
+                            bool pbIvSend = user->hPbIv();
+                            bool authentic = user->isCertifiate();
+                            bool cliPbKeyReceived = user->isCliPbKeyReceived();
+                            if (!authentic && !cliPbKeyReceived && !pbKeyRsaSend && !pbKeySend && !pbIvSend && user != nullptr &&
+                                (!user->getRemotePortUDP() || !user->isUsingSecuredConnexion())) {
                                 Packet packet;
                                 if (client.receive(packet) == Socket::Done) {
                                     std::string request;
@@ -104,28 +107,8 @@ namespace odfaeg {
                                         request.erase(0, 11);
                                         Network::setCliPbKey(request);
                                         Network::sendCertifiateClient(*user);
-                                    }
-                                }
-                            }
-                            if (!authentic && cliPbKeyReceived) {
-                                CliEncryptedPacket packet;
-                                if (client.receive(packet) == Socket::Done) {
-                                    std::string request;
-                                    packet>>request;
-                                    if (request == Network::getCertifiateClientMess()) {
-                                        Network::sendClientCertifiate(*user);
-                                    }
-                                }
-                            }*/
-                            if (/*authentic && */pbKeyRsaSend == pbKeySend &&  user != nullptr &&
-                                (!user->getRemotePortUDP() || !user->isUsingSecuredConnexion())) {
-                                Packet packet;
-                                if (client.receive(packet) == Socket::Done) {
-                                    std::string request;
-                                    packet>>request;
-                                    if (request == "GetPbKeyRsa") {
+                                        user->setCliPbKeyReceived(true);
                                         user->setUseSecuredConnexion(true);
-                                        Network::sendPbKeyRsa(*user);
                                     } else  if (request.find("updateUdpPort") != std::string::npos) {
                                         std::vector<std::string> parts = core::split(request, "*");
                                         user->setRemotePortUDP(core::conversionStringInt(parts[1]));
@@ -140,13 +123,14 @@ namespace odfaeg {
                                     it--;
                                 }
                             }
-                            if (/*authentic && */pbKeyRsaSend && !pbKeySend && user != nullptr && user->isUsingSecuredConnexion()) {
-                                EncryptedPacket packet;
+                            if (!authentic && cliPbKeyReceived && !pbKeyRsaSend && !pbKeySend && !pbIvSend && user != nullptr && user->getRemotePortUDP() && user->isUsingSecuredConnexion()) {
+                                CliEncryptedPacket packet;
                                 if (client.receive(packet) == Socket::Done) {
                                     std::string request;
                                     packet>>request;
-                                    if (request == "GetPbKey") {
-                                         Network::sendPbKey(*user);
+                                    if (request == Network::getCertifiateClientMess()) {
+                                        Network::sendClientCertifiate(*user);
+                                        user->setCertifiate(true);
                                     } else {
                                         Network::removeUser(client);
                                         selector.remove(client);
@@ -156,7 +140,63 @@ namespace odfaeg {
                                     }
                                 }
                             }
-                            if (/*authentic && */pbKeySend && pbKeyRsaSend && user != nullptr && user->getRemotePortUDP() && user->isUsingSecuredConnexion()) {
+                            if (authentic && cliPbKeyReceived && !pbKeyRsaSend && !pbKeySend && !pbIvSend &&  user != nullptr && user->getRemotePortUDP() && user->isUsingSecuredConnexion()) {
+                                CliEncryptedPacket cliEncryptedPacket;
+                                if (client.receive(cliEncryptedPacket) == Socket::Done) {
+                                    std::string request;
+                                    cliEncryptedPacket>>request;
+                                    if (request == "GetPbKeyRsa") {
+                                        Network::sendPbKeyRsa(*user);
+                                        user->setHasPbKeyRsa(true);
+                                    } else  if (request.find("updateUdpPort") != std::string::npos) {
+                                        std::vector<std::string> parts = core::split(request, "*");
+                                        user->setRemotePortUDP(core::conversionStringInt(parts[1]));
+                                    } else {
+                                        Network::addRequest (user, request);
+                                    }
+                                } else {
+                                    Network::removeUser(client);
+                                    selector.remove(client);
+                                    it = clients.erase(it);
+                                    delete *it;
+                                    it--;
+                                }
+                            }
+                            if (authentic && cliPbKeyReceived && pbKeyRsaSend && !pbKeySend && !pbIvSend && user != nullptr && user->getRemotePortUDP() && user->isUsingSecuredConnexion()) {
+                                EncryptedPacket packet;
+                                if (client.receive(packet) == Socket::Done) {
+                                    std::string request;
+                                    packet>>request;
+                                    if (request == "GetPbKey") {
+                                         Network::sendPbKey(*user);
+                                         user->setHasPbKey(true);
+                                    } else {
+                                        Network::removeUser(client);
+                                        selector.remove(client);
+                                        it = clients.erase(it);
+                                        delete *it;
+                                        it--;
+                                    }
+                                }
+                            }
+                            if (authentic && cliPbKeyReceived && pbKeySend && pbKeyRsaSend && !pbIvSend && user != nullptr && user->getRemotePortUDP() && user->isUsingSecuredConnexion()) {
+                                EncryptedPacket packet;
+                                if (client.receive(packet) == Socket::Done) {
+                                    std::string request;
+                                    packet>>request;
+                                    if (request == "GetPbIv") {
+                                        Network::sendPbIv(*user);
+                                        user->setHasPbIv(true);
+                                    } else {
+                                        Network::removeUser(client);
+                                        selector.remove(client);
+                                        it = clients.erase(it);
+                                        delete *it;
+                                        it--;
+                                    }
+                                }
+                            }
+                            if (authentic && cliPbKeyReceived && pbKeySend && pbKeyRsaSend && user != nullptr && user->getRemotePortUDP() && user->isUsingSecuredConnexion()) {
                                 SymEncPacket packet;
                                 if (client.receive(packet) == Socket::Done) {
                                     std::string request;

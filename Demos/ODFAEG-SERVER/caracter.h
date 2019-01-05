@@ -99,10 +99,10 @@ namespace sorrok {
         int getFleeRate();
         int getCriticalChanceRate();
         int getCriticalAddDamagesRate();
-        std::vector<int> getDamages();
+        std::vector<int>& getDamages();
         void setDamages(std::vector<int> damages);
         void setRegen(std::vector<int> regen);
-        std::vector<int> getRegen();
+        std::vector<int>& getRegen();
         void restartRegenHP();
         virtual ~Caracter();
     private :

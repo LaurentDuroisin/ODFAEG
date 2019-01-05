@@ -63,6 +63,7 @@ namespace odfaeg {
             void addWindow(graphic::RenderWindow* window) {
                 if (windows.size() != 0) {
                     windows.push_back(window);
+                    componentManager->addWindow(*window);
                 }
             }
             /** \fn int exec()
@@ -149,10 +150,8 @@ namespace odfaeg {
                     sf::Event event;
                     events.clear();
                     for (unsigned int i = 0; i < windows.size(); i++) {
-                        if (windows[i]->hasFocus()) {
-                            while (windows[i]->pollEvent(event)) {
-                                events.insert(std::make_pair(windows[i], event));
-                            }
+                        while (windows[i]->pollEvent(event)) {
+                            events.insert(std::make_pair(windows[i], event));
                         }
                     }
                     if (events.size() > 0) {

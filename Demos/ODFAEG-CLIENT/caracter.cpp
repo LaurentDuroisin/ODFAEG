@@ -1,5 +1,6 @@
 #include "caracter.h"
 #include <iostream>
+#include "application.h"
 using namespace std;
 using namespace odfaeg::core;
 using namespace odfaeg::graphic;
@@ -22,13 +23,18 @@ namespace sorrok {
         attackMin = 5;
         attackMax = 10;
         fightingMode = attacking;
-        alive = true;++
+        alive = true;
         regenHpSpeed = 1.f;
         regenHpAmountMin = 1;
         regenHpAmountMax = 2;
         focusedCaracter = nullptr;
         baseAnimIndex = WALKING;
         timeBefLastRespawn = sf::seconds(10.f);
+        sf::Int64 i = 0;
+        addAttribute("isAlive", i);
+        addAttribute("isMoving",i);
+        addAttribute("isInFightingMode", i);
+        addAttribute("isAttacking", i);
     }
     void Caracter::onMove(Vec3f& t) {
         Entity::onMove(t);
@@ -89,23 +95,40 @@ namespace sorrok {
         if (attacking != b) {
             this->attacking = b;
             if (attacking) {
-                baseAnimIndex = ATTACKING;
-            } else {
+                changeAttribute("isAttacking", Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
                 anims[baseAnimIndex + currentAnimIndex]->stop();
                 anims[baseAnimIndex + currentAnimIndex]->setCurrentFrame(0);
+                baseAnimIndex = ATTACKING;
+                World::update();
+            } else {
+                changeAttribute("isAttacking", Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
+                anims[baseAnimIndex + currentAnimIndex]->stop();
+                anims[baseAnimIndex + currentAnimIndex]->setCurrentFrame(0);
+                damages.clear();
             }
         }
     }
     void Caracter::setAlive(bool b) {
         if (alive == true && b == false) {
+            if(getType() == "E_HERO") {
+                std::cout<<"hero death"<<std::endl;
+            }
+            changeAttribute("isAlive",Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
+            anims[baseAnimIndex + currentAnimIndex]->stop();
+            anims[baseAnimIndex + currentAnimIndex]->setCurrentFrame(0);
             baseAnimIndex = TIPPING_OVER;
             anims[baseAnimIndex + currentAnimIndex]->play(false);
             restartRespawn();
-            //World::update();
-        } else if (alive == false && b == true){
+            World::update();
+        } else if (alive == false && b == true) {
+            if(getType() == "E_HERO") {
+                std::cout<<"hero alive"<<std::endl;
+            }
+            changeAttribute("isAlive",Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
+            damages.clear();
             baseAnimIndex = WALKING;
             setLife(getMaxLife());
-            //World::update();
+            World::update();
         }
         alive = b;
     }
@@ -116,6 +139,9 @@ namespace sorrok {
         return attacking;
     }
     void Caracter::setFightingMode(bool b) {
+        if (fightingMode = true && b == false || fightingMode == false && b == true) {
+            changeAttribute("isInFightingMode",Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
+        }
         this->fightingMode = b;
     }
     bool Caracter::operator== (Entity &other) {
@@ -173,6 +199,9 @@ namespace sorrok {
         this->dir = dir;
         if (moving)
             anims[baseAnimIndex + currentAnimIndex]->play(true);
+        else
+            anims[baseAnimIndex + currentAnimIndex]->play(false);
+        World::update();
     }
     Vec2f Caracter::getDir () {
         return dir;
@@ -182,9 +211,13 @@ namespace sorrok {
         if (moving != b) {
             this->moving = b;
             if (moving) {
+                changeAttribute("isMoving",Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
+                anims[baseAnimIndex + currentAnimIndex]->stop();
+                anims[baseAnimIndex + currentAnimIndex]->setCurrentFrame(0);
                 baseAnimIndex = WALKING;
                 anims[baseAnimIndex + currentAnimIndex]->play(true);
             } else {
+                changeAttribute("isMoving",Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
                 anims[baseAnimIndex + currentAnimIndex]->stop();
                 anims[baseAnimIndex + currentAnimIndex]->setCurrentFrame(0);
             }
@@ -241,12 +274,6 @@ namespace sorrok {
         focusedCaracter->setLife(focusedCaracter->getLife() - attack);
         if (focusedCaracter->getLife() <= 0 && focusedCaracter->isAlive()) {
             focusedCaracter->setLife(0);
-            focusedCaracter->setAlive(false);
-            focusedCaracter->setAttacking(false);
-            focusedCaracter->setFightingMode(false);
-            focusedCaracter->restartRespawn();
-            setAttacking(false);
-            setFightingMode(false);
         }
         if (focusedCaracter->getType() == "E_HERO")
             hpBar->setValue(focusedCaracter->getLife());
@@ -263,13 +290,13 @@ namespace sorrok {
     void Caracter::setDamages(std::vector<int> damages) {
         this->damages = damages;
     }
-    std::vector<int> Caracter::getDamages() {
+    std::vector<int>& Caracter::getDamages() {
         return damages;
     }
     void Caracter::setRegen(std::vector<int> regen) {
         this->regen = regen;
     }
-    std::vector<int> Caracter::getRegen() {
+    std::vector<int>& Caracter::getRegen() {
         return regen;
     }
     void Caracter::restartAttackSpeed() {

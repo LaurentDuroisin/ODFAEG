@@ -1,8 +1,8 @@
 // *** ADDED BY HEADER FIXUP ***
-#include <vector>
 // *** END ***
 #ifndef CARACTER
 #define CARACTER
+#include <vector>
 #include "odfaeg/Math/vec2f.h"
 #include "odfaeg/Graphics/anim.h"
 #include "odfaeg/Graphics/tile.h"
@@ -11,6 +11,7 @@
 #include <string>
 #include <SFML/Graphics.hpp>
 namespace sorrok {
+    class MyAppli;
     class Caracter : public odfaeg::graphic::AnimatedEntity {
     public :
         enum ANIMS {
@@ -86,7 +87,7 @@ namespace sorrok {
         sf::Time getTimeSinceLastRespawn();
         void restartAttackSpeed();
         void restartRespawn();
-        std::vector<int> getDamages();
+        std::vector<int>& getDamages();
         void setDamages(std::vector<int> damages);
         template <typename Archive>
         void vtserialize(Archive & ar) {
@@ -107,7 +108,7 @@ namespace sorrok {
         }
         std::pair<odfaeg::math::Vec2f, odfaeg::math::Vec2f> interpolation;
         void setRegen(std::vector<int> regen);
-        std::vector<int> getRegen();
+        std::vector<int>& getRegen();
         void restartRegenHP();
         virtual ~Caracter();
         private :

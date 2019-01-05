@@ -19,12 +19,18 @@ namespace odfaeg {
                 static void setIv(char* iv) {
                     aes.ossl_setIv(iv);
                 }
-                static std::string getKeys () {
-                    return aes.getKeys();
+                /*static std::string getKey () {
+                    return aes.getKey();
                 }
-                static void updateKeys (std::string keys) {
-                    aes.updateKeys(keys);
+                static std::string getIv () {
+                    return aes.getIv();
                 }
+                static void setKey (std::string key) {
+                    aes.setKey(key);
+                }
+                static void setIv (std::string iv) {
+                    aes.setIv(iv);
+                }*/
             private :
                 virtual const void* onSend(std::size_t& dataSize);
                 virtual void onReceive (const void* data, std::size_t dataSize);

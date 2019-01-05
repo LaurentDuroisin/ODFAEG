@@ -34,8 +34,8 @@
 #include "odfaeg/Graphics/GUI/progressBar.hpp"
 #include <fstream>
 namespace sorrok {
-    class MyAppli : public odfaeg::core::Application/*,
-                    public odfaeg::graphic::gui::ActionListener*/ {
+    class MyAppli : public odfaeg::core::Application,
+                    public odfaeg::graphic::gui::ActionListener {
     private :
         const float speed = 0.2f;
         odfaeg::graphic::EntitiesUpdater *eu;
@@ -53,7 +53,7 @@ namespace sorrok {
         sf::Time timeBtwnTwoReq = sf::seconds(1.f);
         sf::Int64 ping;
         bool received = false;
-        static const unsigned int PATH_ERROR_MARGIN = 2;
+        static const unsigned int PATH_ERROR_MARGIN = 5;
         odfaeg::graphic::RenderWindow* wResuHero, *wIdentification;
         odfaeg::graphic::gui::Label* label, *labPseudo, *labMdp;
         odfaeg::graphic::gui::TextArea* taPseudo;

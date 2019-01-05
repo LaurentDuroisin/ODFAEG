@@ -94,6 +94,14 @@ namespace odfaeg {
             }
             return false;
         }
+        bool Network::hasPbIv(TcpSocket& socket) {
+            for (unsigned int i = 0; i < users.size(); i++) {
+                if (&users[i]->getTcpSocket() == &socket) {
+                    return users[i]->hPbIv();
+                }
+            }
+            return false;
+        }
         bool Network::hasPbKeyRsa(TcpSocket& socket) {
             for (unsigned int i = 0; i < users.size(); i++) {
                 if (&users[i]->getTcpSocket() == &socket) {
@@ -162,29 +170,32 @@ namespace odfaeg {
             Packet packet;
             packet<<response;
             user.getTcpSocket().send(packet);
-            user.setHasPbKeyRsa(true);
         }
         void Network::sendPbKey(User &user) {
-            string response = /*SymEncPacket::getKeys();*/ string(SymEncPacket::getKey(), strlen(SymEncPacket::getKey())) + "-" + string(SymEncPacket::getIv(), strlen(SymEncPacket::getIv()));
+            string response = string(SymEncPacket::getKey(), strlen(SymEncPacket::getKey()));
             response.insert(0, "AESKEY");
             EncryptedPacket packet;
             packet<<response;
             user.getTcpSocket().send(packet);
-            user.setHasPbKey(true);
+        }
+        void Network::sendPbIv(User &user) {
+            string response = string(SymEncPacket::getIv(), strlen(SymEncPacket::getIv()));
+            response.insert(0, "AESIV");
+            EncryptedPacket packet;
+            packet<<response;
+            user.getTcpSocket().send(packet);
         }
         void Network::sendCertifiateClient(User &user) {
             CliEncryptedPacket cliEncryptedPacket;
             std::string response = "GETCERTIFIATECLIENT";
             cliEncryptedPacket<<response;
             user.getTcpSocket().send(cliEncryptedPacket);
-            user.setCliPbKeyReceived(true);
         }
         void Network::sendClientCertifiate(User &user) {
             CliEncryptedPacket cliEncryptedPacket;
             std::string response = "CERTIFIEDCLIENT";
             cliEncryptedPacket<<response;
             user.getTcpSocket().send(cliEncryptedPacket);
-            user.setCertifiate(true);
         }
         User* Network::getUser(sf::TcpSocket& socket) {
             for (unsigned int i = 0; i < users.size(); i++) {
@@ -228,13 +239,14 @@ namespace odfaeg {
             EncryptedPacket::setCertificate(reinterpret_cast<const unsigned char*>(message.c_str()), message.size());
         }
         void Network::setCliPbKey(std::string message) {
-            CliEncryptedPacket::setCertificate(reinterpret_cast<const unsigned char*>(message.c_str()), message.length());
+            CliEncryptedPacket::setCertificate(reinterpret_cast<const unsigned char*>(message.c_str()), message.size());
         }
         void Network::setSymPbKey (string pbKey) {
-            vector<string> parts = core::split(pbKey, "-");
-            SymEncPacket::setKey(const_cast<char*>(parts[0].c_str()));
-            SymEncPacket::setIv(const_cast<char*>(parts[1].c_str()));
+            SymEncPacket::setKey(const_cast<char*>(pbKey.c_str()));
             //SymEncPacket::updateKeys(pbKey);
+        }
+        void Network::setSymPbIv (string iv) {
+            SymEncPacket::setIv(const_cast<char*>(iv.c_str()));
         }
         void Network::setCertifiateClientMess(std::string mess) {
             certifiateClientMess = mess;

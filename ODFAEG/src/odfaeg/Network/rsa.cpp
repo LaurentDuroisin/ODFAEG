@@ -8,8 +8,11 @@ namespace odfaeg {
         Rsa::Rsa() {
             x = X509_new();
             evp_pkey = EVP_PKEY_new();
+            mpz_init(e);
+            mpz_init(d);
+            mpz_init(n);
             keypair = ssl_generateKeys(2048);
-            generateKeys(256);
+            generateKeys(2048);
         }
         int Rsa::ossl_getCertificate (unsigned char** out) {
             return i2d_X509(x, out);
@@ -24,30 +27,55 @@ namespace odfaeg {
         }
         void Rsa::setCertificate(string certificate) {
             vector<string> pbKeyParts = core::split(certificate, "-");
-            e.setStr(pbKeyParts[0], 16);
-            n.setStr(pbKeyParts[1], 16);
+            mpz_set_str(e, pbKeyParts[0].c_str(), 10);
+            mpz_set_str(n, pbKeyParts[1].c_str(), 10);
         }
         std::string Rsa::getCertificate() {
-            return e.toStr(16)+"-"+n.toStr(16);
+            char *str1, *str2;
+            str1 = new char[mpz_sizeinbase(e, 10)];
+            str2 = new char[mpz_sizeinbase(n, 10)];
+            mpz_get_str(str1,10,e);
+            mpz_get_str(str2, 10,n);
+            return std::string(str1)+"-"+std::string(str2);
         }
         void Rsa::generateKeys(unsigned int size) {
-            BigInt t;
+            mpz_t p;
+            mpz_t q;
+            gmp_randstate_t etat;              //Initialisation des nombres aleatoires
+            gmp_randinit_default (etat);
+            mpz_init(p);
+            mpz_urandomb(p, etat, size);
+            mpz_init(q);
+            mpz_nextprime(p, p);
+            mpz_urandomb(q, etat, size);
+            mpz_nextprime(q, q);
+            mpz_mul(n, p, q);
+            mpz_t un;
+            mpz_init(un);
+            mpz_set_si(un, 1);
+            mpz_t pmun;
+            mpz_t qmun;
+            mpz_init(pmun);
+            mpz_init(qmun);
+            mpz_sub(pmun,p,un);
+            mpz_sub(qmun,q,un);
+            mpz_t f;
+            mpz_init(f);
+            mpz_mul(f, pmun, qmun);
+            mpz_t zero;
+            mpz_init(zero);
+            mpz_set_si(zero, 0);
             do {
-                BigInt p = BigInt::genPrime(size/8, 16);
-                BigInt q = BigInt::genPrime(size/8, 16);
-                n = p * q;
-                BigInt f = (p - 1) * (q - 1);
+                mpz_t gcd1, gcd2;
+                mpz_init(gcd1);
+                mpz_init(gcd2);
                 do {
-                    do {
-                        e = BigInt::genRandom(size/8, 16);
-                    } while (BigInt::pgcd(e,f) != 1 && BigInt::pgcd(e, n) != 1);
-                    d = e.m_invert(f);
-                } while (d == 0);
-                t = BigInt(5, true, 16);
-                BigInt c = t.modOfPow(e, n);
-                t = c.modOfPow(d, n);
-            } while (t != 5);
-
+                    mpz_urandomb(e, etat, size);
+                    mpz_gcd(gcd1, e, f);
+                    mpz_gcd(gcd2, e, n);
+                } while (mpz_cmp(gcd1, un) == 0 && mpz_cmp(gcd2, un));
+                mpz_invert(d, e, f);
+            } while (mpz_cmp(d, zero) == 0);
         }
         RSA* Rsa::ssl_generateKeys (int size) {
             Rsa::size = size;
@@ -92,19 +120,25 @@ namespace odfaeg {
             X509_sign(x,evp_pkey,EVP_sha1());
             return key_pair;
         }
-        unsigned char* Rsa::encryptWithPbKey(const unsigned char* data, std::size_t dataSize, std::size_t& newSize) {
+        const char* Rsa::encryptWithPbKey(const char* data, std::size_t dataSize, std::size_t& newSize) {
             newSize = BLOC_SIZE * dataSize;
-            unsigned char* crypted = new unsigned char[newSize+1];
+            char* crypted = new char[newSize+1];
             unsigned int p = 0;
             for (unsigned int i = 0; i < dataSize; i++) {
                 int ascii = data[i];
-                BigInt c = BigInt(ascii, true, 16).modOfPow(e, n);
-                std::string s = c.toStr(16);
-                for (unsigned int j = 0; j < s.length(); j++) {
-                    crypted[p] = s.at(j);
+                mpz_t a;
+                mpz_init(a);
+                mpz_set_si(a,ascii);
+                mpz_t c;
+                mpz_init(c);
+                mpz_powm(c, a, e, n);
+                char* str = new char[mpz_sizeinbase(c, 10)];
+                mpz_get_str(str, 10, c);
+                for (unsigned int j = 0; j < strlen(str); j++) {
+                    crypted[p] = str[j];
                     p++;
                 }
-                for (unsigned int i = 0; i < BLOC_SIZE - s.length(); i++) {
+                for (unsigned int i = 0; i < BLOC_SIZE - strlen(str); i++) {
                     crypted[p] = 0;
                     p++;
                 }
@@ -112,7 +146,7 @@ namespace odfaeg {
             crypted[p] = 32;
             return crypted;
         }
-        unsigned char* Rsa::decryptWithPrKey(const unsigned char* data, std::size_t dataSize, std::size_t& newSize) {
+        const char* Rsa::decryptWithPrKey(const char* data, std::size_t dataSize, std::size_t& newSize) {
             unsigned int p = 0;
             std::vector<std::string> strs;
             while(data[p] != 32) {
@@ -127,28 +161,38 @@ namespace odfaeg {
                 strs.push_back(str);
             }
             newSize = strs.size();
-            unsigned char* decrypted = new unsigned char[newSize];
+            char* decrypted = new char[newSize];
             for (unsigned int i = 0; i < strs.size(); i++) {
-                BigInt c (strs[i], 16);
-                BigInt dec = c.modOfPow(d, n);
-                int ascii = core::conversionStringInt(dec.toStr(10));
+                mpz_t c;
+                mpz_init(c);
+                mpz_set_str(c, strs[i].c_str(), 10);
+                mpz_t dec;
+                mpz_init(dec);
+                mpz_powm(dec,c,d, n);
+                int ascii = mpz_get_si(dec);
                 decrypted[i] = ascii;
             }
             return decrypted;
         }
-        unsigned char* Rsa::encryptWithPrKey(const unsigned char* data, std::size_t dataSize, std::size_t& newSize) {
-            newSize = BLOC_SIZE * dataSize;
-            unsigned char* crypted = new unsigned char[newSize+1];
+        const char* Rsa::encryptWithPrKey(const char* data, std::size_t dataSize, std::size_t& newSize) {
+           newSize = BLOC_SIZE * dataSize;
+            char* crypted = new char[newSize+1];
             unsigned int p = 0;
             for (unsigned int i = 0; i < dataSize; i++) {
                 int ascii = data[i];
-                BigInt c = BigInt(ascii, true, 16).modOfPow(d, n);
-                std::string s = c.toStr(16);
-                for (unsigned int j = 0; j < s.length(); j++) {
-                    crypted[p] = s.at(j);
+                mpz_t a;
+                mpz_init(a);
+                mpz_set_si(a,ascii);
+                mpz_t c;
+                mpz_init(c);
+                mpz_powm(c, a, d, n);
+                char* str = new char[mpz_sizeinbase(c, 10)];
+                mpz_get_str(str, 10, c);
+                for (unsigned int j = 0; j < strlen(str); j++) {
+                    crypted[p] = str[j];
                     p++;
                 }
-                for (unsigned int i = 0; i < BLOC_SIZE - s.length(); i++) {
+                for (unsigned int i = 0; i < BLOC_SIZE - strlen(str); i++) {
                     crypted[p] = 0;
                     p++;
                 }
@@ -156,7 +200,7 @@ namespace odfaeg {
             crypted[p] = 32;
             return crypted;
         }
-        unsigned char* Rsa::decryptWithPbKey(const unsigned char* data, std::size_t dataSize, std::size_t& newSize) {
+        const char* Rsa::decryptWithPbKey(const char* data, std::size_t dataSize, std::size_t& newSize) {
             unsigned int p = 0;
             std::vector<std::string> strs;
             while(data[p] != 32) {
@@ -171,11 +215,15 @@ namespace odfaeg {
                 strs.push_back(str);
             }
             newSize = strs.size();
-            unsigned char* decrypted = new unsigned char[newSize];
+            char* decrypted = new char[newSize];
             for (unsigned int i = 0; i < strs.size(); i++) {
-                BigInt c (strs[i], 16);
-                BigInt dec = c.modOfPow(e, n);
-                int ascii = core::conversionStringInt(dec.toStr(10));
+                mpz_t c;
+                mpz_init(c);
+                mpz_set_str(c, strs[i].c_str(), 10);
+                mpz_t dec;
+                mpz_init(dec);
+                mpz_powm(dec,c,e, n);
+                int ascii = mpz_get_si(dec);
                 decrypted[i] = ascii;
             }
             return decrypted;

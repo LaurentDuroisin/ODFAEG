@@ -11,6 +11,7 @@ namespace odfaeg {
                 static Rsa& getRsa();
                 static int getCertificate(unsigned char** out);
                 static void setCertificate(const unsigned char* in, int l);
+                static void setServerRunning(bool srvRunning);
             private :
                 /**
                 * \fn const void* onSend(std::size_t& dataSize)
@@ -26,6 +27,7 @@ namespace odfaeg {
                 */
                 virtual void onReceive (const void* data, std::size_t dataSize);
                 static Rsa& rsa;
+                static bool isSrvRunning;
         };
     }
 }

@@ -83,6 +83,7 @@ namespace odfaeg {
                 * \param the user.
                 */
                 static void sendPbKey(User& user);
+                static void sendPbIv(User& user);
                 /**
                 * \fn void addRequest(User *user, std::string request)
                 * \brief add a request to the queue.
@@ -147,6 +148,7 @@ namespace odfaeg {
                 * \param pbKey : the public key.
                 */
                 static void setSymPbKey (std::string pbKey);
+                static void setSymPbIv (std::string pbIv);
                 static void sendCertifiateClient(User &user);
                 static void sendClientCertifiate(User &user);
                 /**
@@ -156,6 +158,7 @@ namespace odfaeg {
                 * \return if the user have the public key. (for aes encryption)
                 */
                 static bool hasPbKey(sf::TcpSocket& socket);
+                static bool hasPbIv(sf::TcpSocket& socket);
                 /**
                 * \fn bool hasPbKeyRsa(sf::IpAddress address)
                 * \brief if the user have the public key. (for rsa encryption)

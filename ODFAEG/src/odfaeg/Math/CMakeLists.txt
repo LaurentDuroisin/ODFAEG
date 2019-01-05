@@ -23,7 +23,9 @@ set(SRC
 	${INCROOT}/distribution.h
 	${SRCROOT}/distribution.cpp
 	${INCROOT}/ray.h
-	${SRCROOT}/ray.cpp)
+	${SRCROOT}/ray.cpp
+	${INCROOT}/bigInt.hpp
+	${SRCROOT}/bigInt.cpp)
 	
 include_directories(${CMAKE_INCLUDE_PATH})
 link_directories (${CMAKE_LIBRARY_PATH})

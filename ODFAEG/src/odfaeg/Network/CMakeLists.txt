@@ -20,9 +20,7 @@ set(SRC
 	${INCROOT}/network.h
 	${SRCROOT}/network.cpp
 	${INCROOT}/user.h
-	${SRCROOT}/user.cpp
-	${INCROOT}/bigInt.hpp
-	${SRCROOT}/bigInt.cpp
+	${SRCROOT}/user.cpp	
 	${INCROOT}/cliEncryptedPacket.hpp
 	${SRCROOT}/cliEncryptedPacket.cpp)	
 find_package (OpenSSL 1 REQUIRED)

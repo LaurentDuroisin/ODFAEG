@@ -14,7 +14,7 @@
 #include "export.hpp"
 #include <random>
 #include <ctime>
-
+#include "bigInt.hpp"
 /**
   *\namespace odfaeg
   * the namespace of the Opensource Development Framework Adapted for Every Games.
@@ -185,6 +185,8 @@ namespace odfaeg {
             * \return the random value in the specified interval
             */
             static float random(float max, float min = 0);
+            static unsigned long long int ullirandom(unsigned long long int min, unsigned long long int max);
+            static int roundToInt(float value);
             private :
             static std::mt19937 mrs;
             static bool isSeedInitialized;

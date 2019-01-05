@@ -1,0 +1,619 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<ActiveTarget name="Debug" />
+	<File name="src\SFGL\Math\maths.cpp" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="230" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\Core\application.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="68" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Graphics\2D\animatedEntity.h" open="1" top="1" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="469" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\Core\utilities.cpp" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="69" topLine="1" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Graphics\3D\drawable.h" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="60" topLine="3" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\Math\matrix2.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="67" topLine="1" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\Core\erreur.cpp" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="66" topLine="1" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Graphics\2D\decor.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="144" topLine="6" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\Graphics\2D\ambientLight.cpp" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="82" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Graphics\3D\drawableEntity.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="110" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\Math\matrix3.cpp" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="96" topLine="2" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\Core\factory.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="88" topLine="2" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Graphics\2D\directionnalLight.h" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="118" topLine="4" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\Graphics\2D\animation.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="74" topLine="1" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Graphics\3D\dynamicDrawableEntity.h" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="152" topLine="4" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\Math\matrix4.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="104" topLine="2" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\Core\game.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="4" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Graphics\2D\drawable.h" open="1" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="227" topLine="8" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\Graphics\2D\decor.cpp" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="77" topLine="2" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Graphics\3D\entity.h" open="1" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="128" topLine="5" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Core\UpsMapLoader.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1705" topLine="45" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\Math\projMatrix.cpp" open="1" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="97" topLine="2" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Graphics\2D\entity.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="122" topLine="7" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\Graphics\2D\directionnalLight.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="331" topLine="6" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Graphics\3D\renderStates.h" open="1" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="205" topLine="7" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Core\action.h" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="142" topLine="7" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\Math\transformMatrix.cpp" open="1" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="131" topLine="4" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Graphics\2D\entityLight.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="103" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\Graphics\2D\entity.cpp" open="1" top="0" tabpos="15" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="76" topLine="1" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Graphics\3D\renderTarget.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="278" topLine="11" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Core\actionMap.h" open="1" top="0" tabpos="16" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="77" topLine="4" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\Math\vec2.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="113" topLine="2" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Graphics\2D\entityManager.h" open="1" top="0" tabpos="17" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="172" topLine="6" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\Graphics\2D\gridMap.cpp" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="157" topLine="4" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Graphics\3D\renderWindow.h" open="1" top="0" tabpos="18" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="5596" topLine="128" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Core\animationUpdater.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="130" topLine="4" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\Math\vec4.cpp" open="1" top="0" tabpos="19" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="115" topLine="2" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Graphics\2D\gridMap.h" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="250" topLine="8" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\Graphics\2D\map.cpp" open="1" top="0" tabpos="20" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="135" topLine="4" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Graphics\3D\vertex.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="151" topLine="3" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Core\any.h" open="1" top="0" tabpos="21" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="520" topLine="37" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\Math\viewMatrix.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="196" topLine="5" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Graphics\2D\light.h" open="1" top="0" tabpos="22" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="128" topLine="4" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\Graphics\2D\mapCell.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="79" topLine="2" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Graphics\3D\vertexArray.h" open="1" top="0" tabpos="23" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="330" topLine="14" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Core\application.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="113" topLine="4" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Graphics\2D\map.h" open="1" top="0" tabpos="24" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="387" topLine="15" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\Graphics\2D\ponctualLight.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="218" topLine="4" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Graphics\3D\view.h" open="1" top="0" tabpos="25" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="187" topLine="6" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Core\bind.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="93" topLine="7" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Graphics\2D\mapCell.h" open="1" top="0" tabpos="26" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="143" topLine="5" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\Graphics\2D\shadow.cpp" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="76" topLine="1" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Math\computer.h" open="1" top="0" tabpos="27" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="135" topLine="3" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Core\callback.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="40" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Graphics\2D\model.h" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="126" topLine="5" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\Graphics\2D\shadowTile.cpp" open="1" top="0" tabpos="28" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="139" topLine="2" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Math\maths.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="411" topLine="17" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Core\entitiesUpdater.h" open="1" top="0" tabpos="29" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="95" topLine="3" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\BoundingAreas\boundingPolygon.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="174" topLine="6" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Graphics\2D\ponctualLight.h" open="1" top="0" tabpos="30" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="185" topLine="6" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\Graphics\2D\shadowWall.cpp" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="138" topLine="2" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Math\matrix2.h" open="1" top="0" tabpos="31" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="72" topLine="4" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Core\entitySystem.h" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="130" topLine="6" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\BoundingAreas\boundingRectangle.h" open="1" top="0" tabpos="32" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="149" topLine="6" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Graphics\2D\renderWindow.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="92" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\Graphics\2D\tGround.cpp" open="1" top="0" tabpos="33" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="79" topLine="2" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Math\matrix3.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="139" topLine="5" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Core\erreur.h" open="1" top="0" tabpos="34" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="89" topLine="2" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Core\ResourceManager.h" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="12605" topLine="341" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Graphics\2D\selectable.h" open="1" top="0" tabpos="35" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="56" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\Graphics\2D\tile.cpp" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="78" topLine="3" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Math\matrix4.h" open="1" top="0" tabpos="36" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="119" topLine="4" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Core\factory.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="66" topLine="3" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Core\UpsFileManager.h" open="1" top="0" tabpos="37" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="675" topLine="28" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Graphics\2D\shadow.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="93" topLine="7" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\Graphics\2D\world.cpp" open="1" top="0" tabpos="38" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="75" topLine="1" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Math\projMatrix.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="161" topLine="7" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Core\function.h" open="1" top="0" tabpos="39" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="70" topLine="3" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\BoundingAreas\axisAlignedBoundingBox.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="113" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\Graphics\3D\Texture.cpp" open="1" top="0" tabpos="40" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="15186" topLine="494" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Math\segment.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="70" topLine="3" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Core\game.h" open="1" top="0" tabpos="41" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="200" topLine="7" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\BoundingAreas\boundingCircle.h" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="156" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\Graphics\3D\cube.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="206" topLine="3" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Math\transformMatrix.h" open="1" top="0" tabpos="42" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="306" topLine="12" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Core\placeholders.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="61" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\BoundingAreas\boundingEllipse.h" open="1" top="0" tabpos="43" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="158" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\Graphics\3D\entity.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="76" topLine="1" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Math\vec2f.h" open="1" top="0" tabpos="44" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="190" topLine="7" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Core\resourceCache.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="94" topLine="4" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Graphics\2D\shadowTile.h" open="1" top="0" tabpos="45" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="135" topLine="5" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\Graphics\3D\renderStates.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="102" topLine="3" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Math\vec4.h" open="1" top="0" tabpos="46" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="165" topLine="7" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Core\signal.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="112" topLine="5" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Graphics\2D\shadowWall.h" open="1" top="0" tabpos="47" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="79" topLine="3" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\Graphics\3D\renderTarget.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="172" topLine="5" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Math\viewMatrix.h" open="1" top="0" tabpos="48" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="210" topLine="8" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Core\singleton.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="66" topLine="2" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Graphics\2D\tGround.h" open="1" top="0" tabpos="49" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="112" topLine="4" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\Graphics\3D\renderWindow.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="126" topLine="5" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\BoundingAreas\boundingCircle.cpp" open="1" top="0" tabpos="50" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="83" topLine="1" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Core\stateManager.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="81" topLine="3" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Graphics\2D\tile.h" open="1" top="0" tabpos="51" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="236" topLine="11" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\Graphics\3D\vertex.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="78" topLine="2" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\BoundingAreas\boundingEllipse.cpp" open="1" top="0" tabpos="52" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="84" topLine="1" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Core\system.h" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="106" topLine="6" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Graphics\2D\transformable.h" open="1" top="0" tabpos="53" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="511" topLine="10" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\Graphics\3D\vertexArray.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="148" topLine="5" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\BoundingAreas\boundingPolygon.cpp" open="1" top="0" tabpos="54" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="84" topLine="1" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Core\timer.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="88" topLine="5" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Graphics\2D\wall.h" open="1" top="0" tabpos="55" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="194" topLine="10" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\Graphics\3D\view.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="102" topLine="2" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\BoundingAreas\boundingRectangle.cpp" open="1" top="0" tabpos="56" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="221" topLine="3" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Core\utilities.h" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="114" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Graphics\2D\world.h" open="1" top="0" tabpos="57" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="80" topLine="6" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\Math\Segment.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="67" topLine="1" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\Core\UpsFileManager.cpp" open="1" top="0" tabpos="58" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="122" topLine="3" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Graphics\2D\ambientLight.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="82" topLine="3" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Graphics\3D\Texture.h" open="1" top="0" tabpos="59" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="326" topLine="10" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\Math\computer.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="68" topLine="1" />
+		</Cursor>
+	</File>
+	<File name="src\SFGL\Core\UpsMapLoader.cpp" open="1" top="0" tabpos="60" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="7456" topLine="210" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Graphics\2D\anim.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="120" topLine="6" />
+		</Cursor>
+	</File>
+	<File name="include\SFGL\Graphics\3D\cube.h" open="1" top="0" tabpos="61" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="142" topLine="2" />
+		</Cursor>
+	</File>
+</CodeBlocks_layout_file>

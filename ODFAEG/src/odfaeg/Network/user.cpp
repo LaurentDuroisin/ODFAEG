@@ -7,7 +7,7 @@ namespace odfaeg {
         using namespace std;
         using namespace sf;
         User::User (TcpSocket &socketTCP, UdpSocket &socketUDP) : clientTCP(socketTCP), clientUDP(socketUDP) {
-            hasPbKey = hasPbKeyRsa = certifiate = false;
+            hasPbKey = hasPbKeyRsa = certifiate = cliPbKeyReceived = hasPbIv = false;
             address = socketTCP.getRemoteAddress();
             remotePortUDP = 0;
             useSecuredConnexion = false;
@@ -23,6 +23,12 @@ namespace odfaeg {
             for (unsigned int i = 0; i < pings.size(); i++)
                 pingAvg += pings[i];
             pingAvg /= pings.size();
+        }
+        void User::setHasPbIv(bool iv) {
+            hasPbIv = iv;
+        }
+        bool User::hPbIv() {
+            return hasPbIv;
         }
         Clock& User::getPingClock() {
             return pingClock;

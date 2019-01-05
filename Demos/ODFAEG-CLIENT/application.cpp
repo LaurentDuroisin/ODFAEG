@@ -6,7 +6,7 @@ using namespace odfaeg::math;
 using namespace odfaeg::network;
 namespace sorrok {
     MyAppli::MyAppli(sf::VideoMode wm, std::string title) : Application (wm, title, sf::Style::Default, sf::ContextSettings(0, 0, 4, 3, 0)) {
-        /*running = false;
+        running = false;
         actualKey = sf::Keyboard::Key::Unknown;
         previousKey = sf::Keyboard::Key::Unknown;
         getView().setScale(1, -1, 1);
@@ -16,93 +16,64 @@ namespace sorrok {
         monster = nullptr;
         received = false;
         Network::setCertifiateClientMess("SORROKCLIENT");
-        isClientAuthentified = true;*/
+        isClientAuthentified = true;
     }
     void MyAppli::keyHeldDown (sf::Keyboard::Key key) {
+        previousKey = actualKey;
+        actualKey = key;
         //BoundingRectangle rect (pos.x, pos.y, getView().getSize().x, getView().getSize().y);
         if (actualKey != sf::Keyboard::Key::Unknown && key == sf::Keyboard::Key::Z) {
             if (!hero->isMoving()) {
                 if (actualKey != previousKey) {
-                        Vec2f dir(0, -1);
-                        hero->setDir(dir);
+                    std::cout<<"actual key : "<<(actualKey != previousKey)<<std::endl;
+                    Vec2f dir(0, -1);
+                    hero->setDir(dir);
+                    sf::Int64 cli_time = Application::getTimeClk().getElapsedTime().asMicroseconds();
+                    std::string message = "MOVEFROMKEYBOARD*"+conversionIntString(hero->getId())+"*"+conversionFloatString(dir.x)+"*"+conversionFloatString(dir.y)+"*"+conversionLongString(cli_time);
+                    SymEncPacket packet;
+                    packet<<message;
+                    Network::sendTcpPacket(packet);
                 }
-                Vec2f dir = hero->getDir();
-                sf::Int64 cli_time = Application::getTimeClk().getElapsedTime().asMicroseconds();
-                std::string message = "MOVEFROMKEYBOARD*"+conversionIntString(hero->getId())+"*"+conversionFloatString(dir.x)+"*"+conversionFloatString(dir.y)+"*"+conversionLongString(cli_time);
-                SymEncPacket packet;
-                packet<<message;
-                Network::sendTcpPacket(packet);
-                message = "GETCARPOS";
-                packet.clear();
-                packet<<message;
-                hero->getClkTransfertTime().restart();
-                getClock("RequestTime").restart();
-                Network::sendTcpPacket(packet);
-                hero->setMoving(true);
-                hero->setIsMovingFromKeyboard(true);
+
             }
         } else if (actualKey != sf::Keyboard::Key::Unknown && key == sf::Keyboard::Key::Q) {
             if (!hero->isMoving()) {
                 if (actualKey != previousKey) {
+                    std::cout<<"move from keyboard"<<std::endl;
                     Vec2f dir(-1, 0);
                     hero->setDir(dir);
+                    sf::Int64 cli_time = Application::getTimeClk().getElapsedTime().asMicroseconds();
+                    std::string message = "MOVEFROMKEYBOARD*"+conversionIntString(hero->getId())+"*"+conversionFloatString(dir.x)+"*"+conversionFloatString(dir.y)+"*"+conversionLongString(cli_time);
+                    SymEncPacket packet;
+                    packet<<message;
+                    Network::sendTcpPacket(packet);
                 }
-                Vec2f dir = hero->getDir();
-                sf::Int64 cli_time = Application::getTimeClk().getElapsedTime().asMicroseconds();
-                std::string message = "MOVEFROMKEYBOARD*"+conversionIntString(hero->getId())+"*"+conversionFloatString(dir.x)+"*"+conversionFloatString(dir.y)+"*"+conversionLongString(cli_time);
-                SymEncPacket packet;
-                packet<<message;
-                Network::sendTcpPacket(packet);
-                message = "GETCARPOS";
-                packet.clear();
-                packet<<message;
-                hero->getClkTransfertTime().restart();
-                getClock("RequestTime").restart();
-                Network::sendTcpPacket(packet);
-                hero->setMoving(true);
-                hero->setIsMovingFromKeyboard(true);
             }
         } else if (actualKey != sf::Keyboard::Key::Unknown && actualKey == sf::Keyboard::Key::S) {
             if (!hero->isMoving()) {
                 if (actualKey != previousKey) {
+                    std::cout<<"actual key : "<<(actualKey != previousKey)<<std::endl;
                     Vec2f dir(0, 1);
                     hero->setDir(dir);
+                    sf::Int64 cli_time = Application::getTimeClk().getElapsedTime().asMicroseconds();
+                    std::string message = "MOVEFROMKEYBOARD*"+conversionIntString(hero->getId())+"*"+conversionFloatString(dir.x)+"*"+conversionFloatString(dir.y)+"*"+conversionLongString(cli_time);
+                    SymEncPacket packet;
+                    packet<<message;
+                    Network::sendTcpPacket(packet);
                 }
-                Vec2f dir = hero->getDir();
-                sf::Int64 cli_time = Application::getTimeClk().getElapsedTime().asMicroseconds();
-                std::string message = "MOVEFROMKEYBOARD*"+conversionIntString(hero->getId())+"*"+conversionFloatString(dir.x)+"*"+conversionFloatString(dir.y)+"*"+conversionLongString(cli_time);
-                SymEncPacket packet;
-                packet<<message;
-                Network::sendTcpPacket(packet);
-                message = "GETCARPOS";
-                packet.clear();
-                packet<<message;
-                hero->getClkTransfertTime().restart();
-                getClock("RequestTime").restart();
-                Network::sendTcpPacket(packet);
-                hero->setMoving(true);
-                hero->setIsMovingFromKeyboard(true);
             }
         } else if (actualKey != sf::Keyboard::Key::Unknown && key == sf::Keyboard::Key::D) {
             if (!hero->isMoving()) {
                 if (actualKey != previousKey) {
+                    std::cout<<"move from keyboard"<<std::endl;
                     Vec2f dir(1, 0);
                     hero->setDir(dir);
+                    sf::Int64 cli_time = Application::getTimeClk().getElapsedTime().asMicroseconds();
+                    std::string message = "MOVEFROMKEYBOARD*"+conversionIntString(hero->getId())+"*"+conversionFloatString(dir.x)+"*"+conversionFloatString(dir.y)+"*"+conversionLongString(cli_time);
+                    SymEncPacket packet;
+                    packet<<message;
+                    Network::sendTcpPacket(packet);
                 }
-                Vec2f dir = hero->getDir();
-                sf::Int64 cli_time = Application::getTimeClk().getElapsedTime().asMicroseconds();
-                std::string message = "MOVEFROMKEYBOARD*"+conversionIntString(hero->getId())+"*"+conversionFloatString(dir.x)+"*"+conversionFloatString(dir.y)+"*"+conversionLongString(cli_time);
-                SymEncPacket packet;
-                packet<<message;
-                Network::sendTcpPacket(packet);
-                message = "GETCARPOS";
-                packet.clear();
-                packet<<message;
-                hero->getClkTransfertTime().restart();
-                getClock("RequestTime").restart();
-                Network::sendTcpPacket(packet);
-                hero->setIsMovingFromKeyboard(true);
-                hero->setMoving(true);
             }
         }
     }
@@ -110,18 +81,9 @@ namespace sorrok {
         Vec3f finalPos(mousePos.x, getRenderWindow().getSize().y - mousePos.y, 0);
         finalPos = getRenderWindow().mapPixelToCoords(finalPos);
         finalPos = Vec3f(finalPos.x, finalPos.y, 0);
-        hero->setFightingMode(false);
-        hero->setAttacking(false);
-        hero->setIsMovingFromKeyboard(false);
         std::string message = "MOVEFROMPATH*"+conversionIntString(hero->getId())+"*"+conversionFloatString(finalPos.x)+"*"+conversionFloatString(finalPos.y);
         SymEncPacket packet;
         packet<<message;
-        Network::sendTcpPacket(packet);
-        message = "GETCARPOS";
-        packet.clear();
-        packet<<message;
-        hero->getClkTransfertTime().restart();
-        getClock("RequestTime").restart();
         Network::sendTcpPacket(packet);
     }
     void MyAppli::rightMouseButtonPressed(sf::Vector2f mousePos) {
@@ -134,8 +96,6 @@ namespace sorrok {
         SymEncPacket packet;
         packet<<message;
         Network::sendTcpPacket(packet);
-        std::vector<Entity*> monsters = World::getEntities("E_MONSTER");
-        hero->setIsMovingFromKeyboard(false);
     }
     bool MyAppli::mouseInside (sf::Vector2f mousePos) {
         BoundingBox bx (0, 0, 0, 100, 100, 0);
@@ -161,6 +121,10 @@ namespace sorrok {
     void MyAppli::onInit () {
         FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
         Network::startCli(10'000, 10'001,sf::IpAddress::LocalHost);
+        SymEncPacket packet;
+        packet<<"CONNECT";
+        Network::sendTcpPacket(packet);
+        Network::waitForLastResponse("CONNECTED", sf::seconds(20.f));
         TextureManager<> &tm = cache.resourceManager<Texture, std::string>("TextureManager");
         Vec2f pos (getView().getPosition().x - getView().getSize().x * 0.5f, getView().getPosition().y - getView().getSize().y * 0.5f);
         BoundingBox bx (pos.x, pos.y, 0, getView().getSize().x, getView().getSize().y, 0);
@@ -189,7 +153,7 @@ namespace sorrok {
         walls[3]->getFaces()[0]->getMaterial().setTexId("WALLS");
         walls[4]->getFaces()[0]->getMaterial().setTexId("WALLS");
         walls[5]->getFaces()[0]->getMaterial().setTexId("WALLS");
-        SymEncPacket packet;
+        packet.clear();
         packet<<"GETMAPINFOS";
         Network::sendTcpPacket(packet);
         std::string response = Network::waitForLastResponse("MAPINFOS", sf::seconds(20.f));
@@ -399,8 +363,8 @@ namespace sorrok {
         World::addEntity(light2);
         ZSortingRenderComponent *frc1 = new ZSortingRenderComponent(getRenderWindow(),0, "E_BIGTILE");
         ShadowRenderComponent *frc2 = new ShadowRenderComponent(getRenderWindow(),1, "E_WALL+E_DECOR");
-        /*OITRenderComponent* frc3 = new OITRenderComponent(getRenderWindow(),2,"E_WALL+E_DECOR");
-        LightRenderComponent* frc4 = new LightRenderComponent(getRenderWindow(),3,"E_WALL+E_DECOR+E_PONCTUAL_LIGHT");*/
+        OITRenderComponent* frc3 = new OITRenderComponent(getRenderWindow(),2,"E_WALL+E_DECOR");
+        LightRenderComponent* frc4 = new LightRenderComponent(getRenderWindow(),3,"E_WALL+E_DECOR+E_PONCTUAL_LIGHT");
         /*View view = getView();
         frc1->setView(view);*/
         /*frc2->setView(view);
@@ -416,13 +380,13 @@ namespace sorrok {
         frc4->setRelSize(1.f, 1.f);*/
         getRenderComponentManager().addComponent(frc1);
         getRenderComponentManager().addComponent(frc2);
-        /*getRenderComponentManager().addComponent(frc3);
-        getRenderComponentManager().addComponent(frc4);*/
+        getRenderComponentManager().addComponent(frc3);
+        getRenderComponentManager().addComponent(frc4);
         //getView().move(d.x * 0.5f, d.y * 0.5f, 0);
         //World::computeIntersectionsWithWalls();
         //World::update();
         //World::computeIntersectionsWithWalls();
-        /*Action a1 (Action::EVENT_TYPE::KEY_HELD_DOWN, sf::Keyboard::Key::Z);
+        Action a1 (Action::EVENT_TYPE::KEY_HELD_DOWN, sf::Keyboard::Key::Z);
         Action a2 (Action::EVENT_TYPE::KEY_HELD_DOWN, sf::Keyboard::Key::Q);
         Action a3 (Action::EVENT_TYPE::KEY_HELD_DOWN, sf::Keyboard::Key::S);
         Action a4 (Action::EVENT_TYPE::KEY_HELD_DOWN, sf::Keyboard::Key::D);
@@ -441,21 +405,18 @@ namespace sorrok {
         hero->getClkTransfertTime().restart();
         getClock("RequestTime").restart();
         Network::sendTcpPacket(packet);
-        received = false;*/
-        wResuHero = new RenderWindow (sf::VideoMode(400, 300), "Create ODFAEG Application", sf::Style::Titlebar, sf::ContextSettings(24, 0, 4, 3, 0));
-        View wView = wResuHero->getDefaultView();
-        wView.setCenter(Vec3f(wResuHero->getSize().x * 0.5f, wResuHero->getSize().y * 0.5f, 0));
-        wResuHero->setView(wView);
-        /*label = new gui::Label(*wResuHero, Vec3f(0, 0, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"5");
+        received = false;
+        wResuHero = new RenderWindow (sf::VideoMode(400, 300), "Create ODFAEG Application", sf::Style::Titlebar, sf::ContextSettings(0, 0, 4, 3, 0));
+        label = new gui::Label(*wResuHero, Vec3f(0, 0, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"5");
         getRenderComponentManager().addComponent(label);
         button = new gui::Button(Vec3f(0, 200, 0), Vec3f(400, 100, 0), fm.getResourceByAlias(Fonts::Serif),"Respawn", *wResuHero);
         getRenderComponentManager().addComponent(button);
         button->setEventContextActivated(false);
-        button->addActionListener(this);*/
+        button->addActionListener(this);
         wResuHero->setVisible(false);
         wResuHero->setPosition(sf::Vector2i(500, 400));
         World::update();
-        //addWindow(wResuHero);
+        addWindow(wResuHero);
         /*wIdentification = new RenderWindow(sf::VideoMode(400, 300), "Identification", sf::Style::Titlebar, sf::ContextSettings(24, 0, 4, 3, 0));
         View iView = wIdentification->getDefaultView();
         iView.setCenter(Vec3f(wIdentification->getSize().x * 0.5f, wIdentification->getSize().y * 0.5f, 0));
@@ -475,7 +436,7 @@ namespace sorrok {
         getRenderComponentManager().addComponent(invButton);
         invButton->addActionListener(this);
         idButton->addActionListener(this);
-        wIdentification->setVisible(false);
+        wIdentification->setVisible(false);*/
         hpBar = new gui::ProgressBar(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(100, 10, 0));
         hpBar->setMaximum(100);
         hpBar->setMinimum(0);
@@ -485,7 +446,7 @@ namespace sorrok {
         xpBar->setMinimum(0);
         xpBar->setValue(0);
         getRenderComponentManager().addComponent(hpBar);
-        getRenderComponentManager().addComponent(xpBar);*/
+        getRenderComponentManager().addComponent(xpBar);
         //setEventContextActivated(false);*/
     }
     void MyAppli::onRender(RenderComponentManager *cm) {
@@ -493,8 +454,8 @@ namespace sorrok {
         //if (isClientAuthentified) {
             World::drawOnComponents("E_BIGTILE", 0);
             World::drawOnComponents("E_WALL+E_DECOR", 1);
-            /*World::drawOnComponents("E_WALL+E_DECOR", 2);
-            World::drawOnComponents("E_WALL+E_DECOR+E_PONCTUAL_LIGHT", 3);*/
+            World::drawOnComponents("E_WALL+E_DECOR", 2);
+            World::drawOnComponents("E_WALL+E_DECOR+E_PONCTUAL_LIGHT", 3);
         /*} else {
             World::drawOnComponents("", 0);
             World::drawOnComponents("", 1);
@@ -510,13 +471,13 @@ namespace sorrok {
             stop();
         }
         if (event.type == sf::Event::KeyPressed && window == &getRenderWindow()) {
-            previousKey = actualKey;
-            actualKey = event.key.code;
             getListener().setCommandSlotParams("MoveAction", this, event.key.code);
         }
-        if (event.type == sf::Event::KeyReleased && hero->isMovingFromKeyboard() && window == &getRenderWindow()) {
-            hero->setMoving(false);
-            hero->setIsMovingFromKeyboard(false);
+        if (event.type == sf::Event::KeyReleased &&
+            (event.key.code == sf::Keyboard::Key::Z || event.key.code == sf::Keyboard::Key::Q
+            || event.key.code == sf::Keyboard::Key::S || event.key.code == sf::Keyboard::Key::D)
+            && hero->isMovingFromKeyboard() && window == &getRenderWindow()) {
+            std::cout<<"stop car moving : "<<event.key.code<<std::endl;
             previousKey = event.key.code;
             actualKey = sf::Keyboard::Key::Unknown;
             sf::Int64 cli_time = Application::getTimeClk().getElapsedTime().asMicroseconds();
@@ -532,7 +493,7 @@ namespace sorrok {
         }
     }
     void MyAppli::onExec () {
-        /*if (getClock("RequestTime").getElapsedTime().asSeconds() >= timeBtwnTwoReq.asSeconds()) {
+        if (getClock("RequestTime").getElapsedTime().asSeconds() >= timeBtwnTwoReq.asSeconds()) {
             std::string request = "GETCARPOS";
             sf::Packet packet;
             packet<<request;
@@ -540,12 +501,28 @@ namespace sorrok {
             getClock("RequestTime").restart();
         }
         std::string response;
+        if (Network::getResponse("MOVEFROMKEYBOARD", response)) {
+            std::cout<<"move from kb"<<std::endl;
+            hero->setIsMovingFromKeyboard(true);
+            hero->setMoving(true);
+            if (hero->isAttacking())
+                hero->setAttacking(false);
+            hero->setFightingMode(false);
+            std::string request = "GETCARPOS";
+            sf::Packet packet;
+            packet<<request;
+            Network::sendUdpPacket(packet);
+            getClock("RequestTime").restart();
+        }
         if (Network::getResponse("NEWPATH", response)) {
             std::vector<std::string> infos = split(response, "*");
             std::vector<Vec2f> path;
             int size = conversionStringInt(infos[0]);
             int id = conversionStringInt(infos[1]);
             Caracter* caracter = static_cast<Caracter*>(World::getEntity(id));
+            if (static_cast<Hero*>(caracter) && static_cast<Hero*>(caracter)->isMovingFromKeyboard()) {
+                caracter->setIsMovingFromKeyboard(false);
+            }
             Vec2f actualPos (conversionStringFloat(infos[2]), conversionStringFloat(infos[3]));
             sf::Int64 last_cli_time = conversionStringLong(infos[4]);
             sf::Int64 elapsedTime = Application::getTimeClk().getElapsedTime().asMicroseconds() - last_cli_time;
@@ -553,6 +530,7 @@ namespace sorrok {
             caracter->setFightingMode(isInFightingMode);
             if (caracter->isAttacking())
                 caracter->setAttacking(false);
+            caracter->setFightingMode(false);
             Vec2f newPos = Computer::getPosOnPathFromTime(actualPos, caracter->getPath(),elapsedTime,caracter->getSpeed());
             for (int i = 0; i < size; i++) {
                 path.push_back(Vec2f(conversionStringFloat(infos[i*2+6]), conversionStringFloat(infos[i*2+7])));
@@ -577,6 +555,11 @@ namespace sorrok {
             caracter->interpolation.first = caracter->getCenter();
             caracter->interpolation.second = Computer::getPosOnPathFromTime(caracter->interpolation.first, caracter->getPath(),ping + timeBtwnTwoReq.asMicroseconds(),caracter->getSpeed());
             caracter->getClkTransfertTime().restart();
+            std::string request = "GETCARPOS";
+            sf::Packet packet;
+            packet<<request;
+            Network::sendUdpPacket(packet);
+            getClock("RequestTime").restart();
         }
         if (Network::getResponse("NEWPOS", response)) {
             std::vector<std::string> infos = split(response, "*");
@@ -591,11 +574,22 @@ namespace sorrok {
             bool isInFightingMode = conversionStringInt(infos[6]);
             bool isAttacking = conversionStringInt(infos[7]);
             bool isAlive = conversionStringInt(infos[8]);
-            caracter->setMoving(isMoving);
-            caracter->setFightingMode(isInFightingMode);
-            caracter->setAttacking(isAttacking);
-            caracter->setAlive(isAlive);
-            if (static_cast<Hero*> (caracter) && static_cast<Hero*>(caracter)->isMovingFromKeyboard()) {
+            //if (last_cli_time < caracter->getAttribute("isMoving").getValue<sf::Int64>()) {
+                caracter->setMoving(isMoving);
+            //}
+            //if (last_cli_time < caracter->getAttribute("isInFightingMode").getValue<sf::Int64>()) {
+                caracter->setFightingMode(isInFightingMode);
+            //}
+            //if(last_cli_time < caracter->getAttribute("isAttacking").getValue<sf::Int64>()) {
+                caracter->setAttacking(isAttacking);
+            //}
+            //if (last_cli_time < caracter->getAttribute("isAlive").getValue<sf::Int64>()) {
+                caracter->setAlive(isAlive);
+            //}
+            if (!caracter->isMoving() && static_cast<Hero*>(caracter)->isMovingFromKeyboard()) {
+                static_cast<Hero*>(caracter)->setIsMovingFromKeyboard(false);
+            }
+            if (static_cast<Hero*> (caracter) && static_cast<Hero*>(caracter)->isMovingFromKeyboard() && caracter->isMoving()) {
                 newPos = newPos + Vec3f(caracter->getDir().x, caracter->getDir().y, 0) * caracter->getSpeed() * elapsedTime;
             } else if (caracter->isMoving()) {
                 newPos = Computer::getPosOnPathFromTime(newPos, caracter->getPath(),elapsedTime, caracter->getSpeed());
@@ -626,6 +620,25 @@ namespace sorrok {
             }
             caracter->getClkTransfertTime().restart();
        }
+       if (Network::getResponse("DEATH", response)) {
+           int id = conversionStringInt(response);
+           Caracter* caracter = static_cast<Caracter*>(World::getEntity(id));
+           caracter->setAttacking(false);
+           caracter->setFightingMode(false);
+           caracter->setAlive(false);
+       }
+       if (Network::getResponse("ENTERINFIGHTINGMODE", response)) {
+            int id = conversionStringInt(response);
+            Entity* entity = World::getEntity(id);
+            if (static_cast<Caracter*> (entity))
+                static_cast<Caracter*> (entity)->setFightingMode(true);
+       }
+       if (Network::getResponse("SETATTACKING", response)) {
+            int id = conversionStringInt(response);
+            Entity* entity = World::getEntity(id);
+            if (static_cast<Caracter*> (entity))
+                static_cast<Caracter*> (entity)->setAttacking(true);
+       }
        if (Network::getResponse("DMG", response)) {
             std::vector<std::string> infos = split(response, "*");
             std::vector<int> damages;
@@ -636,6 +649,36 @@ namespace sorrok {
             }
             Caracter* caracter = static_cast<Caracter*>(World::getEntity(id));
             caracter->setDamages(damages);
+       }
+       if (Network::getResponse("ALIVE", response)) {
+            std::vector<std::string> infos = split(response, "*");
+            int id = conversionStringInt(infos[0]);
+            Vec3f center(conversionStringFloat(infos[1]), conversionStringFloat(infos[2]), conversionStringFloat(infos[2]));
+            Caracter* caracter = static_cast<Caracter*>(World::getEntity(id));
+            if (caracter->getType() == "E_HERO") {
+                wResuHero->setVisible(false);
+                setEventContextActivated(true);
+            }
+            caracter->setCenter(center);
+            caracter->setMoving(false);
+            caracter->setFightingMode(false);
+            caracter->setAttacking(false);
+            caracter->setAlive(true);
+       }
+       if (Network::getResponse("ATTACK", response)) {
+            Caracter* monster = static_cast<Caracter*>(World::getEntity(conversionStringInt(response)));
+            hero->setFocusedCaracter(monster);
+            hero->setFightingMode(true);
+            hero->setAttacking(false);
+            hero->setMoving(false);
+        }
+        if (Network::getResponse("IDOK", response)) {
+            std::cout<<"client authentified"<<std::endl;
+            isClientAuthentified = true;
+            wIdentification->setVisible(false);
+            idButton->setEventContextActivated(false);
+            invButton->setEventContextActivated(false);
+            setEventContextActivated(true);
        }
        if (getClock("LoopTime").getElapsedTime().asMilliseconds() < 100)
             sf::sleep(sf::milliseconds(100 - getClock("LoopTime").getElapsedTime().asMilliseconds()));
@@ -708,13 +751,10 @@ namespace sorrok {
                         caracter->getFocusedCaracter()->setFightingMode(true);
                         caracter->getFocusedCaracter()->setFocusedCaracter(caracter);
                     }
-                    if (!caracter->isAttacking()) {
-                        caracter->setAttacking(true);
-                        World::update();
-                    }
                     Vec2f dir = Vec2f(caracter->getFocusedCaracter()->getCenter().x, caracter->getFocusedCaracter()->getCenter().y) - Vec2f(caracter->getCenter().x, caracter->getCenter().y);
                     dir = dir.normalize();
-                    caracter->setDir(dir);
+                    if (caracter->getDir() != dir)
+                        caracter->setDir(dir);
                     if (caracter->getTimeOfLastAttack().asSeconds() >= caracter->getAttackSpeed()) {
                         caracter->restartAttackSpeed();
                         std::vector<int> damages;
@@ -732,26 +772,30 @@ namespace sorrok {
                         }
                         if (!caracter->getDamages().empty()) {
                             int dmg = caracter->getDamages().back();
-                            std::cout<<"dmg : "<<dmg<<std::endl;
                             caracter->getDamages().pop_back();
-                            caracter->getFocusedCaracter()->attackFocusedCaracter(dmg, hpBar, xpBar);
+                            caracter->attackFocusedCaracter(dmg, hpBar, xpBar);
                         }
-
+                        if (!caracter->getFocusedCaracter()->isAlive()) {
+                            caracter->setAttacking(false);
+                            caracter->setFightingMode(false);
+                        }
                     }
                 } else {
                     if (caracter->isAttacking())
                         caracter->setAttacking(false);
                 }
-            } else if (caracter == hero) {
-                setEventContextActivated(false);
-                wResuHero->setVisible(true);
-                float time = hero->getTimeBeforeLastRespawn().asSeconds() - hero->getTimeSinceLastRespawn().asSeconds();
-                if (time < 0) {
-                    time = 0;
-                }
-                label->setText(conversionIntString(time));
-                if (hero->getTimeSinceLastRespawn() >= hero->getTimeBeforeLastRespawn()) {
-                    button->setEventContextActivated(true);
+            } else {
+                if (caracter == hero) {
+                    setEventContextActivated(false);
+                    wResuHero->setVisible(true);
+                    int time = Math::roundToInt(hero->getTimeBeforeLastRespawn().asSeconds() - hero->getTimeSinceLastRespawn().asSeconds());
+                    if (time < 0) {
+                        time = 0;
+                    }
+                    label->setText(conversionIntString(time));
+                    if (time <= 0) {
+                        button->setEventContextActivated(true);
+                    }
                 }
             }
             if (!caracter->isInFightingMode() && !caracter->isMoving()) {
@@ -767,58 +811,23 @@ namespace sorrok {
                         }
                         caracter->setRegen(regen);
                     }
-                    if (!caracter->getRegen().empty() && caracter->getTimeOfLastHpRegen().asSeconds() >= caracter->getRegenHpSpeed()) {
-                        caracter->restartRegenHP();
-                        int rgn = caracter->getRegen().back();
-                        std::cout<<"régèn : "<<rgn<<std::endl;
-                        caracter->getRegen().pop_back();
-                        if (caracter->getLife() + rgn >= caracter->getMaxLife()) {
-                            caracter->setLife(caracter->getMaxLife());
-                        } else {
-                            caracter->setLife(caracter->getLife() + rgn);
-                        }
+                }
+                if (!caracter->getRegen().empty() && caracter->getTimeOfLastHpRegen().asSeconds() >= caracter->getRegenHpSpeed()) {
+                    caracter->restartRegenHP();
+                    int rgn = caracter->getRegen().back();
+                    std::cout<<"régèn : "<<rgn<<std::endl;
+                    caracter->getRegen().pop_back();
+                    if (caracter->getLife() + rgn >= caracter->getMaxLife()) {
+                        caracter->setLife(caracter->getMaxLife());
+                    } else {
+                        caracter->setLife(caracter->getLife() + rgn);
                     }
                 }
             }
         }
-        if (Network::getResponse("ATTACK", response)) {
-            Caracter* monster = static_cast<Caracter*>(World::getEntity(conversionStringInt(response)));
-            hero->setFocusedCaracter(monster);
-            hero->setFightingMode(true);
-            hero->setAttacking(false);
-            hero->setMoving(false);
-        }
-        if (Network::getResponse("ALIVE", response)) {
-            std::vector<std::string> infos = split(response, "*");
-            int id = conversionStringInt(infos[0]);
-            Vec3f center(conversionStringFloat(infos[1]), conversionStringFloat(infos[2]), conversionStringFloat(infos[2]));
-            Caracter* caracter = static_cast<Caracter*>(World::getEntity(id));
-            caracter->setCenter(center);
-            caracter->setMoving(false);
-            caracter->setFightingMode(false);
-            caracter->setAttacking(false);
-            caracter->setAlive(true);
-        }
-        if (Network::getResponse("IDOK", response)) {
-            std::cout<<"client authentified"<<std::endl;
-            isClientAuthentified = true;
-            wIdentification->setVisible(false);
-            idButton->setEventContextActivated(false);
-            invButton->setEventContextActivated(false);
-            setEventContextActivated(true);
-        }*/
     }
     void MyAppli::actionPerformed(gui::Button* item) {
         if (item->getText() == "Respawn") {
-            wResuHero->setVisible(false);
-            setEventContextActivated(true);
-            hero->setAlive(true);
-            hero->setMoving(false);
-            hero->setIsMovingFromKeyboard(false);
-            hero->setAttacking(false);
-            hero->setFightingMode(false);
-            hero->restartRespawn();
-            button->setEventContextActivated(false);
             SymEncPacket packet;
             std::string message = "ALIVE*"+conversionIntString(hero->getId());
             packet<<message;

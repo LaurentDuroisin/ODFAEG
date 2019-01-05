@@ -19,7 +19,7 @@
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 #include "export.hpp"
-#include "bigInt.hpp"
+#include <gmpxx.h>
 /**
   *\namespace odfaeg
   * the namespace of the Opensource Development Framework Adapted for Every Games.
@@ -37,10 +37,10 @@ namespace odfaeg {
           */
             public :
                 Rsa();
-                unsigned char* encryptWithPbKey(const unsigned char* data, std::size_t dataSize, std::size_t& newSize);
-                unsigned char* decryptWithPrKey(const unsigned char* data, std::size_t dataSize, std::size_t& newSize);
-                unsigned char* encryptWithPrKey(const unsigned char* data, std::size_t dataSize, std::size_t& newSize);
-                unsigned char* decryptWithPbKey(const unsigned char* data, std::size_t dataSize, std::size_t& newSize);
+                const char* encryptWithPbKey(const char* data, std::size_t dataSize, std::size_t& newSize);
+                const char* decryptWithPrKey(const char* data, std::size_t dataSize, std::size_t& newSize);
+                const char* encryptWithPrKey(const char* data, std::size_t dataSize, std::size_t& newSize);
+                const char* decryptWithPbKey(const char* data, std::size_t dataSize, std::size_t& newSize);
                 std::string getCertificate();
                 void setCertificate(std::string certificate);
                 /**
@@ -128,7 +128,7 @@ namespace odfaeg {
                 RSA* keypair; /**> the keys.*/
                 X509 *x; /**> the certificate.*/
                 EVP_PKEY* evp_pkey; /**The envelop*/
-                BigInt e, d, n;
+                mpz_t e, d, n;
         };
     }
 }

@@ -1,0 +1,2 @@
+/usr/bin/ar cr ../../../lib/libodfaeg-audio-s-d.a  CMakeFiles/odfaeg-audio.dir/player.cpp.o CMakeFiles/odfaeg-audio.dir/stream.cpp.o CMakeFiles/odfaeg-audio.dir/SoundFile.cpp.o
+/usr/bin/ranlib ../../../lib/libodfaeg-audio-s-d.a
