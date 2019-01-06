@@ -60,8 +60,7 @@
       <li>Une liste d'entités.</li>
       <li>La liste des entités visibles dans la fenêtre de rendu.</li>
       <li>Un gestionnaire de composant.</li>
-      <li>La liste des entités visibles racines.</li>
-      <li>Ainsi que des shaders et textures de rendu qui vont servir à calculer la réfraction, les ombres et les lumières.</li>
+      <li>La liste des entités visibles racines.</li>      
       </ul>
       </p>
       
@@ -104,10 +103,6 @@
       <p>
       removeEntity : efface l'entité de la grille sans la libérer de la mémoire.<br/>
       deleteEntity : efface l'entité de la grille et libère l'entité de la mémoire.<br/>
-      getLightMap : récupère la tile de lumière, cette méthode prend en paramètre le type des entités de lumière à rendre <br/>
-      ainsi que les ids des composants pour lesquels calculer la lumière.<br/>
-      getShadowMap : même chose mais pour les ombres.<br/>
-      getReflectionMap : même chose mais pour les reflets.<br/>
       getVisibleEntities : récupère toutes les entités visible d'un certain type.<br/>
       moveEntity : déplace une entité de x, y et z unités.<br/>
       collide : test si une entité est en collision avec une autre, il y a trois version de cette méthode, la première<br/>
