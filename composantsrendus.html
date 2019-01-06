@@ -38,30 +38,16 @@
   <body>
     <h1>L`interet principal des composants de rendu.</h1>
     <p>
-      Dessiner sur la fenetre de rendu c`est bien mais ceci pose quelque soucis d`ordre, en effet, vous devez afficher<br/>
-      dans l`ordre les entites de la plus eloignee a la plus proche de la vue si vous dessiner des objets semi-transparent sinon<br/>
-      le blending ne se fera pas bien vu que le test de profondeur par defaut d`opengl ne tiens pas compte de la transparence lors<br/>
-      du blending alpha.<br/>
-      En 2D le tri ne pose pas de probleme par contre en 3D cela peut devenir une vraie calamite lorsque vos objets de croisent!<br/>
+      ODFAEG possède plusieurs composants de rendu, certains permettent de dessiner des types d'entités de manière différentes, d'autres 
+      permettent de dessiner un effet (une lumière par exemple) à l'aide des entités que leurs sont fournis.
+      Voici une présentation des différents type de composants de rendu géré par ODFAEG actuellement :
+      ZSortingRenderComponent : dessine de l'entité la plus éloignée vers l'entité la plus proche.
+      OITRenderComponent : dessine les entités dans n'importe quel ordre tout en gérant la transparence.
+      LightRenderComponent : dessine des lumières en fonction des entités qui lui sont fournies.
+      ShadowRenderComponent : dessine des ombres en fonction des entités qui lui sont fournies.
       </p>
       <p>
-      Heureusement, les composants de rendus de ODFAEG possedent des shaders!<br/>
-      Les shaders des composants de rendu de ODFAEG permettent de pouvoir dessiner les objets sur les composants dans n`importe<br/>
-      quel ordre en appliquant le blending alpha correctement par rapport a la profondeur des objets deja dessines!<br/>
-      Ceci a un fameux cout sur le FPS par contre, mais ce cout sera fortement reduit des la sortie des nouvelles cartes <br/>
-      graphique et de l`appi "VULKAN"!<br/>
-      <p>
-      Les shaders des composants de rendu permettent egalement de generer un tas d`informations necessaires qui seront utilisee pour<br/> 
-      le calcul de la lumiere, des ombres et de la refraction dans le gestionnaire d`entite par defaut de ODFAEG!<br/>
-   
-      La classe odfaeg::graphic::FastRenderComponent (que je vais renommé en RenderComponent d'ailleurs) permet de créer des composants<br/> 
-      de rendu, ceux-ci possèdent plusieurs textures de rendus utiles comme par exemple, une depthmap, le framebuffer, une texture de<br/>
-      réfraction et une bumpmap. Ces textures contiennent différentes informations au niveau de chaque fragment qui sont<br/>
-      utilisée par le gestionnaire d'entités par défaut afin de calculer la lumière, la réfraction et les ombres sur chaque objets.<br/>
-      On peut récupérer ses différentes textures et les afficher au moyen d'une tile avec des méthodes tel que getDepthBufferTile par exemple.<br/>
-      Vous aurez alors une image bleutée représentant la hauteur de chaque objets, le bleu plus foncé étant les objets les plus proche de la caméra.<br/>
-      En 2D ce sont donc les objets les plus haut, et en 3D les objets les plus proches.<br/>
-      </p>
+      <br/>      
       
       <h1>Créer des composants de rendus et les ajouter à la scene.</h1>
       <p>
@@ -74,10 +60,12 @@
        de type décors et murs sur les composants.<br/>
        "*-E_CARACTER" va dessiner toutes les entités sauf celles de type E_CARACTER.<br/>
        Bref vous l'avez compris, ceci n'est pas du tout compliqué à définir.<br/>
-       Le dernier paramètre facultatif indique si on veut utiliser un thread pour le rendu des composants.<br/>
-       </p>
+       Pour ajouté un composant de rendu il faut appelé la méthode addComponent de la classe RendercomponentManager comme ceci :
+        ZSortingRenderComponent *frc1 = new ZSortingRenderComponent(getRenderWindow(),0, "E_BIGTILE");
+        //Création du composant de rendu.
+        getRenderComponentManager().addComponent(frc1); 
+        //Récupère le gestionnaire des composants de rendu de l'application et ajoute le composant.
        <p>
-       Mais pour que le framework dessine les composants il faut les ajouter aux gestionnaires de composants de l'application!<br/>
        Le gestionnaire de composant va se charger de dessiner tout les composants sur la fenêtre de rendu, et va, également, <br/>
        traiter tout les événements interne liés au composant comme par exemple le rafraichissement des composants!<br/>
        
@@ -93,9 +81,20 @@
       recherche toutes les entités qui sont visibles sur la fenêtre de rendu!<br/>
       
       Vous n'êtes donc pas obligé de dessiner directement sur les composants de rendu et utiliser la méthode World::getVisibleEntities("expression")<br/>
-      mais ceci est conseillé si vous ne voulez pas vous embêter avec la semi-transparence, le calcul des normales, etc...<br/>
-      
+      mais ceci est déconseillé si vous ne voulez pas vous embêter avec la semi-transparence, le calcul des normales, etc...<br/>
+    <p>Les différents type de composants</p>
+    ZSortingOrdercomponent : dessine toutes les entités de la plus éloignée à la plus proche, ce composant récupère les sommets <br/>
+    de toutes les entités, les transformes et dessine tout en une fois, ça à l'avantage d'être rapide par contre ça ne fonctionnera <br/>
+    pas si vos entités utilisent des textures différentes, vous aurez églament des problèmes avec la transparence si les entités s'entre </br>
+    croisent. Si vous être dans l'un de ces deux cas là utiliser OITRenderComponent. <br/>
+    Ce composant est bien pour dessiner un sol par exemple. (A condition d'utiliser la même texture pour dessiner tout le sol) <br/>
+    OITRendercomponent : dessine les entités une par une en gérant la transparence, le problème de ce composant de rendu c'est qu'il est<br/>
+    lent. Il ne faut donc pas dessiner trop de choses dessus, ce composants est utiles pour dessiner des décors par exemple ou <br/>
+  la texture serait trop grande si l'on dessinait toute les images de tout les décors sur la même texture. <br/>
       Voila, pas besoin d'en dire plus à propos des composants de rendu, maintenant vous savez ce qu'ils permettent de faire!<br/>
+      ShadowRenderComponent : il vous faut passer toutes les entités pour lesquelles vous souhaiter dessiner les ombres.<br/>
+      LightRendercomponent : il vous faut passer toutes les entités qui sont des lumières, si vous passer des autres entités,<br/>
+      les normales seront calculées et si l'entité se trouve devant la lumière elle cachera la lumière.<br/>
       </p>
   
   </body>
