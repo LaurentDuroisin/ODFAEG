@@ -19,8 +19,6 @@ namespace sorrok {
         isClientAuthentified = true;
     }
     void MyAppli::keyHeldDown (sf::Keyboard::Key key) {
-        previousKey = actualKey;
-        actualKey = key;
         //BoundingRectangle rect (pos.x, pos.y, getView().getSize().x, getView().getSize().y);
         if (actualKey != sf::Keyboard::Key::Unknown && key == sf::Keyboard::Key::Z) {
             if (!hero->isMoving()) {
@@ -470,7 +468,12 @@ namespace sorrok {
             Network::stopCli();
             stop();
         }
-        if (event.type == sf::Event::KeyPressed && window == &getRenderWindow()) {
+        if (event.type == sf::Event::KeyPressed && window == &getRenderWindow() &&
+            (event.key.code == sf::Keyboard::Key::Z || event.key.code == sf::Keyboard::Key::Q
+            || event.key.code == sf::Keyboard::Key::S || event.key.code == sf::Keyboard::Key::D)
+            && window == &getRenderWindow()) {
+            previousKey = actualKey;
+            actualKey = event.key.code;
             getListener().setCommandSlotParams("MoveAction", this, event.key.code);
         }
         if (event.type == sf::Event::KeyReleased &&
@@ -697,10 +700,12 @@ namespace sorrok {
                             newPos = actualPos;
                         }
                         for (unsigned int i = 0; i < getRenderComponentManager().getNbComponents(); i++) {
-                            View view = getRenderComponentManager().getRenderComponent(i)->getView();
-                            Vec3f d = newPos - view.getPosition();
-                            view.move(d.x, d.y, d.y);
-                            getRenderComponentManager().getRenderComponent(i)->setView(view);
+                            if (getRenderComponentManager().getRenderComponent(i) != nullptr) {
+                                View view = getRenderComponentManager().getRenderComponent(i)->getView();
+                                Vec3f d = newPos - view.getPosition();
+                                view.move(d.x, d.y, d.y);
+                                getRenderComponentManager().getRenderComponent(i)->setView(view);
+                            }
                         }
                         Vec3f d = newPos - actualPos;
                         World::moveEntity(caracter, d.x, d.y, d.y);

@@ -351,7 +351,7 @@ namespace sorrok {
             Caracter* caracter = static_cast<Caracter*>(caracters[i]);
             if (caracter->isAlive()) {
                 if (caracter->isMoving()) {
-                    if (dynamic_cast<Hero*>(caracter) && static_cast<Hero*>(caracter)->isMovingFromKeyboard()) {
+                    if (dynamic_cast<Hero*>(caracter) != nullptr && static_cast<Hero*>(caracter)->isMovingFromKeyboard()) {
                         sf::Int64 elapsedTime = getClock("LoopTime").getElapsedTime().asMicroseconds();
                         Vec3f actualPos = Vec3f(caracter->getCenter().x, caracter->getCenter().y, 0);
                         Vec3f newPos = actualPos + Vec3f(caracter->getDir().x, caracter->getDir().y, 0) * caracter->getSpeed() * elapsedTime;
