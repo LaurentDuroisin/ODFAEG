@@ -271,7 +271,7 @@ namespace odfaeg {
             frontBufferTile->setCenter(view.getPosition());
             frameBuffer->draw(*frontBufferTile, currentStates);
             currentStates.shader=frameBufferGenerator.get();
-            currentStates.blendMode=sf::BlendMode(sf::BlendMode::Factor::OneMinusDstAlpha, sf::BlendMode::Factor::One);
+            currentStates.blendMode=sf::BlendMode(sf::BlendMode::Factor::OneMinusDstAlpha, sf::BlendMode::Factor::DstAlpha, sf::BlendMode::Equation::Add, sf::BlendMode::Factor::OneMinusDstAlpha, sf::BlendMode::Factor::One, sf::BlendMode::Equation::Add);
             for (unsigned int i = 0; i < m_instances.size(); i++) {
                 if (m_instances[i].getMaterial().getTexture() == nullptr)
                     frameBufferGenerator->setParameter("haveTexture", 0);
