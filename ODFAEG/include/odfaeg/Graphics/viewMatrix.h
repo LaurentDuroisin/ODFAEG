@@ -81,6 +81,7 @@ namespace odfaeg {
             }
             void setAxis(math::Vec3f left,  math::Vec3f up,  math::Vec3f forward);
             void setRotation(float angle);
+            void combine(math::Matrix4f other);
         };
     }
 }

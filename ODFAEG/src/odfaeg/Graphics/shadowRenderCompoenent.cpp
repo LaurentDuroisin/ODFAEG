@@ -54,11 +54,10 @@ namespace odfaeg {
                     const std::string perPixShadowVertexShader =
                         "#version 130 \n"
                         "uniform mat4 depthBiasMatrix;"
-                        "uniform mat4 shadowProjMat;"
                         "out vec4 shadowCoords;"
                         "out mat4 projMat;"
                         "void main () {"
-                            "gl_Position = gl_ProjectionMatrix * shadowProjMat * gl_ModelViewMatrix * gl_Vertex;"
+                            "gl_Position = gl_ProjectionMatrix * gl_Vertex;"
                             "gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;"
                             "gl_FrontColor = gl_Color;"
                             "projMat = gl_ProjectionMatrix;"
@@ -81,7 +80,7 @@ namespace odfaeg {
                         "   vec4 stencil = texture2D (stencilBuffer, shadowCoords.xy);"
                         "   float z = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
                         "   colors[1] = vec4 (0, 0, 0, color);"
-                        "   colors[0] = vec4 (1, 1, 1, 1);"
+                        "   colors[0] = vec4 (0.5, 0.5, 0.5, 0.5);"
                         "   b = (stencil.z < z);"
                         "   vec4 visibility = colors[int(b)];"
                         "   gl_FragColor = visibility;"
@@ -132,14 +131,14 @@ namespace odfaeg {
                 math::Matrix4f depthBiasMatrix = biasMatrix * view.getViewMatrix().getMatrix() * view.getProjMatrix().getMatrix();
                 perPixShadowShader->setParameter("depthBiasMatrix", depthBiasMatrix.transpose());
                 states.shader = perPixShadowShader.get();
-                for (unsigned int i = 0; i < m_instances.size(); i++) {
-                    states.texture = m_instances[i].getMaterial().getTexture();
-                    if (m_instances[i].getMaterial().getTexture() != nullptr) {
+                for (unsigned int i = 0; i < m_shadow_instances.size(); i++) {
+                    states.texture = m_shadow_instances[i].getMaterial().getTexture();
+                    if (m_shadow_instances[i].getMaterial().getTexture() != nullptr) {
                         perPixShadowShader->setParameter("haveTexture", 1);
                     } else {
                         perPixShadowShader->setParameter("haveTexture", 0);
                     }
-                    for (unsigned int j = 0; j < m_instances[i].getVertexArrays().size(); j++) {
+                    /*for (unsigned int j = 0; j < m_instances[i].getVertexArrays().size(); j++) {
                         states.transform = m_instances[i].getTransforms()[j];
                         math::Vec3f shadowOrigin, shadowCenter, shadowScale(1.f, 1.f, 1.f), shadowRotationAxis;
                         float shadowRotationAngle = 0;
@@ -159,14 +158,14 @@ namespace odfaeg {
                         tm.update();
                         perPixShadowShader->setParameter("shadowProjMat", tm.getMatrix().transpose());
                         shadowMap->draw(m_instances[i].getVertexArrays()[j], states);
-                    }
+                    }*/
+                    shadowMap->draw(m_shadow_instances[i].getAllVertices(), states);
                 }
-                RectangleShape rect(size * 2.f);
+                /*RectangleShape rect(size * 2.f);
                 rect.setPosition(position - size * 0.5f);
                 rect.setFillColor(sf::Color(100, 100, 100, 128));
-                shadowMap->draw(rect);
+                shadowMap->draw(rect);*/
                 shadowMap->display();
-                shadowTile->setPosition(position);
             }
             std::vector<Entity*> ShadowRenderComponent::getEntities() {
                 return visibleEntities;
@@ -219,14 +218,32 @@ namespace odfaeg {
             {
 
                 batcher.clear();
+                shadowBatcher.clear();
                 for (unsigned int i = 0; i < vEntities.size(); i++) {
                     if ( vEntities[i]->isLeaf()) {
+                        Entity* entity = vEntities[i]->getParent();
+                        math::Vec3f shadowOrigin, shadowCenter, shadowScale(1.f, 1.f, 1.f), shadowRotationAxis;
+                        float shadowRotationAngle = 0;
+                        if (entity->isModel()) {
+                            shadowCenter = static_cast<Model*>(entity)->getShadowCenter();
+                            shadowScale = static_cast<Model*>(entity)->getShadowScale();
+                            shadowRotationAxis = static_cast<Model*>(entity)->getShadowRotationAxis();
+                            shadowRotationAngle = static_cast<Model*>(entity)->getShadowRotationAngle();
+                            shadowOrigin = static_cast<Model*>(entity)->getShadowOrigin();
+                        }
+                        TransformMatrix tm;
+                        tm.setOrigin(entity->getPosition());
+                        tm.setScale(shadowScale);
+                        tm.setRotation(shadowRotationAxis, shadowRotationAngle);
+                        tm.setTranslation(entity->getPosition() + shadowCenter);
                         for (unsigned int j = 0; j <  vEntities[i]->getFaces().size(); j++) {
                              batcher.addFace( vEntities[i]->getFaces()[j]);
+                             shadowBatcher.addShadowFace(vEntities[i]->getFaces()[j], view.getViewMatrix(), tm);
                         }
                     }
                 }
                 m_instances = batcher.getInstances();
+                m_shadow_instances = shadowBatcher.getInstances();
                 visibleEntities = vEntities;
                 update = true;
                 return true;

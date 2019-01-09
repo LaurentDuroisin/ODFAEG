@@ -320,6 +320,7 @@ namespace odfaeg {
             *
             */
             void addVertexArray(VertexArray va, TransformMatrix tm);
+            void addVertexShadowArray(VertexArray va, TransformMatrix tm, ViewMatrix viewMatrix, TransformMatrix shadowProjMatrix);
             void sortVertexArrays(View& view);
             /**
             * \fn std::vector<VertexArray*> getVertexArrays()
@@ -393,6 +394,7 @@ namespace odfaeg {
             * \param face : the face to add.
             */
             void addFace(Face* face);
+            void addShadowFace(Face* face, ViewMatrix viewMatrix, TransformMatrix shadowProjMatrix);
             /**
             * \fn std::vector<Instance*> getInstances()
             * \brief return the instances.

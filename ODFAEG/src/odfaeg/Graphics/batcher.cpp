@@ -175,6 +175,16 @@ namespace odfaeg {
                     vertices.append(v);
                 }
             }
+            void Instance::addVertexShadowArray (VertexArray va, TransformMatrix tm, ViewMatrix viewMatrix, TransformMatrix shadowProjMatrix) {
+                m_transforms.push_back(tm);
+                m_vertexArrays.push_back(va);
+                shadowProjMatrix.combine(viewMatrix.getMatrix());
+                shadowProjMatrix.combine(tm.getMatrix());
+                for (unsigned int i = 0; i < va.getVertexCount(); i++) {
+                    Vertex v (shadowProjMatrix.transform(math::Vec3f(va[i].position.x, va[i].position.y, va[i].position.z)), va[i].color, va[i].texCoords);
+                    vertices.append(v);
+                }
+            }
             void Instance::sortVertexArrays(View& view) {
                 vertices.clear();
                 std::multimap<float, VertexArray> sortedVA;
@@ -247,6 +257,21 @@ namespace odfaeg {
                 if (!added) {
                     Instance instance (face->getMaterial(), face->getVertexArray().getPrimitiveType());
                     instance.addVertexArray(face->getVertexArray(),face->getTransformMatrix());
+                    instances.push_back(instance);
+                }
+            }
+            void Batcher::addShadowFace(Face* face, ViewMatrix viewMatrix, TransformMatrix shadowProjMatrix) {
+                bool added = false;
+                for (unsigned int i = 0; i < instances.size() && !added; i++) {
+                    if (instances[i].getMaterial() == face->getMaterial()
+                        && instances[i].getPrimitiveType() == face->getVertexArray().getPrimitiveType()) {
+                            added = true;
+                            instances[i].addVertexShadowArray(face->getVertexArray(),face->getTransformMatrix(), viewMatrix, shadowProjMatrix);
+                    }
+                }
+                if (!added) {
+                    Instance instance (face->getMaterial(), face->getVertexArray().getPrimitiveType());
+                    instance.addVertexShadowArray(face->getVertexArray(),face->getTransformMatrix(), viewMatrix,shadowProjMatrix);
                     instances.push_back(instance);
                 }
             }

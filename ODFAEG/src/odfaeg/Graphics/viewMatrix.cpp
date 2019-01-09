@@ -224,6 +224,10 @@ namespace odfaeg {
             yAxis = left.cross(forward);
             zAxis = forward;
         }
+        void ViewMatrix::combine(math::Matrix4f other) {
+            update();
+            matrix4f =  matrix4f * other;
+        }
     }
 }
 
