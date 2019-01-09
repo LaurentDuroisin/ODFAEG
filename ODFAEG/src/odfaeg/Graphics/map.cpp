@@ -1128,7 +1128,7 @@ namespace odfaeg {
                                         states.blendMode = sf::BlendNone;
                                         normalMap->draw(heightMapTile, states);
                                         normalMap->display();
-                                        perPixLightingShader->setParameter("specularTexture", static_cast<OITRenderComponent*>(frcm->getRenderComponent(i))->getSpecularTexture());
+                                        //perPixLightingShader->setParameter("specularTexture", static_cast<OITRenderComponent*>(frcm->getRenderComponent(i))->getSpecularTexture());
                                         perPixLightingShader->setParameter("normalMap", normalMap->getTexture());
                                         perPixLightingShader->setParameter("bumpMap", static_cast<OITRenderComponent*>(frcm->getRenderComponent(i))->getBumpTexture());
                                         states.shader = perPixLightingShader.get();

@@ -10,7 +10,7 @@ namespace odfaeg {
         namespace gui {
             class Label : public LightComponent {
                 public :
-                Label (RenderWindow& window, math::Vec3f position, math::Vec3f size, const Font* font, std::string text);
+                Label (RenderWindow& window, math::Vec3f position, math::Vec3f size, const Font* font, std::string text, unsigned int charSize);
                 void clear();
                 void onDraw (RenderTarget& target, RenderStates states = RenderStates::Default);
                 void setBackgroundColor(sf::Color color);
@@ -18,7 +18,6 @@ namespace odfaeg {
                 void setForegroundColor(sf::Color color);
                 sf::Color getForegroundColor();
                 void onEventPushed(sf::Event event, RenderWindow& window);
-                void checkSubWindowEvents();
                 void setText(std::string text);
                 std::string getText();
                 bool isMouseInside();

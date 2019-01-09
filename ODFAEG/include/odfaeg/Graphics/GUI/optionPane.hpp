@@ -22,7 +22,6 @@ namespace odfaeg {
                 void onNoOption();
                 void onYesOption();
                 void onEnter();
-                void checkSubWindowEvents();
                 void onEventPushed(sf::Event event, RenderWindow& window);
                 ~OptionPane();
             private :

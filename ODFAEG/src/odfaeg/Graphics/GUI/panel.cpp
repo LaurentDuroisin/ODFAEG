@@ -16,6 +16,7 @@ namespace odfaeg {
                 getListener().connect("scrollXMove", cmd1);
                 core::Command cmd2(a, core::FastDelegate<bool>(&Panel::isOnYScroll, this),core::FastDelegate<void>(&Panel::moveYItems, this));
                 getListener().connect("scrollYMove", cmd2);
+                maxSize = math::Vec2f(0, 0);
             }
             bool Panel::isOnXScroll() {
                 math::Vec3f mousePos (sf::Mouse::getPosition(getWindow()).x, sf::Mouse::getPosition(getWindow()).y, 0);
@@ -38,28 +39,28 @@ namespace odfaeg {
                 return false;
             }
             void Panel::moveXItems() {
-                if (mouseDeltaX < 0 && vertScrollBar.getPosition().x - mouseDeltaX >= getPosition().x) {
+                if (mouseDeltaX > 0 && vertScrollBar.getPosition().x + vertScrollBar.getSize().x + mouseDeltaX <= getPosition().x + getSize().x - 10) {
                     vertScrollBar.move(math::Vec3f(mouseDeltaX, 0, 0));
                     for (unsigned int i = 0; i < children.size(); i++) {
-                        children[i]->move(math::Vec3f(-mouseDeltaX, 0, 0));
+                        children[i]->move(math::Vec3f(-(maxSize.x / (getSize().x - 10) * mouseDeltaX), 0, 0));
                     }
-                } else if (mouseDeltaX > 0 && vertScrollBar.getPosition().x + vertScrollBar.getSize().x + mouseDeltaX < getPosition().x + getSize().x) {
+                } else if (mouseDeltaX < 0 && vertScrollBar.getPosition().x +  mouseDeltaX >= getPosition().x) {
                     vertScrollBar.move(math::Vec3f(mouseDeltaX, 0, 0));
                     for (unsigned int i = 0; i < children.size(); i++) {
-                        children[i]->move(math::Vec3f(-mouseDeltaX, 0, 0));
+                        children[i]->move(math::Vec3f(-(maxSize.x / (getSize().x - 10) * mouseDeltaX), 0, 0));
                     }
                 }
             }
             void Panel::moveYItems() {
-                if (mouseDeltaY < 0 && horScrollBar.getPosition().y - mouseDeltaY >= getPosition().y) {
-                    horScrollBar.move(math::Vec3f(0, horScrollBar.getSize().y, 0));
+                if (mouseDeltaY > 0 && horScrollBar.getPosition().y + horScrollBar.getSize().y + mouseDeltaY <= getPosition().y + getSize().y - 10) {
+                    horScrollBar.move(math::Vec3f(0, mouseDeltaY, 0));
                     for (unsigned int i = 0; i < getChildren().size(); i++) {
-                        getChildren()[i]->move(math::Vec3f(0, -horScrollBar.getSize().y, 0));
+                        getChildren()[i]->move(math::Vec3f(0, -(maxSize.y / (getSize().y - 10) * mouseDeltaY), 0));
                     }
-                } else if (mouseDeltaY > 0 && horScrollBar.getPosition().y + horScrollBar.getSize().y + mouseDeltaY < getPosition().y + getSize().y) {
-                    horScrollBar.move(math::Vec3f(0, -horScrollBar.getSize().y, 0));
+                } else if (mouseDeltaY < 0 && horScrollBar.getPosition().y + mouseDeltaY >= getPosition().y) {
+                    horScrollBar.move(math::Vec3f(0, mouseDeltaY, 0));
                     for (unsigned int i = 0; i < getChildren().size(); i++) {
-                        getChildren()[i]->move(math::Vec3f(0, horScrollBar.getSize().y, 0));
+                        getChildren()[i]->move(math::Vec3f(0, -(maxSize.y / (getSize().y - 10) * mouseDeltaY), 0));
                     }
                 }
             }
@@ -67,17 +68,17 @@ namespace odfaeg {
                 maxSize = math::Vec3f(0, 0, 0);
                 std::vector<LightComponent*> children = getChildren();
                 for (unsigned int i = 0; i < children.size(); i++) {
-                    maxSize.y += children[i]->getSize().y;
-                    if (children[i]->getSize().x > maxSize.x)
-                        maxSize.x = children[i]->getSize().x;
+                    if (children[i]->getPosition().y + children[i]->getSize().y > maxSize.y)
+                        maxSize.y = children[i]->getPosition().y + children[i]->getSize().y;
+                    if (children[i]->getPosition().x + children[i]->getSize().x > maxSize.x)
+                        maxSize.x = children[i]->getPosition().x + children[i]->getSize().x;
                 }
                 if (maxSize.x > getSize().x || maxSize.y > getSize().y) {
                     corner = RectangleShape(math::Vec3f(10, 10, 0));
                     corner.setPosition(math::Vec3f(getPosition().x + getSize().x - 10, getPosition().y + getSize().y - 10, 0));
                 }
                 if (maxSize.x > getSize().x) {
-                    float factor = (getSize().x - 10) / maxSize.x;
-                    unsigned int scrollXSize = getSize().x * factor;
+                    unsigned int scrollXSize = (getSize().x - 10) / maxSize.x * (getSize().x - 10);
                     vertScrollBar = RectangleShape(math::Vec3f(scrollXSize, 10, 0));
                     vertScrollBar.setPosition(math::Vec3f(getPosition().x, getPosition().y + getSize().y - 10, 0));
                     scrollX = true;
@@ -85,50 +86,26 @@ namespace odfaeg {
                     scrollX = false;
                 }
                 if (maxSize.y > getSize().y) {
-                    float factor = (getSize().y - 10) / maxSize.y;
-                    std::cout<<getSize().y<<" "<<maxSize.y<<" "<<factor<<std::endl;
-                    unsigned int scrollYSize = getSize().y * factor;
+                    unsigned int scrollYSize = (getSize().y - 10) / maxSize.y * (getSize().y - 10);
                     horScrollBar = RectangleShape(math::Vec3f(10, scrollYSize, 0));
                     horScrollBar.setPosition(math::Vec3f(getPosition().x + getSize().x - 10, getPosition().y, 0));
-                    horScrollBar.setFillColor(sf::Color(128, 128, 128));
                     scrollY = true;
+                    if (getPosition().x == 400) {
+                        std::cout<<getSize()<<std::endl;
+                    }
                 } else {
                     scrollY = false;
                 }
             }
-            void Panel::addChild(LightComponent* component) {
-                LightComponent::addChild(component);
-                maxSize.y += component->getSize().y;
-                if (component->getSize().x > maxSize.x)
-                    maxSize.x = component->getSize().x;
-                if (maxSize.x > getSize().x || maxSize.y > getSize().y) {
-                    corner = RectangleShape(math::Vec3f(10, 10, 0));
-                    corner.setPosition(math::Vec3f(getPosition().x + getSize().x - 10, getPosition().y + getSize().y - 10, 0));
-                }
-                if (maxSize.x > getSize().x) {
-                    float factor = (getSize().x - 10) / maxSize.x;
-                    unsigned int scrollXSize = getSize().x * factor;
-                    vertScrollBar = RectangleShape(math::Vec3f(scrollXSize, 10, 0));
-                    vertScrollBar.setPosition(math::Vec3f(getPosition().x, getPosition().y + getSize().y - 10, 0));
-                    scrollX = true;
-                } else {
-                    scrollX = false;
-                }
-                if (maxSize.y > getSize().y) {
-                    float factor = (getSize().y - 10) / maxSize.y;
-                    unsigned int scrollYSize = getSize().y * factor;
-                    horScrollBar = RectangleShape(math::Vec3f(10, scrollYSize, 0));
-                    horScrollBar.setPosition(math::Vec3f(getPosition().x + getSize().x - 10, getPosition().y, 0));
-                    scrollY = true;
-                } else {
-                    scrollY = false;
-                }
+            void Panel::onSizeRecomputed() {
+                updateScrolls();
             }
             void Panel::removeAll() {
                 LightComponent::removeAll();
                 maxSize = math::Vec3f(0, 0, 0);
                 vertScrollBar.setPosition(math::Vec3f(getPosition().x, getPosition().y + getSize().y - 10, 0));
                 horScrollBar.setPosition(math::Vec3f(getPosition().x + getSize().x - 10, getPosition().y, 0));
+                scrollY = scrollX = false;
             }
             void Panel::setBackgroundColor(sf::Color background) {
                 this->background = background;
@@ -151,6 +128,8 @@ namespace odfaeg {
                 for (unsigned int i = 0; i < drawables.size(); i++) {
                     target.draw(*drawables[i], states);
                 }
+            }
+            void Panel::drawOn(RenderTarget& target, RenderStates states) {
                 if (scrollX || scrollY) {
                     target.draw(corner);
                 }
@@ -158,11 +137,11 @@ namespace odfaeg {
                     target.draw(vertScrollBar);
                 }
                 if (scrollY) {
+                    /*if (getPosition().x == 400) {
+                        std::cout<<"scroll Y pos : "<<horScrollBar.getPosition().y<<std::endl<<"scroll y size : "<<horScrollBar.getSize().y<<std::endl;
+                    }*/
                     target.draw(horScrollBar);
                 }
-            }
-            void Panel::checkSubWindowEvents() {
-
             }
             void Panel::setBorderThickness(float thickness) {
                 rect.setOutlineThickness(thickness);

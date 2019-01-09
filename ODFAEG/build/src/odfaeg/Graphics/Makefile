@@ -372,6 +372,30 @@ GUI/filedialog.cpp.s:
 	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.s
 .PHONY : GUI/filedialog.cpp.s
 
+GUI/icon.o: GUI/icon.cpp.o
+.PHONY : GUI/icon.o
+
+# target to build an object file
+GUI/icon.cpp.o:
+	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/icon.cpp.o
+.PHONY : GUI/icon.cpp.o
+
+GUI/icon.i: GUI/icon.cpp.i
+.PHONY : GUI/icon.i
+
+# target to preprocess a source file
+GUI/icon.cpp.i:
+	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/icon.cpp.i
+.PHONY : GUI/icon.cpp.i
+
+GUI/icon.s: GUI/icon.cpp.s
+.PHONY : GUI/icon.s
+
+# target to generate assembly for a file
+GUI/icon.cpp.s:
+	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/icon.cpp.s
+.PHONY : GUI/icon.cpp.s
+
 GUI/label.o: GUI/label.cpp.o
 .PHONY : GUI/label.o
 
@@ -563,6 +587,30 @@ GUI/progressBar.s: GUI/progressBar.cpp.s
 GUI/progressBar.cpp.s:
 	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/progressBar.cpp.s
 .PHONY : GUI/progressBar.cpp.s
+
+GUI/table.o: GUI/table.cpp.o
+.PHONY : GUI/table.o
+
+# target to build an object file
+GUI/table.cpp.o:
+	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/table.cpp.o
+.PHONY : GUI/table.cpp.o
+
+GUI/table.i: GUI/table.cpp.i
+.PHONY : GUI/table.i
+
+# target to preprocess a source file
+GUI/table.cpp.i:
+	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/table.cpp.i
+.PHONY : GUI/table.cpp.i
+
+GUI/table.s: GUI/table.cpp.s
+.PHONY : GUI/table.s
+
+# target to generate assembly for a file
+GUI/table.cpp.s:
+	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/table.cpp.s
+.PHONY : GUI/table.cpp.s
 
 GUI/textArea.o: GUI/textArea.cpp.o
 .PHONY : GUI/textArea.o
@@ -1732,6 +1780,9 @@ help:
 	@echo "... GUI/filedialog.o"
 	@echo "... GUI/filedialog.i"
 	@echo "... GUI/filedialog.s"
+	@echo "... GUI/icon.o"
+	@echo "... GUI/icon.i"
+	@echo "... GUI/icon.s"
 	@echo "... GUI/label.o"
 	@echo "... GUI/label.i"
 	@echo "... GUI/label.s"
@@ -1756,6 +1807,9 @@ help:
 	@echo "... GUI/progressBar.o"
 	@echo "... GUI/progressBar.i"
 	@echo "... GUI/progressBar.s"
+	@echo "... GUI/table.o"
+	@echo "... GUI/table.i"
+	@echo "... GUI/table.s"
 	@echo "... GUI/textArea.o"
 	@echo "... GUI/textArea.i"
 	@echo "... GUI/textArea.s"

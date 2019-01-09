@@ -128,6 +128,7 @@ namespace odfaeg {
                 m_center += t;
                 m_position += t;
                 tm.setTranslation(m_center);
+                getGlobalBounds();
                 onMove(t);
             }
             /**

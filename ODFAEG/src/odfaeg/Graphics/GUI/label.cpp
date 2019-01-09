@@ -2,13 +2,12 @@
 namespace odfaeg {
     namespace graphic {
         namespace gui {
-            Label::Label (RenderWindow& window, math::Vec3f position, math::Vec3f size, const Font* font, std::string t) :
+            Label::Label (RenderWindow& window, math::Vec3f position, math::Vec3f size, const Font* font, std::string t, unsigned int charSize) :
             LightComponent (window, position, size, size * 0.5f) {
                 text.setFont(*font);
                 text.setString(t);
                 text.setSize(size);
-                unsigned int characterSize = size.y;
-                text.setCharacterSize(characterSize);
+                text.setCharacterSize(charSize);
                 rect = RectangleShape (size);
                 background = sf::Color::Black;
                 rect.setFillColor(background);
@@ -49,18 +48,13 @@ namespace odfaeg {
                 return bb.isPointInside(mousePos);
             }
             void Label::onUpdate(RenderWindow* window, sf::Event& event) {
-                LightComponent::onUpdate(window, event);
                 if (&getWindow() == window) {
-                    if (event.type == sf::Event::MouseButtonPressed) {
+                    if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
                         mousePos = math::Vec3f(event.mouseButton.x, event.mouseButton.y, 0);
-                    }
                 }
             }
             void Label::onEventPushed (sf::Event event, RenderWindow& window) {
-                if (&getWindow() == &window)
-                    getListener().pushEvent(event);
-            }
-            void Label::checkSubWindowEvents() {
+
             }
         }
     }

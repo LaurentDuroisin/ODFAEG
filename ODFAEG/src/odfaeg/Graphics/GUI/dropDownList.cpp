@@ -2,12 +2,12 @@
 namespace odfaeg {
     namespace graphic {
         namespace gui {
-            DropDownList::DropDownList(RenderWindow& window, math::Vec3f position, math::Vec3f size, const Font* font, std::string t) :
+            DropDownList::DropDownList(RenderWindow& window, math::Vec3f position, math::Vec3f size, const Font* font, std::string t, unsigned int charSize) :
             LightComponent (window, position, size, size * 0.5f, -1),
             font(font) {
                 background = sf::Color::Black;
                 if (t != "") {
-                    Label* label = new Label(window, position, math::Vec3f(size.x - 50, size.y, 0), font, t);
+                    Label* label = new Label(window, position, math::Vec3f(size.x - 50, size.y, 0), font, t, charSize);
                     items.push_back(label);
                     nbItems = 1;
                     selectedItem = items[0];
@@ -50,8 +50,8 @@ namespace odfaeg {
                 if (background != rect.getFillColor())
                     rect.setFillColor(background);
             }
-            void DropDownList::addItem(std::string t) {
-                Label* label = new Label (getWindow(), getPosition(), math::Vec3f(getSize().x - 50, getSize().y, 0), font, t);
+            void DropDownList::addItem(std::string t, unsigned int charSize) {
+                Label* label = new Label (getWindow(), getPosition(), math::Vec3f(getSize().x - 50, getSize().y, 0), font, t, charSize);
                 label->setPosition(math::Vec3f(getPosition().x, getPosition().y + getSize().y * nbItems, 0));
                 items.push_back(label);
                 nbItems++;
@@ -76,8 +76,6 @@ namespace odfaeg {
             void DropDownList::onEventPushed(sf::Event event, RenderWindow& window) {
                 if(&window == &getWindow())
                     getListener().pushEvent(event);
-            }
-            void DropDownList::checkSubWindowEvents () {
             }
             void DropDownList::onUpdate(RenderWindow* window, sf::Event& event) {
                 if (&getWindow() == window

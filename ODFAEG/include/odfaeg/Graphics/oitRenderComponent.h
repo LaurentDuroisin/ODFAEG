@@ -105,7 +105,7 @@ namespace odfaeg {
             * \brief get the texture of the normal buffer.
             * \return the texture of the normals.
             */
-            const Texture& getSpecularTexture();
+            const Texture& getFrontBufferTexture();
             /**
             * \fn getFrameBufferTile ()
             * \brief get the frame buffer tile.
@@ -135,9 +135,9 @@ namespace odfaeg {
             std::vector<Instance> m_instances; /**> Instances to draw. (Instanced rendering.) */
             std::vector<std::unique_ptr<Face>> additionalFaces;
             std::vector<Entity*> visibleEntities; /**> Entities loaded*/
-            std::unique_ptr<RenderTexture> frameBuffer; /**> the frame buffer.*/
+            std::unique_ptr<RenderTexture> frontBuffer; /**> the frame buffer.*/
             std::unique_ptr<RenderTexture>  depthBuffer; /**> the depth buffer.*/
-            std::unique_ptr<RenderTexture>  specularTexture; /**> specular components.*/
+            std::unique_ptr<RenderTexture>  frameBuffer; /**> specular components.*/
             std::unique_ptr<RenderTexture>  bumpTexture;
             std::unique_ptr<RenderTexture>  refractionTexture;
             std::unique_ptr<RenderTexture>  normalMap;
@@ -149,7 +149,7 @@ namespace odfaeg {
             std::unique_ptr<Shader>  simpleShader;
             RenderStates currentStates; /**> the current render states.*/
             View view; /**> the view of the component.*/
-            std::unique_ptr<Tile>  frameBufferTile, depthBufferTile; /**> the frame, depth and normal buffer.*/
+            std::unique_ptr<Tile>  frameBufferTile, depthBufferTile, frontBufferTile; /**> the frame, depth and normal buffer.*/
             std::string expression;
             bool update;
         };

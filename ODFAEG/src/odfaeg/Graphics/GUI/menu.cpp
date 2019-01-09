@@ -53,13 +53,11 @@ namespace odfaeg {
                     for (unsigned int i = 0; i < items.size(); i++) {
                         items[i]->setVisible(true);
                         items[i]->setEventContextActivated(true);
-                        std::cout<<"on item cliqued!"<<std::endl;
                     }
                 } else {
                     for (unsigned int i = 0; i < items.size(); i++) {
                         items[i]->setVisible(false);
                         items[i]->setEventContextActivated(false);
-                        std::cout<<"not on item cliqued!"<<std::endl;
                     }
                 }
             }
@@ -75,8 +73,6 @@ namespace odfaeg {
                 if (&getWindow() == &window) {
                     getListener().pushEvent(event);
                 }
-            }
-            void Menu::checkSubWindowEvents() {
             }
         }
     }

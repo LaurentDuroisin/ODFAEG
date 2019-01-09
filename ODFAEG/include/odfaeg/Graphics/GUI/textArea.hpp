@@ -24,7 +24,6 @@ namespace odfaeg {
                 bool isMouseOutTextArea();
                 void onTextEntered(char caracter);
                 void onUpdate(RenderWindow* window, sf::Event& event);
-                void checkSubWindowEvents();
                 std::string getText();
                 void setText(std::string text);
                 void setCursorPos();

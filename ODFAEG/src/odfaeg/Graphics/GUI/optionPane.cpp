@@ -8,8 +8,8 @@ namespace odfaeg {
                 type(type) {
                 rw.getView().move(size.x * 0.5f, size.y * 0.5f, size.z * 0.5f);
                 if (type == CONFIRMATION_DIALOG) {
-                    yes = new Button(math::Vec2f(size.x / 100 * 70, size.y - 100), math::Vec2f(100, 50), font, "Yes", rw);
-                    no = new Button(math::Vec2f(size.x / 100 * 10, size.y - 100), math::Vec2f(100, 50), font, "No", rw);
+                    yes = new Button(math::Vec2f(size.x / 100 * 70, size.y - 100), math::Vec2f(100, 50), font, "Yes", 15, rw);
+                    no = new Button(math::Vec2f(size.x / 100 * 10, size.y - 100), math::Vec2f(100, 50), font, "No", 15, rw);
                     core::FastDelegate<bool> trigger1(&Button::isMouseInButton, yes);
                     core::FastDelegate<bool> trigger2(&Button::isMouseInButton, no);
                     core::FastDelegate<void> slot1(&OptionPane::onYesOption, this);
@@ -58,17 +58,6 @@ namespace odfaeg {
                     rw.display();
                 }
             }
-            void OptionPane::checkSubWindowEvents() {
-                sf::Event event;
-                while(rw.pollEvent(event)) {
-                    if (event.type == sf::Event::Closed) {
-                        rw.setVisible(false);
-                    }
-                    yes->onUpdate(&getWindow(), event);
-                    no->onUpdate(&getWindow(), event);
-                    getListener().pushEvent(event);
-                }
-            }
             void OptionPane::onEnter() {
                 setVisible(false);
                 setEventContextActivated(false);
@@ -92,7 +81,12 @@ namespace odfaeg {
                 text.setString(sf::String(t.c_str()));
             }
             void OptionPane::onEventPushed (sf::Event event, RenderWindow& window) {
-
+                if (event.type == sf::Event::Closed) {
+                    rw.setVisible(false);
+                }
+                yes->onUpdate(&getWindow(), event);
+                no->onUpdate(&getWindow(), event);
+                getListener().pushEvent(event);
             }
             OptionPane::~OptionPane() {
                 rw.close();

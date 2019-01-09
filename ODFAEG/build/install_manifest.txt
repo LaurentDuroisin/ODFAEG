@@ -126,6 +126,7 @@
 /usr/local/./include/odfaeg/Graphics/GUI/actionListener.hpp
 /usr/local/./include/odfaeg/Graphics/GUI/dropDownList.hpp
 /usr/local/./include/odfaeg/Graphics/GUI/textArea.hpp
+/usr/local/./include/odfaeg/Graphics/GUI/icon.hpp
 /usr/local/./include/odfaeg/Graphics/GUI/panel.hpp
 /usr/local/./include/odfaeg/Graphics/GUI/button.hpp
 /usr/local/./include/odfaeg/Graphics/GUI/focusListener.hpp
@@ -134,6 +135,7 @@
 /usr/local/./include/odfaeg/Graphics/GUI/progressBar.hpp
 /usr/local/./include/odfaeg/Graphics/GUI/menubar.hpp
 /usr/local/./include/odfaeg/Graphics/GUI/filedialog.hpp
+/usr/local/./include/odfaeg/Graphics/GUI/table.hpp
 /usr/local/./include/odfaeg/Graphics/GUI/label.hpp
 /usr/local/./include/odfaeg/Graphics/text.h
 /usr/local/./include/odfaeg/Graphics/renderTexture.h

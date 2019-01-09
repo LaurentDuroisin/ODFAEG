@@ -157,6 +157,7 @@ namespace odfaeg {
                 }
                 /*else if (type == JOYSTICK_BUTTON_HELD_DOWN)
                     return sf::Joystick::isButtonPressed(startEvent.joystickButton.button);*/
+
                 vector<sf::Event> events = Command::getEvents();
                 for (unsigned int i = 0; i < events.size(); i++) {
                     /*if (type == KEY_HELD_DOWN || type == MOUSE_BUTTON_HELD_DOWN) {

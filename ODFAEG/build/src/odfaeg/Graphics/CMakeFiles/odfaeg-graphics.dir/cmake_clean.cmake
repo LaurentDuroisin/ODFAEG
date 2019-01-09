@@ -51,6 +51,8 @@ FILE(REMOVE_RECURSE
   "CMakeFiles/odfaeg-graphics.dir/2D/directionnalLight.cpp.o"
   "CMakeFiles/odfaeg-graphics.dir/2D/decor.cpp.o"
   "CMakeFiles/odfaeg-graphics.dir/3D/cube.cpp.o"
+  "CMakeFiles/odfaeg-graphics.dir/GUI/table.cpp.o"
+  "CMakeFiles/odfaeg-graphics.dir/GUI/icon.cpp.o"
   "CMakeFiles/odfaeg-graphics.dir/GUI/button.cpp.o"
   "CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.o"
   "CMakeFiles/odfaeg-graphics.dir/GUI/optionPane.cpp.o"

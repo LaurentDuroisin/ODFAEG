@@ -13,16 +13,15 @@ namespace odfaeg {
         namespace gui {
             class DropDownList : public LightComponent {
                 public :
-                    DropDownList(RenderWindow& window, math::Vec3f position, math::Vec3f size, const Font* font, std::string text);
+                    DropDownList(RenderWindow& window, math::Vec3f position, math::Vec3f size, const Font* font, std::string text, unsigned int charSize);
                     void clear();
-                    void addItem(std::string t);
+                    void addItem(std::string t, unsigned int charSize);
                     void onDraw (RenderTarget& target, RenderStates states = RenderStates::Default);
                     void onUpdate(RenderWindow* window, sf::Event& event);
                     bool isMouseOnTriangle();
                     void onTriangleClicked();
                     void onItemSelected(Label* label);
                     void onEventPushed(sf::Event event, RenderWindow& window);
-                    void checkSubWindowEvents();
                     void recomputePos();
                     std::string getSelectedItem();
                     ~DropDownList();

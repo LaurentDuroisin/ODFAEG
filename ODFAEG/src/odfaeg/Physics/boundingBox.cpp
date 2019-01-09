@@ -723,7 +723,6 @@ namespace odfaeg {
             points[7] = math::Vec3f (getPosition().x + getWidth(), getPosition().y, getPosition().z - getDepth());
             for (unsigned int i = 0; i < points.size(); i++) {
                 points[i] = tm.transform(points[i]);
-
             }
             std::array<std::array<float, 2>, 3> store = math::Computer::getExtends(points);
             BoundingBox bx(store[0][0], store[1][0],store[2][0], store[0][1] - store[0][0],store[1][1] - store[1][0], store[2][1] - store[2][0]);

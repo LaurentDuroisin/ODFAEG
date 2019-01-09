@@ -2,15 +2,14 @@
 namespace odfaeg {
     namespace graphic {
         namespace gui {
-            Button::Button(math::Vec3f position, math::Vec3f size, const Font* font, std::string t, RenderWindow& rw) :
+            Button::Button(math::Vec3f position, math::Vec3f size, const Font* font, std::string t, unsigned int charSize, RenderWindow& rw) :
                 LightComponent(rw, position, size, size * 0.5f) {
                 background = sf::Color::White;
                 text.setFont(*font);
                 text.setString(t);
                 text.setColor(sf::Color::Black);
                 text.setSize(size);
-                unsigned int characterSize = size.y;
-                text.setCharacterSize(characterSize);
+                text.setCharacterSize(charSize);
                 rect = RectangleShape(size);
                 rect.setOutlineThickness(5.f);
                 rect.setOutlineColor(sf::Color::Red);
@@ -25,14 +24,7 @@ namespace odfaeg {
             void Button::setTextColor(sf::Color color) {
                 text.setColor(color);
             }
-            void Button::recomputeSize() {
-                unsigned int characterSize = getSize().y;
-                text.setCharacterSize(characterSize);
-                size = getSize();
-            }
             void Button::onDraw(RenderTarget& target, RenderStates states) {
-                if (size != getSize())
-                    recomputeSize();
                 text.setPosition(getPosition());
                 rect.setPosition(getPosition());
                 text.setSize(getSize());
@@ -70,9 +62,6 @@ namespace odfaeg {
                         mousePos = math::Vec3f(event.mouseButton.x, event.mouseButton.y, 0);
                     }
                 }
-            }
-            void Button::checkSubWindowEvents() {
-
             }
         }
     }

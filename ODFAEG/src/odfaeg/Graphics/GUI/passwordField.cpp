@@ -125,8 +125,6 @@ namespace odfaeg {
                 this->text.setString(tmp_text);
                 setSize(this->text.getSize());
             }
-            void PasswordField::checkSubWindowEvents() {
-            }
         }
     }
 }

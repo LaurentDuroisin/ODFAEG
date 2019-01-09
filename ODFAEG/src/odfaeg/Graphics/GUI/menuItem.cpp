@@ -53,8 +53,6 @@ namespace odfaeg {
                     if (&window == &getWindow())
                         getListener().pushEvent(event);
                 }
-                void MenuItem::checkSubWindowEvents() {
-                }
         }
     }
 }

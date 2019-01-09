@@ -1,4 +1,5 @@
 #include "../../../include/odfaeg/Graphics/renderComponentManager.h"
+#include "../../../include/odfaeg/Graphics/GUI/menu.hpp"
 #include "../../../include/odfaeg/Core/command.h"
 namespace odfaeg {
     namespace graphic {
@@ -9,8 +10,6 @@ namespace odfaeg {
             windows.push_back(&window);
         }
         void RenderComponentManager::addComponent(Component* component) {
-            if (component->isAutoResized())
-                component->recomputeSize();
             components.insert(std::make_pair(component->getPriority(), component));
         }
         bool RenderComponentManager::removeComponent(unsigned int layer) {
@@ -48,7 +47,6 @@ namespace odfaeg {
             std::multimap<int, Component*, std::greater<int>>::iterator it;
             for (it = components.begin(); it != components.end(); it++) {
                 if (dynamic_cast<LightComponent*>(it->second) != nullptr && it->second->isVisible()) {
-                    static_cast<LightComponent*>(it->second)->checkSubWindowEvents();
                     for (unsigned int i = 0; i < windows.size(); i++) {
                         if (windows[i] == &it->second->getWindow()) {
                             View view = it->second->getWindow().getView();
@@ -116,6 +114,8 @@ namespace odfaeg {
            for (it = components.begin(); it != components.end(); it++) {
                if (it->second->isEventContextActivated()) {
                    it->second->processEvents();
+                   if (it->second->isAutoResized())
+                       it->second->recomputeSize();
                }
            }
            core::Command::clearEventsStack();

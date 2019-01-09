@@ -12,6 +12,7 @@ namespace odfaeg {
                 bar = RectangleShape(size);
                 bar.setPosition(position);
                 bar.setFillColor(sf::Color::Red);
+                this->value = 0;
             }
             void ProgressBar::clear() {
                 bar.setFillColor(sf::Color::Red);
@@ -27,8 +28,12 @@ namespace odfaeg {
                 this->mini = mini;
             }
             void ProgressBar::setValue(int value) {
-                int sizeX = bar.getSize().x / (maxi - mini) * value;
+                int sizeX = getSize().x / (maxi - mini) * value;
                 bar.setSize(math::Vec3f(sizeX, bar.getSize().y, bar.getSize().z));
+                this->value = value;
+            }
+            int ProgressBar::getValue() {
+                return value;
             }
         }
     }

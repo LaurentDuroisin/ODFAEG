@@ -14,22 +14,25 @@ namespace odfaeg {
             update = false;
             sf::Vector3i resolution ((int) window.getSize().x, (int) window.getSize().y, window.getView().getSize().z);
             depthBuffer = std::make_unique<RenderTexture>();
+            frontBuffer = std::make_unique<RenderTexture>();
             frameBuffer = std::make_unique<RenderTexture>();
-            specularTexture = std::make_unique<RenderTexture>();
             bumpTexture = std::make_unique<RenderTexture>();
             refractionTexture = std::make_unique<RenderTexture>();
+            settings.depthBits = 32;
             depthBuffer->create(resolution.x, resolution.y,settings);
+            frontBuffer->create(resolution.x, resolution.y,settings);
+            settings.depthBits = 0;
             frameBuffer->create(resolution.x, resolution.y,settings);
-            specularTexture->create(resolution.x, resolution.y,settings);
             bumpTexture->create(resolution.x, resolution.y,settings);
             refractionTexture->create(resolution.x, resolution.y,settings);
-            frameBuffer->setView(window.getView());
+            frontBuffer->setView(window.getView());
             depthBuffer->setView(window.getView());
-            specularTexture->setView(window.getView());
+            frameBuffer->setView(window.getView());
             bumpTexture->setView(window.getView());
             refractionTexture->setView(window.getView());
-            frameBufferTile = std::make_unique<Tile>(&frameBuffer->getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
+            frontBufferTile = std::make_unique<Tile>(&frontBuffer->getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
             depthBufferTile = std::make_unique<Tile>(&depthBuffer->getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
+            frameBufferTile = std::make_unique<Tile>(&frameBuffer->getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
             core::FastDelegate<bool> signal (&OITRenderComponent::needToUpdate, this);
             core::FastDelegate<void> slot (&OITRenderComponent::drawNextFrame, this);
             core::Command cmd(signal, slot);
@@ -76,50 +79,39 @@ namespace odfaeg {
                 "}";
                 const std::string depthGenFragShader =
                 "#version 130 \n"
-                "uniform sampler2D depthBuffer;"
-                "uniform sampler2D texture;"
-                "uniform vec3 resolution;"
-                "uniform float haveTexture;"
                 "in mat4 projMat;"
+                "uniform sampler2D texture;"
+                "uniform float haveTexture;"
                 "void main () {"
-                    "vec2 position = ( gl_FragCoord.xy / resolution.xy );"
-                    "vec4 previous_depth_alpha = texture2D(depthBuffer, position);"
                     "vec4 texel = texture2D(texture, gl_TexCoord[0].xy);"
                     "vec4 colors[2];"
                     "colors[1] = texel * gl_Color;"
                     "colors[0] = gl_Color;"
                     "bool b = (haveTexture == 1);"
-                    "float current_alpha = colors[int(b)].a;"
-                    "float current_depth = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
-                    "colors[1] = vec4(0, 0, current_depth, current_alpha);"
-                    "colors[0] = vec4(0, 0, previous_depth_alpha.z, previous_depth_alpha.a);"
-                    "b = (current_depth >= previous_depth_alpha.z);"
-                    "gl_FragColor = colors[int(b)];"
+                    "vec4 color = colors[int(b)];"
+                    "float z = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
+                    "gl_FragColor = vec4(0, 0, z, color.a);"
                 "}";
                 const std::string frameBufferGenFragShader =
                 "#version 130 \n"
                 "uniform sampler2D depthBuffer;"
-                "uniform sampler2D frameBuffer;"
                 "uniform sampler2D texture;"
                 "uniform vec3 resolution;"
                 "uniform float haveTexture;"
                 "in mat4 projMat;"
                 "void main () {"
                     "vec2 position = ( gl_FragCoord.xy / resolution.xy );"
-                    "vec4 previous_depth_alpha = texture2D(depthBuffer, position);"
-                    "vec4 previous_color = texture2D(frameBuffer, position);"
+                    "float max_z = texture2D(depthBuffer, position).z;"
                     "vec4 texel = texture2D(texture, gl_TexCoord[0].xy);"
                     "vec4 colors[2];"
                     "colors[1] = texel * gl_Color;"
                     "colors[0] = gl_Color;"
                     "bool b = (haveTexture == 1);"
-                    "vec4 current_color = colors[int(b)];"
-                    "float current_depth = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
-                    "colors[1] = current_color * current_color.a + previous_color * (1 - current_color.a);"
-                    "colors[1].a = current_color.a + previous_color.a * (1 - current_color.a);"
-                    "colors[0] = previous_color * previous_color.a + current_color * (1 - previous_color.a);"
-                    "colors[0].a = previous_color.a + current_color.a * (1 - previous_color.a);"
-                    "b = (current_depth >= previous_depth_alpha.z);"
+                    "vec4 color = colors[int(b)];"
+                    "float z = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
+                    "colors[1] = color;"
+                    "colors[0] = vec4(0, 0, 0, 0);"
+                    "b = (z < max_z);"
                     "gl_FragColor = colors[int(b)];"
                 "}";
                 const std::string bumpGenFragShader =
@@ -168,13 +160,10 @@ namespace odfaeg {
                     throw core::Erreur(54, "Failed to load refraction texture generator shader", 0);
                 frameBufferGenerator->setParameter("resolution",resolution.x, resolution.y, resolution.z);
                 frameBufferGenerator->setParameter("depthBuffer", depthBuffer->getTexture());
-                frameBufferGenerator->setParameter("frameBuffer", frameBuffer->getTexture());
                 frameBufferGenerator->setParameter("texture", Shader::CurrentTexture);
                 depthBufferGenerator->setParameter("texture", Shader::CurrentTexture);
-                depthBufferGenerator->setParameter("resolution",resolution.x, resolution.y, resolution.z);
-                depthBufferGenerator->setParameter("depthBuffer",depthBuffer->getTexture());
                 specularTextureGenerator->setParameter("resolution",resolution.x, resolution.y, resolution.z);
-                specularTextureGenerator->setParameter("specularTexture",specularTexture->getTexture());
+                //specularTextureGenerator->setParameter("specularTexture",specularTexture->getTexture());
                 specularTextureGenerator->setParameter("texture",Shader::CurrentTexture);
                 specularTextureGenerator->setParameter("maxM", Material::getMaxSpecularIntensity());
                 specularTextureGenerator->setParameter("maxP", Material::getMaxSpecularPower());
@@ -217,7 +206,7 @@ namespace odfaeg {
         void OITRenderComponent::clear() {
              frameBuffer->clear(backgroundColor);
              depthBuffer->clear(sf::Color::Transparent);
-             specularTexture->clear(sf::Color::Transparent);
+             frontBuffer->clear(sf::Color::Transparent);
              bumpTexture->clear(sf::Color::Transparent);
              refractionTexture->clear(sf::Color::Transparent);
         }
@@ -233,8 +222,8 @@ namespace odfaeg {
         const Texture& OITRenderComponent::getFrameBufferTexture() {
             return frameBuffer->getTexture();
         }
-        const Texture& OITRenderComponent::getSpecularTexture() {
-            return specularTexture->getTexture();
+        const Texture& OITRenderComponent::getFrontBufferTexture() {
+            return frontBuffer->getTexture();
         }
         bool OITRenderComponent::loadEntitiesOnComponent(std::vector<Entity*> vEntities)
         {
@@ -256,7 +245,7 @@ namespace odfaeg {
             this->view = view;
             frameBuffer->setView(view);
             depthBuffer->setView(view);
-            specularTexture->setView(view);
+            frontBuffer->setView(view);
             bumpTexture->setView(view);
             refractionTexture->setView(view);
         }
@@ -268,48 +257,34 @@ namespace odfaeg {
             update = false;
             currentStates.blendMode = sf::BlendNone;
             for (unsigned int i = 0; i < m_instances.size(); i++) {
-                /*float specularIntensity = m_instances[i].getMaterial().getSpecularIntensity();
-                float specularPower = m_instances[i].getMaterial().getSpecularPower();
-                float refractionFactor = m_instances[i].getMaterial().getRefractionFactor();
-                specularTextureGenerator->setParameter("m", specularIntensity);
-                specularTextureGenerator->setParameter("p", specularPower);
-                refractionTextureGenerator->setParameter("refractionFactor", refractionFactor);*/
-                if (m_instances[i].getMaterial().getTexture() != nullptr) {
-                    depthBufferGenerator->setParameter("haveTexture", 1.f);
-                    frameBufferGenerator->setParameter("haveTexture", 1.f);
-                    //specularTextureGenerator->setParameter("haveTexture", 1.f);
-                } else {
-                    depthBufferGenerator->setParameter("haveTexture", 0.f);
-                    frameBufferGenerator->setParameter("haveTexture", 0.f);
-                    //specularTextureGenerator->setParameter("haveTexture", 0.f);
-                }
-                /*if (m_instances[i].getMaterial().getBumpTexture() != nullptr) {
-                    bumpTextureGenerator->setParameter("haveTexture", 1.f);
-                } else {
-                    bumpTextureGenerator->setParameter("haveTexture", 0.f);
-                }*/
-                for (unsigned int j = 0; j < m_instances[i].getVertexArrays().size(); j++) {
-                    currentStates.texture = m_instances[i].getMaterial().getTexture();
-                    currentStates.transform = m_instances[i].getTransforms()[j];
-                    currentStates.shader = frameBufferGenerator.get();
-                    frameBuffer->draw(m_instances[i].getVertexArrays()[j], currentStates);
-                    currentStates.shader = depthBufferGenerator.get();
-                    depthBuffer->draw(m_instances[i].getVertexArrays()[j], currentStates);
-                    /*currentStates.shader = refractionTextureGenerator.get();
-                    refractionTexture->draw(m_instances[i].getVertexArrays()[j], currentStates);
-                    currentStates.shader = bumpTextureGenerator.get();
-                    currentStates.texture = m_instances[i].getMaterial().getBumpTexture();
-                    bumpTexture->draw(m_instances[i].getVertexArrays()[j], currentStates);*/
-                }
+                 if (m_instances[i].getMaterial().getTexture() == nullptr)
+                    depthBufferGenerator->setParameter("haveTexture", 0);
+                 else
+                    depthBufferGenerator->setParameter("haveTexture", 1);
+                 currentStates.texture=m_instances[i].getMaterial().getTexture();
+                 currentStates.shader=depthBufferGenerator.get();
+                 depthBuffer->draw(m_instances[i].getAllVertices(),currentStates);
+                 currentStates.shader=nullptr;
+                 frontBuffer->draw(m_instances[i].getAllVertices(), currentStates);
+            }
+            frontBuffer->display();
+            frontBufferTile->setCenter(view.getPosition());
+            frameBuffer->draw(*frontBufferTile, currentStates);
+            currentStates.shader=frameBufferGenerator.get();
+            currentStates.blendMode=sf::BlendMode(sf::BlendMode::Factor::OneMinusDstAlpha, sf::BlendMode::Factor::One);
+            for (unsigned int i = 0; i < m_instances.size(); i++) {
+                if (m_instances[i].getMaterial().getTexture() == nullptr)
+                    frameBufferGenerator->setParameter("haveTexture", 0);
+                 else
+                    frameBufferGenerator->setParameter("haveTexture", 1);
+                currentStates.texture = m_instances[i].getMaterial().getTexture();
+                frameBuffer->draw(m_instances[i].getAllVertices(), currentStates);
             }
             for (unsigned int i = 0; i < drawables.size(); i++) {
                 frameBuffer->draw(drawables[i].first.get(), drawables[i].second);
             }
             depthBuffer->display();
             frameBuffer->display();
-            frameBufferTile->setPosition(view.getPosition());
-            depthBufferTile->setPosition(view.getPosition());
-            specularTexture->display();
             bumpTexture->display();
             refractionTexture->display();
         }

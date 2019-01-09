@@ -56,9 +56,6 @@ namespace odfaeg {
             bool isAutoResized () {
                 return autoResize;
             }
-            void onScale(math::Vec3f scale) {
-                autoResize = (autoResize == true) ? false : autoResize;
-            }
             /**
             * \fn recompute the size relative to the parent component if the parent component is resized.
             */
@@ -84,6 +81,9 @@ namespace odfaeg {
             virtual void processEvents();
             RenderWindow& getWindow() {
                 return window;
+            }
+            void setAutoResized(bool autoResize) {
+                this->autoResize = autoResize;
             }
         private :
             RenderWindow& window;

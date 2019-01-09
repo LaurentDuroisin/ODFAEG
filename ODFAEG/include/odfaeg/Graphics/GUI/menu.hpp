@@ -14,7 +14,6 @@ namespace odfaeg {
                 void onClick();
                 bool isMouseOnMenu();
                 void onEventPushed(sf::Event event, RenderWindow& window);
-                void checkSubWindowEvents();
             private :
                 RectangleShape rect;
                 Text text;

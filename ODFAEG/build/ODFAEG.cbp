@@ -506,6 +506,8 @@
       </Unit>
       <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/filedialog.cpp">
       </Unit>
+      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/icon.cpp">
+      </Unit>
       <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/label.cpp">
       </Unit>
       <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/menu.cpp">
@@ -521,6 +523,8 @@
       <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/passwordField.cpp">
       </Unit>
       <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/progressBar.cpp">
+      </Unit>
+      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/table.cpp">
       </Unit>
       <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/textArea.cpp">
       </Unit>
@@ -750,6 +754,8 @@
       </Unit>
       <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/GUI/filedialog.hpp">
       </Unit>
+      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/GUI/icon.hpp">
+      </Unit>
       <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/GUI/label.hpp">
       </Unit>
       <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/GUI/menu.hpp">
@@ -765,6 +771,8 @@
       <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/GUI/passwordField.hpp">
       </Unit>
       <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/GUI/progressBar.hpp">
+      </Unit>
+      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/GUI/table.hpp">
       </Unit>
       <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/GUI/textArea.hpp">
       </Unit>

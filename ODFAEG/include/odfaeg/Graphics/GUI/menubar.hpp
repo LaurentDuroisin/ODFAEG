@@ -11,7 +11,6 @@ namespace odfaeg {
                 void clear();
                 void onDraw(RenderTarget& target, RenderStates states=RenderStates::Default);
                 void onEventPushed(sf::Event event, RenderWindow& window);
-                void checkSubWindowEvents();
             private :
                 RectangleShape rect;
                 sf::Color background;

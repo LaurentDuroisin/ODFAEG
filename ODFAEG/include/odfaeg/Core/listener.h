@@ -125,15 +125,16 @@ namespace odfaeg {
                     if (it->second.isTriggered()) {
                         (it->second)();
                     }
-                    Action* action = it->second.getAction();
+                    /*Action* action = it->second.getAction();
                     if (action != nullptr) {
                         std::vector<sf::Event> events;
                         action->getEvents(events);
                         for (unsigned int i = 0; i < events.size(); i++) {
                             Command::removeEvent(events[i]);
                         }
-                    }
+                    }*/
                  }
+                 //Command::clearEventsStack();
              }
              void removeLater(std::string name) {
                 toRemove.push_back(name);

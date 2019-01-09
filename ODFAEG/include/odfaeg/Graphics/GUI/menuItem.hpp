@@ -19,7 +19,6 @@ namespace odfaeg {
                 void addMenuItemListener (MenuItemListener *mil);
                 std::string getText();
                 void onEventPushed(sf::Event event, RenderWindow& window);
-                void checkSubWindowEvents();
             private :
                 RectangleShape rect;
                 Text text;

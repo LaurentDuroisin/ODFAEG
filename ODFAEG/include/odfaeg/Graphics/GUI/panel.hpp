@@ -12,10 +12,10 @@ namespace odfaeg {
                 void setBackgroundColor(sf::Color color);
                 void clear();
                 void onDraw(RenderTarget& target, RenderStates states);
-                void addChild(LightComponent* child);
+                void drawOn(RenderTarget& target, RenderStates states);
                 void addDrawable(Drawable* drawable);
+                void onSizeRecomputed();
                 void removeAll();
-                void checkSubWindowEvents();
                 bool isOnXScroll();
                 bool isOnYScroll();
                 void moveXItems();

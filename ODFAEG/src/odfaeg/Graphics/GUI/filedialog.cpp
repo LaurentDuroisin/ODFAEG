@@ -1,4 +1,5 @@
 #include "../../../../include/odfaeg/Graphics/GUI/filedialog.hpp"
+#include "../../../../include/odfaeg/Math/maths.h"
 namespace odfaeg {
     namespace graphic {
         namespace gui {
@@ -9,19 +10,26 @@ namespace odfaeg {
             pBottom (rw, position, size),
             pDirectories(rw, position, size),
             pFiles(rw, position, size),
-            lTop(rw, position, size, font, ""),
-            bChoose (position, size, font, "Choose", rw),
-            bCancel (position, size, font, "Cancel", rw),
+            lTop(rw, position, size, font, "",15),
+            bChoose (position, size, font, "Choose", 15, rw),
+            bCancel (position, size, font, "Cancel", 15, rw),
             font(font) {
                 pTop.setRelPosition(0.f, 0.f);
                 pTop.setRelSize(1.f, 0.1f);
                 pDirectories.setRelPosition(0.f, 0.1f);
                 pDirectories.setRelSize(0.5f, 0.8f);
-
                 pFiles.setRelPosition(0.5f, 0.1f);
                 pFiles.setRelSize(0.5f, 0.8f);
                 pBottom.setRelPosition(0.f, 0.9f);
                 pBottom.setRelSize(1.f, 0.1f);
+                pTop.setParent(this);
+                pBottom.setParent(this);
+                pDirectories.setParent(this);
+                pFiles.setParent(this);
+                addChild(&pTop);
+                addChild(&pBottom);
+                addChild(&pDirectories);
+                addChild(&pFiles);
                 lTop.setParent(&pTop);
                 bChoose.setParent(&pBottom);
                 bCancel.setParent(&pBottom);
@@ -43,7 +51,8 @@ namespace odfaeg {
                     while((ent = readdir(root)) != NULL) {
                         if (strcmp(ent->d_name, ".") && strcmp(ent->d_name, "..")) {
                             textDir = std::string(ent->d_name);
-                            Label* lDirectory = new Label(rw, position, size, font, "");
+                            Label* lDirectory = new Label(rw, position, size, font, "",15);
+                            //lDirectory->setBackgroundColor(sf::Color(math::Math::random(0, 255),math::Math::random(0, 255), math::Math::random(0, 255), 255));
                             lDirectory->setParent(&pDirectories);
                             lDirectory->setRelPosition(0.f, 0.04f * i);
                             lDirectory->setRelSize(1, 0.04f);
@@ -69,9 +78,10 @@ namespace odfaeg {
                     while ((ent = readdir(current)) != NULL) {
                         if (strcmp(ent->d_name, ".") && strcmp(ent->d_name, "..")) {
                             fileNames = std::string(ent->d_name);
-                            Label* lFile = new Label(rw, position, size, font, "");
+                            Label* lFile = new Label(rw, position, size, font, "",15);
+                            //lFile->setBackgroundColor(sf::Color(math::Math::random(0, 255),math::Math::random(0, 255), math::Math::random(0, 255), 255));
                             lFile->setParent(&pFiles);
-                            lFile->setRelPosition(0.f, 0.04f);
+                            lFile->setRelPosition(0.f, 0.04f * i);
                             lFile->setRelSize(1.f, 0.04f);
                             pFiles.addChild(lFile);
                             lFile->setText(sf::String(fileNames));
@@ -89,13 +99,14 @@ namespace odfaeg {
                 }
                 bChoose.setRelPosition(0.7f, 0.1f);
                 bChoose.setRelSize(0.1f, 0.8f);
+                bChoose.setParent(&pBottom);
                 pBottom.addChild(&bChoose);
                 bCancel.setRelPosition(0.85f, 0.1f);
                 bCancel.setRelSize(0.1f, 0.8f);
+                bCancel.setParent(&pBottom);
                 pBottom.addChild(&bCancel);
-                View defaultView = rw.getDefaultView();
-                defaultView.setCenter(math::Vec3f(rw.getSize().x * 0.5f, rw.getSize().y * 0.5f, 0));
-                rw.setView(defaultView);
+                setRelSize(1.f, 1.f);
+                setAutoResized(true);
             }
             void FileDialog::clear() {
                 rw.clear();
@@ -110,7 +121,6 @@ namespace odfaeg {
                     rw.draw(pDirectories, states);
                     rw.draw(pFiles, states);
                     rw.draw(pBottom, states);
-                    rw.display();
                 }
             }
             void FileDialog::onDirSelected(Label* label) {
@@ -137,7 +147,8 @@ namespace odfaeg {
                         while ((ent = readdir(current)) != NULL) {
                             if (strcmp(ent->d_name, ".") && strcmp(ent->d_name, "..")) {
                                 fileNames = std::string(ent->d_name);
-                                Label* lFile = new Label(rw, getPosition(), getSize(), font, "");
+                                Label* lFile = new Label(rw, getPosition(), getSize(), font, "",15);
+                                //lFile->setBackgroundColor(sf::Color(math::Math::random(0, 255),math::Math::random(0, 255), math::Math::random(0, 255), 255));
                                 lFile->setParent(&pFiles);
                                 lFile->setRelPosition(0.f, 0.04f * i);
                                 lFile->setRelSize(1.f, 0.04f);
@@ -157,6 +168,7 @@ namespace odfaeg {
                         closedir(current);
                     }
                 }
+                setAutoResized(true);
             }
             void FileDialog::onFileSelected(Label* label) {
                 std::string fileName = label->getText();
@@ -186,7 +198,8 @@ namespace odfaeg {
                         while ((ent = readdir(current)) != NULL) {
                             if (strcmp(ent->d_name, ".") && strcmp(ent->d_name, "..")) {
                                 fileNames = std::string(ent->d_name);
-                                Label* lFile = new Label(rw, getPosition(), getSize(), font, "");
+                                Label* lFile = new Label(rw, getPosition(), getSize(), font, "",15);
+                                //lFile->setBackgroundColor(sf::Color(math::Math::random(0, 255),math::Math::random(0, 255), math::Math::random(0, 255), 255));
                                 lFile->setParent(&pFiles);
                                 lFile->setRelPosition(0.f, 0.04f * i);
                                 lFile->setRelSize(1.f, 0.04f);
@@ -211,6 +224,7 @@ namespace odfaeg {
                     }
                     label->setBackgroundColor(sf::Color::Blue);
                 }
+                setAutoResized(true);
             }
             std::string FileDialog::getPathChosen() {
                 std::string path = pathChosen;
@@ -221,30 +235,20 @@ namespace odfaeg {
                 return appliDir;
             }
             void FileDialog::onEventPushed(sf::Event event, RenderWindow& window) {
-
-            }
-            void FileDialog::checkSubWindowEvents() {
-                sf::Event event;
-                while(rw.pollEvent(event)) {
-                    if (event.type == sf::Event::Closed) {
-                        rw.setVisible(false);
-                    }
-                    for (unsigned int i = 0; i < pDirectories.getChildren().size(); i++) {
-                        pDirectories.getChildren()[i]->onUpdate(&getWindow(), event);
-                    }
-                    for (unsigned int i = 0; i < pFiles.getChildren().size(); i++) {
-                        pFiles.getChildren()[i]->onUpdate(&getWindow(), event);
-                    }
-                    bChoose.onUpdate(&getWindow(), event);
-                    bCancel.onUpdate(&getWindow(), event);
-                    getListener().pushEvent(event);
-                    bChoose.getListener().pushEvent(event);
-                    bCancel.getListener().pushEvent(event);
+                if (event.type == sf::Event::Closed) {
+                    rw.setVisible(false);
                 }
-                bChoose.getListener().processEvents();
-                bCancel.getListener().processEvents();
-                pDirectories.getListener().processEvents();
-                pFiles.getListener().processEvents();
+                /*for (unsigned int i = 0; i < pDirectories.getChildren().size(); i++) {
+                    pDirectories.getChildren()[i]->onUpdate(&getWindow(), event);
+                }
+                for (unsigned int i = 0; i < pFiles.getChildren().size(); i++) {
+                    pFiles.getChildren()[i]->onUpdate(&getWindow(), event);
+                }
+                bChoose.onUpdate(&getWindow(), event);
+                bCancel.onUpdate(&getWindow(), event);
+                getListener().pushEvent(event);
+                bChoose.getListener().pushEvent(event);
+                bCancel.getListener().pushEvent(event);*/
             }
             void FileDialog::onVisibilityChanged(bool visible) {
                 rw.setVisible(false);

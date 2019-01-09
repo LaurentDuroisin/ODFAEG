@@ -14,11 +14,11 @@ namespace odfaeg {
             void setMaximum (int maxi);
             void setMinimum (int mini);
             void setValue (int value);
-            void checkSubWindowEvents() {}
             void clear();
+            int getValue();
             private :
             RectangleShape border, bar;
-            int maxi, mini;
+            int maxi, mini, value;
             };
         }
     }

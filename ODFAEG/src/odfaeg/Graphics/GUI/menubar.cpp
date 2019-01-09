@@ -27,8 +27,6 @@ namespace odfaeg {
                     getListener().pushEvent(event);
                 }
             }
-            void MenuBar::checkSubWindowEvents() {
-            }
         }
     }
 }
