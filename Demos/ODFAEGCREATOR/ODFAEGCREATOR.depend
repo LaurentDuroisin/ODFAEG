@@ -1,0 +1,56 @@
+# depslib dependency file v1.0
+1547153486 source:/home/laurent/Développement/Projets-c++/ODFAEGCREATOR/application.cpp
+	"application.hpp"
+	"odfaeg/Core/action.h"
+	"odfaeg/Core/command.h"
+	<sys/stat.h>
+	<stdlib.h>
+	"odfaeg/Core/utilities.h"
+
+1547117571 /home/laurent/Développement/Projets-c++/ODFAEGCREATOR/application.h
+	"odfaeg/Core/application.h"
+	"odfaeg/Graphics/GUI/menubar.hpp"
+	"odfaeg/Graphics/GUI/menuItem.hpp"
+	"odfaeg/Graphics/GUI/filedialog.hpp"
+	"odfaeg/Graphics/GUI/textArea.hpp"
+	"odfaeg/Graphics/GUI/button.hpp"
+	"odfaeg/Graphics/GUI/label.hpp"
+	"odfaeg/Graphics/GUI/dropDownList.hpp"
+	"odfaeg/Graphics/GUI/node.hpp"
+
+1546952188 source:/home/laurent/Développement/Projets-c++/ODFAEGCREATOR/main.cpp
+	"application.h"
+
+1469122902 source:/media/laurent/B69C-B8F8/Développement/Projets-c++/ODFAEGCREATOR/application.cpp
+	"application.h"
+	"odfaeg/Core/action.h"
+	"odfaeg/Core/command.h"
+	<sys/stat.h>
+	<stdlib.h>
+	"odfaeg/Core/utilities.h"
+
+1455431606 /media/laurent/B69C-B8F8/Développement/Projets-c++/ODFAEGCREATOR/application.h
+	"odfaeg/Core/application.h"
+	"odfaeg/Graphics/GUI/menubar.hpp"
+	"odfaeg/Graphics/GUI/menuItem.hpp"
+	"odfaeg/Graphics/GUI/filedialog.hpp"
+	"odfaeg/Graphics/GUI/textArea.hpp"
+	"odfaeg/Graphics/GUI/button.hpp"
+	"odfaeg/Graphics/GUI/label.hpp"
+	"odfaeg/Graphics/GUI/dropDownList.hpp"
+
+1453121794 source:/media/laurent/B69C-B8F8/Développement/Projets-c++/ODFAEGCREATOR/main.cpp
+	"application.h"
+	"odfaeg/Window/x11Window.hpp"
+
+1547117571 /home/laurent/Développement/Projets-c++/ODFAEGCREATOR/application.hpp
+	"odfaeg/Core/application.h"
+	"odfaeg/Graphics/GUI/menubar.hpp"
+	"odfaeg/Graphics/GUI/menuItem.hpp"
+	"odfaeg/Graphics/GUI/filedialog.hpp"
+	"odfaeg/Graphics/GUI/textArea.hpp"
+	"odfaeg/Graphics/GUI/button.hpp"
+	"odfaeg/Graphics/GUI/label.hpp"
+	"odfaeg/Graphics/GUI/dropDownList.hpp"
+	"odfaeg/Graphics/GUI/node.hpp"
+
