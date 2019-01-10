@@ -492,6 +492,30 @@ GUI/menubar.cpp.s:
 	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menubar.cpp.s
 .PHONY : GUI/menubar.cpp.s
 
+GUI/node.o: GUI/node.cpp.o
+.PHONY : GUI/node.o
+
+# target to build an object file
+GUI/node.cpp.o:
+	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/node.cpp.o
+.PHONY : GUI/node.cpp.o
+
+GUI/node.i: GUI/node.cpp.i
+.PHONY : GUI/node.i
+
+# target to preprocess a source file
+GUI/node.cpp.i:
+	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/node.cpp.i
+.PHONY : GUI/node.cpp.i
+
+GUI/node.s: GUI/node.cpp.s
+.PHONY : GUI/node.s
+
+# target to generate assembly for a file
+GUI/node.cpp.s:
+	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/node.cpp.s
+.PHONY : GUI/node.cpp.s
+
 GUI/optionPane.o: GUI/optionPane.cpp.o
 .PHONY : GUI/optionPane.o
 
@@ -1795,6 +1819,9 @@ help:
 	@echo "... GUI/menubar.o"
 	@echo "... GUI/menubar.i"
 	@echo "... GUI/menubar.s"
+	@echo "... GUI/node.o"
+	@echo "... GUI/node.i"
+	@echo "... GUI/node.s"
 	@echo "... GUI/optionPane.o"
 	@echo "... GUI/optionPane.i"
 	@echo "... GUI/optionPane.s"

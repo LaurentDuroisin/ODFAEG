@@ -52,7 +52,7 @@ namespace odfaeg {
                 states.transform = getTransform();
                 onDraw(target, states);
                 for (unsigned int i = 0; i < children.size(); i++) {
-                    if (children[i]->getPosition().x >= getPosition().x && children[i]->getPosition().y >= getPosition().y
+                    if (children[i]->isVisible() && children[i]->getPosition().x >= getPosition().x && children[i]->getPosition().y >= getPosition().y
                     && children[i]->getPosition().x + children[i]->getSize().x <= getPosition().x + getSize().x
                     && children[i]->getPosition().y + children[i]->getSize().y <= getPosition().y + getSize().y)
                         children[i]->draw(target, states);
@@ -96,6 +96,23 @@ namespace odfaeg {
                 children.clear();
             }
             virtual void onEventPushed(sf::Event event, RenderWindow& window) {
+            }
+            void removeChild (std::vector<LightComponent*> toRemove) {
+                children.erase(
+                std::remove_if( // Selectively remove elements in the second vector...
+                    children.begin(),
+                    children.end(),
+                    [&] (std::unique_ptr<LightComponent> const& p)
+                    {   // This predicate checks whether the element is contained
+                        // in the second vector of pointers to be removed...
+                        return std::find(
+                            toRemove.cbegin(),
+                            toRemove.cend(),
+                            p.get()
+                            ) != toRemove.end();
+                    }),
+                    children.end()
+                );
             }
             virtual ~LightComponent() {}
             private :

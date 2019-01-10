@@ -105,7 +105,7 @@ namespace odfaeg {
                 bCancel.setRelSize(0.1f, 0.8f);
                 bCancel.setParent(&pBottom);
                 pBottom.addChild(&bCancel);
-                setRelSize(1.f, 1.f);
+                setRelSize(1, 1);
                 setAutoResized(true);
             }
             void FileDialog::clear() {

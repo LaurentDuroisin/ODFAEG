@@ -11,7 +11,7 @@ namespace odfaeg {
                 void addElement (LightComponent* element, unsigned int rowIndex, unsigned int columnIndex);
                 void onMove (math::Vec3f& t);
                 void onDraw(RenderTarget& target, RenderStates states);
-                void clear();
+                void clear() {}
                 private :
                 unsigned int nbRows;
                 unsigned int nbColumns;

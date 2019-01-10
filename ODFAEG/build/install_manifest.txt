@@ -128,6 +128,7 @@
 /usr/local/./include/odfaeg/Graphics/GUI/textArea.hpp
 /usr/local/./include/odfaeg/Graphics/GUI/icon.hpp
 /usr/local/./include/odfaeg/Graphics/GUI/panel.hpp
+/usr/local/./include/odfaeg/Graphics/GUI/node.hpp
 /usr/local/./include/odfaeg/Graphics/GUI/button.hpp
 /usr/local/./include/odfaeg/Graphics/GUI/focusListener.hpp
 /usr/local/./include/odfaeg/Graphics/GUI/passwordField.hpp

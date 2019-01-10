@@ -35,7 +35,7 @@ namespace odfaeg {
         Entity* Entity::getRootEntity() {
             if (parent == nullptr)
                 return this;
-            parent->getRootEntity();
+            return parent->getRootEntity();
         }
         int Entity::getNbEntities () {
             return nbEntities;

@@ -126,6 +126,8 @@ set(SRC_GRAPHICS_3D
 	
 source_group("3d_graphics" FILES ${SRC_GRAPHICS_3D})
 set(SRC_GUI
+	${INCROOT}/GUI/node.hpp
+	${SRCROOT}/GUI/node.cpp
 	${INCROOT}/GUI/table.hpp
 	${SRCROOT}/GUI/table.cpp
 	${INCROOT}/GUI/icon.hpp

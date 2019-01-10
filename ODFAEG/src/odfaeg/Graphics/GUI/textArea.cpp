@@ -121,12 +121,11 @@ namespace odfaeg {
                 text.setString(tmp_text);
                 sf::Vector2f pos = text.findCharacterPos(currentIndex);
                 cursorPos = math::Vec3f(pos.x, pos.y, 0);
-                setSize(this->text.getSize());
             }
             void TextArea::setText(std::string text) {
                 tmp_text = text;
                 this->text.setString(tmp_text);
-                setSize(this->text.getSize());
+                //setSize(this->text.getSize());
             }
         }
     }

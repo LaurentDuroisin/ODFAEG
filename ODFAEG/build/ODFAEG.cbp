@@ -516,6 +516,8 @@
       </Unit>
       <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/menubar.cpp">
       </Unit>
+      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/node.cpp">
+      </Unit>
       <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/optionPane.cpp">
       </Unit>
       <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/panel.cpp">
@@ -763,6 +765,8 @@
       <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/GUI/menuItem.hpp">
       </Unit>
       <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/GUI/menubar.hpp">
+      </Unit>
+      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/GUI/node.hpp">
       </Unit>
       <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/GUI/optionPane.hpp">
       </Unit>
