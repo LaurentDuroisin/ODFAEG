@@ -9,11 +9,14 @@
 #include "odfaeg/Graphics/GUI/label.hpp"
 #include "odfaeg/Graphics/GUI/dropDownList.hpp"
 #include "odfaeg/Graphics/GUI/node.hpp"
+#include "odfaeg/Graphics/circleShape.h"
+#include "odfaeg/Graphics/sprite.h"
 class ODFAEGCreator : public odfaeg::core::Application,
                       public odfaeg::graphic::gui::MenuItemListener,
                       public odfaeg::graphic::gui::ActionListener {
     public :
     ODFAEGCreator (sf::VideoMode vm, std::string title);
+    void moveCursor(sf::Vector2f mousePos);
     void onLoad();
     void onInit ();
     void onRender(odfaeg::graphic::RenderComponentManager *cm);
@@ -28,6 +31,8 @@ class ODFAEGCreator : public odfaeg::core::Application,
     void showHeadersFiles(odfaeg::graphic::gui::Label* label);
     void showGUI(odfaeg::graphic::gui::Label* label);
     void showFileContent(odfaeg::graphic::gui::Label* lab);
+    void displayInfos(odfaeg::graphic::Transformable* transformable);
+    void onObjectPosChanged(odfaeg::graphic::gui::TextArea* ta);
     enum Fonts {
         Serif
     };
@@ -46,6 +51,14 @@ class ODFAEGCreator : public odfaeg::core::Application,
         std::string appliname, minAppliname;
         std::string applitype;
         std::string path;
-        std::unique_ptr<odfaeg::graphic::gui::Node> rootNode;
+        std::unique_ptr<odfaeg::graphic::gui::Node> rootNode, rootPropNode;
+        odfaeg::graphic::CircleShape cursor;
+        odfaeg::math::Vec3f guiSize, guiPos;
+        bool isGuiShown;
+        std::vector<odfaeg::graphic::Transformable*> transformables;
+        odfaeg::graphic::Transformable* selectedObject;
+        std::vector<std::unique_ptr<odfaeg::graphic::Drawable>> drawables;
+        odfaeg::graphic::gui::TextArea *tPosX, *tPosY, *tPosZ;
+        odfaeg::graphic::gui::Label *lPosX, *lPosY, *lPosZ, *lPosition, *lTransform;
 };
 #endif

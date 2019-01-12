@@ -7,7 +7,9 @@ namespace odfaeg {
         {
             this->action = std::make_unique<Action>(action);
         }
-
+        void Command::setName(std::string name) {
+            this->name = name;
+        }
         Command::Command (Action action, FastDelegate<bool> trigger, FastDelegate<void> slot) : slot(slot) {
             this->action = std::make_unique<Action>(action);
             this->trigger = std::make_unique<FastDelegate<bool>>(trigger);
@@ -21,6 +23,7 @@ namespace odfaeg {
            }
            if (other.trigger != nullptr)
                trigger = std::make_unique<FastDelegate<bool>>(*other.trigger);
+            name = other.name;
         }
         bool Command::containsEvent (sf::Event &event)
         {
@@ -102,8 +105,9 @@ namespace odfaeg {
                 return event.size.width == other.size.width && event.size.height == other.size.height;
             }
             if (event.type == sf::Event::TextEntered) {
-                if (other.text.unicode == 0)
+                if (other.text.unicode == 0) {
                     return true;
+                }
                 return event.text.unicode == other.text.unicode;
             }
             if (event.type == sf::Event::KeyPressed || event.type == sf::Event::KeyReleased) {

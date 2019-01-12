@@ -104,6 +104,7 @@ namespace odfaeg
             Action* getAction();
             Command& operator= (const Command& other);
             static bool equalEvent (sf::Event event, sf::Event other);
+            void setName(std::string name);
         private :
 
             /** \fn bool equalEvent (sf::Event event, sf::Event other)
@@ -121,6 +122,7 @@ namespace odfaeg
             std::unique_ptr<FastDelegate<bool>> trigger;
             /** < the SFML events generated.*/
             static std::vector<sf::Event> events;
+            std::string name;
         };
     }
 }

@@ -13,7 +13,9 @@ namespace odfaeg {
                 bool isNodeVisible();
                 void showAllNodes();
                 void hideAllNodes();
+                void deleteAllNodes();
                 Node* findNode (LightComponent* component);
+                void addOtherComponent(LightComponent* component, math::Vec2f relSize);
                 void affiche();
                 private :
                 bool nodeVisible;
@@ -25,6 +27,7 @@ namespace odfaeg {
                 std::vector<std::unique_ptr<Node>> nodes;
                 Node* parent;
                 LightComponent* component;
+                std::vector<LightComponent*> components;
                 std::string name;
             };
         }

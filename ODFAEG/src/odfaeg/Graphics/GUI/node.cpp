@@ -39,7 +39,7 @@ namespace odfaeg {
                 if (this != getRootNode())
                     nodeRelPos.y += component->getRelSize().y;
                 findNodePos(this, nodeRelPos);
-                node->component->setRelPosition(nodeRelPos.x, nodeRelPos.y);
+                node->component->setRelPosition(node->component->getRelPosition().x, nodeRelPos.y);
                 getRootNode()->displaceNodes (node, nodeRelPos);
                 std::unique_ptr<Node> ptr;
                 ptr.reset(node);
@@ -49,6 +49,10 @@ namespace odfaeg {
             void Node::showNode(Node* node) {
                 node->component->setVisible(true);
                 node->component->setEventContextActivated(true);
+                for (unsigned int i = 0; i < node->components.size(); i++) {
+                    node->components[i]->setVisible(true);
+                    node->components[i]->setEventContextActivated(true);
+                }
                 if (node->isNodeVisible())
                     node->showAllNodes();
             }
@@ -72,6 +76,10 @@ namespace odfaeg {
             void Node::hideNode(Node* node) {
                 node->component->setVisible(false);
                 node->component->setEventContextActivated(false);
+                for (unsigned int i = 0; i < node->components.size(); i++) {
+                    node->components[i]->setVisible(false);
+                    node->components[i]->setEventContextActivated(false);
+                }
                 node->hideAllNodes();
             }
             void Node::displaceNodes(Node* selectedNode, math::Vec2f& nodeRelPos) {
@@ -79,7 +87,10 @@ namespace odfaeg {
                     if (nodes[i].get() != selectedNode && nodes[i]->component->isVisible()
                         && nodes[i]->component->getRelPosition().y >= selectedNode->component->getRelPosition().y) {
                         nodeRelPos.y += nodes[i]->component->getRelSize().y;
-                        nodes[i]->component->setRelPosition(nodeRelPos.x, nodeRelPos.y);
+                        nodes[i]->component->setRelPosition(nodes[i]->component->getRelPosition().x, nodeRelPos.y);
+                        for (unsigned int j = 0; j < nodes[i]->components.size(); j++) {
+                            nodes[i]->components[j]->setRelPosition(nodes[i]->components[j]->getRelPosition().x, nodeRelPos.y);
+                        }
                     }
                     nodes[i]->displaceNodes(selectedNode,nodeRelPos);
                 }
@@ -95,6 +106,19 @@ namespace odfaeg {
                 }
                 nodeVisible = false;
                 component->setAutoResized(true);
+            }
+            void Node::addOtherComponent(LightComponent* component, math::Vec2f relSize) {
+                float relXPos = this->component->getRelPosition().x + this->component->getRelSize().x;
+                for (unsigned int i = 0; i < components.size(); i++) {
+                    relXPos += components[i]->getRelSize().x;
+                }
+                component->setRelPosition(relXPos, this->component->getRelPosition().y);
+                component->setRelSize(relSize.x, relSize.y);
+                if (parent != nullptr)
+                    parent->component->setAutoResized(true);
+            }
+            void Node::deleteAllNodes() {
+                nodes.clear();
             }
             std::vector<Node*> Node::getNodes() {
                 std::vector<Node*> nds;

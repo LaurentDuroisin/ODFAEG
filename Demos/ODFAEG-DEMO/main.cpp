@@ -17,10 +17,10 @@ class SimpleAppli : public Application {
         Font* font = new Font();
         font->loadFromFile("fonts/FreeSerif.ttf");
         wResuHero = new RenderWindow (sf::VideoMode(400, 300), "Create ODFAEG Application", sf::Style::Titlebar, sf::ContextSettings(0, 0, 4, 3, 0));
-        gui::Label* label = new gui::Label(*wResuHero, Vec3f(0, 0, 0), Vec3f(200, 50, 0),font,"5");
+        gui::Label* label = new gui::Label(*wResuHero, Vec3f(0, 0, 0), Vec3f(200, 50, 0),font,"5",15);
         wResuHero->setVisible(true);
         getRenderComponentManager().addComponent(label);
-        gui::Button* button = new gui::Button(Vec3f(0, 200, 0), Vec3f(400, 100, 0), font,"Respawn", *wResuHero);
+        gui::Button* button = new gui::Button(Vec3f(0, 200, 0), Vec3f(400, 100, 0), font,"Respawn", 15, *wResuHero);
         getRenderComponentManager().addComponent(button);
         wResuHero->setPosition(sf::Vector2i(500, 400));
         addWindow(wResuHero);
@@ -39,7 +39,7 @@ class SimpleAppli : public Application {
 };
 int main(int argc, char* argv[])
 {
-    /*EXPORT_CLASS_GUID(BoundingVolumeBoundingBox, BoundingVolume, BoundingBox)
+    EXPORT_CLASS_GUID(BoundingVolumeBoundingBox, BoundingVolume, BoundingBox)
     EXPORT_CLASS_GUID(EntityTile, Entity, Tile)
     EXPORT_CLASS_GUID(EntityTile, Entity, BigTile)
     EXPORT_CLASS_GUID(EntityWall, Entity, g2d::Wall)
@@ -47,9 +47,9 @@ int main(int argc, char* argv[])
     EXPORT_CLASS_GUID(EntityAnimation, Entity, Anim)
     EXPORT_CLASS_GUID(EntityHero, Entity, Hero)
     MyAppli app(sf::VideoMode(800, 600, 32), "Test odfaeg");
-    return app.exec();*/
-    SimpleAppli app(sf::VideoMode(800, 600), "test");
     return app.exec();
+    /*impleAppli app(sf::VideoMode(800, 600), "test");
+    return app.exec();*/
 }
 
 

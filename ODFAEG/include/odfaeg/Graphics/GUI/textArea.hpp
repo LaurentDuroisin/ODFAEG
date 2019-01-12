@@ -28,7 +28,9 @@ namespace odfaeg {
                 void setText(std::string text);
                 void setCursorPos();
                 bool hasFocus();
+                bool isTextChanged();
                 void onEventPushed(sf::Event event, RenderWindow& window);
+                std::string getName();
             private :
                 unsigned int currentIndex;
                 std::string tmp_text, id_text;
@@ -37,7 +39,7 @@ namespace odfaeg {
                 RectangleShape rect;
                 sf::Color background;
                 math::Vec3f cursorPos;
-                bool haveFocus;
+                bool haveFocus, textChanged;
             };
         }
     }

@@ -36,7 +36,7 @@ namespace odfaeg {
         class ODFAEG_GRAPHICS_API Drawable
         {
         public :
-
+            virtual ~Drawable() {}
         protected :
 
             friend class RenderTarget;
@@ -53,8 +53,7 @@ namespace odfaeg {
             ///
             ////////////////////////////////////////////////////////////
             virtual void draw(RenderTarget& target, RenderStates states) = 0;
-            protected :
-            virtual ~Drawable() {}
+
         };
     }
 }

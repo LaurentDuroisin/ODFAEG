@@ -90,6 +90,17 @@ namespace odfaeg {
                 closedir(current);
             }
         }
+        bool is_number(const std::string& s)
+        {
+            std::string abs;
+            if (!s.empty() && s.at(0) == '-') {
+                abs = s.substr(1, s.length() - 1);
+            } else {
+                abs = s;
+            }
+            return !abs.empty() && std::find_if(abs.begin(),
+            abs.end(), [](char c) { return !std::isdigit(c); }) == abs.end();
+        }
         std::string getCurrentPath() {
             char cCurrentPath[FILENAME_MAX];
             getcwd(cCurrentPath,sizeof(cCurrentPath));

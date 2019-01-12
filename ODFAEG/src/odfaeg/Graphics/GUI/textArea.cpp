@@ -5,7 +5,6 @@ namespace odfaeg {
             TextArea::TextArea(math::Vec3f position, math::Vec3f size, const Font* font, std::string t, RenderWindow& rw) :
                 LightComponent(rw, position, size, math::Vec3f(0, 0, 0)) {
                 tmp_text = "";
-                id_text = t;
                 background = sf::Color::White;
                 text.setFont(*font);
                 text.setString(t);
@@ -15,20 +14,20 @@ namespace odfaeg {
                 rect = RectangleShape(size);
                 /*rect.setOutlineThickness(5.f);
                 rect.setOutlineColor(sf::Color::Black);*/
-                core::Action a2 (core::Action::MOUSE_MOVED);
+                core::Action a2 (core::Action::MOUSE_BUTTON_PRESSED_ONCE, sf::Mouse::Left);
                 core::Command cmd2(a2, core::FastDelegate<bool>(&TextArea::isMouseInTextArea, this), core::FastDelegate<void>(&TextArea::gaignedFocus, this));
                 core::Command cmd3(a2, core::FastDelegate<bool>(&TextArea::isMouseOutTextArea, this), core::FastDelegate<void>(&TextArea::lostFocus, this));
-                getListener().connect("CGFOCUS"+t, cmd2);
-                getListener().connect("CLFOCUS"+t, cmd3);
+                getListener().connect("CGFOCUS", cmd2);
+                getListener().connect("CLFOCUS", cmd3);
                 core::Action a3 (core::Action::MOUSE_BUTTON_PRESSED_ONCE, sf::Mouse::Left);
                 core::Command cmd4(a3, core::FastDelegate<bool>(&TextArea::isMouseInTextArea, this), core::FastDelegate<void>(&TextArea::setCursorPos, this));
-                getListener().connect("CMOUSECLICKED"+t, cmd4);
+                getListener().connect("CMOUSECLICKED", cmd4);
                 core::Action a4 (core::Action::TEXT_ENTERED);
                 core::Command cmd5(a4, core::FastDelegate<bool>(&TextArea::hasFocus, this), core::FastDelegate<void>(&TextArea::onTextEntered, this, 'a'));
-                getListener().connect("CTEXTENTERED"+t, cmd5);
+                getListener().connect("CTEXTENTERED", cmd5);
                 currentIndex = 0;
                 setSize(text.getSize());
-                haveFocus = false;
+                haveFocus = textChanged = false;
             }
             void TextArea::onEventPushed(sf::Event event, RenderWindow& window) {
                 if (&window == &getWindow()) {
@@ -106,7 +105,7 @@ namespace odfaeg {
             }
             void TextArea::onUpdate(RenderWindow* window, sf::Event& event) {
                 if (window == &getWindow() && event.type == sf::Event::TextEntered) {
-                    getListener().setCommandSlotParams("CTEXTENTERED"+id_text, this, static_cast<char>(event.text.unicode));
+                    getListener().setCommandSlotParams("CTEXTENTERED", this, static_cast<char>(event.text.unicode));
                 }
             }
             void TextArea::onTextEntered(char caracter) {
@@ -118,14 +117,20 @@ namespace odfaeg {
                     tmp_text.insert(currentIndex, 1, caracter);
                     currentIndex++;
                 }
-                text.setString(tmp_text);
+                setText(tmp_text);
                 sf::Vector2f pos = text.findCharacterPos(currentIndex);
                 cursorPos = math::Vec3f(pos.x, pos.y, 0);
             }
             void TextArea::setText(std::string text) {
                 tmp_text = text;
                 this->text.setString(tmp_text);
+                textChanged = true;
                 //setSize(this->text.getSize());
+            }
+            bool TextArea::isTextChanged() {
+                bool b = textChanged;
+                textChanged = false;
+                return b;
             }
         }
     }

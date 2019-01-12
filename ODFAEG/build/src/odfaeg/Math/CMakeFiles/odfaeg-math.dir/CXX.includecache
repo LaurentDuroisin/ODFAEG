@@ -308,10 +308,6 @@ vec2f.h
 
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/config.hpp
 
-/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Math/bigInt.cpp
-../../../include/odfaeg/Math/bigInt.hpp
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/bigInt.hpp
-
 /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Math/computer.cpp
 ../../../include/odfaeg/Math/computer.h
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/computer.h

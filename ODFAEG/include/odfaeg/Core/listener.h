@@ -40,6 +40,7 @@ namespace odfaeg {
              * \param Command command : the command to add.
              */
              void connect(std::string key, Command command) {
+                command.setName(key);
                 toAdd.insert(std::make_pair(key, command));
              }
              /**

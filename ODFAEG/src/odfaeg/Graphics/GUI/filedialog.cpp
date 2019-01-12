@@ -22,10 +22,10 @@ namespace odfaeg {
                 pFiles.setRelSize(0.5f, 0.8f);
                 pBottom.setRelPosition(0.f, 0.9f);
                 pBottom.setRelSize(1.f, 0.1f);
-                pTop.setParent(this);
+                /*pTop.setParent(this);
                 pBottom.setParent(this);
                 pDirectories.setParent(this);
-                pFiles.setParent(this);
+                pFiles.setParent(this);*/
                 addChild(&pTop);
                 addChild(&pBottom);
                 addChild(&pDirectories);

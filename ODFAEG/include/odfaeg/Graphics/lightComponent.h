@@ -18,8 +18,8 @@ namespace odfaeg {
             void recomputeSize() {
                 if (isAutoResized()) {
                     float sx, sy, npx, npy, nsx, nsy, psx, psy;
-                    sx = getSize().x;
-                    sy = getSize().y;
+                    /*sx = getSize().x;
+                    sy = getSize().y;*/
                     if (parent != nullptr) {
                         npx = parent->getPosition().x + parent->getSize().x * getRelPosition().x;
                         npy = parent->getPosition().y + parent->getSize().y * getRelPosition().y;
@@ -35,7 +35,7 @@ namespace odfaeg {
                         psx = getWindow().getSize().x;
                         psy = getWindow().getSize().y;
                     }
-                    setScale(math::Vec3f(nsx / sx, nsy / sy, 1.f));
+                    setSize(math::Vec3f(nsx, nsy, 0.f));
                     setPosition(math::Vec3f(npx, npy, getPosition().z));
                     if (getSize().x > psx)
                         setSize(math::Vec3f(psx, getSize().y, 0));

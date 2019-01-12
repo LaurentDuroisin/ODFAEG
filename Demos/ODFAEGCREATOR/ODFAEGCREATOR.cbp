@@ -54,7 +54,7 @@
 			<Add library="../../../../../usr/lib/i386-linux-gnu/libgmp.so" />
 		</Linker>
 		<Unit filename="application.cpp" />
-		<Unit filename="application.h" />
+		<Unit filename="application.hpp" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />
