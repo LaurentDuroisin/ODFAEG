@@ -612,6 +612,30 @@ GUI/progressBar.cpp.s:
 	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/progressBar.cpp.s
 .PHONY : GUI/progressBar.cpp.s
 
+GUI/tabPane.o: GUI/tabPane.cpp.o
+.PHONY : GUI/tabPane.o
+
+# target to build an object file
+GUI/tabPane.cpp.o:
+	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/tabPane.cpp.o
+.PHONY : GUI/tabPane.cpp.o
+
+GUI/tabPane.i: GUI/tabPane.cpp.i
+.PHONY : GUI/tabPane.i
+
+# target to preprocess a source file
+GUI/tabPane.cpp.i:
+	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/tabPane.cpp.i
+.PHONY : GUI/tabPane.cpp.i
+
+GUI/tabPane.s: GUI/tabPane.cpp.s
+.PHONY : GUI/tabPane.s
+
+# target to generate assembly for a file
+GUI/tabPane.cpp.s:
+	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/tabPane.cpp.s
+.PHONY : GUI/tabPane.cpp.s
+
 GUI/table.o: GUI/table.cpp.o
 .PHONY : GUI/table.o
 
@@ -1834,6 +1858,9 @@ help:
 	@echo "... GUI/progressBar.o"
 	@echo "... GUI/progressBar.i"
 	@echo "... GUI/progressBar.s"
+	@echo "... GUI/tabPane.o"
+	@echo "... GUI/tabPane.i"
+	@echo "... GUI/tabPane.s"
 	@echo "... GUI/table.o"
 	@echo "... GUI/table.i"
 	@echo "... GUI/table.s"

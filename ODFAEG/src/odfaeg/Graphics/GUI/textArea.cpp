@@ -4,7 +4,7 @@ namespace odfaeg {
         namespace gui {
             TextArea::TextArea(math::Vec3f position, math::Vec3f size, const Font* font, std::string t, RenderWindow& rw) :
                 LightComponent(rw, position, size, math::Vec3f(0, 0, 0)) {
-                tmp_text = "";
+                tmp_text = t;
                 background = sf::Color::White;
                 text.setFont(*font);
                 text.setString(t);

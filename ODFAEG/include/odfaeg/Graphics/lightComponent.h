@@ -9,6 +9,12 @@ namespace odfaeg {
                 Component (window, position, size, origin, priority), parent(parent) {
 
             }
+            void setName(std::string name) {
+                this->name = name;
+            }
+            std::string getName() {
+                return name;
+            }
             void setParent(LightComponent* parent) {
                 this->parent = parent;
             }
@@ -89,7 +95,7 @@ namespace odfaeg {
             void processEvents() {
                 getListener().processEvents();
                 for (unsigned int i = 0; i < children.size(); i++) {
-                    children[i]->getListener().processEvents();
+                    children[i]->processEvents();
                 }
             }
             virtual void removeAll() {
@@ -97,25 +103,20 @@ namespace odfaeg {
             }
             virtual void onEventPushed(sf::Event event, RenderWindow& window) {
             }
-            void removeChild (std::vector<LightComponent*> toRemove) {
-                children.erase(
-                std::remove_if( // Selectively remove elements in the second vector...
-                    children.begin(),
-                    children.end(),
-                    [&] (std::unique_ptr<LightComponent> const& p)
-                    {   // This predicate checks whether the element is contained
-                        // in the second vector of pointers to be removed...
-                        return std::find(
-                            toRemove.cbegin(),
-                            toRemove.cend(),
-                            p.get()
-                            ) != toRemove.end();
-                    }),
-                    children.end()
-                );
+            bool removeChild(LightComponent& child)
+            {
+                const auto itChildToRemove =
+                    std::find_if(children.begin(), children.end(),
+                                 [&](auto& p) { return p.get() == &child; });
+
+                const bool found = (itChildToRemove != children.end());
+                if(found)
+                    children.erase(itChildToRemove);
+                return found;
             }
             virtual ~LightComponent() {}
             private :
+            std::string name;
             LightComponent* parent;
             std::vector<std::unique_ptr<LightComponent>> children;
         };

@@ -90,9 +90,6 @@ namespace odfaeg {
                     horScrollBar = RectangleShape(math::Vec3f(10, scrollYSize, 0));
                     horScrollBar.setPosition(math::Vec3f(getPosition().x + getSize().x - 10, getPosition().y, 0));
                     scrollY = true;
-                    if (getPosition().x == 400) {
-                        std::cout<<getSize()<<std::endl;
-                    }
                 } else {
                     scrollY = false;
                 }

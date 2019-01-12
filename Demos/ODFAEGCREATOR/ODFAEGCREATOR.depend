@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1547254713 source:/home/laurent/Développement/Projets-c++/ODFAEGCREATOR/application.cpp
+1547314390 source:/home/laurent/Développement/Projets-c++/ODFAEGCREATOR/application.cpp
 	"application.hpp"
 	"odfaeg/Core/action.h"
 	"odfaeg/Core/command.h"
@@ -43,7 +43,7 @@
 	"application.h"
 	"odfaeg/Window/x11Window.hpp"
 
-1547249724 /home/laurent/Développement/Projets-c++/ODFAEGCREATOR/application.hpp
+1547314728 /home/laurent/Développement/Projets-c++/ODFAEGCREATOR/application.hpp
 	"odfaeg/Core/application.h"
 	"odfaeg/Graphics/GUI/menubar.hpp"
 	"odfaeg/Graphics/GUI/menuItem.hpp"
@@ -53,6 +53,7 @@
 	"odfaeg/Graphics/GUI/label.hpp"
 	"odfaeg/Graphics/GUI/dropDownList.hpp"
 	"odfaeg/Graphics/GUI/node.hpp"
+	"odfaeg/Graphics/GUI/tabPane.hpp"
 	"odfaeg/Graphics/circleShape.h"
 	"odfaeg/Graphics/sprite.h"
 

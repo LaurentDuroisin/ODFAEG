@@ -47,6 +47,12 @@ namespace odfaeg {
                 physic::BoundingBox bb(getPosition().x, getPosition().y, 0, getSize().x, getSize().y, 0);
                 return bb.isPointInside(mousePos);
             }
+            void Label::setBorderColor(sf::Color color) {
+                rect.setOutlineColor(color);
+            }
+            void Label::setBorderThickness(float tickness) {
+                rect.setOutlineThickness(tickness);
+            }
             void Label::onUpdate(RenderWindow* window, sf::Event& event) {
                 if (&getWindow() == window) {
                     if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)

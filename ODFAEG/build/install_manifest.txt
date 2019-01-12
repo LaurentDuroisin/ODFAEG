@@ -211,6 +211,7 @@
 /usr/local/./include/odfaeg/Graphics/GUI/optionPane.hpp
 /usr/local/./include/odfaeg/Graphics/GUI/dropDownList.hpp
 /usr/local/./include/odfaeg/Graphics/GUI/menu.hpp
+/usr/local/./include/odfaeg/Graphics/GUI/tabPane.hpp
 /usr/local/./include/odfaeg/Graphics/GUI/actionListener.hpp
 /usr/local/./include/odfaeg/Graphics/GUI/progressBar.hpp
 /usr/local/./include/odfaeg/Graphics/GUI/textArea.hpp

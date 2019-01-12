@@ -9,6 +9,7 @@
 #include "odfaeg/Graphics/GUI/label.hpp"
 #include "odfaeg/Graphics/GUI/dropDownList.hpp"
 #include "odfaeg/Graphics/GUI/node.hpp"
+#include "odfaeg/Graphics/GUI/tabPane.hpp"
 #include "odfaeg/Graphics/circleShape.h"
 #include "odfaeg/Graphics/sprite.h"
 class ODFAEGCreator : public odfaeg::core::Application,
@@ -47,11 +48,11 @@ class ODFAEGCreator : public odfaeg::core::Application,
         odfaeg::graphic::gui::DropDownList* dpList;
         odfaeg::graphic::gui::Label *lWidth, *lHeight;
         odfaeg::graphic::gui::TextArea *taWidth, *taHeight, *tScriptEdit;
-        odfaeg::graphic::gui::Panel *pProjects, *pScriptsFiles, *pScriptsEdit;
+        odfaeg::graphic::gui::Panel *pProjects, *pScriptsFiles, *pScriptsEdit, *pTransform, *pMaterial;
         std::string appliname, minAppliname;
         std::string applitype;
         std::string path;
-        std::unique_ptr<odfaeg::graphic::gui::Node> rootNode, rootPropNode;
+        std::unique_ptr<odfaeg::graphic::gui::Node> rootNode, rootPropNode, rootMaterialNode;
         odfaeg::graphic::CircleShape cursor;
         odfaeg::math::Vec3f guiSize, guiPos;
         bool isGuiShown;
@@ -59,6 +60,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
         odfaeg::graphic::Transformable* selectedObject;
         std::vector<std::unique_ptr<odfaeg::graphic::Drawable>> drawables;
         odfaeg::graphic::gui::TextArea *tPosX, *tPosY, *tPosZ;
-        odfaeg::graphic::gui::Label *lPosX, *lPosY, *lPosZ, *lPosition, *lTransform;
+        odfaeg::graphic::gui::Label *lPosX, *lPosY, *lPosZ, *lPosition;
+        odfaeg::graphic::gui::TabPane* tabPane;
 };
 #endif

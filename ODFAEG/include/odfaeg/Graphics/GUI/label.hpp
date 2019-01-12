@@ -22,6 +22,8 @@ namespace odfaeg {
                 std::string getText();
                 bool isMouseInside();
                 void onUpdate(RenderWindow* window, sf::Event& event);
+                void setBorderColor(sf::Color color);
+                void setBorderThickness(float thickness);
                 unsigned int getCharacterSize() {
                     return text.getCharacterSize();
                 }

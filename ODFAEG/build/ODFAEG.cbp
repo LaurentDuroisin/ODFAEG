@@ -1,1066 +1,862 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
-   <FileVersion major="1" minor="6" />
-   <Project>
-      <Option title="ODFAEG" />
-      <Option makefile_is_custom="1" />
-      <Option compiler="gcc" />
-      <Option virtualFolders="CMake Files\;CMake Files\cmake\;CMake Files\cmake\Modules\;CMake Files\src\;CMake Files\src\odfaeg\;CMake Files\src\odfaeg\Core\;CMake Files\src\odfaeg\Math\;CMake Files\src\odfaeg\Window\;CMake Files\src\odfaeg\Physics\;CMake Files\src\odfaeg\Graphics\;CMake Files\src\odfaeg\Network\;CMake Files\src\odfaeg\Audio\;" />
-      <Build>
-      <Target title="all">
-         <Option working_dir="/home/laurent/Développement/Projets-c++/ODFAEG/build" />
-         <Option type="4" />
-         <MakeCommands>
-            <Build command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 all" />
-            <CompileFile command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
-            <Clean command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 clean" />
-            <DistClean command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 clean" />
-         </MakeCommands>
-      </Target>
-      <Target title="edit_cache">
-         <Option working_dir="/home/laurent/Développement/Projets-c++/ODFAEG/build" />
-         <Option type="4" />
-         <MakeCommands>
-            <Build command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 edit_cache" />
-            <CompileFile command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
-            <Clean command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 clean" />
-            <DistClean command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 clean" />
-         </MakeCommands>
-      </Target>
-      <Target title="install">
-         <Option working_dir="/home/laurent/Développement/Projets-c++/ODFAEG/build" />
-         <Option type="4" />
-         <MakeCommands>
-            <Build command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 install" />
-            <CompileFile command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
-            <Clean command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 clean" />
-            <DistClean command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 clean" />
-         </MakeCommands>
-      </Target>
-      <Target title="install/local">
-         <Option working_dir="/home/laurent/Développement/Projets-c++/ODFAEG/build" />
-         <Option type="4" />
-         <MakeCommands>
-            <Build command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 install/local" />
-            <CompileFile command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
-            <Clean command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 clean" />
-            <DistClean command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 clean" />
-         </MakeCommands>
-      </Target>
-      <Target title="install/strip">
-         <Option working_dir="/home/laurent/Développement/Projets-c++/ODFAEG/build" />
-         <Option type="4" />
-         <MakeCommands>
-            <Build command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 install/strip" />
-            <CompileFile command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
-            <Clean command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 clean" />
-            <DistClean command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 clean" />
-         </MakeCommands>
-      </Target>
-      <Target title="list_install_components">
-         <Option working_dir="/home/laurent/Développement/Projets-c++/ODFAEG/build" />
-         <Option type="4" />
-         <MakeCommands>
-            <Build command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 list_install_components" />
-            <CompileFile command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
-            <Clean command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 clean" />
-            <DistClean command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 clean" />
-         </MakeCommands>
-      </Target>
-      <Target title="rebuild_cache">
-         <Option working_dir="/home/laurent/Développement/Projets-c++/ODFAEG/build" />
-         <Option type="4" />
-         <MakeCommands>
-            <Build command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 rebuild_cache" />
-            <CompileFile command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
-            <Clean command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 clean" />
-            <DistClean command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 clean" />
-         </MakeCommands>
-      </Target>
-      <Target title="odfaeg-core">
-         <Option output="/home/laurent/Développement/Projets-c++/ODFAEG/build/lib/libodfaeg-core-s-d.a" prefix_auto="0" extension_auto="0" />
-         <Option working_dir="/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Core" />
-         <Option object_output="./" />
-         <Option type="2" />
-         <Option compiler="gcc" />
-         <Compiler>
-            <Add option="-DGLEW_STATIC" />
-            <Add option="-DODFAEG_STATIC" />
-            <Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include" />
-            <Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include/Core/boost" />
-            <Add directory="/usr/include" />
-            <Add directory="/usr/include/c++/4.9" />
-            <Add directory="/usr/include/c++/4.9/backward" />
-            <Add directory="/usr/include/i386-linux-gnu" />
-            <Add directory="/usr/include/i386-linux-gnu/c++/4.9" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include-fixed" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include-fixed" />
-            <Add directory="/usr/local/include" />
-         </Compiler>
-         <MakeCommands>
-            <Build command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Core/Makefile&quot;  VERBOSE=1 odfaeg-core" />
-            <CompileFile command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Core/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
-            <Clean command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Core/Makefile&quot;  VERBOSE=1 clean" />
-            <DistClean command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Core/Makefile&quot;  VERBOSE=1 clean" />
-         </MakeCommands>
-      </Target>
-      <Target title="odfaeg-core/fast">
-         <Option output="/home/laurent/Développement/Projets-c++/ODFAEG/build/lib/libodfaeg-core-s-d.a" prefix_auto="0" extension_auto="0" />
-         <Option working_dir="/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Core" />
-         <Option object_output="./" />
-         <Option type="2" />
-         <Option compiler="gcc" />
-         <Compiler>
-            <Add option="-DGLEW_STATIC" />
-            <Add option="-DODFAEG_STATIC" />
-            <Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include" />
-            <Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include/Core/boost" />
-            <Add directory="/usr/include" />
-            <Add directory="/usr/include/c++/4.9" />
-            <Add directory="/usr/include/c++/4.9/backward" />
-            <Add directory="/usr/include/i386-linux-gnu" />
-            <Add directory="/usr/include/i386-linux-gnu/c++/4.9" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include-fixed" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include-fixed" />
-            <Add directory="/usr/local/include" />
-         </Compiler>
-         <MakeCommands>
-            <Build command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Core/Makefile&quot;  VERBOSE=1 odfaeg-core/fast" />
-            <CompileFile command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Core/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
-            <Clean command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Core/Makefile&quot;  VERBOSE=1 clean" />
-            <DistClean command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Core/Makefile&quot;  VERBOSE=1 clean" />
-         </MakeCommands>
-      </Target>
-      <Target title="odfaeg-math">
-         <Option output="/home/laurent/Développement/Projets-c++/ODFAEG/build/lib/libodfaeg-math-s-d.a" prefix_auto="0" extension_auto="0" />
-         <Option working_dir="/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Math" />
-         <Option object_output="./" />
-         <Option type="2" />
-         <Option compiler="gcc" />
-         <Compiler>
-            <Add option="-DGLEW_STATIC" />
-            <Add option="-DODFAEG_STATIC" />
-            <Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include" />
-            <Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include/Core/boost" />
-            <Add directory="/usr/include" />
-            <Add directory="/usr/include/c++/4.9" />
-            <Add directory="/usr/include/c++/4.9/backward" />
-            <Add directory="/usr/include/i386-linux-gnu" />
-            <Add directory="/usr/include/i386-linux-gnu/c++/4.9" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include-fixed" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include-fixed" />
-            <Add directory="/usr/local/include" />
-         </Compiler>
-         <MakeCommands>
-            <Build command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Math/Makefile&quot;  VERBOSE=1 odfaeg-math" />
-            <CompileFile command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Math/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
-            <Clean command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Math/Makefile&quot;  VERBOSE=1 clean" />
-            <DistClean command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Math/Makefile&quot;  VERBOSE=1 clean" />
-         </MakeCommands>
-      </Target>
-      <Target title="odfaeg-math/fast">
-         <Option output="/home/laurent/Développement/Projets-c++/ODFAEG/build/lib/libodfaeg-math-s-d.a" prefix_auto="0" extension_auto="0" />
-         <Option working_dir="/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Math" />
-         <Option object_output="./" />
-         <Option type="2" />
-         <Option compiler="gcc" />
-         <Compiler>
-            <Add option="-DGLEW_STATIC" />
-            <Add option="-DODFAEG_STATIC" />
-            <Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include" />
-            <Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include/Core/boost" />
-            <Add directory="/usr/include" />
-            <Add directory="/usr/include/c++/4.9" />
-            <Add directory="/usr/include/c++/4.9/backward" />
-            <Add directory="/usr/include/i386-linux-gnu" />
-            <Add directory="/usr/include/i386-linux-gnu/c++/4.9" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include-fixed" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include-fixed" />
-            <Add directory="/usr/local/include" />
-         </Compiler>
-         <MakeCommands>
-            <Build command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Math/Makefile&quot;  VERBOSE=1 odfaeg-math/fast" />
-            <CompileFile command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Math/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
-            <Clean command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Math/Makefile&quot;  VERBOSE=1 clean" />
-            <DistClean command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Math/Makefile&quot;  VERBOSE=1 clean" />
-         </MakeCommands>
-      </Target>
-      <Target title="odfaeg-window">
-         <Option output="/home/laurent/Développement/Projets-c++/ODFAEG/build/lib/libodfaeg-window-s-d.a" prefix_auto="0" extension_auto="0" />
-         <Option working_dir="/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Window" />
-         <Option object_output="./" />
-         <Option type="2" />
-         <Option compiler="gcc" />
-         <Compiler>
-            <Add option="-DGLEW_STATIC" />
-            <Add option="-DODFAEG_STATIC" />
-            <Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include" />
-            <Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include/Core/boost" />
-            <Add directory="/usr/include" />
-            <Add directory="/usr/include/c++/4.9" />
-            <Add directory="/usr/include/c++/4.9/backward" />
-            <Add directory="/usr/include/i386-linux-gnu" />
-            <Add directory="/usr/include/i386-linux-gnu/c++/4.9" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include-fixed" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include-fixed" />
-            <Add directory="/usr/local/include" />
-         </Compiler>
-         <MakeCommands>
-            <Build command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Window/Makefile&quot;  VERBOSE=1 odfaeg-window" />
-            <CompileFile command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Window/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
-            <Clean command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Window/Makefile&quot;  VERBOSE=1 clean" />
-            <DistClean command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Window/Makefile&quot;  VERBOSE=1 clean" />
-         </MakeCommands>
-      </Target>
-      <Target title="odfaeg-window/fast">
-         <Option output="/home/laurent/Développement/Projets-c++/ODFAEG/build/lib/libodfaeg-window-s-d.a" prefix_auto="0" extension_auto="0" />
-         <Option working_dir="/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Window" />
-         <Option object_output="./" />
-         <Option type="2" />
-         <Option compiler="gcc" />
-         <Compiler>
-            <Add option="-DGLEW_STATIC" />
-            <Add option="-DODFAEG_STATIC" />
-            <Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include" />
-            <Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include/Core/boost" />
-            <Add directory="/usr/include" />
-            <Add directory="/usr/include/c++/4.9" />
-            <Add directory="/usr/include/c++/4.9/backward" />
-            <Add directory="/usr/include/i386-linux-gnu" />
-            <Add directory="/usr/include/i386-linux-gnu/c++/4.9" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include-fixed" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include-fixed" />
-            <Add directory="/usr/local/include" />
-         </Compiler>
-         <MakeCommands>
-            <Build command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Window/Makefile&quot;  VERBOSE=1 odfaeg-window/fast" />
-            <CompileFile command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Window/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
-            <Clean command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Window/Makefile&quot;  VERBOSE=1 clean" />
-            <DistClean command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Window/Makefile&quot;  VERBOSE=1 clean" />
-         </MakeCommands>
-      </Target>
-      <Target title="odfaeg-physics">
-         <Option output="/home/laurent/Développement/Projets-c++/ODFAEG/build/lib/libodfaeg-physics-s-d.a" prefix_auto="0" extension_auto="0" />
-         <Option working_dir="/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Physics" />
-         <Option object_output="./" />
-         <Option type="2" />
-         <Option compiler="gcc" />
-         <Compiler>
-            <Add option="-DGLEW_STATIC" />
-            <Add option="-DODFAEG_STATIC" />
-            <Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include" />
-            <Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include/Core/boost" />
-            <Add directory="/usr/include" />
-            <Add directory="/usr/include/c++/4.9" />
-            <Add directory="/usr/include/c++/4.9/backward" />
-            <Add directory="/usr/include/i386-linux-gnu" />
-            <Add directory="/usr/include/i386-linux-gnu/c++/4.9" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include-fixed" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include-fixed" />
-            <Add directory="/usr/local/include" />
-         </Compiler>
-         <MakeCommands>
-            <Build command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Physics/Makefile&quot;  VERBOSE=1 odfaeg-physics" />
-            <CompileFile command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Physics/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
-            <Clean command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Physics/Makefile&quot;  VERBOSE=1 clean" />
-            <DistClean command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Physics/Makefile&quot;  VERBOSE=1 clean" />
-         </MakeCommands>
-      </Target>
-      <Target title="odfaeg-physics/fast">
-         <Option output="/home/laurent/Développement/Projets-c++/ODFAEG/build/lib/libodfaeg-physics-s-d.a" prefix_auto="0" extension_auto="0" />
-         <Option working_dir="/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Physics" />
-         <Option object_output="./" />
-         <Option type="2" />
-         <Option compiler="gcc" />
-         <Compiler>
-            <Add option="-DGLEW_STATIC" />
-            <Add option="-DODFAEG_STATIC" />
-            <Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include" />
-            <Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include/Core/boost" />
-            <Add directory="/usr/include" />
-            <Add directory="/usr/include/c++/4.9" />
-            <Add directory="/usr/include/c++/4.9/backward" />
-            <Add directory="/usr/include/i386-linux-gnu" />
-            <Add directory="/usr/include/i386-linux-gnu/c++/4.9" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include-fixed" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include-fixed" />
-            <Add directory="/usr/local/include" />
-         </Compiler>
-         <MakeCommands>
-            <Build command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Physics/Makefile&quot;  VERBOSE=1 odfaeg-physics/fast" />
-            <CompileFile command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Physics/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
-            <Clean command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Physics/Makefile&quot;  VERBOSE=1 clean" />
-            <DistClean command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Physics/Makefile&quot;  VERBOSE=1 clean" />
-         </MakeCommands>
-      </Target>
-      <Target title="odfaeg-graphics">
-         <Option output="/home/laurent/Développement/Projets-c++/ODFAEG/build/lib/libodfaeg-graphics-s-d.a" prefix_auto="0" extension_auto="0" />
-         <Option working_dir="/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics" />
-         <Option object_output="./" />
-         <Option type="2" />
-         <Option compiler="gcc" />
-         <Compiler>
-            <Add option="-DGLEW_STATIC" />
-            <Add option="-DODFAEG_STATIC" />
-            <Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include" />
-            <Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include/Core/boost" />
-            <Add directory="/usr/include" />
-            <Add directory="/usr/include/c++/4.9" />
-            <Add directory="/usr/include/c++/4.9/backward" />
-            <Add directory="/usr/include/freetype2" />
-            <Add directory="/usr/include/i386-linux-gnu" />
-            <Add directory="/usr/include/i386-linux-gnu/c++/4.9" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include-fixed" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include-fixed" />
-            <Add directory="/usr/local/include" />
-         </Compiler>
-         <MakeCommands>
-            <Build command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics/Makefile&quot;  VERBOSE=1 odfaeg-graphics" />
-            <CompileFile command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
-            <Clean command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics/Makefile&quot;  VERBOSE=1 clean" />
-            <DistClean command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics/Makefile&quot;  VERBOSE=1 clean" />
-         </MakeCommands>
-      </Target>
-      <Target title="odfaeg-graphics/fast">
-         <Option output="/home/laurent/Développement/Projets-c++/ODFAEG/build/lib/libodfaeg-graphics-s-d.a" prefix_auto="0" extension_auto="0" />
-         <Option working_dir="/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics" />
-         <Option object_output="./" />
-         <Option type="2" />
-         <Option compiler="gcc" />
-         <Compiler>
-            <Add option="-DGLEW_STATIC" />
-            <Add option="-DODFAEG_STATIC" />
-            <Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include" />
-            <Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include/Core/boost" />
-            <Add directory="/usr/include" />
-            <Add directory="/usr/include/c++/4.9" />
-            <Add directory="/usr/include/c++/4.9/backward" />
-            <Add directory="/usr/include/freetype2" />
-            <Add directory="/usr/include/i386-linux-gnu" />
-            <Add directory="/usr/include/i386-linux-gnu/c++/4.9" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include-fixed" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include-fixed" />
-            <Add directory="/usr/local/include" />
-         </Compiler>
-         <MakeCommands>
-            <Build command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics/Makefile&quot;  VERBOSE=1 odfaeg-graphics/fast" />
-            <CompileFile command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
-            <Clean command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics/Makefile&quot;  VERBOSE=1 clean" />
-            <DistClean command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics/Makefile&quot;  VERBOSE=1 clean" />
-         </MakeCommands>
-      </Target>
-      <Target title="odfaeg-network">
-         <Option output="/home/laurent/Développement/Projets-c++/ODFAEG/build/lib/libodfaeg-network-s-d.a" prefix_auto="0" extension_auto="0" />
-         <Option working_dir="/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Network" />
-         <Option object_output="./" />
-         <Option type="2" />
-         <Option compiler="gcc" />
-         <Compiler>
-            <Add option="-DGLEW_STATIC" />
-            <Add option="-DODFAEG_STATIC" />
-            <Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include" />
-            <Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include/Core/boost" />
-            <Add directory="/usr/include" />
-            <Add directory="/usr/include/c++/4.9" />
-            <Add directory="/usr/include/c++/4.9/backward" />
-            <Add directory="/usr/include/i386-linux-gnu" />
-            <Add directory="/usr/include/i386-linux-gnu/c++/4.9" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include-fixed" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include-fixed" />
-            <Add directory="/usr/local/include" />
-         </Compiler>
-         <MakeCommands>
-            <Build command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Network/Makefile&quot;  VERBOSE=1 odfaeg-network" />
-            <CompileFile command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Network/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
-            <Clean command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Network/Makefile&quot;  VERBOSE=1 clean" />
-            <DistClean command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Network/Makefile&quot;  VERBOSE=1 clean" />
-         </MakeCommands>
-      </Target>
-      <Target title="odfaeg-network/fast">
-         <Option output="/home/laurent/Développement/Projets-c++/ODFAEG/build/lib/libodfaeg-network-s-d.a" prefix_auto="0" extension_auto="0" />
-         <Option working_dir="/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Network" />
-         <Option object_output="./" />
-         <Option type="2" />
-         <Option compiler="gcc" />
-         <Compiler>
-            <Add option="-DGLEW_STATIC" />
-            <Add option="-DODFAEG_STATIC" />
-            <Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include" />
-            <Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include/Core/boost" />
-            <Add directory="/usr/include" />
-            <Add directory="/usr/include/c++/4.9" />
-            <Add directory="/usr/include/c++/4.9/backward" />
-            <Add directory="/usr/include/i386-linux-gnu" />
-            <Add directory="/usr/include/i386-linux-gnu/c++/4.9" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include-fixed" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include-fixed" />
-            <Add directory="/usr/local/include" />
-         </Compiler>
-         <MakeCommands>
-            <Build command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Network/Makefile&quot;  VERBOSE=1 odfaeg-network/fast" />
-            <CompileFile command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Network/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
-            <Clean command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Network/Makefile&quot;  VERBOSE=1 clean" />
-            <DistClean command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Network/Makefile&quot;  VERBOSE=1 clean" />
-         </MakeCommands>
-      </Target>
-      <Target title="odfaeg-audio">
-         <Option output="/home/laurent/Développement/Projets-c++/ODFAEG/build/lib/libodfaeg-audio-s-d.a" prefix_auto="0" extension_auto="0" />
-         <Option working_dir="/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Audio" />
-         <Option object_output="./" />
-         <Option type="2" />
-         <Option compiler="gcc" />
-         <Compiler>
-            <Add option="-DGLEW_STATIC" />
-            <Add option="-DODFAEG_STATIC" />
-            <Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include" />
-            <Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include/Core/boost" />
-            <Add directory="/usr/include" />
-            <Add directory="/usr/include/c++/4.9" />
-            <Add directory="/usr/include/c++/4.9/backward" />
-            <Add directory="/usr/include/i386-linux-gnu" />
-            <Add directory="/usr/include/i386-linux-gnu/c++/4.9" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include-fixed" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include-fixed" />
-            <Add directory="/usr/local/include" />
-         </Compiler>
-         <MakeCommands>
-            <Build command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Audio/Makefile&quot;  VERBOSE=1 odfaeg-audio" />
-            <CompileFile command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Audio/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
-            <Clean command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Audio/Makefile&quot;  VERBOSE=1 clean" />
-            <DistClean command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Audio/Makefile&quot;  VERBOSE=1 clean" />
-         </MakeCommands>
-      </Target>
-      <Target title="odfaeg-audio/fast">
-         <Option output="/home/laurent/Développement/Projets-c++/ODFAEG/build/lib/libodfaeg-audio-s-d.a" prefix_auto="0" extension_auto="0" />
-         <Option working_dir="/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Audio" />
-         <Option object_output="./" />
-         <Option type="2" />
-         <Option compiler="gcc" />
-         <Compiler>
-            <Add option="-DGLEW_STATIC" />
-            <Add option="-DODFAEG_STATIC" />
-            <Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include" />
-            <Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include/Core/boost" />
-            <Add directory="/usr/include" />
-            <Add directory="/usr/include/c++/4.9" />
-            <Add directory="/usr/include/c++/4.9/backward" />
-            <Add directory="/usr/include/i386-linux-gnu" />
-            <Add directory="/usr/include/i386-linux-gnu/c++/4.9" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include-fixed" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include" />
-            <Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include-fixed" />
-            <Add directory="/usr/local/include" />
-         </Compiler>
-         <MakeCommands>
-            <Build command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Audio/Makefile&quot;  VERBOSE=1 odfaeg-audio/fast" />
-            <CompileFile command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Audio/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
-            <Clean command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Audio/Makefile&quot;  VERBOSE=1 clean" />
-            <DistClean command="/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Audio/Makefile&quot;  VERBOSE=1 clean" />
-         </MakeCommands>
-      </Target>
-      </Build>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/factory.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Audio/SoundFile.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Audio/player.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Audio/stream.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Core/actions.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Core/application.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Core/archive.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Core/clock.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Core/command.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Core/erreur.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Core/state.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Core/stateGroup.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Core/stateStack.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Core/time.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Core/utilities.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/2D/ambientLight.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/2D/decor.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/2D/directionnalLight.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/2D/ponctualLight.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/2D/wall.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/3D/cube.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/button.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/dropDownList.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/filedialog.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/icon.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/label.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/menu.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/menuItem.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/menubar.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/node.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/optionPane.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/panel.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/passwordField.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/progressBar.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/table.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/textArea.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GlDebug.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/animation.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/baseChangementMatrix.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/batcher.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/billBoard.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/cellMap.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/circleShape.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/component.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/convexShape.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/entity.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/font.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/glCheck.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/gridMap.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/lightRenderComponent.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/map.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/model.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/oitRenderComponent.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/projMatrix.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/rectangleShape.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/renderComponentManager.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/renderStates.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/renderTarget.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/renderTexture.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/renderTextureImpl.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/renderTextureImplDefault.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/renderTextureImplFBO.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/renderWindow.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/sdlRenderWindow.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/shader.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/shadowRenderCompoenent.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/shape.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/sprite.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/tGround.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/text.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/texture.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/textureSaver.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/tile.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/transformMatrix.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/vbo.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/vertex.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/vertexArray.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/view.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/viewMatrix.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/viewport.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/world.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/zSortingRenderComponent.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Math/bigInt.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Math/computer.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Math/distribution.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Math/maths.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Math/matrix2.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Math/matrix3.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Math/matrix4.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Math/ray.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Math/vec2.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Math/vec4.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Network/aes.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Network/cliEncryptedPacket.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Network/client.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Network/encryptedPacket.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Network/network.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Network/rsa.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Network/srkserveur.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Network/symEncPacket.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Network/user.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Physics/affector.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Physics/boundingBox.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Physics/boundingEllipsoid.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Physics/boundingPolyhedron.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Physics/boundingSphere.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Physics/collisionResultSet.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Physics/emitter.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Physics/orientedBoundingBox.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Physics/particle.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Physics/particleSystem.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Window/sdlWindow.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Window/x11Window.cpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Audio/export.hpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Audio/player.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Audio/stream.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/action.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/any.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/application.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/archive.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/clock.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/command.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/command.tpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/entitySystem.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/erreur.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/export.hpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/factory.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/listener.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/resourceCache.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/resourceManager.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/serialization.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/state.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/stateExecutor.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/stateGroup.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/stateParameter.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/stateParameterBase.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/stateStack.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/time.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/timer.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/utilities.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/2D/ambientLight.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/2D/decor.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/2D/directionnalLight.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/2D/ponctualLight.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/2D/wall.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/3D/cube.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/GUI/button.hpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/GUI/dropDownList.hpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/GUI/filedialog.hpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/GUI/icon.hpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/GUI/label.hpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/GUI/menu.hpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/GUI/menuItem.hpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/GUI/menubar.hpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/GUI/node.hpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/GUI/optionPane.hpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/GUI/panel.hpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/GUI/passwordField.hpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/GUI/progressBar.hpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/GUI/table.hpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/GUI/textArea.hpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/anim.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/animatedEntity.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/baseChangementMatrix.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/batcher.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/billBoard.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/cellMap.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/circleShape.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/component.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/convexShape.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/drawable.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/entity.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/entityManager.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/export.hpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/font.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/gridMap.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/light.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/lightRenderComponent.hpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/map.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/model.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/oitRenderComponent.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/projMatrix.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/rectangleShape.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/renderComponentManager.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/renderStates.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/renderTarget.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/renderTexture.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/renderWindow.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/sdlRenderWindow.hpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/selectable.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/shader.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/shadowRenderComponent.hpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/shape.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/sprite.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/tGround.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/text.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/texture.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/tile.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/transformMatrix.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/transformable.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/vbo.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/vertex.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/vertexArray.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/view.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/viewMatrix.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/viewportMatrix.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/world.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/zSortingRenderComponent.hpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/bigInt.hpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/computer.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/distribution.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/distributions.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/export.hpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/maths.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/matrix2.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/matrix3.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/matrix4.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/ray.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/vec2f.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/vec4.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Network/aes.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Network/cliEncryptedPacket.hpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Network/client.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Network/encryptedPacket.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Network/export.hpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Network/network.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Network/rsa.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Network/srkserveur.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Network/symEncPacket.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Network/user.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Physics/affector.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Physics/boundingBox.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Physics/boundingEllipsoid.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Physics/boundingPolyhedron.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Physics/boundingSphere.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Physics/boundingVolume.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Physics/collisionResultSet.hpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Physics/emissionInterface.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Physics/emmiters.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Physics/export.hpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Physics/orientedBoundingBox.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Physics/particule.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Physics/particuleSystem.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Window/sdlWindow.hpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Window/x11Window.hpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Audio/SoundFile.hpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GlDebug.hpp">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/glCheck.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/renderTextureImpl.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/renderTextureImplDefault.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/renderTextureImplFBO.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/textureSaver.h">
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/CMakeLists.txt">
-          <Option virtualFolder="CMake Files\" />
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/cmake/Config.cmake">
-          <Option virtualFolder="CMake Files\cmake\" />
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/cmake/Macros.cmake">
-          <Option virtualFolder="CMake Files\cmake\" />
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/cmake/Macros.cmake">
-          <Option virtualFolder="CMake Files\cmake\" />
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/cmake/Macros.cmake">
-          <Option virtualFolder="CMake Files\cmake\" />
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/cmake/Macros.cmake">
-          <Option virtualFolder="CMake Files\cmake\" />
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/cmake/Macros.cmake">
-          <Option virtualFolder="CMake Files\cmake\" />
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/cmake/Macros.cmake">
-          <Option virtualFolder="CMake Files\cmake\" />
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/cmake/Macros.cmake">
-          <Option virtualFolder="CMake Files\cmake\" />
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/cmake/Macros.cmake">
-          <Option virtualFolder="CMake Files\cmake\" />
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/cmake/Modules/FindSFML.cmake">
-          <Option virtualFolder="CMake Files\cmake\Modules\" />
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/cmake/Modules/FindSFML.cmake">
-          <Option virtualFolder="CMake Files\cmake\Modules\" />
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/cmake/Modules/FindSFML.cmake">
-          <Option virtualFolder="CMake Files\cmake\Modules\" />
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/cmake/Modules/FindSFML.cmake">
-          <Option virtualFolder="CMake Files\cmake\Modules\" />
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/cmake/Modules/FindSFML.cmake">
-          <Option virtualFolder="CMake Files\cmake\Modules\" />
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/cmake/Modules/FindSFML.cmake">
-          <Option virtualFolder="CMake Files\cmake\Modules\" />
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/CMakeLists.txt">
-          <Option virtualFolder="CMake Files\src\odfaeg\" />
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Core/CMakeLists.txt">
-          <Option virtualFolder="CMake Files\src\odfaeg\Core\" />
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Math/CMakeLists.txt">
-          <Option virtualFolder="CMake Files\src\odfaeg\Math\" />
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Window/CMakeLists.txt">
-          <Option virtualFolder="CMake Files\src\odfaeg\Window\" />
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Physics/CMakeLists.txt">
-          <Option virtualFolder="CMake Files\src\odfaeg\Physics\" />
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/CMakeLists.txt">
-          <Option virtualFolder="CMake Files\src\odfaeg\Graphics\" />
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Network/CMakeLists.txt">
-          <Option virtualFolder="CMake Files\src\odfaeg\Network\" />
-      </Unit>
-      <Unit filename="/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Audio/CMakeLists.txt">
-          <Option virtualFolder="CMake Files\src\odfaeg\Audio\" />
-      </Unit>
-   </Project>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="ODFAEG" />
+		<Option makefile_is_custom="1" />
+		<Option compiler="gcc" />
+		<Option virtualFolders="CMake Files/;CMake Files/cmake/;CMake Files/cmake/Modules/;CMake Files/src/;CMake Files/src/odfaeg/;CMake Files/src/odfaeg/Core/;CMake Files/src/odfaeg/Math/;CMake Files/src/odfaeg/Window/;CMake Files/src/odfaeg/Physics/;CMake Files/src/odfaeg/Graphics/;CMake Files/src/odfaeg/Network/;CMake Files/src/odfaeg/Audio/;" />
+		<Build>
+			<Target title="all">
+				<Option type="4" />
+				<Option compiler="gcc" />
+				<MakeCommands>
+					<Build command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 all' />
+					<CompileFile command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option type="4" />
+				<Option compiler="gcc" />
+				<MakeCommands>
+					<Build command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 edit_cache' />
+					<CompileFile command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="install">
+				<Option type="4" />
+				<Option compiler="gcc" />
+				<MakeCommands>
+					<Build command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 install' />
+					<CompileFile command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="install/local">
+				<Option type="4" />
+				<Option compiler="gcc" />
+				<MakeCommands>
+					<Build command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 install/local' />
+					<CompileFile command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="install/strip">
+				<Option type="4" />
+				<Option compiler="gcc" />
+				<MakeCommands>
+					<Build command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 install/strip' />
+					<CompileFile command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="list_install_components">
+				<Option type="4" />
+				<Option compiler="gcc" />
+				<MakeCommands>
+					<Build command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 list_install_components' />
+					<CompileFile command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option type="4" />
+				<Option compiler="gcc" />
+				<MakeCommands>
+					<Build command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 rebuild_cache' />
+					<CompileFile command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="odfaeg-core">
+				<Option output="/home/laurent/Développement/Projets-c++/ODFAEG/build/lib/libodfaeg-core-s-d.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
+				<Option object_output="./" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DGLEW_STATIC" />
+					<Add option="-DODFAEG_STATIC" />
+					<Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include" />
+					<Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include/Core/boost" />
+					<Add directory="/usr/include" />
+					<Add directory="/usr/include/c++/4.9" />
+					<Add directory="/usr/include/c++/4.9/backward" />
+					<Add directory="/usr/include/i386-linux-gnu" />
+					<Add directory="/usr/include/i386-linux-gnu/c++/4.9" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include-fixed" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include-fixed" />
+					<Add directory="/usr/local/include" />
+				</Compiler>
+				<MakeCommands>
+					<Build command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Core/Makefile&quot;  VERBOSE=1 odfaeg-core' />
+					<CompileFile command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Core/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Core/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Core/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="odfaeg-core/fast">
+				<Option output="/home/laurent/Développement/Projets-c++/ODFAEG/build/lib/libodfaeg-core-s-d.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
+				<Option object_output="./" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DGLEW_STATIC" />
+					<Add option="-DODFAEG_STATIC" />
+					<Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include" />
+					<Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include/Core/boost" />
+					<Add directory="/usr/include" />
+					<Add directory="/usr/include/c++/4.9" />
+					<Add directory="/usr/include/c++/4.9/backward" />
+					<Add directory="/usr/include/i386-linux-gnu" />
+					<Add directory="/usr/include/i386-linux-gnu/c++/4.9" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include-fixed" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include-fixed" />
+					<Add directory="/usr/local/include" />
+				</Compiler>
+				<MakeCommands>
+					<Build command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Core/Makefile&quot;  VERBOSE=1 odfaeg-core/fast' />
+					<CompileFile command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Core/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Core/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Core/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="odfaeg-math">
+				<Option output="/home/laurent/Développement/Projets-c++/ODFAEG/build/lib/libodfaeg-math-s-d.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
+				<Option object_output="./" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DGLEW_STATIC" />
+					<Add option="-DODFAEG_STATIC" />
+					<Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include" />
+					<Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include/Core/boost" />
+					<Add directory="/usr/include" />
+					<Add directory="/usr/include/c++/4.9" />
+					<Add directory="/usr/include/c++/4.9/backward" />
+					<Add directory="/usr/include/i386-linux-gnu" />
+					<Add directory="/usr/include/i386-linux-gnu/c++/4.9" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include-fixed" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include-fixed" />
+					<Add directory="/usr/local/include" />
+				</Compiler>
+				<MakeCommands>
+					<Build command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Math/Makefile&quot;  VERBOSE=1 odfaeg-math' />
+					<CompileFile command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Math/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Math/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Math/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="odfaeg-math/fast">
+				<Option output="/home/laurent/Développement/Projets-c++/ODFAEG/build/lib/libodfaeg-math-s-d.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
+				<Option object_output="./" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DGLEW_STATIC" />
+					<Add option="-DODFAEG_STATIC" />
+					<Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include" />
+					<Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include/Core/boost" />
+					<Add directory="/usr/include" />
+					<Add directory="/usr/include/c++/4.9" />
+					<Add directory="/usr/include/c++/4.9/backward" />
+					<Add directory="/usr/include/i386-linux-gnu" />
+					<Add directory="/usr/include/i386-linux-gnu/c++/4.9" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include-fixed" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include-fixed" />
+					<Add directory="/usr/local/include" />
+				</Compiler>
+				<MakeCommands>
+					<Build command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Math/Makefile&quot;  VERBOSE=1 odfaeg-math/fast' />
+					<CompileFile command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Math/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Math/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Math/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="odfaeg-window">
+				<Option output="/home/laurent/Développement/Projets-c++/ODFAEG/build/lib/libodfaeg-window-s-d.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
+				<Option object_output="./" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DGLEW_STATIC" />
+					<Add option="-DODFAEG_STATIC" />
+					<Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include" />
+					<Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include/Core/boost" />
+					<Add directory="/usr/include" />
+					<Add directory="/usr/include/c++/4.9" />
+					<Add directory="/usr/include/c++/4.9/backward" />
+					<Add directory="/usr/include/i386-linux-gnu" />
+					<Add directory="/usr/include/i386-linux-gnu/c++/4.9" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include-fixed" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include-fixed" />
+					<Add directory="/usr/local/include" />
+				</Compiler>
+				<MakeCommands>
+					<Build command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Window/Makefile&quot;  VERBOSE=1 odfaeg-window' />
+					<CompileFile command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Window/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Window/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Window/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="odfaeg-window/fast">
+				<Option output="/home/laurent/Développement/Projets-c++/ODFAEG/build/lib/libodfaeg-window-s-d.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
+				<Option object_output="./" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DGLEW_STATIC" />
+					<Add option="-DODFAEG_STATIC" />
+					<Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include" />
+					<Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include/Core/boost" />
+					<Add directory="/usr/include" />
+					<Add directory="/usr/include/c++/4.9" />
+					<Add directory="/usr/include/c++/4.9/backward" />
+					<Add directory="/usr/include/i386-linux-gnu" />
+					<Add directory="/usr/include/i386-linux-gnu/c++/4.9" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include-fixed" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include-fixed" />
+					<Add directory="/usr/local/include" />
+				</Compiler>
+				<MakeCommands>
+					<Build command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Window/Makefile&quot;  VERBOSE=1 odfaeg-window/fast' />
+					<CompileFile command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Window/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Window/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Window/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="odfaeg-physics">
+				<Option output="/home/laurent/Développement/Projets-c++/ODFAEG/build/lib/libodfaeg-physics-s-d.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
+				<Option object_output="./" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DGLEW_STATIC" />
+					<Add option="-DODFAEG_STATIC" />
+					<Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include" />
+					<Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include/Core/boost" />
+					<Add directory="/usr/include" />
+					<Add directory="/usr/include/c++/4.9" />
+					<Add directory="/usr/include/c++/4.9/backward" />
+					<Add directory="/usr/include/i386-linux-gnu" />
+					<Add directory="/usr/include/i386-linux-gnu/c++/4.9" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include-fixed" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include-fixed" />
+					<Add directory="/usr/local/include" />
+				</Compiler>
+				<MakeCommands>
+					<Build command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Physics/Makefile&quot;  VERBOSE=1 odfaeg-physics' />
+					<CompileFile command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Physics/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Physics/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Physics/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="odfaeg-physics/fast">
+				<Option output="/home/laurent/Développement/Projets-c++/ODFAEG/build/lib/libodfaeg-physics-s-d.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
+				<Option object_output="./" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DGLEW_STATIC" />
+					<Add option="-DODFAEG_STATIC" />
+					<Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include" />
+					<Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include/Core/boost" />
+					<Add directory="/usr/include" />
+					<Add directory="/usr/include/c++/4.9" />
+					<Add directory="/usr/include/c++/4.9/backward" />
+					<Add directory="/usr/include/i386-linux-gnu" />
+					<Add directory="/usr/include/i386-linux-gnu/c++/4.9" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include-fixed" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include-fixed" />
+					<Add directory="/usr/local/include" />
+				</Compiler>
+				<MakeCommands>
+					<Build command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Physics/Makefile&quot;  VERBOSE=1 odfaeg-physics/fast' />
+					<CompileFile command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Physics/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Physics/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Physics/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="odfaeg-graphics">
+				<Option output="/home/laurent/Développement/Projets-c++/ODFAEG/build/lib/libodfaeg-graphics-s-d.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
+				<Option object_output="./" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DGLEW_STATIC" />
+					<Add option="-DODFAEG_STATIC" />
+					<Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include" />
+					<Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include/Core/boost" />
+					<Add directory="/usr/include" />
+					<Add directory="/usr/include/c++/4.9" />
+					<Add directory="/usr/include/c++/4.9/backward" />
+					<Add directory="/usr/include/freetype2" />
+					<Add directory="/usr/include/i386-linux-gnu" />
+					<Add directory="/usr/include/i386-linux-gnu/c++/4.9" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include-fixed" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include-fixed" />
+					<Add directory="/usr/local/include" />
+				</Compiler>
+				<MakeCommands>
+					<Build command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics/Makefile&quot;  VERBOSE=1 odfaeg-graphics' />
+					<CompileFile command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="odfaeg-graphics/fast">
+				<Option output="/home/laurent/Développement/Projets-c++/ODFAEG/build/lib/libodfaeg-graphics-s-d.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
+				<Option object_output="./" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DGLEW_STATIC" />
+					<Add option="-DODFAEG_STATIC" />
+					<Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include" />
+					<Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include/Core/boost" />
+					<Add directory="/usr/include" />
+					<Add directory="/usr/include/c++/4.9" />
+					<Add directory="/usr/include/c++/4.9/backward" />
+					<Add directory="/usr/include/freetype2" />
+					<Add directory="/usr/include/i386-linux-gnu" />
+					<Add directory="/usr/include/i386-linux-gnu/c++/4.9" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include-fixed" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include-fixed" />
+					<Add directory="/usr/local/include" />
+				</Compiler>
+				<MakeCommands>
+					<Build command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics/Makefile&quot;  VERBOSE=1 odfaeg-graphics/fast' />
+					<CompileFile command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Graphics/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="odfaeg-network">
+				<Option output="/home/laurent/Développement/Projets-c++/ODFAEG/build/lib/libodfaeg-network-s-d.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
+				<Option object_output="./" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DGLEW_STATIC" />
+					<Add option="-DODFAEG_STATIC" />
+					<Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include" />
+					<Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include/Core/boost" />
+					<Add directory="/usr/include" />
+					<Add directory="/usr/include/c++/4.9" />
+					<Add directory="/usr/include/c++/4.9/backward" />
+					<Add directory="/usr/include/i386-linux-gnu" />
+					<Add directory="/usr/include/i386-linux-gnu/c++/4.9" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include-fixed" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include-fixed" />
+					<Add directory="/usr/local/include" />
+				</Compiler>
+				<MakeCommands>
+					<Build command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Network/Makefile&quot;  VERBOSE=1 odfaeg-network' />
+					<CompileFile command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Network/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Network/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Network/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="odfaeg-network/fast">
+				<Option output="/home/laurent/Développement/Projets-c++/ODFAEG/build/lib/libodfaeg-network-s-d.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
+				<Option object_output="./" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DGLEW_STATIC" />
+					<Add option="-DODFAEG_STATIC" />
+					<Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include" />
+					<Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include/Core/boost" />
+					<Add directory="/usr/include" />
+					<Add directory="/usr/include/c++/4.9" />
+					<Add directory="/usr/include/c++/4.9/backward" />
+					<Add directory="/usr/include/i386-linux-gnu" />
+					<Add directory="/usr/include/i386-linux-gnu/c++/4.9" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include-fixed" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include-fixed" />
+					<Add directory="/usr/local/include" />
+				</Compiler>
+				<MakeCommands>
+					<Build command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Network/Makefile&quot;  VERBOSE=1 odfaeg-network/fast' />
+					<CompileFile command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Network/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Network/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Network/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="odfaeg-audio">
+				<Option output="/home/laurent/Développement/Projets-c++/ODFAEG/build/lib/libodfaeg-audio-s-d.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
+				<Option object_output="./" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DGLEW_STATIC" />
+					<Add option="-DODFAEG_STATIC" />
+					<Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include" />
+					<Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include/Core/boost" />
+					<Add directory="/usr/include" />
+					<Add directory="/usr/include/c++/4.9" />
+					<Add directory="/usr/include/c++/4.9/backward" />
+					<Add directory="/usr/include/i386-linux-gnu" />
+					<Add directory="/usr/include/i386-linux-gnu/c++/4.9" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include-fixed" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include-fixed" />
+					<Add directory="/usr/local/include" />
+				</Compiler>
+				<MakeCommands>
+					<Build command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Audio/Makefile&quot;  VERBOSE=1 odfaeg-audio' />
+					<CompileFile command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Audio/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Audio/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Audio/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="odfaeg-audio/fast">
+				<Option output="/home/laurent/Développement/Projets-c++/ODFAEG/build/lib/libodfaeg-audio-s-d.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
+				<Option object_output="./" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DGLEW_STATIC" />
+					<Add option="-DODFAEG_STATIC" />
+					<Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include" />
+					<Add directory="/home/laurent/Développement/Projets-c++/ODFAEG/include/Core/boost" />
+					<Add directory="/usr/include" />
+					<Add directory="/usr/include/c++/4.9" />
+					<Add directory="/usr/include/c++/4.9/backward" />
+					<Add directory="/usr/include/i386-linux-gnu" />
+					<Add directory="/usr/include/i386-linux-gnu/c++/4.9" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.8/include-fixed" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include" />
+					<Add directory="/usr/lib/gcc/i686-linux-gnu/4.9/include-fixed" />
+					<Add directory="/usr/local/include" />
+				</Compiler>
+				<MakeCommands>
+					<Build command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Audio/Makefile&quot;  VERBOSE=1 odfaeg-audio/fast' />
+					<CompileFile command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Audio/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Audio/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='/usr/bin/make -f &quot;/home/laurent/Développement/Projets-c++/ODFAEG/build/src/odfaeg/Audio/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="../CMakeLists.txt">
+			<Option virtualFolder="CMake Files/" />
+		</Unit>
+		<Unit filename="../cmake/Config.cmake">
+			<Option virtualFolder="CMake Files/cmake/" />
+		</Unit>
+		<Unit filename="../cmake/Macros.cmake">
+			<Option virtualFolder="CMake Files/cmake/" />
+		</Unit>
+		<Unit filename="../cmake/Macros.cmake">
+			<Option virtualFolder="CMake Files/cmake/" />
+		</Unit>
+		<Unit filename="../cmake/Macros.cmake">
+			<Option virtualFolder="CMake Files/cmake/" />
+		</Unit>
+		<Unit filename="../cmake/Macros.cmake">
+			<Option virtualFolder="CMake Files/cmake/" />
+		</Unit>
+		<Unit filename="../cmake/Macros.cmake">
+			<Option virtualFolder="CMake Files/cmake/" />
+		</Unit>
+		<Unit filename="../cmake/Macros.cmake">
+			<Option virtualFolder="CMake Files/cmake/" />
+		</Unit>
+		<Unit filename="../cmake/Macros.cmake">
+			<Option virtualFolder="CMake Files/cmake/" />
+		</Unit>
+		<Unit filename="../cmake/Macros.cmake">
+			<Option virtualFolder="CMake Files/cmake/" />
+		</Unit>
+		<Unit filename="../cmake/Modules/FindSFML.cmake">
+			<Option virtualFolder="CMake Files/cmake/Modules/" />
+		</Unit>
+		<Unit filename="../cmake/Modules/FindSFML.cmake">
+			<Option virtualFolder="CMake Files/cmake/Modules/" />
+		</Unit>
+		<Unit filename="../cmake/Modules/FindSFML.cmake">
+			<Option virtualFolder="CMake Files/cmake/Modules/" />
+		</Unit>
+		<Unit filename="../cmake/Modules/FindSFML.cmake">
+			<Option virtualFolder="CMake Files/cmake/Modules/" />
+		</Unit>
+		<Unit filename="../cmake/Modules/FindSFML.cmake">
+			<Option virtualFolder="CMake Files/cmake/Modules/" />
+		</Unit>
+		<Unit filename="../cmake/Modules/FindSFML.cmake">
+			<Option virtualFolder="CMake Files/cmake/Modules/" />
+		</Unit>
+		<Unit filename="../include/odfaeg/Audio/export.hpp" />
+		<Unit filename="../include/odfaeg/Audio/player.h" />
+		<Unit filename="../include/odfaeg/Audio/stream.h" />
+		<Unit filename="../include/odfaeg/Core/action.h" />
+		<Unit filename="../include/odfaeg/Core/any.h" />
+		<Unit filename="../include/odfaeg/Core/application.h" />
+		<Unit filename="../include/odfaeg/Core/archive.h" />
+		<Unit filename="../include/odfaeg/Core/clock.h" />
+		<Unit filename="../include/odfaeg/Core/command.h" />
+		<Unit filename="../include/odfaeg/Core/command.tpp" />
+		<Unit filename="../include/odfaeg/Core/entitySystem.h" />
+		<Unit filename="../include/odfaeg/Core/erreur.h" />
+		<Unit filename="../include/odfaeg/Core/export.hpp" />
+		<Unit filename="../include/odfaeg/Core/factory.cpp" />
+		<Unit filename="../include/odfaeg/Core/factory.h" />
+		<Unit filename="../include/odfaeg/Core/listener.h" />
+		<Unit filename="../include/odfaeg/Core/resourceCache.h" />
+		<Unit filename="../include/odfaeg/Core/resourceManager.h" />
+		<Unit filename="../include/odfaeg/Core/serialization.h" />
+		<Unit filename="../include/odfaeg/Core/state.h" />
+		<Unit filename="../include/odfaeg/Core/stateExecutor.h" />
+		<Unit filename="../include/odfaeg/Core/stateGroup.h" />
+		<Unit filename="../include/odfaeg/Core/stateParameter.h" />
+		<Unit filename="../include/odfaeg/Core/stateParameterBase.h" />
+		<Unit filename="../include/odfaeg/Core/stateStack.h" />
+		<Unit filename="../include/odfaeg/Core/time.h" />
+		<Unit filename="../include/odfaeg/Core/timer.h" />
+		<Unit filename="../include/odfaeg/Core/utilities.h" />
+		<Unit filename="../include/odfaeg/Graphics/2D/ambientLight.h" />
+		<Unit filename="../include/odfaeg/Graphics/2D/decor.h" />
+		<Unit filename="../include/odfaeg/Graphics/2D/directionnalLight.h" />
+		<Unit filename="../include/odfaeg/Graphics/2D/ponctualLight.h" />
+		<Unit filename="../include/odfaeg/Graphics/2D/wall.h" />
+		<Unit filename="../include/odfaeg/Graphics/3D/cube.h" />
+		<Unit filename="../include/odfaeg/Graphics/GUI/button.hpp" />
+		<Unit filename="../include/odfaeg/Graphics/GUI/dropDownList.hpp" />
+		<Unit filename="../include/odfaeg/Graphics/GUI/filedialog.hpp" />
+		<Unit filename="../include/odfaeg/Graphics/GUI/icon.hpp" />
+		<Unit filename="../include/odfaeg/Graphics/GUI/label.hpp" />
+		<Unit filename="../include/odfaeg/Graphics/GUI/menu.hpp" />
+		<Unit filename="../include/odfaeg/Graphics/GUI/menuItem.hpp" />
+		<Unit filename="../include/odfaeg/Graphics/GUI/menubar.hpp" />
+		<Unit filename="../include/odfaeg/Graphics/GUI/node.hpp" />
+		<Unit filename="../include/odfaeg/Graphics/GUI/optionPane.hpp" />
+		<Unit filename="../include/odfaeg/Graphics/GUI/panel.hpp" />
+		<Unit filename="../include/odfaeg/Graphics/GUI/passwordField.hpp" />
+		<Unit filename="../include/odfaeg/Graphics/GUI/progressBar.hpp" />
+		<Unit filename="../include/odfaeg/Graphics/GUI/tabPane.hpp" />
+		<Unit filename="../include/odfaeg/Graphics/GUI/table.hpp" />
+		<Unit filename="../include/odfaeg/Graphics/GUI/textArea.hpp" />
+		<Unit filename="../include/odfaeg/Graphics/anim.h" />
+		<Unit filename="../include/odfaeg/Graphics/animatedEntity.h" />
+		<Unit filename="../include/odfaeg/Graphics/baseChangementMatrix.h" />
+		<Unit filename="../include/odfaeg/Graphics/batcher.h" />
+		<Unit filename="../include/odfaeg/Graphics/billBoard.h" />
+		<Unit filename="../include/odfaeg/Graphics/cellMap.h" />
+		<Unit filename="../include/odfaeg/Graphics/circleShape.h" />
+		<Unit filename="../include/odfaeg/Graphics/component.h" />
+		<Unit filename="../include/odfaeg/Graphics/convexShape.h" />
+		<Unit filename="../include/odfaeg/Graphics/drawable.h" />
+		<Unit filename="../include/odfaeg/Graphics/entity.h" />
+		<Unit filename="../include/odfaeg/Graphics/entityManager.h" />
+		<Unit filename="../include/odfaeg/Graphics/export.hpp" />
+		<Unit filename="../include/odfaeg/Graphics/font.h" />
+		<Unit filename="../include/odfaeg/Graphics/gridMap.h" />
+		<Unit filename="../include/odfaeg/Graphics/light.h" />
+		<Unit filename="../include/odfaeg/Graphics/lightRenderComponent.hpp" />
+		<Unit filename="../include/odfaeg/Graphics/map.h" />
+		<Unit filename="../include/odfaeg/Graphics/model.h" />
+		<Unit filename="../include/odfaeg/Graphics/oitRenderComponent.h" />
+		<Unit filename="../include/odfaeg/Graphics/projMatrix.h" />
+		<Unit filename="../include/odfaeg/Graphics/rectangleShape.h" />
+		<Unit filename="../include/odfaeg/Graphics/renderComponentManager.h" />
+		<Unit filename="../include/odfaeg/Graphics/renderStates.h" />
+		<Unit filename="../include/odfaeg/Graphics/renderTarget.h" />
+		<Unit filename="../include/odfaeg/Graphics/renderTexture.h" />
+		<Unit filename="../include/odfaeg/Graphics/renderWindow.h" />
+		<Unit filename="../include/odfaeg/Graphics/sdlRenderWindow.hpp" />
+		<Unit filename="../include/odfaeg/Graphics/selectable.h" />
+		<Unit filename="../include/odfaeg/Graphics/shader.h" />
+		<Unit filename="../include/odfaeg/Graphics/shadowRenderComponent.hpp" />
+		<Unit filename="../include/odfaeg/Graphics/shape.h" />
+		<Unit filename="../include/odfaeg/Graphics/sprite.h" />
+		<Unit filename="../include/odfaeg/Graphics/tGround.h" />
+		<Unit filename="../include/odfaeg/Graphics/text.h" />
+		<Unit filename="../include/odfaeg/Graphics/texture.h" />
+		<Unit filename="../include/odfaeg/Graphics/tile.h" />
+		<Unit filename="../include/odfaeg/Graphics/transformMatrix.h" />
+		<Unit filename="../include/odfaeg/Graphics/transformable.h" />
+		<Unit filename="../include/odfaeg/Graphics/vbo.h" />
+		<Unit filename="../include/odfaeg/Graphics/vertex.h" />
+		<Unit filename="../include/odfaeg/Graphics/vertexArray.h" />
+		<Unit filename="../include/odfaeg/Graphics/view.h" />
+		<Unit filename="../include/odfaeg/Graphics/viewMatrix.h" />
+		<Unit filename="../include/odfaeg/Graphics/viewportMatrix.h" />
+		<Unit filename="../include/odfaeg/Graphics/world.h" />
+		<Unit filename="../include/odfaeg/Graphics/zSortingRenderComponent.hpp" />
+		<Unit filename="../include/odfaeg/Math/bigInt.hpp" />
+		<Unit filename="../include/odfaeg/Math/computer.h" />
+		<Unit filename="../include/odfaeg/Math/distribution.h" />
+		<Unit filename="../include/odfaeg/Math/distributions.h" />
+		<Unit filename="../include/odfaeg/Math/export.hpp" />
+		<Unit filename="../include/odfaeg/Math/maths.h" />
+		<Unit filename="../include/odfaeg/Math/matrix2.h" />
+		<Unit filename="../include/odfaeg/Math/matrix3.h" />
+		<Unit filename="../include/odfaeg/Math/matrix4.h" />
+		<Unit filename="../include/odfaeg/Math/ray.h" />
+		<Unit filename="../include/odfaeg/Math/vec2f.h" />
+		<Unit filename="../include/odfaeg/Math/vec4.h" />
+		<Unit filename="../include/odfaeg/Network/aes.h" />
+		<Unit filename="../include/odfaeg/Network/cliEncryptedPacket.hpp" />
+		<Unit filename="../include/odfaeg/Network/client.h" />
+		<Unit filename="../include/odfaeg/Network/encryptedPacket.h" />
+		<Unit filename="../include/odfaeg/Network/export.hpp" />
+		<Unit filename="../include/odfaeg/Network/network.h" />
+		<Unit filename="../include/odfaeg/Network/rsa.h" />
+		<Unit filename="../include/odfaeg/Network/srkserveur.h" />
+		<Unit filename="../include/odfaeg/Network/symEncPacket.h" />
+		<Unit filename="../include/odfaeg/Network/user.h" />
+		<Unit filename="../include/odfaeg/Physics/affector.h" />
+		<Unit filename="../include/odfaeg/Physics/boundingBox.h" />
+		<Unit filename="../include/odfaeg/Physics/boundingEllipsoid.h" />
+		<Unit filename="../include/odfaeg/Physics/boundingPolyhedron.h" />
+		<Unit filename="../include/odfaeg/Physics/boundingSphere.h" />
+		<Unit filename="../include/odfaeg/Physics/boundingVolume.h" />
+		<Unit filename="../include/odfaeg/Physics/collisionResultSet.hpp" />
+		<Unit filename="../include/odfaeg/Physics/emissionInterface.h" />
+		<Unit filename="../include/odfaeg/Physics/emmiters.h" />
+		<Unit filename="../include/odfaeg/Physics/export.hpp" />
+		<Unit filename="../include/odfaeg/Physics/orientedBoundingBox.h" />
+		<Unit filename="../include/odfaeg/Physics/particule.h" />
+		<Unit filename="../include/odfaeg/Physics/particuleSystem.h" />
+		<Unit filename="../include/odfaeg/Window/sdlWindow.hpp" />
+		<Unit filename="../include/odfaeg/Window/x11Window.hpp" />
+		<Unit filename="../src/odfaeg/Audio/CMakeLists.txt">
+			<Option virtualFolder="CMake Files/src/odfaeg/Audio/" />
+		</Unit>
+		<Unit filename="../src/odfaeg/Audio/SoundFile.cpp" />
+		<Unit filename="../src/odfaeg/Audio/SoundFile.hpp" />
+		<Unit filename="../src/odfaeg/Audio/player.cpp" />
+		<Unit filename="../src/odfaeg/Audio/stream.cpp" />
+		<Unit filename="../src/odfaeg/CMakeLists.txt">
+			<Option virtualFolder="CMake Files/src/odfaeg/" />
+		</Unit>
+		<Unit filename="../src/odfaeg/Core/CMakeLists.txt">
+			<Option virtualFolder="CMake Files/src/odfaeg/Core/" />
+		</Unit>
+		<Unit filename="../src/odfaeg/Core/actions.cpp" />
+		<Unit filename="../src/odfaeg/Core/application.cpp" />
+		<Unit filename="../src/odfaeg/Core/archive.cpp" />
+		<Unit filename="../src/odfaeg/Core/clock.cpp" />
+		<Unit filename="../src/odfaeg/Core/command.cpp" />
+		<Unit filename="../src/odfaeg/Core/erreur.cpp" />
+		<Unit filename="../src/odfaeg/Core/state.cpp" />
+		<Unit filename="../src/odfaeg/Core/stateGroup.cpp" />
+		<Unit filename="../src/odfaeg/Core/stateStack.cpp" />
+		<Unit filename="../src/odfaeg/Core/time.cpp" />
+		<Unit filename="../src/odfaeg/Core/utilities.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/2D/ambientLight.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/2D/decor.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/2D/directionnalLight.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/2D/ponctualLight.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/2D/wall.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/3D/cube.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/CMakeLists.txt">
+			<Option virtualFolder="CMake Files/src/odfaeg/Graphics/" />
+		</Unit>
+		<Unit filename="../src/odfaeg/Graphics/GUI/button.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/GUI/dropDownList.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/GUI/filedialog.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/GUI/icon.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/GUI/label.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/GUI/menu.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/GUI/menuItem.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/GUI/menubar.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/GUI/node.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/GUI/optionPane.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/GUI/panel.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/GUI/passwordField.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/GUI/progressBar.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/GUI/tabPane.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/GUI/table.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/GUI/textArea.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/GlDebug.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/GlDebug.hpp" />
+		<Unit filename="../src/odfaeg/Graphics/animation.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/baseChangementMatrix.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/batcher.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/billBoard.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/cellMap.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/circleShape.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/component.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/convexShape.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/entity.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/font.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/glCheck.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/glCheck.h" />
+		<Unit filename="../src/odfaeg/Graphics/gridMap.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/lightRenderComponent.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/map.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/model.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/oitRenderComponent.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/projMatrix.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/rectangleShape.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/renderComponentManager.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/renderStates.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/renderTarget.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/renderTexture.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/renderTextureImpl.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/renderTextureImpl.h" />
+		<Unit filename="../src/odfaeg/Graphics/renderTextureImplDefault.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/renderTextureImplDefault.h" />
+		<Unit filename="../src/odfaeg/Graphics/renderTextureImplFBO.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/renderTextureImplFBO.h" />
+		<Unit filename="../src/odfaeg/Graphics/renderWindow.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/sdlRenderWindow.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/shader.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/shadowRenderCompoenent.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/shape.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/sprite.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/tGround.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/text.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/texture.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/textureSaver.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/textureSaver.h" />
+		<Unit filename="../src/odfaeg/Graphics/tile.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/transformMatrix.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/vbo.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/vertex.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/vertexArray.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/view.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/viewMatrix.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/viewport.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/world.cpp" />
+		<Unit filename="../src/odfaeg/Graphics/zSortingRenderComponent.cpp" />
+		<Unit filename="../src/odfaeg/Math/CMakeLists.txt">
+			<Option virtualFolder="CMake Files/src/odfaeg/Math/" />
+		</Unit>
+		<Unit filename="../src/odfaeg/Math/bigInt.cpp" />
+		<Unit filename="../src/odfaeg/Math/computer.cpp" />
+		<Unit filename="../src/odfaeg/Math/distribution.cpp" />
+		<Unit filename="../src/odfaeg/Math/maths.cpp" />
+		<Unit filename="../src/odfaeg/Math/matrix2.cpp" />
+		<Unit filename="../src/odfaeg/Math/matrix3.cpp" />
+		<Unit filename="../src/odfaeg/Math/matrix4.cpp" />
+		<Unit filename="../src/odfaeg/Math/ray.cpp" />
+		<Unit filename="../src/odfaeg/Math/vec2.cpp" />
+		<Unit filename="../src/odfaeg/Math/vec4.cpp" />
+		<Unit filename="../src/odfaeg/Network/CMakeLists.txt">
+			<Option virtualFolder="CMake Files/src/odfaeg/Network/" />
+		</Unit>
+		<Unit filename="../src/odfaeg/Network/aes.cpp" />
+		<Unit filename="../src/odfaeg/Network/cliEncryptedPacket.cpp" />
+		<Unit filename="../src/odfaeg/Network/client.cpp" />
+		<Unit filename="../src/odfaeg/Network/encryptedPacket.cpp" />
+		<Unit filename="../src/odfaeg/Network/network.cpp" />
+		<Unit filename="../src/odfaeg/Network/rsa.cpp" />
+		<Unit filename="../src/odfaeg/Network/srkserveur.cpp" />
+		<Unit filename="../src/odfaeg/Network/symEncPacket.cpp" />
+		<Unit filename="../src/odfaeg/Network/user.cpp" />
+		<Unit filename="../src/odfaeg/Physics/CMakeLists.txt">
+			<Option virtualFolder="CMake Files/src/odfaeg/Physics/" />
+		</Unit>
+		<Unit filename="../src/odfaeg/Physics/affector.cpp" />
+		<Unit filename="../src/odfaeg/Physics/boundingBox.cpp" />
+		<Unit filename="../src/odfaeg/Physics/boundingEllipsoid.cpp" />
+		<Unit filename="../src/odfaeg/Physics/boundingPolyhedron.cpp" />
+		<Unit filename="../src/odfaeg/Physics/boundingSphere.cpp" />
+		<Unit filename="../src/odfaeg/Physics/collisionResultSet.cpp" />
+		<Unit filename="../src/odfaeg/Physics/emitter.cpp" />
+		<Unit filename="../src/odfaeg/Physics/orientedBoundingBox.cpp" />
+		<Unit filename="../src/odfaeg/Physics/particle.cpp" />
+		<Unit filename="../src/odfaeg/Physics/particleSystem.cpp" />
+		<Unit filename="../src/odfaeg/Window/CMakeLists.txt">
+			<Option virtualFolder="CMake Files/src/odfaeg/Window/" />
+		</Unit>
+		<Unit filename="../src/odfaeg/Window/sdlWindow.cpp" />
+		<Unit filename="../src/odfaeg/Window/x11Window.cpp" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
 </CodeBlocks_project_file>
