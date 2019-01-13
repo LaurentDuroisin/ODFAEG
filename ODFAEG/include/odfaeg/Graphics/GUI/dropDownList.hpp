@@ -23,6 +23,7 @@ namespace odfaeg {
                     void onItemSelected(Label* label);
                     void onEventPushed(sf::Event event, RenderWindow& window);
                     void recomputePos();
+                    bool isDroppedDown();
                     std::string getSelectedItem();
                     ~DropDownList();
                 private :

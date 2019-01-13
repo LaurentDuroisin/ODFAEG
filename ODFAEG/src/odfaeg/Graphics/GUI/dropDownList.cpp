@@ -8,6 +8,7 @@ namespace odfaeg {
                 background = sf::Color::Black;
                 if (t != "") {
                     Label* label = new Label(window, position, math::Vec3f(size.x - 50, size.y, 0), font, t, charSize);
+                    label->setEventContextActivated(false);
                     items.push_back(label);
                     nbItems = 1;
                     selectedItem = items[0];
@@ -19,13 +20,13 @@ namespace odfaeg {
                     nbItems = 0;
                     selectedItem = nullptr;
                 }
-                rect = RectangleShape(math::Vec3f(size.x-50, size.y, 0));
+                rect = RectangleShape(math::Vec3f(size.x, size.y, 0));
                 shape = ConvexShape(3);
-                shape.setPoint(0, sf::Vector3f(size.x - 25, 50, 0));
+                shape.setPoint(0, sf::Vector3f(size.x - 25, size.y, 0));
                 shape.setPoint(1, sf::Vector3f(size.x - 50, 0, 0));
                 shape.setPoint(2, sf::Vector3f(size.x, 0, 0));
                 bp = physic::BoundingPolyhedron(math::Vec3f(position.x + size.x - 25, position.y + 50, 0), math::Vec3f(position.x + size.x - 50, position.y, 0), math::Vec3f(position.x + size.x, position.y, 0),true);
-                core::Action a(core::Action::EVENT_TYPE::MOUSE_BUTTON_HELD_DOWN, sf::Mouse::Left);
+                core::Action a(core::Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, sf::Mouse::Left);
                 core::Command cmd(a, core::FastDelegate<bool> (&DropDownList::isMouseOnTriangle, this), core::FastDelegate<void>(&DropDownList::onTriangleClicked, this));
                 getListener().connect("ITEMSELECTED"+t, cmd);
                 dropDown = false;
@@ -38,6 +39,9 @@ namespace odfaeg {
                 selectedItemPos = label->getPosition();
                 selectedItem->setPosition(getPosition());
                 dropDown = false;
+                for (unsigned int i = 0; i < items.size(); i++) {
+                    items[i]->setEventContextActivated(false);
+                }
             }
             bool DropDownList::isMouseOnTriangle() {
                 return bp.isPointInside(mousePos);
@@ -45,6 +49,9 @@ namespace odfaeg {
             void DropDownList::onTriangleClicked() {
                 selectedItem->setPosition(selectedItemPos);
                 dropDown = true;
+                for (unsigned int i = 0; i < items.size(); i++) {
+                    items[i]->setEventContextActivated(true);
+                }
             }
             void DropDownList::clear() {
                 if (background != rect.getFillColor())
@@ -56,17 +63,30 @@ namespace odfaeg {
                 items.push_back(label);
                 nbItems++;
                 selectedItem = items[0];
+                label->setEventContextActivated(false);
                 core::Action a(core::Action::EVENT_TYPE::MOUSE_BUTTON_HELD_DOWN, sf::Mouse::Left);
                 core::Command cmd (a, core::FastDelegate<bool>(&Label::isMouseInside, items.back()), core::FastDelegate<void>(&DropDownList::onItemSelected, this, items.back()));
                 getListener().connect(items.back()->getText(), cmd);
             }
             void DropDownList::onDraw(RenderTarget& target, RenderStates states) {
-                states.transform = getTransform();
+                rect.setPosition(getPosition());
+                rect.setSize(getSize());
+                shape = ConvexShape(3);
+                shape.setPoint(0, sf::Vector3f(getSize().x - 25, getSize().y, 0));
+                shape.setPoint(1, sf::Vector3f(getSize().x - 50, 0, 0));
+                shape.setPoint(2, sf::Vector3f(getSize().x, 0, 0));
+                bp = physic::BoundingPolyhedron(math::Vec3f(getPosition().x + getSize().x - 25, getPosition().y + getSize().y, 0), math::Vec3f(getPosition().x + getSize().x - 50, getPosition().y, 0), math::Vec3f(getPosition().x + getSize().x, getSize().y, 0),true);
+                shape.setPosition(getPosition());
+                shape.setSize(getSize());
                 target.draw(rect, states);
                 if (!dropDown && selectedItem != nullptr) {
+                    selectedItem->setPosition(getPosition());
+                    selectedItem->setSize(math::Vec3f(getSize().x - 50, getSize().y, getSize().z));
                     target.draw(*selectedItem, states);
                 } else {
                     for (unsigned int i = 0; i < items.size(); i++) {
+                        items[i]->setPosition(math::Vec3f(getPosition().x, getPosition().y + getSize().y * i, getPosition().z));
+                        items[i]->setSize(math::Vec3f(getSize().x - 50, getSize().y, getSize().z));
                         target.draw(*items[i], states);
                     }
                 }
@@ -86,6 +106,9 @@ namespace odfaeg {
                 for (unsigned int i = 0; i < items.size(); i++) {
                     items[i]->onUpdate(window, event);
                 }
+            }
+            bool DropDownList::isDroppedDown() {
+                return dropDown;
             }
             DropDownList::~DropDownList() {
                 for (unsigned int i = 0; i < items.size(); i++) {

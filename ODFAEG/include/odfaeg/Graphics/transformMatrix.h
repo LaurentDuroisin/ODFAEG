@@ -136,6 +136,9 @@ namespace odfaeg
             *   construct the matrix again if it's necessary.
             */
             float* getGlMatrix();
+            math::Vec3f getTranslation();
+            math::Vec3f getOrigin();
+            math::Vec3f getScale();
             bool operator== (const TransformMatrix& other);
             template <typename Archive>
             void serialize (Archive & ar) {

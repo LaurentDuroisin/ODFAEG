@@ -36,7 +36,6 @@ namespace odfaeg {
                 return text.getString();
             }
             bool Button::isMouseInButton() {
-
                 physic::BoundingBox bb = getGlobalBounds();
                 //math::Vec2f mousePos = math::Vec2f(sf::Mouse::getPosition(getWindow()).x, sf::Mouse::getPosition(getWindow()).y);
                 if (bb.isPointInside(mousePos)) {
@@ -49,7 +48,7 @@ namespace odfaeg {
                 core::FastDelegate<void> slot(&ActionListener::actionPerformed,al, this);
                 core::Action a (core::Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, sf::Mouse::Left);
                 core::Command cmd(a, trigger, slot);
-                getListener().connect("CBUTTONCLICKED"+getText(), cmd);
+                getListener().connect("CBUTTONCLICKED", cmd);
             }
             void Button::onEventPushed (sf::Event event, RenderWindow& window) {
                 if (&getWindow() == &window)

@@ -251,7 +251,7 @@ namespace odfaeg {
                 bCancel.getListener().pushEvent(event);*/
             }
             void FileDialog::onVisibilityChanged(bool visible) {
-                rw.setVisible(false);
+                rw.setVisible(visible);
             }
             void FileDialog::actionPerformed(Button* button) {
                 if (button->getText() == "Choose") {

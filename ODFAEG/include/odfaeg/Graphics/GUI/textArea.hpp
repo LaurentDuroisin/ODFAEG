@@ -32,7 +32,7 @@ namespace odfaeg {
                 void onEventPushed(sf::Event event, RenderWindow& window);
                 std::string getName();
             private :
-                unsigned int currentIndex;
+                int currentIndex;
                 std::string tmp_text, id_text;
                 math::Vec3f size;
                 Text text;

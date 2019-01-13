@@ -200,6 +200,8 @@ namespace odfaeg
         void Shape::draw(RenderTarget& target, RenderStates states)
         {
             states.transform.combine(getTransform().getMatrix());
+            /*for (unsigned int i = 0; i < m_vertices.getVertexCount(); i++)
+                std::cout<<"transformed shape : "<<states.transform.transform(math::Vec3f(m_vertices[i].position.x, m_vertices[i].position.y, 0));*/
             // Render the inside
             states.texture = m_texture;
             target.draw(m_vertices, states);

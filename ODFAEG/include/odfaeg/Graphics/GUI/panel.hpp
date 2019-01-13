@@ -30,7 +30,6 @@ namespace odfaeg {
                 math::Vec3f maxSize;
                 int oldMouseX, oldMouseY, mouseDeltaX, mouseDeltaY;
                 sf::Color background, border;
-                std::vector<std::unique_ptr<LightComponent>> children;
                 std::vector<Drawable*> drawables;
             };
         }

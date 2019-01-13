@@ -14,6 +14,12 @@ namespace odfaeg {
                         for (unsigned int i = 0; i < getChildren().size(); i++)
                             getChildren()[i]->clear();
                     }
+                    /*void onDraw(RenderTarget& target, RenderStates states) {
+                        std::cout<<getChildren().size()<<std::endl;
+                        for (unsigned int i = 0; i < getChildren().size(); i++) {
+                            std::cout<<getChildren()[i]->getPosition()<<getChildren()[i]->getSize()<<std::endl;
+                        }
+                    }*/
                 private :
                     void onTabChanged(Panel* panel);
             };

@@ -11,7 +11,7 @@ using namespace odfaeg::graphic::gui;
 using namespace odfaeg::physic;
 ODFAEGCreator::ODFAEGCreator(sf::VideoMode vm, std::string title) :
 Application (vm, title, sf::Style::Resize|sf::Style::Close, sf::ContextSettings(0, 0, 0, 3, 0)), isGuiShown (false), cursor(10) {
-
+    dpSelectTexture = nullptr;
 }
 void ODFAEGCreator::onLoad() {
     FontManager<Fonts> fm;
@@ -77,6 +77,7 @@ void ODFAEGCreator::onInit() {
     getRenderComponentManager().addComponent(frc);
     fdTexturePath = new FileDialog(Vec3f(0, 0, 0), Vec3f(800, 600, 0), fm.getResourceByAlias(Fonts::Serif));
     fdTexturePath->setVisible(false);
+    fdTexturePath->setEventContextActivated(false);
     addWindow(&fdTexturePath->getWindow());
     getRenderComponentManager().addComponent(fdTexturePath);
     wApplicationNew = new RenderWindow(sf::VideoMode(400, 300), "Create ODFAEG Application", sf::Style::Default, sf::ContextSettings(0, 0, 0, 3, 0));
@@ -154,6 +155,7 @@ void ODFAEGCreator::onInit() {
     pScriptsEdit->setBorderThickness(5);
     getRenderComponentManager().addComponent(pScriptsEdit);
     pScriptsFiles = new Panel(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 700, 0), 0);
+    pScriptsFiles->setName("PScriptsFiles");
     pScriptsFiles->setBorderColor(sf::Color(128, 128, 128));
     pScriptsFiles->setBackgroundColor(sf::Color::White);
     pScriptsFiles->setBorderThickness(5);
@@ -161,6 +163,7 @@ void ODFAEGCreator::onInit() {
     pScriptsFiles->setRelSize(1.5f / 6.f, 1.f);
     getRenderComponentManager().addComponent(pScriptsFiles);
     tabPane = new TabPane(getRenderWindow(),Vec3f(0, 0, 0),Vec3f(200, 700, 0));
+    tabPane->setName("TABPANE");
     tabPane->setRelPosition(0, 0);
     tabPane->setRelSize(1, 1);
     tabPane->setParent(pScriptsFiles);
@@ -188,6 +191,7 @@ void ODFAEGCreator::onInit() {
     Action moveCursorAction (Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, sf::Mouse::Left);
     Command moveCursorCommand (moveCursorAction, FastDelegate<void>(&ODFAEGCreator::moveCursor, this, sf::Vector2f(-1, -1)));
     getListener().connect("MoveCursor", moveCursorCommand);
+
 }
 void ODFAEGCreator::onRender(RenderComponentManager *cm) {
 
@@ -218,8 +222,18 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, sf::Event& event) {
 }
 void ODFAEGCreator::onExec() {
     std::string path = fdTexturePath->getPathChosen();
-    if (path != "")
-        std::cout<<"Loading file : "<<path<<std::endl;
+    if (path != "") {
+        unsigned int lastSlash = path.find_last_of("/");
+        std::string ImgName = path.substr(lastSlash+1);
+        dpSelectTexture->addItem(ImgName,15);
+        fdTexturePath->setVisible(false);
+        fdTexturePath->setEventContextActivated(false);
+    }
+    if (dpSelectTexture != nullptr && dpSelectTexture->isDroppedDown()) {
+        bChooseText->setEventContextActivated(false);
+    } else if (dpSelectTexture != nullptr && !dpSelectTexture->isDroppedDown()) {
+        bChooseText->setEventContextActivated(true);
+    }
 }
 void ODFAEGCreator::showGUI(Label* label) {
     isGuiShown = true;
@@ -398,6 +412,10 @@ void ODFAEGCreator::actionPerformed(Button* button) {
             main.close();
         }
     }
+    if (button->getText() == "New texture") {
+        fdTexturePath->setVisible(true);
+        fdTexturePath->setEventContextActivated(true);
+    }
 }
 void ODFAEGCreator::actionPerformed(MenuItem* item) {
     if (item->getText() == "New application") {
@@ -430,15 +448,16 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
     if (item->getText() == "Rectangle shape") {
         std::unique_ptr<RectangleShape> shape = std::make_unique<RectangleShape>(Vec3f(100, 50, 0));
         shape->setPosition(cursor.getPosition());
-        transformables.push_back(shape.get());
-        selectedObject = shape.get();
         displayInfos(shape.get());
+        selectedObject = shape.get();
         drawables.push_back(std::move(shape));
     }
 }
-void ODFAEGCreator::displayInfos (Transformable* shape) {
+void ODFAEGCreator::displayInfos (Shape* shape) {
     rootPropNode->deleteAllNodes();
+    rootMaterialNode->deleteAllNodes();
     pTransform->removeAll();
+    pMaterial->removeAll();
     FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
     lPosition = new Label(getRenderWindow(),Vec3f(0,0,0),Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"Position : ", 15);
     lPosition->setParent(pTransform);
@@ -478,6 +497,109 @@ void ODFAEGCreator::displayInfos (Transformable* shape) {
     tPosX->getListener().connect("tPosXChanged", cmdPosX);
     tPosY->getListener().connect("tPosYChanged", cmdPosY);
     tPosZ->getListener().connect("tPosZChanged", cmdPosZ);
+    lColor = new Label(getRenderWindow(),Vec3f(0, 0, 0),Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"Color : ", 15);
+    lColor->setParent(pMaterial);
+    Node* lColorNode = new Node("LabColor",lColor,Vec2f(0, 0), Vec2f(1.f, 0.025f), rootMaterialNode.get());
+    pMaterial->addChild(lColor);
+    lRColor = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"r : ", 15);
+    lRColor->setParent(pMaterial);
+    Node* lRColorNode = new Node("LabRColor",lRColor,Vec2f(0, 0), Vec2f(0.25f, 0.025f),rootMaterialNode.get());
+    pMaterial->addChild(lRColor);
+    tRColor = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionFloatString(shape->getFillColor().r), getRenderWindow());
+    tRColor->setTextSize(15);
+    tRColor->setParent(pMaterial);
+    lRColorNode->addOtherComponent(tRColor, Vec2f(0.75f, 0.025f));
+    pMaterial->addChild(tRColor);
+    lGColor = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"g : ", 15);
+    lGColor->setParent(pMaterial);
+    Node* lGColorNode = new Node("LabRColor",lGColor,Vec2f(0, 0), Vec2f(0.25f, 0.025f),rootMaterialNode.get());
+    pMaterial->addChild(lGColor);
+    tGColor = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionFloatString(shape->getFillColor().g), getRenderWindow());
+    tGColor->setTextSize(15);
+    tGColor->setParent(pMaterial);
+    lGColorNode->addOtherComponent(tGColor, Vec2f(0.75f, 0.025f));
+    pMaterial->addChild(tGColor);
+    lBColor = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"b : ", 15);
+    lBColor->setParent(pMaterial);
+    Node* lBColorNode = new Node("LabBColor",lBColor,Vec2f(0, 0), Vec2f(0.25f, 0.025f),rootMaterialNode.get());
+    pMaterial->addChild(lBColor);
+    tBColor = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionFloatString(shape->getFillColor().b), getRenderWindow());
+    tBColor->setTextSize(15);
+    tBColor->setParent(pMaterial);
+    lBColorNode->addOtherComponent(tBColor, Vec2f(0.75f, 0.025f));
+    pMaterial->addChild(tBColor);
+    lAColor = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"a : ", 15);
+    lAColor->setParent(pMaterial);
+    Node* lAColorNode = new Node("LabAColor",lAColor,Vec2f(0, 0), Vec2f(0.25f, 0.025f),rootMaterialNode.get());
+    pMaterial->addChild(lAColor);
+    tAColor = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionFloatString(shape->getFillColor().a), getRenderWindow());
+    tAColor->setTextSize(15);
+    tAColor->setParent(pMaterial);
+    lAColorNode->addOtherComponent(tAColor,Vec2f(0.75f, 0.025f));
+    pMaterial->addChild(tAColor);
+    Command cmdRColChanged(a, FastDelegate<bool>(&TextArea::isTextChanged, tRColor), FastDelegate<void>(&ODFAEGCreator::onObjectColorChanged, this, tRColor));
+    tRColor->getListener().connect("TRColorChanged", cmdRColChanged);
+    Command cmdGColChanged(a, FastDelegate<bool>(&TextArea::isTextChanged, tGColor), FastDelegate<void>(&ODFAEGCreator::onObjectColorChanged, this, tGColor));
+    tGColor->getListener().connect("TGColorChanged", cmdGColChanged);
+    Command cmdBColChanged(a, FastDelegate<bool>(&TextArea::isTextChanged, tBColor), FastDelegate<void>(&ODFAEGCreator::onObjectColorChanged, this, tBColor));
+    tBColor->getListener().connect("TBColorChanged", cmdBColChanged);
+    Command cmdAColChanged(a, FastDelegate<bool>(&TextArea::isTextChanged, tAColor), FastDelegate<void>(&ODFAEGCreator::onObjectColorChanged, this, tAColor));
+    tAColor->getListener().connect("TAColorChanged", cmdAColChanged);
+    lTexture = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0), fm.getResourceByAlias(Fonts::Serif),"Texture : ", 15);
+    lTexture->setParent(pMaterial);
+    Node* lTextureNode = new Node("LabTexture",lTexture,Vec2f(0, 0), Vec2f(1.f, 0.025f),rootMaterialNode.get());
+    pMaterial->addChild(lTexture);
+    lTexCoordX = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"Tex x : ", 15);
+    lTexCoordX->setParent(pMaterial);
+    Node* lTexCoordXNode = new Node("LTexCoordX", lTexCoordX,Vec2f(0, 0), Vec2f(0.25f, 0.025f),rootMaterialNode.get());
+    pMaterial->addChild(lTexCoordX);
+    tTexCoordX = new TextArea (Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),"0",getRenderWindow());
+    tTexCoordX->setTextSize(15);
+    tTexCoordX->setParent(pMaterial);
+    lTexCoordXNode->addOtherComponent(tTexCoordX,Vec2f(0.75f, 0.025f));
+    pMaterial->addChild(tTexCoordX);
+    lTexCoordY = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"Tex y : ", 15);
+    lTexCoordY->setParent(pMaterial);
+    Node* lTexCoordYNode = new Node("LTexCoordY", lTexCoordY,Vec2f(0, 0), Vec2f(0.25f, 0.025f),rootMaterialNode.get());
+    pMaterial->addChild(lTexCoordY);
+    tTexCoordY = new TextArea (Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),"0",getRenderWindow());
+    tTexCoordY->setTextSize(15);
+    tTexCoordY->setParent(pMaterial);
+    lTexCoordYNode->addOtherComponent(tTexCoordY,Vec2f(0.75f, 0.025f));
+    pMaterial->addChild(tTexCoordY);
+    lTexCoordW = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"Tex w : ", 15);
+    lTexCoordW->setParent(pMaterial);
+    Node* lTexCoordWNode = new Node("lTexCoordW", lTexCoordW,Vec2f(0, 0), Vec2f(0.25f, 0.025f),rootMaterialNode.get());
+    pMaterial->addChild(lTexCoordW);
+    tTexCoordW = new TextArea (Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),"0",getRenderWindow());
+    tTexCoordW->setTextSize(15);
+    tTexCoordW->setParent(pMaterial);
+    lTexCoordWNode->addOtherComponent(tTexCoordW,Vec2f(0.75f, 0.025f));
+    pMaterial->addChild(tTexCoordW);
+    lTexCoordH = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"Tex h : ", 15);
+    lTexCoordH->setParent(pMaterial);
+    Node* lTexCoordHNode = new Node("LTexCoordH", lTexCoordH,Vec2f(0, 0), Vec2f(0.25f, 0.025f),rootMaterialNode.get());
+    pMaterial->addChild(lTexCoordH);
+    tTexCoordH = new TextArea (Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),"0",getRenderWindow());
+    tTexCoordH->setTextSize(15);
+    tTexCoordH->setParent(pMaterial);
+    lTexCoordHNode->addOtherComponent(tTexCoordH,Vec2f(0.75f, 0.025f));
+    pMaterial->addChild(tTexCoordH);
+    lTexImage = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif), "Tex Image : ", 15);
+    lTexImage->setParent(pMaterial);
+    Node* selectTextNode = new Node("SelectTexture",lTexImage,Vec2f(0, 0),Vec2f(0.25f, 0.025f), rootMaterialNode.get());
+    pMaterial->addChild(lTexImage);
+    dpSelectTexture = new DropDownList(getRenderWindow(),Vec3f(0, 0, 0),Vec3f(100, 50, 0), fm.getResourceByAlias(Fonts::Serif),"NONE", 15);
+    dpSelectTexture->setName("SELECTTEXT");
+    dpSelectTexture->setParent(pMaterial);
+    selectTextNode->addOtherComponent(dpSelectTexture,Vec2f(0.75f, 0.025f));
+    pMaterial->addChild(dpSelectTexture);
+    bChooseText = new Button(Vec3f(0, 0, 0), Vec3f(100, 100, 0), fm.getResourceByAlias(Fonts::Serif),"New texture", 15, getRenderWindow());
+    bChooseText->setParent(pMaterial);
+    Node* chooseTextNode = new Node("ChooseText", bChooseText,Vec2f(0, 0), Vec2f(1.f, 0.025f),rootMaterialNode.get());
+    pMaterial->addChild(bChooseText);
+    bChooseText->setName("CHOOSETEXT");
+    bChooseText->addActionListener(this);
     pScriptsFiles->setAutoResized(true);
 }
 void ODFAEGCreator::moveCursor(sf::Vector2f mousePos) {
@@ -501,6 +623,32 @@ void ODFAEGCreator::onObjectPosChanged(TextArea* ta) {
         if(is_number(ta->getText())) {
             float newZPos = conversionStringFloat(ta->getText());
             selectedObject->setPosition(Vec3f(selectedObject->getPosition().x, selectedObject->getPosition().y, newZPos));
+        }
+    }
+}
+void ODFAEGCreator::onObjectColorChanged(TextArea* ta) {
+    if (ta == tRColor) {
+        if (is_number(tRColor->getText())) {
+            unsigned int color = conversionStringInt(tRColor->getText());
+            selectedObject->setFillColor(sf::Color(Math::clamp(color, 0, 255), selectedObject->getFillColor().g,selectedObject->getFillColor().b, selectedObject->getFillColor().a));
+        }
+    }
+    if (ta == tGColor) {
+        if (is_number(tGColor->getText())) {
+            unsigned int color = conversionStringInt(tGColor->getText());
+            selectedObject->setFillColor(sf::Color(selectedObject->getFillColor().r, Math::clamp(color, 0, 255),selectedObject->getFillColor().b, selectedObject->getFillColor().a));
+        }
+    }
+    if (ta == tBColor) {
+        if (is_number(tRColor->getText())) {
+            unsigned int color = conversionStringInt(tBColor->getText());
+            selectedObject->setFillColor(sf::Color(selectedObject->getFillColor().r, selectedObject->getFillColor().g, Math::clamp(color, 0, 255), selectedObject->getFillColor().a));
+        }
+    }
+    if (ta == tAColor) {
+        if (is_number(tAColor->getText())) {
+            unsigned int color = conversionStringInt(tAColor->getText());
+            selectedObject->setFillColor(sf::Color(selectedObject->getFillColor().r, selectedObject->getFillColor().g,selectedObject->getFillColor().b, Math::clamp(color, 0, 255)));
         }
     }
 }

@@ -55,7 +55,7 @@ namespace odfaeg
             ///
             ////////////////////////////////////////////////////////////
             explicit ConvexShape(unsigned int pointCount = 0);
-
+            void onScale(math::Vec3f& s);
             ////////////////////////////////////////////////////////////
             /// \brief Set the number of points of the polygon
             ///

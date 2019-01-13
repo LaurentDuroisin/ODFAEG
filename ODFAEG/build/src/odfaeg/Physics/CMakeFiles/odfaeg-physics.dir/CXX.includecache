@@ -470,10 +470,6 @@ type_traits
 ../Graphics/transformMatrix.h
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/transformMatrix.h
 
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/export.hpp
-../config.hpp
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/config.hpp
-
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/maths.h
 math.h
 -
@@ -757,10 +753,6 @@ array
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Physics/boundingPolyhedron.h
 ../../../include/odfaeg/Graphics/transformMatrix.h
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/transformMatrix.h
-
-/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Physics/collisionResultSet.cpp
-../../../include/odfaeg/Physics/collisionResultSet.hpp
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Physics/collisionResultSet.hpp
 
 /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Physics/emitter.cpp
 ../../../include/odfaeg/Physics/emissionInterface.h

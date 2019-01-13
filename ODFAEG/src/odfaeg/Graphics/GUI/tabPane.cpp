@@ -29,14 +29,17 @@ namespace odfaeg {
                 for (unsigned int i = 2; i < getChildren().size(); i++) {
                     if (dynamic_cast<Panel*> (getChildren()[i]) != nullptr) {
                         getChildren()[i]->setVisible(false);
+                        getChildren()[i]->setEventContextActivated(false);
                     }
                 }
             }
             void TabPane::onTabChanged(Panel* panel) {
                 panel->setVisible(true);
+                panel->setEventContextActivated(true);
                 for (unsigned int i = 0; i < getChildren().size(); i++) {
                     if (dynamic_cast<Panel*> (getChildren()[i]) != nullptr && getChildren()[i] != panel) {
                         getChildren()[i]->setVisible(false);
+                        getChildren()[i]->setEventContextActivated(false);
                     }
                 }
             }

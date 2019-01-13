@@ -32,8 +32,9 @@ class ODFAEGCreator : public odfaeg::core::Application,
     void showHeadersFiles(odfaeg::graphic::gui::Label* label);
     void showGUI(odfaeg::graphic::gui::Label* label);
     void showFileContent(odfaeg::graphic::gui::Label* lab);
-    void displayInfos(odfaeg::graphic::Transformable* transformable);
+    void displayInfos(odfaeg::graphic::Shape* shape);
     void onObjectPosChanged(odfaeg::graphic::gui::TextArea* ta);
+    void onObjectColorChanged(odfaeg::graphic::gui::TextArea* ta);
     enum Fonts {
         Serif
     };
@@ -45,7 +46,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
         odfaeg::graphic::gui::FileDialog* fdTexturePath;
         odfaeg::graphic::RenderWindow* wApplicationNew;
         odfaeg::graphic::gui::TextArea* ta;
-        odfaeg::graphic::gui::DropDownList* dpList;
+        odfaeg::graphic::gui::DropDownList* dpList, *dpSelectTexture;
         odfaeg::graphic::gui::Label *lWidth, *lHeight;
         odfaeg::graphic::gui::TextArea *taWidth, *taHeight, *tScriptEdit;
         odfaeg::graphic::gui::Panel *pProjects, *pScriptsFiles, *pScriptsEdit, *pTransform, *pMaterial;
@@ -56,11 +57,13 @@ class ODFAEGCreator : public odfaeg::core::Application,
         odfaeg::graphic::CircleShape cursor;
         odfaeg::math::Vec3f guiSize, guiPos;
         bool isGuiShown;
-        std::vector<odfaeg::graphic::Transformable*> transformables;
-        odfaeg::graphic::Transformable* selectedObject;
-        std::vector<std::unique_ptr<odfaeg::graphic::Drawable>> drawables;
-        odfaeg::graphic::gui::TextArea *tPosX, *tPosY, *tPosZ;
-        odfaeg::graphic::gui::Label *lPosX, *lPosY, *lPosZ, *lPosition;
+        std::vector<std::unique_ptr<odfaeg::graphic::Shape>> drawables;
+        odfaeg::graphic::Shape* selectedObject;
+        odfaeg::graphic::gui::TextArea *tPosX, *tPosY, *tPosZ, *tRColor, *tGColor, *tBColor, *tAColor,
+        *tTexCoordX, *tTexCoordY, *tTexCoordW, *tTexCoordH;
+        odfaeg::graphic::gui::Label *lPosX, *lPosY, *lPosZ, *lPosition, *lColor, *lRColor,
+        *lGColor, *lBColor, *lAColor, *lTexture, *lTexCoordX, *lTexCoordY, *lTexCoordW, *lTexCoordH, *lTexImage;
         odfaeg::graphic::gui::TabPane* tabPane;
+        odfaeg::graphic::gui::Button* bChooseText;
 };
 #endif

@@ -41,13 +41,13 @@ namespace odfaeg {
             void Panel::moveXItems() {
                 if (mouseDeltaX > 0 && vertScrollBar.getPosition().x + vertScrollBar.getSize().x + mouseDeltaX <= getPosition().x + getSize().x - 10) {
                     vertScrollBar.move(math::Vec3f(mouseDeltaX, 0, 0));
-                    for (unsigned int i = 0; i < children.size(); i++) {
-                        children[i]->move(math::Vec3f(-(maxSize.x / (getSize().x - 10) * mouseDeltaX), 0, 0));
+                    for (unsigned int i = 0; i < getChildren().size(); i++) {
+                        getChildren()[i]->move(math::Vec3f(-(maxSize.x / (getSize().x - 10) * mouseDeltaX), 0, 0));
                     }
                 } else if (mouseDeltaX < 0 && vertScrollBar.getPosition().x +  mouseDeltaX >= getPosition().x) {
                     vertScrollBar.move(math::Vec3f(mouseDeltaX, 0, 0));
-                    for (unsigned int i = 0; i < children.size(); i++) {
-                        children[i]->move(math::Vec3f(-(maxSize.x / (getSize().x - 10) * mouseDeltaX), 0, 0));
+                    for (unsigned int i = 0; i < getChildren().size(); i++) {
+                        getChildren()[i]->move(math::Vec3f(-(maxSize.x / (getSize().x - 10) * mouseDeltaX), 0, 0));
                     }
                 }
             }

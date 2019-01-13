@@ -37,15 +37,16 @@ namespace odfaeg
         {
             setPointCount(pointCount);
         }
-
-
         ////////////////////////////////////////////////////////////
         void ConvexShape::setPointCount(unsigned int count)
         {
             m_points.resize(count);
             update();
         }
-
+        void ConvexShape::onScale(math::Vec3f& scale)
+        {
+           update();
+        }
 
         ////////////////////////////////////////////////////////////
         unsigned int ConvexShape::getPointCount() const

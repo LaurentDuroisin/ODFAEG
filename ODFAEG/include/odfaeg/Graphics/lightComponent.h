@@ -23,7 +23,7 @@ namespace odfaeg {
             }
             void recomputeSize() {
                 if (isAutoResized()) {
-                    float sx, sy, npx, npy, nsx, nsy, psx, psy;
+                    unsigned int sx, sy, npx, npy, nsx, nsy, psx, psy, ppx, ppy;
                     /*sx = getSize().x;
                     sy = getSize().y;*/
                     if (parent != nullptr) {
@@ -33,6 +33,8 @@ namespace odfaeg {
                         nsy = parent->getSize().y * getRelSize().y;
                         psx = parent->getSize().x;
                         psy = parent->getSize().y;
+                        ppx = parent->getPosition().x;
+                        ppy = parent->getPosition().y;
                     } else {
                         npx = getWindow().getSize().x * getRelPosition().x;
                         npy = getWindow().getSize().y * getRelPosition().y;
@@ -40,6 +42,8 @@ namespace odfaeg {
                         nsy = getWindow().getSize().y * getRelSize().y;
                         psx = getWindow().getSize().x;
                         psy = getWindow().getSize().y;
+                        ppx = getWindow().getPosition().x;
+                        ppy = getWindow().getPosition().y;
                     }
                     setSize(math::Vec3f(nsx, nsy, 0.f));
                     setPosition(math::Vec3f(npx, npy, getPosition().z));
@@ -55,13 +59,19 @@ namespace odfaeg {
                 onSizeRecomputed();
             }
             void draw(RenderTarget& target, RenderStates states) {
-                states.transform = getTransform();
+                //states.transform = getTransform();
                 onDraw(target, states);
+                std::multimap<int, LightComponent*, std::greater<int>> sortedChildren;
                 for (unsigned int i = 0; i < children.size(); i++) {
-                    if (children[i]->isVisible() && children[i]->getPosition().x >= getPosition().x && children[i]->getPosition().y >= getPosition().y
-                    && children[i]->getPosition().x + children[i]->getSize().x <= getPosition().x + getSize().x
-                    && children[i]->getPosition().y + children[i]->getSize().y <= getPosition().y + getSize().y)
-                        children[i]->draw(target, states);
+                    sortedChildren.insert(std::make_pair(children[i]->getPriority(), children[i].get()));
+                }
+                std::multimap<int, LightComponent*, std::greater<int>>::iterator it;
+                for (it = sortedChildren.begin(); it != sortedChildren.end(); it++) {
+                    if (it->second->isVisible() && it->second->getPosition().x >= getPosition().x && it->second->getPosition().y >= getPosition().y
+                    && it->second->getPosition().x + it->second->getSize().x <= getPosition().x + getSize().x
+                    && it->second->getPosition().y + it->second->getSize().y <= getPosition().y + getSize().y) {
+                        it->second->draw(target, states);
+                    }
                 }
                 drawOn(target, states);
             }
@@ -93,9 +103,11 @@ namespace odfaeg {
                 }
             }
             void processEvents() {
-                getListener().processEvents();
-                for (unsigned int i = 0; i < children.size(); i++) {
-                    children[i]->processEvents();
+                if (isEventContextActivated()) {
+                    getListener().processEvents();
+                    for (unsigned int i = 0; i < children.size(); i++) {
+                        children[i]->processEvents();
+                    }
                 }
             }
             virtual void removeAll() {

@@ -39,6 +39,15 @@ namespace odfaeg {
         float TransformMatrix::getRotation() {
             return r3d;
         }
+        math::Vec3f TransformMatrix::getTranslation() {
+            return t3d;
+        }
+        math::Vec3f TransformMatrix::getOrigin() {
+            return o3d;
+        }
+        math::Vec3f TransformMatrix::getScale() {
+            return s3d;
+        }
         math::Vec3f TransformMatrix::transform (const math::Vec3f vec3) {
             if (needToUpdate3D) {
                 float angle;
