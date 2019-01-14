@@ -691,11 +691,12 @@ void ODFAEGCreator::onObjectPosChanged(TextArea* ta) {
     if (ta == tPosX) {
         if (is_number(ta->getText())) {
             float newXPos = conversionStringFloat(ta->getText());
-            StateGroup* sg = new StateGroup("SGCHANGEXPOS");
+            StateGroup* sg = new StateGroup("SGCHANGEXPOS"+conversionFloatString(newXPos));
             State* state = new State("SCHANGEXPOS", &se);
             state->addParameter("OBJECT", selectedObject);
             state->addParameter("OLDVALUE", selectedObject->getPosition().x);
             state->addParameter("NEWVALUE", newXPos);
+            sg->addState(state);
             stateStack.addStateGroup(sg);
             selectedObject->setPosition(Vec3f(newXPos, selectedObject->getPosition().y, selectedObject->getPosition().z));
             if(cppAppliContent.find("shape"+conversionUIntString(selectedObject->getId())+"->setPosition") == std::string::npos) {
@@ -716,22 +717,24 @@ void ODFAEGCreator::onObjectPosChanged(TextArea* ta) {
     } else if (ta == tPosY) {
         if(is_number(ta->getText())) {
             float newYPos = conversionStringFloat(ta->getText());
-            StateGroup* sg = new StateGroup("SGCHANGEYPOS");
+            StateGroup* sg = new StateGroup("SGCHANGEYPOS"+conversionFloatString(newYPos));
             State* state = new State("SCHANGEYPOS", &se);
             state->addParameter("OBJECT", selectedObject);
             state->addParameter("OLDVALUE", selectedObject->getPosition().y);
             state->addParameter("NEWVALUE", newYPos);
+            sg->addState(state);
             stateStack.addStateGroup(sg);
             selectedObject->setPosition(Vec3f(selectedObject->getPosition().x, newYPos, selectedObject->getPosition().z));
         }
     } else if (ta == tPosZ) {
         if(is_number(ta->getText())) {
             float newZPos = conversionStringFloat(ta->getText());
-            StateGroup* sg = new StateGroup("SGCHANGEZPOS");
+            StateGroup* sg = new StateGroup("SGCHANGEZPOS"+conversionFloatString(newZPos));
             State* state = new State("SCHANGEZPOS", &se);
             state->addParameter("OBJECT", selectedObject);
             state->addParameter("OLDVALUE", selectedObject->getPosition().z);
             state->addParameter("NEWVALUE", newZPos);
+            sg->addState(state);
             stateStack.addStateGroup(sg);
             selectedObject->setPosition(Vec3f(selectedObject->getPosition().x, selectedObject->getPosition().y, newZPos));
         }
@@ -741,11 +744,12 @@ void ODFAEGCreator::onObjectColorChanged(TextArea* ta) {
     if (ta == tRColor) {
         if (is_number(tRColor->getText())) {
             unsigned int color = conversionStringInt(tRColor->getText());
-            StateGroup* sg = new StateGroup("SGCHANGERCOLOR");
+            StateGroup* sg = new StateGroup("SGCHANGERCOLOR"+conversionUIntString(color));
             State* state = new State("SCHANGERCOLOR", &se);
             state->addParameter("OBJECT", selectedObject);
             state->addParameter("OLDVALUE", selectedObject->getFillColor().r);
             state->addParameter("NEWVALUE", color);
+            sg->addState(state);
             stateStack.addStateGroup(sg);
             selectedObject->setFillColor(sf::Color(Math::clamp(color, 0, 255), selectedObject->getFillColor().g,selectedObject->getFillColor().b, selectedObject->getFillColor().a));
         }
@@ -753,11 +757,12 @@ void ODFAEGCreator::onObjectColorChanged(TextArea* ta) {
     if (ta == tGColor) {
         if (is_number(tGColor->getText())) {
             unsigned int color = conversionStringInt(tGColor->getText());
-            StateGroup* sg = new StateGroup("SGCHANGEGCOLOR");
+            StateGroup* sg = new StateGroup("SGCHANGEGCOLOR"+conversionUIntString(color));
             State* state = new State("SCHANGEGCOLOR", &se);
             state->addParameter("OBJECT", selectedObject);
             state->addParameter("OLDVALUE", selectedObject->getFillColor().g);
             state->addParameter("NEWVALUE", color);
+            sg->addState(state);
             stateStack.addStateGroup(sg);
             selectedObject->setFillColor(sf::Color(selectedObject->getFillColor().r, Math::clamp(color, 0, 255),selectedObject->getFillColor().b, selectedObject->getFillColor().a));
         }
@@ -765,11 +770,12 @@ void ODFAEGCreator::onObjectColorChanged(TextArea* ta) {
     if (ta == tBColor) {
         if (is_number(tBColor->getText())) {
             unsigned int color = conversionStringInt(tBColor->getText());
-            StateGroup* sg = new StateGroup("SGCHANGEBCOLOR");
+            StateGroup* sg = new StateGroup("SGCHANGEBCOLOR"+conversionUIntString(color));
             State* state = new State("SCHANGEBCOLOR", &se);
             state->addParameter("OBJECT", selectedObject);
             state->addParameter("OLDVALUE", selectedObject->getFillColor().b);
             state->addParameter("NEWVALUE", color);
+            sg->addState(state);
             stateStack.addStateGroup(sg);
             selectedObject->setFillColor(sf::Color(selectedObject->getFillColor().r, selectedObject->getFillColor().g, Math::clamp(color, 0, 255), selectedObject->getFillColor().a));
         }
@@ -777,11 +783,12 @@ void ODFAEGCreator::onObjectColorChanged(TextArea* ta) {
     if (ta == tAColor) {
         if (is_number(tAColor->getText())) {
             unsigned int color = conversionStringInt(tAColor->getText());
-            StateGroup* sg = new StateGroup("SGCHANGEACOLOR");
+            StateGroup* sg = new StateGroup("SGCHANGEACOLOR"+conversionUIntString(color));
             State* state = new State("SCHANGEACOLOR", &se);
             state->addParameter("OBJECT", selectedObject);
             state->addParameter("OLDVALUE", selectedObject->getFillColor().a);
             state->addParameter("NEWVALUE", color);
+            sg->addState(state);
             stateStack.addStateGroup(sg);
             selectedObject->setFillColor(sf::Color(selectedObject->getFillColor().r, selectedObject->getFillColor().g,selectedObject->getFillColor().b, Math::clamp(color, 0, 255)));
         }
@@ -814,11 +821,12 @@ void ODFAEGCreator::onSelectedTextureChanged(DropDownList* dp) {
             }
         }
     }
-    StateGroup* sg = new StateGroup("SGCHANGETEXTURE");
+    StateGroup* sg = new StateGroup("SGCHANGETEXTURE"+conversionLongString(reinterpret_cast<unsigned long>(oldTexture)));
     State* state = new State("SCHANGETEXTURE", &se);
     state->addParameter("OLDVALUE",oldTexture);
     state->addParameter("NEWVALUE",selectedObject->getTexture());
     state->addParameter("OBJECT", selectedObject);
+    sg->addState(state);
     stateStack.addStateGroup(sg);
     pMaterial->updateScrolls();
 }
@@ -834,6 +842,7 @@ void ODFAEGCreator::onTexCoordsChanged (TextArea* ta) {
                 state->addParameter("OLDVALUE", selectedObject->getTextureRect().left);
                 state->addParameter("NEWVALUE", texCoordX);
                 state->addParameter("OBJECT", selectedObject);
+                sg->addState(state);
                 stateStack.addStateGroup(sg);
                 selectedObject->setTextureRect(sf::IntRect(Math::abs(texCoordX), texRect.top, texRect.width, texRect.height));
             }
@@ -841,11 +850,12 @@ void ODFAEGCreator::onTexCoordsChanged (TextArea* ta) {
         if (ta == tTexCoordY) {
             if (is_number(ta->getText())) {
                 int texCoordY = conversionStringInt(ta->getText());
-                StateGroup* sg = new StateGroup("SGCHANGEYTEXCOORD");
+                StateGroup* sg = new StateGroup("SGCHANGEYTEXCOORD"+conversionIntString(texCoordY));
                 State* state = new State("SCHANGEXTEYCOORD", &se);
                 state->addParameter("OLDVALUE", selectedObject->getTextureRect().top);
                 state->addParameter("NEWVALUE", texCoordY);
                 state->addParameter("OBJECT", selectedObject);
+                sg->addState(state);
                 stateStack.addStateGroup(sg);
                 selectedObject->setTextureRect(sf::IntRect(texRect.left, Math::abs(texCoordY), texRect.width, texRect.height));
             }
@@ -853,11 +863,12 @@ void ODFAEGCreator::onTexCoordsChanged (TextArea* ta) {
         if (ta == tTexCoordW) {
             if (is_number(ta->getText())) {
                 int texCoordW = conversionStringInt(ta->getText());
-                StateGroup* sg = new StateGroup("SGCHANGEWTEXCOORD");
+                StateGroup* sg = new StateGroup("SGCHANGEWTEWCOORD"+conversionIntString(texCoordW));
                 State* state = new State("SCHANGEXTEWCOORD", &se);
                 state->addParameter("OLDVALUE", selectedObject->getTextureRect().width);
                 state->addParameter("NEWVALUE", texCoordW);
                 state->addParameter("OBJECT", selectedObject);
+                sg->addState(state);
                 stateStack.addStateGroup(sg);
                 selectedObject->setTextureRect(sf::IntRect(texRect.left, texRect.top, Math::abs(texCoordW), texRect.height));
             }
@@ -865,11 +876,12 @@ void ODFAEGCreator::onTexCoordsChanged (TextArea* ta) {
         if (ta == tTexCoordH) {
             if (is_number(ta->getText())) {
                 int texCoordH = conversionStringInt(ta->getText());
-                StateGroup* sg = new StateGroup("SGCHANGEHTEXCOORD");
+                StateGroup* sg = new StateGroup("SGCHANGEHTEXCOORD"+conversionIntString(texCoordH));
                 State* state = new State("SCHANGEXTEHCOORD", &se);
                 state->addParameter("OLDVALUE", selectedObject->getTextureRect().height);
                 state->addParameter("NEWVALUE", texCoordH);
                 state->addParameter("OBJECT", selectedObject);
+                sg->addState(state);
                 stateStack.addStateGroup(sg);
                 selectedObject->setTextureRect(sf::IntRect(texRect.left, texRect.top, texRect.width, Math::abs(texCoordH)));
             }

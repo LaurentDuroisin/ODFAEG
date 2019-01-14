@@ -102,7 +102,7 @@ namespace odfaeg {
                     children[i]->pushEvent(event, rw);
                 }
             }
-            void processEvents() {
+            virtual void processEvents() {
                 if (isEventContextActivated()) {
                     getListener().processEvents();
                     for (unsigned int i = 0; i < children.size(); i++) {

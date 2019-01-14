@@ -1,5 +1,5 @@
 #include "../../../include/odfaeg/Core/stateStack.h"
-
+#include <iostream>
 using namespace std;
 namespace odfaeg {
     namespace core {
@@ -33,7 +33,7 @@ namespace odfaeg {
                 return;
             }
             if (States[currentStateId]->executeContrary()) {
-                    currentStateId--;
+                currentStateId--;
             }
         }
         void StateStack::redo () {

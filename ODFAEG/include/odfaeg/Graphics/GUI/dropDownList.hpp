@@ -25,6 +25,7 @@ namespace odfaeg {
                     void recomputePos();
                     bool isDroppedDown();
                     bool isValueChanged();
+                    void processEvents();
                     std::string getSelectedItem();
                     ~DropDownList();
                 private :

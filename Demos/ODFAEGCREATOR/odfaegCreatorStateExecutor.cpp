@@ -52,7 +52,7 @@ bool ODFAEGCreatorStateExecutor::doState(State& state) {
         shape->setFillColor(sf::Color(shape->getFillColor().r, shape->getFillColor().g, shape->getFillColor().b, color));
     }
     if (state.getName() == "SCHANGETEXTURE") {
-        Texture* texture = state.getParameter("NEWVALUE").getValue<Texture*>();
+        const Texture* texture = state.getParameter("NEWVALUE").getValue<const Texture*>();
         Shape* shape = state.getParameter("OBJECT").getValue<Shape*>();
         shape->setTexture(texture);
     }
@@ -87,6 +87,7 @@ bool ODFAEGCreatorStateExecutor::undoState(State& state) {
         app->removeShape(id);
     }
     if (state.getName() == "SCHANGEXPOS") {
+        std::cout<<"change pos x"<<std::endl;
         float newXPos = state.getParameter("OLDVALUE").getValue<float>();
         Shape* shape = state.getParameter("OBJECT").getValue<Shape*>();
         shape->setPosition(Vec3f(newXPos,shape->getPosition().y, shape->getPosition().z));
@@ -122,7 +123,7 @@ bool ODFAEGCreatorStateExecutor::undoState(State& state) {
         shape->setFillColor(sf::Color(shape->getFillColor().r, shape->getFillColor().g, shape->getFillColor().b, color));
     }
     if (state.getName() == "SCHANGETEXTURE") {
-        Texture* texture = state.getParameter("OLDVALUE").getValue<Texture*>();
+        const Texture* texture = state.getParameter("OLDVALUE").getValue<const Texture*>();
         Shape* shape = state.getParameter("OBJECT").getValue<Shape*>();
         shape->setTexture(texture);
     }

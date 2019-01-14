@@ -14,7 +14,7 @@ namespace odfaeg {
                     selectedItem = items[0];
                     core::Action a(core::Action::EVENT_TYPE::MOUSE_BUTTON_HELD_DOWN, sf::Mouse::Left);
                     core::Command cmd (a, core::FastDelegate<bool>(&Label::isMouseInside, items[0]), core::FastDelegate<void>(&DropDownList::onItemSelected, this, items[0]));
-                    getListener().connect(items[0]->getText(), cmd);
+                    label->getListener().connect(items[0]->getText(), cmd);
                     selectedItemPos = items[0]->getPosition();
                 } else {
                     nbItems = 0;
@@ -73,7 +73,7 @@ namespace odfaeg {
                 label->setEventContextActivated(false);
                 core::Action a(core::Action::EVENT_TYPE::MOUSE_BUTTON_HELD_DOWN, sf::Mouse::Left);
                 core::Command cmd (a, core::FastDelegate<bool>(&Label::isMouseInside, items.back()), core::FastDelegate<void>(&DropDownList::onItemSelected, this, items.back()));
-                getListener().connect(items.back()->getText(), cmd);
+                label->getListener().connect(items.back()->getText(), cmd);
             }
             void DropDownList::onDraw(RenderTarget& target, RenderStates states) {
                 rect.setPosition(getPosition());
@@ -116,6 +116,16 @@ namespace odfaeg {
                 }
                 for (unsigned int i = 0; i < items.size(); i++) {
                     items[i]->onUpdate(window, event);
+                }
+            }
+            void DropDownList::processEvents() {
+                if (isEventContextActivated()) {
+                    getListener().processEvents();
+                    for (unsigned int i = 0; i < items.size(); i++) {
+                        if (items[i]->isEventContextActivated()) {
+                            items[i]->processEvents();
+                        }
+                    }
                 }
             }
             bool DropDownList::isDroppedDown() {
