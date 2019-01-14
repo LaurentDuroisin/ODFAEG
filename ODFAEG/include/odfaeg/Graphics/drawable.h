@@ -36,6 +36,13 @@ namespace odfaeg {
         class ODFAEG_GRAPHICS_API Drawable
         {
         public :
+            Drawable ();
+            const unsigned int& getId();
+            template <typename Archive>
+            void serialize(Archive& ar) {
+                ar(id);
+                ar(nbDrawables);
+            }
             virtual ~Drawable() {}
         protected :
 
@@ -53,7 +60,9 @@ namespace odfaeg {
             ///
             ////////////////////////////////////////////////////////////
             virtual void draw(RenderTarget& target, RenderStates states) = 0;
-
+        private :
+            unsigned int id;
+            static unsigned int nbDrawables;
         };
     }
 }

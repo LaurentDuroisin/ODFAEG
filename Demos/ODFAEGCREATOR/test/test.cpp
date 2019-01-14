@@ -1,20 +1,25 @@
-#include "/home/laurent/Développement/Projets-c++/ODFAEGCREATOR/Test/test.hpp"
+#include "/home/laurent/Développement/Projets-c++/ODFAEGCREATOR/test/test.hpp"
 using namespace odfaeg::graphic;
-Test::Test(sf::VideoMode vm, std::string title) : 
+test::test(sf::VideoMode vm, std::string title) : 
 Application (vm, title, sf::Style::Resize|sf::Style::Close, sf::ContextSettings(0, 0, 0, 3, 0)) {
 }
-void Test::onLoad() {
+void test::onLoad() {
 }
-void Test::onInit() {
+void test::onInit() {
 }
-void Test::onRender(RenderComponentManager *cm) {
+void test::onRender(RenderComponentManager *cm) {
 }
-void Test::onDisplay(RenderWindow* window) {
+void test::onDisplay(RenderWindow* window) {
+   if (&getRenderWindow() == window) {
+       for (unsigned int i = 0; i < drawables.size(); i++) {
+           window->draw(*drawable[i]);
+       }
+   }
 }
-void Test::onUpdate (RenderWindow* window, sf::Event& event) {
+void test::onUpdate (RenderWindow* window, sf::Event& event) {
  if (&getRenderWindow() == window && event.type == sf::Event::Closed) {
   stop();
  }
 }
-void Test::onExec () {
+void test::onExec () {
 }

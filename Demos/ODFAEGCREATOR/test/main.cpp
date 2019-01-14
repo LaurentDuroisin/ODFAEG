@@ -1,5 +1,5 @@
 #include "test.hpp"
 int main(int argc, char* argv[]) {
-    Test app(sf::VideoMode(800,600),"Test");
+    test app(sf::VideoMode(800,600),"test");
     return app.exec();
 }

@@ -44,10 +44,22 @@ namespace odfaeg {
                     for (unsigned int i = 0; i < getChildren().size(); i++) {
                         getChildren()[i]->move(math::Vec3f(-(maxSize.x / (getSize().x - 10) * mouseDeltaX), 0, 0));
                     }
+                    for (unsigned int i = 0; i < sprites.size(); i++) {
+                        sprites[i].move(math::Vec3f(-(maxSize.x / (getSize().x - 10) * mouseDeltaX), 0, 0));
+                    }
+                    for (unsigned int i = 0; i < shapes.size(); i++) {
+                        shapes[i]->move(math::Vec3f(-(maxSize.x / (getSize().x - 10) * mouseDeltaX), 0, 0));
+                    }
                 } else if (mouseDeltaX < 0 && vertScrollBar.getPosition().x +  mouseDeltaX >= getPosition().x) {
                     vertScrollBar.move(math::Vec3f(mouseDeltaX, 0, 0));
                     for (unsigned int i = 0; i < getChildren().size(); i++) {
                         getChildren()[i]->move(math::Vec3f(-(maxSize.x / (getSize().x - 10) * mouseDeltaX), 0, 0));
+                    }
+                    for (unsigned int i = 0; i < sprites.size(); i++) {
+                        sprites[i].move(math::Vec3f(-(maxSize.x / (getSize().x - 10) * mouseDeltaX), 0, 0));
+                    }
+                    for (unsigned int i = 0; i < shapes.size(); i++) {
+                        shapes[i]->move(math::Vec3f(-(maxSize.x / (getSize().x - 10) * mouseDeltaX), 0, 0));
                     }
                 }
             }
@@ -57,10 +69,22 @@ namespace odfaeg {
                     for (unsigned int i = 0; i < getChildren().size(); i++) {
                         getChildren()[i]->move(math::Vec3f(0, -(maxSize.y / (getSize().y - 10) * mouseDeltaY), 0));
                     }
+                    for (unsigned int i = 0; i < sprites.size(); i++) {
+                        sprites[i].move(math::Vec3f(0, -(maxSize.y / (getSize().y - 10) * mouseDeltaY), 0));
+                    }
+                    for (unsigned int i = 0; i < shapes.size(); i++) {
+                        shapes[i]->move(math::Vec3f(0, -(maxSize.y / (getSize().y - 10) * mouseDeltaY), 0));
+                    }
                 } else if (mouseDeltaY < 0 && horScrollBar.getPosition().y + mouseDeltaY >= getPosition().y) {
                     horScrollBar.move(math::Vec3f(0, mouseDeltaY, 0));
                     for (unsigned int i = 0; i < getChildren().size(); i++) {
                         getChildren()[i]->move(math::Vec3f(0, -(maxSize.y / (getSize().y - 10) * mouseDeltaY), 0));
+                    }
+                    for (unsigned int i = 0; i < sprites.size(); i++) {
+                        sprites[i].move(math::Vec3f(0, -(maxSize.y / (getSize().y - 10) * mouseDeltaY), 0));
+                    }
+                    for (unsigned int i = 0; i < shapes.size(); i++) {
+                        shapes[i]->move(math::Vec3f(0, -(maxSize.y / (getSize().y - 10) * mouseDeltaY), 0));
                     }
                 }
             }
@@ -72,6 +96,18 @@ namespace odfaeg {
                         maxSize.y = children[i]->getPosition().y + children[i]->getSize().y;
                     if (children[i]->getPosition().x + children[i]->getSize().x > maxSize.x)
                         maxSize.x = children[i]->getPosition().x + children[i]->getSize().x;
+                }
+                for (unsigned int i = 0; i < sprites.size(); i++) {
+                    if (sprites[i].getPosition().y + sprites[i].getSize().y > maxSize.y)
+                        maxSize.y = sprites[i].getPosition().y + sprites[i].getSize().y;
+                    if(sprites[i].getPosition().x + sprites[i].getSize().x > maxSize.x)
+                        maxSize.x = sprites[i].getPosition().x + sprites[i].getSize().x;
+                }
+                for (unsigned int i = 0; i < shapes.size(); i++) {
+                    if (shapes[i]->getPosition().y + shapes[i]->getSize().y > maxSize.y)
+                        maxSize.y = shapes[i]->getPosition().y + shapes[i]->getSize().y;
+                    if(shapes[i]->getPosition().x + shapes[i]->getSize().x > maxSize.x)
+                        maxSize.x = shapes[i]->getPosition().x + shapes[i]->getSize().x;
                 }
                 if (maxSize.x > getSize().x || maxSize.y > getSize().y) {
                     corner = RectangleShape(math::Vec3f(10, 10, 0));
@@ -115,15 +151,22 @@ namespace odfaeg {
                     getChildren()[i]->clear();
                 }
             }
-            void Panel::addDrawable(Drawable* drawable) {
-                drawables.push_back(drawable);
+            void Panel::removeSprites() {
+                sprites.clear();
+            }
+            void Panel::addSprite(Sprite sprite) {
+                sprite.setPosition(getPosition() + sprite.getPosition());
+                sprites.push_back(sprite);
             }
             void Panel::onDraw(RenderTarget& target, RenderStates states) {
                 rect.setPosition(getPosition());
                 rect.setSize(getSize());
                 target.draw(rect);
-                for (unsigned int i = 0; i < drawables.size(); i++) {
-                    target.draw(*drawables[i], states);
+                for (unsigned int i = 0; i < sprites.size(); i++) {
+                    target.draw(sprites[i], states);
+                }
+                for (unsigned int i = 0; i < shapes.size(); i++) {
+                    target.draw(*shapes[i], states);
                 }
             }
             void Panel::drawOn(RenderTarget& target, RenderStates states) {
@@ -134,9 +177,6 @@ namespace odfaeg {
                     target.draw(vertScrollBar);
                 }
                 if (scrollY) {
-                    /*if (getPosition().x == 400) {
-                        std::cout<<"scroll Y pos : "<<horScrollBar.getPosition().y<<std::endl<<"scroll y size : "<<horScrollBar.getSize().y<<std::endl;
-                    }*/
                     target.draw(horScrollBar);
                 }
             }
@@ -145,6 +185,10 @@ namespace odfaeg {
             }
             void Panel::setBorderColor(sf::Color color) {
                 rect.setOutlineColor(color);
+            }
+            void Panel::addShape(Shape* shape) {
+                shape->setPosition(getPosition() + shape->getPosition());
+                shapes.push_back(shape);
             }
         }
     }

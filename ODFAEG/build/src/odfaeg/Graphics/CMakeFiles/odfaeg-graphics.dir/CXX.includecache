@@ -224,35 +224,21 @@ OpenGL/glu.h
 GL/glu.h
 -
 
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/GUI/dropDownList.hpp
-../rectangleShape.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/rectangleShape.h
-../convexShape.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/convexShape.h
-../renderWindow.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/renderWindow.h
-../lightComponent.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/lightComponent.h
-../../Math/vec4.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/vec4.h
-../text.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/text.h
-label.hpp
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/GUI/label.hpp
-../../../../include/odfaeg/Physics/boundingPolyhedron.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Physics/boundingPolyhedron.h
+/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/GUI/focusListener.hpp
 
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/GUI/label.hpp
-../rectangleShape.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/rectangleShape.h
-../renderWindow.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/renderWindow.h
+/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/GUI/textArea.hpp
 ../lightComponent.h
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/lightComponent.h
-../../Math/vec4.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/vec4.h
+../renderWindow.h
+/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/renderWindow.h
+../rectangleShape.h
+/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/rectangleShape.h
 ../text.h
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/text.h
+../font.h
+/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/font.h
+focusListener.hpp
+/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/GUI/focusListener.hpp
 
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/component.h
 drawable.h
@@ -263,14 +249,6 @@ transformable.h
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/listener.h
 renderWindow.h
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/renderWindow.h
-
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/convexShape.h
-SFML/Graphics/Export.hpp
--
-shape.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/shape.h
-vector
--
 
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/drawable.h
 renderStates.h
@@ -644,18 +622,6 @@ boundingVolume.h
 ../Math/computer.h
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/computer.h
 
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Physics/boundingPolyhedron.h
-vector
--
-../Math/vec2f.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/vec2f.h
-../Math/vec4.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/vec4.h
-boundingVolume.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Physics/boundingVolume.h
-../Math/ray.h
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/ray.h
-
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Physics/boundingVolume.h
 ../Math/vec4.h
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Math/vec4.h
@@ -676,7 +642,7 @@ vector
 
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/config.hpp
 
-/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/dropDownList.cpp
-../../../../include/odfaeg/Graphics/GUI/dropDownList.hpp
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/GUI/dropDownList.hpp
+/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GUI/textArea.cpp
+../../../../include/odfaeg/Graphics/GUI/textArea.hpp
+/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/GUI/textArea.hpp
 

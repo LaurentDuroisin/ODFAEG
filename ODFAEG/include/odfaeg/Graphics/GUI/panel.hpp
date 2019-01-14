@@ -3,6 +3,7 @@
 #include "../lightComponent.h"
 #include "../renderWindow.h"
 #include "../rectangleShape.h"
+#include "../sprite.h"
 namespace odfaeg {
     namespace graphic {
         namespace gui {
@@ -13,7 +14,9 @@ namespace odfaeg {
                 void clear();
                 void onDraw(RenderTarget& target, RenderStates states);
                 void drawOn(RenderTarget& target, RenderStates states);
-                void addDrawable(Drawable* drawable);
+                void addSprite(Sprite sprite);
+                void addShape (Shape* shape);
+                void removeSprites();
                 void onSizeRecomputed();
                 void removeAll();
                 bool isOnXScroll();
@@ -30,7 +33,8 @@ namespace odfaeg {
                 math::Vec3f maxSize;
                 int oldMouseX, oldMouseY, mouseDeltaX, mouseDeltaY;
                 sf::Color background, border;
-                std::vector<Drawable*> drawables;
+                std::vector<Shape*> shapes;
+                std::vector<Sprite> sprites;
             };
         }
     }

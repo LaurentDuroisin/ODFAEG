@@ -49,6 +49,7 @@ set(SRC_GRAPHICS
 	${INCROOT}/text.h
         ${SRCROOT}/text.cpp
 	${INCROOT}/drawable.h	
+	${SRCROOT}/drawable.cpp
 	${INCROOT}/transformable.h	
 	${INCROOT}/renderStates.h
 	${SRCROOT}/renderStates.cpp

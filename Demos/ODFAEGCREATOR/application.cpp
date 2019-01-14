@@ -10,13 +10,15 @@ using namespace odfaeg::graphic;
 using namespace odfaeg::graphic::gui;
 using namespace odfaeg::physic;
 ODFAEGCreator::ODFAEGCreator(sf::VideoMode vm, std::string title) :
-Application (vm, title, sf::Style::Resize|sf::Style::Close, sf::ContextSettings(0, 0, 0, 3, 0)), isGuiShown (false), cursor(10) {
+Application (vm, title, sf::Style::Resize|sf::Style::Close, sf::ContextSettings(0, 0, 0, 3, 0)), isGuiShown (false), cursor(10), se(this) {
     dpSelectTexture = nullptr;
 }
 void ODFAEGCreator::onLoad() {
     FontManager<Fonts> fm;
     fm.fromFileWithAlias("fonts/FreeSerif.ttf", Serif);
+    TextureManager<> tm;
     cache.addResourceManager(fm, "FontManager");
+    cache.addResourceManager(tm, "TextureManager");
 }
 void ODFAEGCreator::onInit() {
     FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
@@ -28,9 +30,12 @@ void ODFAEGCreator::onInit() {
     getRenderComponentManager().addComponent(menu2);
     menu3 = new Menu(getRenderWindow(),fm.getResourceByAlias(Fonts::Serif),"Add");
     getRenderComponentManager().addComponent(menu3);
+    menu4 = new Menu(getRenderWindow(),fm.getResourceByAlias(Fonts::Serif),"Edition");
+    getRenderComponentManager().addComponent(menu4);
     menuBar->addMenu(menu1);
     menuBar->addMenu(menu2);
     menuBar->addMenu(menu3);
+    menuBar->addMenu(menu4);
     item11 = new MenuItem(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif),"New application");
     item11->addMenuItemListener(this);
     getRenderComponentManager().addComponent(item11);
@@ -63,6 +68,14 @@ void ODFAEGCreator::onInit() {
     menu3->addMenuItem(item31);
     menu3->addMenuItem(item32);
     menu3->addMenuItem(item33);
+    item41 = new MenuItem(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif),"Undo");
+    item41->addMenuItemListener(this);
+    getRenderComponentManager().addComponent(item41);
+    item42 = new MenuItem(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif),"Redo");
+    item42->addMenuItemListener(this);
+    getRenderComponentManager().addComponent(item42);
+    menu4->addMenuItem(item41);
+    menu4->addMenuItem(item42);
     Action a1 (Action::EVENT_TYPE::KEY_HELD_DOWN, sf::Keyboard::Key::Z);
     Action a2 (Action::EVENT_TYPE::KEY_HELD_DOWN, sf::Keyboard::Key::Q);
     Action a3 (Action::EVENT_TYPE::KEY_HELD_DOWN, sf::Keyboard::Key::S);
@@ -146,6 +159,14 @@ void ODFAEGCreator::onInit() {
         ucars[i] = std::tolower(lcars[i]);
     }
     minAppliname = std::string(ucars, appliname.length());
+    if (appliname != "") {
+        std::string path = fdTexturePath->getAppiDir() + "/" + appliname;
+        std::ifstream source (path+"/"+minAppliname+".cpp");
+        while(getline(source, line)) {
+            cppAppliContent += line+"\n";
+        }
+        source.close();
+    }
     getRenderComponentManager().addComponent(pProjects);
     pScriptsEdit = new Panel(getRenderWindow(),Vec3f(200, 10, 0),Vec3f(800, 700, 0));
     pScriptsEdit->setRelPosition(1.f / 6.f, 0.01f);
@@ -155,7 +176,6 @@ void ODFAEGCreator::onInit() {
     pScriptsEdit->setBorderThickness(5);
     getRenderComponentManager().addComponent(pScriptsEdit);
     pScriptsFiles = new Panel(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 700, 0), 0);
-    pScriptsFiles->setName("PScriptsFiles");
     pScriptsFiles->setBorderColor(sf::Color(128, 128, 128));
     pScriptsFiles->setBackgroundColor(sf::Color::White);
     pScriptsFiles->setBorderThickness(5);
@@ -163,7 +183,6 @@ void ODFAEGCreator::onInit() {
     pScriptsFiles->setRelSize(1.5f / 6.f, 1.f);
     getRenderComponentManager().addComponent(pScriptsFiles);
     tabPane = new TabPane(getRenderWindow(),Vec3f(0, 0, 0),Vec3f(200, 700, 0));
-    tabPane->setName("TABPANE");
     tabPane->setRelPosition(0, 0);
     tabPane->setRelSize(1, 1);
     tabPane->setParent(pScriptsFiles);
@@ -191,14 +210,13 @@ void ODFAEGCreator::onInit() {
     Action moveCursorAction (Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, sf::Mouse::Left);
     Command moveCursorCommand (moveCursorAction, FastDelegate<void>(&ODFAEGCreator::moveCursor, this, sf::Vector2f(-1, -1)));
     getListener().connect("MoveCursor", moveCursorCommand);
-
 }
 void ODFAEGCreator::onRender(RenderComponentManager *cm) {
 
 }
 void ODFAEGCreator::onDisplay(RenderWindow* window) {
-    for (unsigned int i = 0; i < drawables.size(); i++)
-        window->draw(*drawables[i]);
+    for (unsigned int i = 0; i < shapes.size(); i++)
+        window->draw(*shapes[i]);
     View currentView = window->getView();
     View defaultView = window->getDefaultView();
     window->setView(defaultView);
@@ -228,6 +246,11 @@ void ODFAEGCreator::onExec() {
         dpSelectTexture->addItem(ImgName,15);
         fdTexturePath->setVisible(false);
         fdTexturePath->setEventContextActivated(false);
+        std::string appliDir = fdTexturePath->getAppiDir();
+        std::string relativePath = path.substr(appliDir.size()+1);
+        TextureManager<>& tm = cache.resourceManager<Texture, std::string>("TextureManager");
+        tm.fromFileWithAlias(relativePath, "GRASS");
+        textPaths.push_back(relativePath);
     }
     if (dpSelectTexture != nullptr && dpSelectTexture->isDroppedDown()) {
         bChooseText->setEventContextActivated(false);
@@ -358,12 +381,13 @@ void ODFAEGCreator::actionPerformed(Button* button) {
             ucars[i] = std::tolower(lcars[i]);
         }
         minAppliname = std::string(ucars, appliname.length());
-        if(!mkdir(path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH))
+        if(mkdir(path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) == -1) {
             std::cerr<<"Failed to create application directory!";
+            std::cerr << "Error: " << strerror(errno);
+        }
         wApplicationNew->setVisible(false);
         if (applitype == "Normal") {
             std::ofstream header(path+"/"+minAppliname+".hpp");
-            std::cerr << "Error: " << strerror(errno);
             header<<"#ifndef "<<majAppliname<<"_HPP"<<std::endl;
             header<<"#define "<<majAppliname<<"_HPP"<<std::endl;
             header<<"#include \"/usr/local/include/odfaeg/Core/application.h\""<<std::endl;
@@ -376,30 +400,41 @@ void ODFAEGCreator::actionPerformed(Button* button) {
             header<<"   void onDisplay(odfaeg::graphic::RenderWindow* window);"<<std::endl;
             header<<"   void onUpdate (odfaeg::graphic::RenderWindow*, sf::Event& event);"<<std::endl;
             header<<"   void onExec ();"<<std::endl;
+            header<<"   private : "<<std::endl;
+            header<<"   std::vector<std::unique_ptr<Drawable>> drawables;"<<std::endl;
             header<<"};"<<std::endl;
             header<<"#endif"<<std::endl;
             header.close();
+            std::ostringstream oss;
+            oss<<"#include \""+path+"/"+minAppliname+".hpp\""<<std::endl;
+            oss<<"using namespace odfaeg::graphic;"<<std::endl;
+            oss<<"using namespace odfaeg::math;"<<std::endl;
+            oss<<appliname<<"::"<<appliname<<"(sf::VideoMode vm, std::string title) : "<<std::endl;
+            oss<<"Application (vm, title, sf::Style::Resize|sf::Style::Close, sf::ContextSettings(0, 0, 0, 3, 0)) {"<<std::endl;
+            oss<<"}"<<std::endl;
+            oss<<"void "<<appliname<<"::onLoad() {"<<std::endl;
+            oss<<"}"<<std::endl;
+            oss<<"void "<<appliname<<"::onInit() {"<<std::endl;
+            oss<<"}"<<std::endl;
+            oss<<"void "<<appliname<<"::onRender(RenderComponentManager *cm) {"<<std::endl;
+            oss<<"}"<<std::endl;
+            oss<<"void "<<appliname<<"::onDisplay(RenderWindow* window) {"<<std::endl;
+            oss<<"   if (&getRenderWindow() == window) {"<<std::endl;
+            oss<<"       for (unsigned int i = 0; i < drawables.size(); i++) {"<<std::endl;
+            oss<<"           window->draw(*drawable[i]);"<<std::endl;
+            oss<<"       }"<<std::endl;
+            oss<<"   }"<<std::endl;
+            oss<<"}"<<std::endl;
+            oss<<"void "<<appliname<<"::onUpdate (RenderWindow* window, sf::Event& event) {"<<std::endl;
+            oss<<" if (&getRenderWindow() == window && event.type == sf::Event::Closed) {"<<std::endl;
+            oss<<"  stop();"<<std::endl;
+            oss<<" }"<<std::endl;
+            oss<<"}"<<std::endl;
+            oss<<"void "<<appliname<<"::onExec () {"<<std::endl;
+            oss<<"}"<<std::endl;
+            cppAppliContent = oss.str();
             std::ofstream source(path+"/"+minAppliname+".cpp");
-            source<<"#include \""+path+"/"+minAppliname+".hpp\""<<std::endl;
-            source<<"using namespace odfaeg::graphic;"<<std::endl;
-            source<<appliname<<"::"<<appliname<<"(sf::VideoMode vm, std::string title) : "<<std::endl;
-            source<<"Application (vm, title, sf::Style::Resize|sf::Style::Close, sf::ContextSettings(0, 0, 0, 3, 0)) {"<<std::endl;
-            source<<"}"<<std::endl;
-            source<<"void "<<appliname<<"::onLoad() {"<<std::endl;
-            source<<"}"<<std::endl;
-            source<<"void "<<appliname<<"::onInit() {"<<std::endl;
-            source<<"}"<<std::endl;
-            source<<"void "<<appliname<<"::onRender(RenderComponentManager *cm) {"<<std::endl;
-            source<<"}"<<std::endl;
-            source<<"void "<<appliname<<"::onDisplay(RenderWindow* window) {"<<std::endl;
-            source<<"}"<<std::endl;
-            source<<"void "<<appliname<<"::onUpdate (RenderWindow* window, sf::Event& event) {"<<std::endl;
-            source<<" if (&getRenderWindow() == window && event.type == sf::Event::Closed) {"<<std::endl;
-            source<<"  stop();"<<std::endl;
-            source<<" }"<<std::endl;
-            source<<"}"<<std::endl;
-            source<<"void "<<appliname<<"::onExec () {"<<std::endl;
-            source<<"}"<<std::endl;
+            source<<cppAppliContent;
             source.close();
             std::string width = taWidth->getText();
             std::string height = taHeight->getText();
@@ -440,7 +475,7 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
         "/usr/local/lib/libodfaeg-physics-s-d.a /usr/local/lib/libodfaeg-math-s-d.a /usr/local/lib/libodfaeg-core-s-d.a "
         "/usr/local/lib/libsfml-audio.so /usr/local/lib/libsfml-network.so /usr/local/lib/libsfml-graphics.so /usr/local/lib/libsfml-window.so "
         "/usr/local/lib/libsfml-system.so /usr/lib/x86_64-linux-gnu/libfreetype.so /usr/lib/x86_64-linux-gnu/libpthread.so /usr/lib/x86_64-linux-gnu/libGLEW.so "
-        "-lGL -lssl -lcrypto /usr/lib/x86_64-linux-gnu/libSDL2.so 2> errors.err";
+        "-lGL -lssl -lcrypto /usr/lib/x86_64-linux-gnu/libSDL2.so /usr/lib/x86_64-linux-gnu/libgmp.so 2> errors.err";
         std::system(command.c_str());
         command = std::string("./"+appliname+"/"+minAppliname+".out");
         std::system(command.c_str());
@@ -450,8 +485,33 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
         shape->setPosition(cursor.getPosition());
         displayInfos(shape.get());
         selectedObject = shape.get();
-        drawables.push_back(std::move(shape));
+        unsigned int pos = cppAppliContent.find("onInit() {");
+        pos += 11;
+        std::string toInsert = "    std::unique_ptr<sf::RectangleShape> shape"+conversionUIntString(shape->getId())+" = std::make_unique<RectangleShape>(Vec3f(100, 50, 0));\n"
+                               "    drawables.push_back(std::move(shape));\n";
+        cppAppliContent.insert(pos, toInsert);
+        shapes.push_back(std::move(shape));
     }
+    if (item->getText() == "Undo") {
+        stateStack.undo();
+    }
+    if (item->getText() == "Redo") {
+        stateStack.redo();
+    }
+}
+void ODFAEGCreator::addShape(Shape *shape) {
+    std::unique_ptr<Shape> ptr;
+    ptr.reset(shape);
+    shapes.push_back(std::move(ptr));
+}
+bool ODFAEGCreator::removeShape (unsigned int id) {
+    for (auto it = shapes.begin(); it != shapes.end();it++) {
+        if ((*it)->getId() == id) {
+            it = shapes.erase(it);
+            return true;
+        }
+    }
+    return false;
 }
 void ODFAEGCreator::displayInfos (Shape* shape) {
     rootPropNode->deleteAllNodes();
@@ -585,6 +645,14 @@ void ODFAEGCreator::displayInfos (Shape* shape) {
     tTexCoordH->setParent(pMaterial);
     lTexCoordHNode->addOtherComponent(tTexCoordH,Vec2f(0.75f, 0.025f));
     pMaterial->addChild(tTexCoordH);
+    Command cmdTexCoordXChanged (a, FastDelegate<bool>(&TextArea::isTextChanged,tTexCoordX), FastDelegate<void>(&ODFAEGCreator::onTexCoordsChanged, this, tTexCoordX));
+    tTexCoordX->getListener().connect("TTexCoordXChanged", cmdTexCoordXChanged);
+    Command cmdTexCoordYChanged (a, FastDelegate<bool>(&TextArea::isTextChanged,tTexCoordY), FastDelegate<void>(&ODFAEGCreator::onTexCoordsChanged, this, tTexCoordY));
+    tTexCoordY->getListener().connect("TTexCoordYChanged", cmdTexCoordYChanged);
+    Command cmdTexCoordWChanged (a, FastDelegate<bool>(&TextArea::isTextChanged,tTexCoordW), FastDelegate<void>(&ODFAEGCreator::onTexCoordsChanged, this, tTexCoordW));
+    tTexCoordW->getListener().connect("TTexCoordWChanged", cmdTexCoordWChanged);
+    Command cmdTexCoordHChanged (a, FastDelegate<bool>(&TextArea::isTextChanged,tTexCoordH), FastDelegate<void>(&ODFAEGCreator::onTexCoordsChanged, this, tTexCoordH));
+    tTexCoordH->getListener().connect("TTexCoordXChanged", cmdTexCoordHChanged);
     lTexImage = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif), "Tex Image : ", 15);
     lTexImage->setParent(pMaterial);
     Node* selectTextNode = new Node("SelectTexture",lTexImage,Vec2f(0, 0),Vec2f(0.25f, 0.025f), rootMaterialNode.get());
@@ -592,6 +660,8 @@ void ODFAEGCreator::displayInfos (Shape* shape) {
     dpSelectTexture = new DropDownList(getRenderWindow(),Vec3f(0, 0, 0),Vec3f(100, 50, 0), fm.getResourceByAlias(Fonts::Serif),"NONE", 15);
     dpSelectTexture->setName("SELECTTEXT");
     dpSelectTexture->setParent(pMaterial);
+    Command cmdTxtChanged(FastDelegate<bool>(&DropDownList::isValueChanged, dpSelectTexture), FastDelegate<void>(&ODFAEGCreator::onSelectedTextureChanged, this, dpSelectTexture));
+    dpSelectTexture->getListener().connect("TextureChanged", cmdTxtChanged);
     selectTextNode->addOtherComponent(dpSelectTexture,Vec2f(0.75f, 0.025f));
     pMaterial->addChild(dpSelectTexture);
     bChooseText = new Button(Vec3f(0, 0, 0), Vec3f(100, 100, 0), fm.getResourceByAlias(Fonts::Serif),"New texture", 15, getRenderWindow());
@@ -600,6 +670,15 @@ void ODFAEGCreator::displayInfos (Shape* shape) {
     pMaterial->addChild(bChooseText);
     bChooseText->setName("CHOOSETEXT");
     bChooseText->addActionListener(this);
+    StateGroup* sg = new StateGroup("SGADDRECTANGLESHAPE");
+    State* stAddRemoveShape = new State("ADDREMOVESHAPE", &se);
+    std::ostringstream oss;
+    OTextArchive ota(oss);
+    ota(shape->getId());
+    ota(shape);
+    stAddRemoveShape->addParameter("ADDREMOVESHAPE", oss.str());
+    sg->addState(stAddRemoveShape);
+    stateStack.addStateGroup(sg);
     pScriptsFiles->setAutoResized(true);
 }
 void ODFAEGCreator::moveCursor(sf::Vector2f mousePos) {
@@ -612,16 +691,48 @@ void ODFAEGCreator::onObjectPosChanged(TextArea* ta) {
     if (ta == tPosX) {
         if (is_number(ta->getText())) {
             float newXPos = conversionStringFloat(ta->getText());
+            StateGroup* sg = new StateGroup("SGCHANGEXPOS");
+            State* state = new State("SCHANGEXPOS", &se);
+            state->addParameter("OBJECT", selectedObject);
+            state->addParameter("OLDVALUE", selectedObject->getPosition().x);
+            state->addParameter("NEWVALUE", newXPos);
+            stateStack.addStateGroup(sg);
             selectedObject->setPosition(Vec3f(newXPos, selectedObject->getPosition().y, selectedObject->getPosition().z));
+            if(cppAppliContent.find("shape"+conversionUIntString(selectedObject->getId())+"->setPosition") == std::string::npos) {
+                unsigned int pos = cppAppliContent.find("shape"+conversionUIntString(selectedObject->getId())+" = std::make_unique<RectangleShape>");
+                std::string subs = cppAppliContent.substr(pos);
+                pos += subs.find_first_of('\n') + 1;
+                cppAppliContent.insert(pos,"    shape"+conversionUIntString(selectedObject->getId())+"->setPosition(Vec3f("+conversionIntString(newXPos)+","
+                +conversionIntString(selectedObject->getPosition().y)+","+conversionIntString(selectedObject->getPosition().z)+");\n");
+            } else {
+                unsigned int pos = cppAppliContent.find("shape"+conversionUIntString(selectedObject->getId())+"->setPosition");
+                std::string subs = cppAppliContent.substr(pos);
+                unsigned int endpos = subs.find_first_of('\n') + pos + 1;
+                cppAppliContent.erase(pos, endpos - pos);
+                cppAppliContent.insert(pos,"shape"+conversionUIntString(selectedObject->getId())+"->setPosition(Vec3f("+conversionIntString(newXPos)+","
+                +conversionIntString(selectedObject->getPosition().y)+","+conversionIntString(selectedObject->getPosition().z)+");\n");
+            }
         }
     } else if (ta == tPosY) {
         if(is_number(ta->getText())) {
             float newYPos = conversionStringFloat(ta->getText());
+            StateGroup* sg = new StateGroup("SGCHANGEYPOS");
+            State* state = new State("SCHANGEYPOS", &se);
+            state->addParameter("OBJECT", selectedObject);
+            state->addParameter("OLDVALUE", selectedObject->getPosition().y);
+            state->addParameter("NEWVALUE", newYPos);
+            stateStack.addStateGroup(sg);
             selectedObject->setPosition(Vec3f(selectedObject->getPosition().x, newYPos, selectedObject->getPosition().z));
         }
     } else if (ta == tPosZ) {
         if(is_number(ta->getText())) {
             float newZPos = conversionStringFloat(ta->getText());
+            StateGroup* sg = new StateGroup("SGCHANGEZPOS");
+            State* state = new State("SCHANGEZPOS", &se);
+            state->addParameter("OBJECT", selectedObject);
+            state->addParameter("OLDVALUE", selectedObject->getPosition().z);
+            state->addParameter("NEWVALUE", newZPos);
+            stateStack.addStateGroup(sg);
             selectedObject->setPosition(Vec3f(selectedObject->getPosition().x, selectedObject->getPosition().y, newZPos));
         }
     }
@@ -630,26 +741,138 @@ void ODFAEGCreator::onObjectColorChanged(TextArea* ta) {
     if (ta == tRColor) {
         if (is_number(tRColor->getText())) {
             unsigned int color = conversionStringInt(tRColor->getText());
+            StateGroup* sg = new StateGroup("SGCHANGERCOLOR");
+            State* state = new State("SCHANGERCOLOR", &se);
+            state->addParameter("OBJECT", selectedObject);
+            state->addParameter("OLDVALUE", selectedObject->getFillColor().r);
+            state->addParameter("NEWVALUE", color);
+            stateStack.addStateGroup(sg);
             selectedObject->setFillColor(sf::Color(Math::clamp(color, 0, 255), selectedObject->getFillColor().g,selectedObject->getFillColor().b, selectedObject->getFillColor().a));
         }
     }
     if (ta == tGColor) {
         if (is_number(tGColor->getText())) {
             unsigned int color = conversionStringInt(tGColor->getText());
+            StateGroup* sg = new StateGroup("SGCHANGEGCOLOR");
+            State* state = new State("SCHANGEGCOLOR", &se);
+            state->addParameter("OBJECT", selectedObject);
+            state->addParameter("OLDVALUE", selectedObject->getFillColor().g);
+            state->addParameter("NEWVALUE", color);
+            stateStack.addStateGroup(sg);
             selectedObject->setFillColor(sf::Color(selectedObject->getFillColor().r, Math::clamp(color, 0, 255),selectedObject->getFillColor().b, selectedObject->getFillColor().a));
         }
     }
     if (ta == tBColor) {
-        if (is_number(tRColor->getText())) {
+        if (is_number(tBColor->getText())) {
             unsigned int color = conversionStringInt(tBColor->getText());
+            StateGroup* sg = new StateGroup("SGCHANGEBCOLOR");
+            State* state = new State("SCHANGEBCOLOR", &se);
+            state->addParameter("OBJECT", selectedObject);
+            state->addParameter("OLDVALUE", selectedObject->getFillColor().b);
+            state->addParameter("NEWVALUE", color);
+            stateStack.addStateGroup(sg);
             selectedObject->setFillColor(sf::Color(selectedObject->getFillColor().r, selectedObject->getFillColor().g, Math::clamp(color, 0, 255), selectedObject->getFillColor().a));
         }
     }
     if (ta == tAColor) {
         if (is_number(tAColor->getText())) {
             unsigned int color = conversionStringInt(tAColor->getText());
+            StateGroup* sg = new StateGroup("SGCHANGEACOLOR");
+            State* state = new State("SCHANGEACOLOR", &se);
+            state->addParameter("OBJECT", selectedObject);
+            state->addParameter("OLDVALUE", selectedObject->getFillColor().a);
+            state->addParameter("NEWVALUE", color);
+            stateStack.addStateGroup(sg);
             selectedObject->setFillColor(sf::Color(selectedObject->getFillColor().r, selectedObject->getFillColor().g,selectedObject->getFillColor().b, Math::clamp(color, 0, 255)));
         }
     }
 }
-
+void ODFAEGCreator::onSelectedTextureChanged(DropDownList* dp) {
+    pMaterial->removeSprites();
+    const Texture* oldTexture = selectedObject->getTexture();
+    if (dp->getSelectedItem() == "NONE") {
+        selectedObject->setTexture(nullptr);
+    } else {
+        TextureManager<>& tm = cache.resourceManager<Texture, std::string>("TextureManager");
+        for (unsigned int i = 0; i < textPaths.size(); i++) {
+            if (textPaths[i].find(dp->getSelectedItem())) {
+                const Texture* text = tm.getResourceByPath(textPaths[i]);
+                Sprite sprite (*text, Vec3f(0, bChooseText->getPosition().y + bChooseText->getSize().y, 0),Vec3f(text->getSize().x, text->getSize().y, 0),sf::IntRect(0, 0, text->getSize().x,text->getSize().y));
+                pMaterial->addSprite(sprite);
+                selectedObject->setTexture(text);
+                sf::IntRect textRect = selectedObject->getTextureRect();
+                tTexCoordX->setText(conversionIntString(textRect.left));
+                tTexCoordY->setText(conversionIntString(textRect.top));
+                tTexCoordW->setText(conversionIntString(textRect.width));
+                tTexCoordH->setText(conversionIntString(textRect.height));
+                sTextRect = new RectangleShape(Vec3f(textRect.width, textRect.height, 0));
+                sTextRect->setPosition(Vec3f(textRect.left, textRect.top + bChooseText->getPosition().y + bChooseText->getSize().y, 0));
+                sTextRect->setFillColor(sf::Color::Transparent);
+                sTextRect->setOutlineColor(sf::Color::Red);
+                sTextRect->setOutlineThickness(1);
+                pMaterial->addShape(sTextRect);
+            }
+        }
+    }
+    StateGroup* sg = new StateGroup("SGCHANGETEXTURE");
+    State* state = new State("SCHANGETEXTURE", &se);
+    state->addParameter("OLDVALUE",oldTexture);
+    state->addParameter("NEWVALUE",selectedObject->getTexture());
+    state->addParameter("OBJECT", selectedObject);
+    stateStack.addStateGroup(sg);
+    pMaterial->updateScrolls();
+}
+void ODFAEGCreator::onTexCoordsChanged (TextArea* ta) {
+    const Texture* tex = selectedObject->getTexture();
+    sf::IntRect texRect = selectedObject->getTextureRect();
+    if (tex != nullptr) {
+        if (ta == tTexCoordX) {
+            if (is_number(ta->getText())) {
+                int texCoordX = conversionStringInt(ta->getText());
+                StateGroup* sg = new StateGroup("SGCHANGEXTEXCOORD");
+                State* state = new State("SCHANGEXTEYCOORD", &se);
+                state->addParameter("OLDVALUE", selectedObject->getTextureRect().left);
+                state->addParameter("NEWVALUE", texCoordX);
+                state->addParameter("OBJECT", selectedObject);
+                stateStack.addStateGroup(sg);
+                selectedObject->setTextureRect(sf::IntRect(Math::abs(texCoordX), texRect.top, texRect.width, texRect.height));
+            }
+        }
+        if (ta == tTexCoordY) {
+            if (is_number(ta->getText())) {
+                int texCoordY = conversionStringInt(ta->getText());
+                StateGroup* sg = new StateGroup("SGCHANGEYTEXCOORD");
+                State* state = new State("SCHANGEXTEYCOORD", &se);
+                state->addParameter("OLDVALUE", selectedObject->getTextureRect().top);
+                state->addParameter("NEWVALUE", texCoordY);
+                state->addParameter("OBJECT", selectedObject);
+                stateStack.addStateGroup(sg);
+                selectedObject->setTextureRect(sf::IntRect(texRect.left, Math::abs(texCoordY), texRect.width, texRect.height));
+            }
+        }
+        if (ta == tTexCoordW) {
+            if (is_number(ta->getText())) {
+                int texCoordW = conversionStringInt(ta->getText());
+                StateGroup* sg = new StateGroup("SGCHANGEWTEXCOORD");
+                State* state = new State("SCHANGEXTEWCOORD", &se);
+                state->addParameter("OLDVALUE", selectedObject->getTextureRect().width);
+                state->addParameter("NEWVALUE", texCoordW);
+                state->addParameter("OBJECT", selectedObject);
+                stateStack.addStateGroup(sg);
+                selectedObject->setTextureRect(sf::IntRect(texRect.left, texRect.top, Math::abs(texCoordW), texRect.height));
+            }
+        }
+        if (ta == tTexCoordH) {
+            if (is_number(ta->getText())) {
+                int texCoordH = conversionStringInt(ta->getText());
+                StateGroup* sg = new StateGroup("SGCHANGEHTEXCOORD");
+                State* state = new State("SCHANGEXTEHCOORD", &se);
+                state->addParameter("OLDVALUE", selectedObject->getTextureRect().height);
+                state->addParameter("NEWVALUE", texCoordH);
+                state->addParameter("OBJECT", selectedObject);
+                stateStack.addStateGroup(sg);
+                selectedObject->setTextureRect(sf::IntRect(texRect.left, texRect.top, texRect.width, Math::abs(texCoordH)));
+            }
+        }
+    }
+}

@@ -1,5 +1,5 @@
-#ifndef ODFAEG_CIRCLE_SHAPE_HPP
-#define ODFAEG_CIRCLE_SHAPE_HPP
+#ifndef ODFAEG_SPRITE_HPP
+#define ODFAEG_SPRITE_HPP
 ////////////////////////////////////////////////////////////
 //
 // /!\ Important : this class is a modification of the circle shape class of the SFML

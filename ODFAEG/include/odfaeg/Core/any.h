@@ -107,7 +107,7 @@ namespace odfaeg {
             *  \return T : the value of the any object.
             */
             template <typename T>
-            T& get () {
+            T& get () const {
                 value<T>* v = dynamic_cast<value<T>*> (this->v);
                 if (v == 0) {
                     throw Erreur (0, "Bad cast exception.", 0);

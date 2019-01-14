@@ -61,7 +61,7 @@ namespace odfaeg {
                 *  \param std::string name : the name of the parameter.
                 */
                 bool removeParameter (std::string name);
-                StateParameter& getParameter (const std::string name) throw (Erreur) {
+                StateParameter& getParameter (const std::string name) const throw (Erreur) {
                         for (unsigned int i = 0; i < parameters.size(); i++) {
                             if (parameters[i]->getName() == name) {
 

@@ -25,7 +25,7 @@ namespace odfaeg {
                 core::Action a4 (core::Action::TEXT_ENTERED);
                 core::Command cmd5(a4, core::FastDelegate<bool>(&TextArea::hasFocus, this), core::FastDelegate<void>(&TextArea::onTextEntered, this, 'a'));
                 getListener().connect("CTEXTENTERED", cmd5);
-                currentIndex = tmp_text.size() - 1;
+                currentIndex = tmp_text.length();
                 sf::Vector2f pos = text.findCharacterPos(currentIndex);
                 cursorPos = math::Vec3f(pos.x, pos.y, 0);
                 setSize(text.getSize());
@@ -112,8 +112,8 @@ namespace odfaeg {
             }
             void TextArea::onTextEntered(char caracter) {
                 if (tmp_text.length() > 0 && caracter == 8) {
-                    tmp_text.erase(currentIndex-1, 1);
                     currentIndex--;
+                    tmp_text.erase(currentIndex, 1);
                 }
                 else if (caracter != 8) {
                     tmp_text.insert(currentIndex, 1, caracter);

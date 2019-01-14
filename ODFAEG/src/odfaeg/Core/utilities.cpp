@@ -1,4 +1,5 @@
 #include "../../../include/odfaeg/Core/utilities.h"
+#include <iostream>
 namespace odfaeg {
     namespace core {
         using namespace std;
@@ -43,7 +44,11 @@ namespace odfaeg {
             ss >> i;
             return i;
         }
-
+        std::string conversionUIntString(const unsigned int& ui) {
+            std::stringstream ss;
+            ss << ui;
+            return ss.str();
+        }
         std::string conversionIntString(Int32 i)
         {
             std::stringstream ss;

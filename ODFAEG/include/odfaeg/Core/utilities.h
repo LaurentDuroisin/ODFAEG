@@ -58,6 +58,7 @@ namespace odfaeg {
         *  \param the Int64 to convert.
         *  \return the std::string.
         */
+        std::string conversionUIntString(const unsigned int& ui);
         std::string conversionLongString(sf::Int64 i);
         int conversionStringToHex(std::string str);
         std::string getCurrentPath();

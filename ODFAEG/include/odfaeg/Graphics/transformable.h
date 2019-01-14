@@ -26,6 +26,12 @@ namespace odfaeg {
             * \brief get the bounding box of the transformable object.
             * \return the bounding box of the global object.
             */
+            void setName (std::string name) {
+                this->name = name;
+            }
+            std::string getName() {
+                return name;
+            }
             physic::BoundingBox getLocalBounds() const {
                 return localBounds;
             }
@@ -360,6 +366,7 @@ namespace odfaeg {
             float m_rotation;
             physic::BoundingBox localBounds;
             TransformMatrix tm;
+            std::string name;
         };
     }
 }

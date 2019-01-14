@@ -20,6 +20,7 @@ FILE(REMOVE_RECURSE
   "CMakeFiles/odfaeg-graphics.dir/circleShape.cpp.o"
   "CMakeFiles/odfaeg-graphics.dir/font.cpp.o"
   "CMakeFiles/odfaeg-graphics.dir/text.cpp.o"
+  "CMakeFiles/odfaeg-graphics.dir/drawable.cpp.o"
   "CMakeFiles/odfaeg-graphics.dir/renderStates.cpp.o"
   "CMakeFiles/odfaeg-graphics.dir/renderTarget.cpp.o"
   "CMakeFiles/odfaeg-graphics.dir/renderWindow.cpp.o"

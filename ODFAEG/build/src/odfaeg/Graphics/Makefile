@@ -900,6 +900,30 @@ convexShape.cpp.s:
 	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/convexShape.cpp.s
 .PHONY : convexShape.cpp.s
 
+drawable.o: drawable.cpp.o
+.PHONY : drawable.o
+
+# target to build an object file
+drawable.cpp.o:
+	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/drawable.cpp.o
+.PHONY : drawable.cpp.o
+
+drawable.i: drawable.cpp.i
+.PHONY : drawable.i
+
+# target to preprocess a source file
+drawable.cpp.i:
+	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/drawable.cpp.i
+.PHONY : drawable.cpp.i
+
+drawable.s: drawable.cpp.s
+.PHONY : drawable.s
+
+# target to generate assembly for a file
+drawable.cpp.s:
+	cd /home/laurent/Développement/Projets-c++/ODFAEG/build && $(MAKE) -f src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/build.make src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/drawable.cpp.s
+.PHONY : drawable.cpp.s
+
 entity.o: entity.cpp.o
 .PHONY : entity.o
 
@@ -1894,6 +1918,9 @@ help:
 	@echo "... convexShape.o"
 	@echo "... convexShape.i"
 	@echo "... convexShape.s"
+	@echo "... drawable.o"
+	@echo "... drawable.i"
+	@echo "... drawable.s"
 	@echo "... entity.o"
 	@echo "... entity.i"
 	@echo "... entity.s"

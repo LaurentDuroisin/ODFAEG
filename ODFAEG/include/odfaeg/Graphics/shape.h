@@ -43,7 +43,7 @@ namespace odfaeg {
         /// \brief Base class for textured shapes with outline
         ///
         ////////////////////////////////////////////////////////////
-        class ODFAEG_GRAPHICS_API Shape : public Drawable, public Transformable
+        class ODFAEG_GRAPHICS_API Shape : public Drawable, public Transformable, public core::Registered<Shape>
         {
         public :
 
@@ -238,6 +238,28 @@ namespace odfaeg {
             ///
             ////////////////////////////////////////////////////////////
             physic::BoundingBox getGlobalBounds();
+            template <typename Archive>
+            void vtserialize(Archive& ar) {
+                Drawable::serialize(ar);
+                Transformable::serialize(ar);
+                ar(m_textureRect.left);
+                ar(m_textureRect.top);
+                ar(m_textureRect.width);
+                ar(m_textureRect.height);
+                ar(m_fillColor.r);
+                ar(m_fillColor.g);
+                ar(m_fillColor.b);
+                ar(m_fillColor.a);
+                ar(m_outlineColor.r);
+                ar(m_outlineColor.g);
+                ar(m_outlineColor.b);
+                ar(m_outlineColor.a);
+                ar(m_outlineThickness);
+                ar(m_vertices);
+                ar(m_outlineVertices);
+                ar(m_insideBounds);
+                ar(m_bounds);
+            }
 
         protected :
 
@@ -256,7 +278,6 @@ namespace odfaeg {
             ///
             ////////////////////////////////////////////////////////////
             void update();
-
         private :
 
             ////////////////////////////////////////////////////////////

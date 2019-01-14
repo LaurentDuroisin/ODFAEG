@@ -29,12 +29,19 @@ namespace odfaeg {
                 core::Action a(core::Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, sf::Mouse::Left);
                 core::Command cmd(a, core::FastDelegate<bool> (&DropDownList::isMouseOnTriangle, this), core::FastDelegate<void>(&DropDownList::onTriangleClicked, this));
                 getListener().connect("ITEMSELECTED"+t, cmd);
-                dropDown = false;
+                dropDown = valueChanged = false;
+            }
+            bool DropDownList::isValueChanged() {
+                bool b = valueChanged;
+                valueChanged = false;
+                return b;
             }
             std::string DropDownList::getSelectedItem() {
                 return (selectedItem != nullptr) ? selectedItem->getText() : "";
             }
             void DropDownList::onItemSelected(Label* label) {
+                if (label != selectedItem)
+                    valueChanged = true;
                 selectedItem = label;
                 selectedItemPos = label->getPosition();
                 selectedItem->setPosition(getPosition());
@@ -75,9 +82,13 @@ namespace odfaeg {
                 shape.setPoint(0, sf::Vector3f(getSize().x - 25, getSize().y, 0));
                 shape.setPoint(1, sf::Vector3f(getSize().x - 50, 0, 0));
                 shape.setPoint(2, sf::Vector3f(getSize().x, 0, 0));
-                bp = physic::BoundingPolyhedron(math::Vec3f(getPosition().x + getSize().x - 25, getPosition().y + getSize().y, 0), math::Vec3f(getPosition().x + getSize().x - 50, getPosition().y, 0), math::Vec3f(getPosition().x + getSize().x, getSize().y, 0),true);
                 shape.setPosition(getPosition());
-                shape.setSize(getSize());
+                math::Vec3f points[shape.getPointCount()];
+                for (unsigned int i = 0; i < shape.getPointCount(); i++) {
+                    sf::Vector3f position = shape.getPoint(i);
+                    points[i] = getTransform().transform(math::Vec3f(position.x, position.y, position.z));
+                }
+                bp = physic::BoundingPolyhedron(math::Vec3f(getPosition().x + getSize().x - 25, getPosition().y + getSize().y, 0), math::Vec3f(getPosition().x + getSize().x - 50, getPosition().y, 0), math::Vec3f(getPosition().x + getSize().x, getSize().y, 0),true);
                 target.draw(rect, states);
                 if (!dropDown && selectedItem != nullptr) {
                     selectedItem->setPosition(getPosition());

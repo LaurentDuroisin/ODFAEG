@@ -24,12 +24,14 @@ namespace odfaeg {
                     void onEventPushed(sf::Event event, RenderWindow& window);
                     void recomputePos();
                     bool isDroppedDown();
+                    bool isValueChanged();
                     std::string getSelectedItem();
                     ~DropDownList();
                 private :
                     math::Vec3f selectedItemPos;
                     bool dropDown;
                     const Font* font;
+                    bool valueChanged;
                     unsigned int nbItems;
                     math::Vec3f mousePos;
                     RectangleShape rect;

@@ -486,6 +486,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.o: ../incl
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.o: ../include/odfaeg/Graphics/renderWindow.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.o: ../include/odfaeg/Graphics/shader.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.o: ../include/odfaeg/Graphics/shape.h
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.o: ../include/odfaeg/Graphics/sprite.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.o: ../include/odfaeg/Graphics/text.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.o: ../include/odfaeg/Graphics/texture.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.o: ../include/odfaeg/Graphics/transformMatrix.h
@@ -934,6 +935,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.o: ../include/o
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.o: ../include/odfaeg/Graphics/renderWindow.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.o: ../include/odfaeg/Graphics/shader.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.o: ../include/odfaeg/Graphics/shape.h
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.o: ../include/odfaeg/Graphics/sprite.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.o: ../include/odfaeg/Graphics/texture.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.o: ../include/odfaeg/Graphics/transformMatrix.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.o: ../include/odfaeg/Graphics/transformable.h
@@ -1102,6 +1104,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/tabPane.cpp.o: ../include
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/tabPane.cpp.o: ../include/odfaeg/Graphics/renderWindow.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/tabPane.cpp.o: ../include/odfaeg/Graphics/shader.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/tabPane.cpp.o: ../include/odfaeg/Graphics/shape.h
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/tabPane.cpp.o: ../include/odfaeg/Graphics/sprite.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/tabPane.cpp.o: ../include/odfaeg/Graphics/text.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/tabPane.cpp.o: ../include/odfaeg/Graphics/texture.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/tabPane.cpp.o: ../include/odfaeg/Graphics/transformMatrix.h
@@ -1596,6 +1599,32 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/convexShape.cpp.o: ../include
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/convexShape.cpp.o: ../include/odfaeg/Physics/collisionResultSet.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/convexShape.cpp.o: ../include/odfaeg/config.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/convexShape.cpp.o: ../src/odfaeg/Graphics/convexShape.cpp
+
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/drawable.cpp.o: ../include/odfaeg/Core/archive.h
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/drawable.cpp.o: ../include/odfaeg/Core/erreur.h
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/drawable.cpp.o: ../include/odfaeg/Core/factory.h
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/drawable.cpp.o: ../include/odfaeg/Core/fastDelegate.h
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/drawable.cpp.o: ../include/odfaeg/Core/mpl.h
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/drawable.cpp.o: ../include/odfaeg/Core/resourceCache.h
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/drawable.cpp.o: ../include/odfaeg/Core/resourceManager.h
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/drawable.cpp.o: ../include/odfaeg/Core/serialization.h
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/drawable.cpp.o: ../include/odfaeg/Core/singleton.h
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/drawable.cpp.o: ../include/odfaeg/Core/utilities.h
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/drawable.cpp.o: ../include/odfaeg/Core/variant.h
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/drawable.cpp.o: ../include/odfaeg/Graphics/drawable.h
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/drawable.cpp.o: ../include/odfaeg/Graphics/export.hpp
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/drawable.cpp.o: ../include/odfaeg/Graphics/renderStates.h
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/drawable.cpp.o: ../include/odfaeg/Graphics/shader.h
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/drawable.cpp.o: ../include/odfaeg/Graphics/texture.h
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/drawable.cpp.o: ../include/odfaeg/Graphics/transformMatrix.h
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/drawable.cpp.o: ../include/odfaeg/Math/bigInt.hpp
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/drawable.cpp.o: ../include/odfaeg/Math/maths.h
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/drawable.cpp.o: ../include/odfaeg/Math/matrix3.h
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/drawable.cpp.o: ../include/odfaeg/Math/matrix4.h
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/drawable.cpp.o: ../include/odfaeg/Math/vec2f.h
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/drawable.cpp.o: ../include/odfaeg/Math/vec4.h
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/drawable.cpp.o: ../include/odfaeg/config.hpp
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/drawable.cpp.o: ../src/odfaeg/Graphics/drawable.cpp
 
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/entity.cpp.o: ../include/odfaeg/Core/any.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/entity.cpp.o: ../include/odfaeg/Core/archive.h

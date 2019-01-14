@@ -12,16 +12,16 @@ namespace odfaeg {
 
 
         ////////////////////////////////////////////////////////////
-        Sprite::Sprite(const Texture& texture, math::Vec3f position, math::Vec3f size) : Transformable(position, size, position + size * 0.5f),
+        Sprite::Sprite(const Texture& texture, math::Vec3f position, math::Vec3f size) : Transformable(position, size, size * 0.5f),
         m_texture    (NULL),
         m_textureRect(),
         m_vertices(Quads)
         {
             setTexture(texture);
-            Vertex v1 (Vector3f(position.x, position.y, position.z));
-            Vertex v2 (Vector3f(position.x + size.x, position.y, position.z));
-            Vertex v3 (Vector3f(position.x + size.x, position.y + size.y, position.z));
-            Vertex v4 (Vector3f(position.x, position.y + size.y, position.z));
+            Vertex v1 (Vector3f(0, 0, 0));
+            Vertex v2 (Vector3f(size.x, 0, 0));
+            Vertex v3 (Vector3f(size.x, size.y, 0));
+            Vertex v4 (Vector3f(0, size.y, 0));
             v1.texCoords = Vector2f(0, 0);
             v2.texCoords = Vector2f(size.x, 0);
             v3.texCoords = Vector2f(size.x, size.y);
@@ -40,10 +40,10 @@ namespace odfaeg {
         m_vertices(Quads)
         {
            setTexture(texture);
-           Vertex v1 (Vector3f(position.x, position.y, position.z));
-           Vertex v2 (Vector3f(position.x + size.x, position.y, position.z));
-           Vertex v3 (Vector3f(position.x + size.x, position.y + size.y, position.z));
-           Vertex v4 (Vector3f(position.x, position.y + size.y, position.z));
+           Vertex v1 (Vector3f(0, 0, 0));
+           Vertex v2 (Vector3f(size.x, 0, 0));
+           Vertex v3 (Vector3f(size.x, size.y, 0));
+           Vertex v4 (Vector3f(0, size.y, 0));
            v1.texCoords = Vector2f(rectangle.left, rectangle.top);
            v2.texCoords = Vector2f(rectangle.left + rectangle.width, rectangle.top);
            v3.texCoords = Vector2f(rectangle.left + rectangle.width, rectangle.top + rectangle.height);
@@ -117,7 +117,7 @@ namespace odfaeg {
             if (m_texture)
             {
 
-                states.transform = getTransform();
+                states.transform.combine(getTransform().getMatrix());
                 //m_vertices.transform(getTransform());
                 states.texture = m_texture;
                 target.draw(m_vertices, states);

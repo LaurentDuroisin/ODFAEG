@@ -126,7 +126,6 @@ namespace odfaeg {
             m_size.y        = height;
             m_actualSize    = actualSize;
             m_pixelsFlipped = false;
-
             ensureGlContext();
 
             // Create the OpenGL texture if it doesn't exist yet
