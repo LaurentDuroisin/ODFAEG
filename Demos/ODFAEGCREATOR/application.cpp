@@ -121,6 +121,7 @@ void ODFAEGCreator::onInit() {
     addWindow(wApplicationNew);
     wApplicationNew->setVisible(false);
     pProjects = new Panel(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 700, 0), 0);
+    pProjects->setName("PPROJECTS");
     rootNode = std::make_unique<Node> ("projects", pProjects, Vec2f(0.f, 0.015f), Vec2f(1.f / 6.f, 1.f));
     pProjects->setBorderColor(sf::Color(128, 128, 128));
     pProjects->setBackgroundColor(sf::Color::White);

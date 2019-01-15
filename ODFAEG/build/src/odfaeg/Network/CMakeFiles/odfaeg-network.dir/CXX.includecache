@@ -6,6 +6,20 @@
 
 #IncludeRegexTransform: 
 
+/home/laurent/Développement/Projets-c++/ODFAEG/extlibs/headers/GL/glew.h
+stddef.h
+-
+inttypes.h
+-
+stdint.h
+-
+inttypes.h
+-
+OpenGL/glu.h
+-
+GL/glu.h
+-
+
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/action.h
 export.hpp
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/export.hpp
@@ -272,22 +286,6 @@ utility
 mpl.h
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Core/mpl.h
 
-/home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/GL/glew.h
-stddef.h
--
-inttypes.h
--
-stdint.h
--
-inttypes.h
--
-Availability.h
--
-OpenGL/glu.h
--
-GL/glu.h
--
-
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/animatedEntity.h
 vector
 -
@@ -379,6 +377,12 @@ entity.h
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/lightComponent.h
 component.h
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/component.h
+../../../extlibs/headers/GL/glew.h
+/home/laurent/Développement/Projets-c++/ODFAEG/extlibs/headers/GL/glew.h
+SFML/OpenGL.hpp
+-
+../../../src/odfaeg/Graphics/glCheck.h
+/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/glCheck.h
 
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/Graphics/oitRenderComponent.h
 renderWindow.h
@@ -1023,6 +1027,20 @@ array
 -
 
 /home/laurent/Développement/Projets-c++/ODFAEG/include/odfaeg/config.hpp
+
+/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GlDebug.hpp
+string
+-
+
+/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/glCheck.h
+SFML/Config.hpp
+-
+GL/glew.h
+-
+string
+-
+GlDebug.hpp
+/home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Graphics/GlDebug.hpp
 
 /home/laurent/Développement/Projets-c++/ODFAEG/src/odfaeg/Network/client.cpp
 ../../../include/odfaeg/Network/client.h

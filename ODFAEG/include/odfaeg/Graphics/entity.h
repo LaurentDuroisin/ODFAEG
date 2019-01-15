@@ -125,7 +125,7 @@ namespace odfaeg {
                 *   \param RenderTarget target : the rendertarget onwhich to draw the entity.
                 *   \param RenderStates states : the states used to render the entities.
                 */
-                void draw (RenderTarget &target, RenderStates states);
+                void draw (RenderTarget& target, RenderStates states);
                 /** \fn
                 *   \brief void onDraw (RenderTarger& target, RenderStates states)
                 *   \param RenderTarget target : the rendertarget onwhich to draw the entities.

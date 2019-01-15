@@ -22,6 +22,7 @@ src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/actions.cpp.o: ../include/odfaeg/Core
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/actions.cpp.o: ../include/odfaeg/config.hpp
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/actions.cpp.o: ../src/odfaeg/Core/actions.cpp
 
+src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/application.cpp.o: ../extlibs/headers/GL/glew.h
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/application.cpp.o: ../include/odfaeg/Core/action.h
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/application.cpp.o: ../include/odfaeg/Core/any.h
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/application.cpp.o: ../include/odfaeg/Core/application.h
@@ -46,7 +47,6 @@ src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/application.cpp.o: ../include/odfaeg/
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/application.cpp.o: ../include/odfaeg/Core/timer.h
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/application.cpp.o: ../include/odfaeg/Core/utilities.h
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/application.cpp.o: ../include/odfaeg/Core/variant.h
-src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/application.cpp.o: ../include/odfaeg/Graphics/GL/glew.h
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/application.cpp.o: ../include/odfaeg/Graphics/animatedEntity.h
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/application.cpp.o: ../include/odfaeg/Graphics/baseChangementMatrix.h
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/application.cpp.o: ../include/odfaeg/Graphics/batcher.h
@@ -109,6 +109,8 @@ src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/application.cpp.o: ../include/odfaeg/
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/application.cpp.o: ../include/odfaeg/Physics/particuleSystem.h
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/application.cpp.o: ../include/odfaeg/config.hpp
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/application.cpp.o: ../src/odfaeg/Core/application.cpp
+src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/application.cpp.o: ../src/odfaeg/Graphics/GlDebug.hpp
+src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/application.cpp.o: ../src/odfaeg/Graphics/glCheck.h
 
 src/odfaeg/Core/CMakeFiles/odfaeg-core.dir/archive.cpp.o: ../src/odfaeg/Core/archive.cpp
 

@@ -54,6 +54,17 @@ namespace odfaeg {
                             "gl_FrontColor = gl_Color;"
                             "projMat = gl_ProjectionMatrix;"
                         "}";
+                        const std::string depthGenVertexShader =
+                        "#version 130 \n"
+                        "out vec4 worldCoords;"
+                        "out mat4 projMat;"
+                        "void main() {"
+                        "   gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;"
+                        "   gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;"
+                        "   gl_FrontColor = gl_Color;"
+                        "   worldCoords = gl_Vertex;"
+                        "   projMat = gl_ProjectionMatrix;"
+                        "}";
                         const std::string  buildNormalMapVertexShader =
                         "#version 130 \n"
                         "void main () {"
@@ -74,12 +85,13 @@ namespace odfaeg {
                             "float s12 = textureOffset(texture, gl_TexCoord[0].xy, off.yz).z;"
                             "vec3 va = normalize (vec3(size.xy, s21 - s01));"
                             "vec3 vb = normalize (vec3(size.yx, s12 - s10));"
-                            "gl_FragColor = vec4(cross(va, vb), depth.z);"
+                            "gl_FragColor = vec4(cross(va, vb), depth.y);"
                         "}";
                         const std::string depthGenFragShader =
                         "#version 130 \n"
                         "uniform sampler2D texture;"
                         "uniform float haveTexture;"
+                        "in vec4 worldCoords;"
                         "in mat4 projMat;"
                         "void main () {"
                             "vec4 texel = texture2D(texture, gl_TexCoord[0].xy);"
@@ -88,8 +100,9 @@ namespace odfaeg {
                             "colors[0] = gl_Color;"
                             "bool b = (haveTexture == 1);"
                             "float current_alpha = colors[int(b)].a;"
-                            "float current_depth = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
-                            "gl_FragColor = vec4(0, 0, current_depth, current_alpha);"
+                            "float world_depth = worldCoords.z;"
+                            "float z = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
+                            "gl_FragColor = vec4(0, z, world_depth, current_alpha);"
                         "}";
                         const std::string specularGenFragShader =
                         "#version 130 \n"
@@ -185,7 +198,7 @@ namespace odfaeg {
                                  "gl_FragColor = lightMapColor;"
                              "}"
                         "}";
-                        if (!depthBufferGenerator->loadFromMemory(vertexShader, depthGenFragShader))
+                        if (!depthBufferGenerator->loadFromMemory(depthGenVertexShader, depthGenFragShader))
                             throw core::Erreur(50, "Failed to load depth buffer generator shader", 0);
                         if (!normalMapGenerator->loadFromMemory(buildNormalMapVertexShader, buildNormalMapFragmentShader))
                             throw core::Erreur(51, "Failed to load normal generator shader", 0);

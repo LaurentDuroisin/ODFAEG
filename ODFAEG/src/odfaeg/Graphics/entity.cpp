@@ -40,7 +40,7 @@ namespace odfaeg {
         int Entity::getNbEntities () {
             return nbEntities;
         }
-        void Entity::draw (RenderTarget &target, RenderStates states) {
+        void Entity::draw (RenderTarget& target, RenderStates states) {
             states.transform = getTransform();
             onDraw(target, states);
             for (unsigned int i = 0; i < children.size(); i++) {

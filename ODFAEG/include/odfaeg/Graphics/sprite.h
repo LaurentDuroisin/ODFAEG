@@ -172,7 +172,7 @@ namespace odfaeg {
                 /// \param states Current render states
                 ///
                 ////////////////////////////////////////////////////////////
-                virtual void draw (RenderTarget &target, RenderStates states);
+                virtual void draw (RenderTarget& target, RenderStates states);
 
                 ////////////////////////////////////////////////////////////
                 /// \brief Update the vertices' texture coordinates

@@ -27,8 +27,8 @@ namespace odfaeg {
                     void actionPerformed(Button* button);
                     void onVisibilityChanged(bool visible);
                 private :
-                    const Font* font;
                     RenderWindow rw;
+                    const Font* font;
                     Panel pTop, pBottom, pDirectories, pFiles;
                     Label lTop;
                     Button bChoose, bCancel;

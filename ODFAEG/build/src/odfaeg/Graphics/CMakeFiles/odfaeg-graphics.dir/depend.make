@@ -336,6 +336,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/3D/cube.cpp.o: ../include/odf
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/3D/cube.cpp.o: ../include/odfaeg/config.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/3D/cube.cpp.o: ../src/odfaeg/Graphics/3D/cube.cpp
 
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/button.cpp.o: ../extlibs/headers/GL/glew.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/button.cpp.o: ../include/odfaeg/Core/action.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/button.cpp.o: ../include/odfaeg/Core/archive.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/button.cpp.o: ../include/odfaeg/Core/command.h
@@ -352,7 +353,6 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/button.cpp.o: ../include/
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/button.cpp.o: ../include/odfaeg/Core/singleton.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/button.cpp.o: ../include/odfaeg/Core/utilities.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/button.cpp.o: ../include/odfaeg/Core/variant.h
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/button.cpp.o: ../include/odfaeg/Graphics/GL/glew.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/button.cpp.o: ../include/odfaeg/Graphics/GUI/actionListener.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/button.cpp.o: ../include/odfaeg/Graphics/GUI/button.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/button.cpp.o: ../include/odfaeg/Graphics/component.h
@@ -392,7 +392,10 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/button.cpp.o: ../include/
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/button.cpp.o: ../include/odfaeg/Physics/collisionResultSet.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/button.cpp.o: ../include/odfaeg/config.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/button.cpp.o: ../src/odfaeg/Graphics/GUI/button.cpp
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/button.cpp.o: ../src/odfaeg/Graphics/GlDebug.hpp
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/button.cpp.o: ../src/odfaeg/Graphics/glCheck.h
 
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/dropDownList.cpp.o: ../extlibs/headers/GL/glew.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/dropDownList.cpp.o: ../include/odfaeg/Core/action.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/dropDownList.cpp.o: ../include/odfaeg/Core/archive.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/dropDownList.cpp.o: ../include/odfaeg/Core/command.h
@@ -409,7 +412,6 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/dropDownList.cpp.o: ../in
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/dropDownList.cpp.o: ../include/odfaeg/Core/singleton.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/dropDownList.cpp.o: ../include/odfaeg/Core/utilities.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/dropDownList.cpp.o: ../include/odfaeg/Core/variant.h
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/dropDownList.cpp.o: ../include/odfaeg/Graphics/GL/glew.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/dropDownList.cpp.o: ../include/odfaeg/Graphics/GUI/dropDownList.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/dropDownList.cpp.o: ../include/odfaeg/Graphics/GUI/label.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/dropDownList.cpp.o: ../include/odfaeg/Graphics/component.h
@@ -451,7 +453,10 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/dropDownList.cpp.o: ../in
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/dropDownList.cpp.o: ../include/odfaeg/Physics/collisionResultSet.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/dropDownList.cpp.o: ../include/odfaeg/config.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/dropDownList.cpp.o: ../src/odfaeg/Graphics/GUI/dropDownList.cpp
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/dropDownList.cpp.o: ../src/odfaeg/Graphics/GlDebug.hpp
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/dropDownList.cpp.o: ../src/odfaeg/Graphics/glCheck.h
 
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.o: ../extlibs/headers/GL/glew.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.o: ../include/odfaeg/Core/action.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.o: ../include/odfaeg/Core/archive.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.o: ../include/odfaeg/Core/command.h
@@ -468,7 +473,6 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.o: ../incl
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.o: ../include/odfaeg/Core/singleton.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.o: ../include/odfaeg/Core/utilities.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.o: ../include/odfaeg/Core/variant.h
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.o: ../include/odfaeg/Graphics/GL/glew.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.o: ../include/odfaeg/Graphics/GUI/actionListener.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.o: ../include/odfaeg/Graphics/GUI/button.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.o: ../include/odfaeg/Graphics/GUI/filedialog.hpp
@@ -513,7 +517,10 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.o: ../incl
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.o: ../include/odfaeg/Physics/collisionResultSet.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.o: ../include/odfaeg/config.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.o: ../src/odfaeg/Graphics/GUI/filedialog.cpp
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.o: ../src/odfaeg/Graphics/GlDebug.hpp
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/filedialog.cpp.o: ../src/odfaeg/Graphics/glCheck.h
 
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/icon.cpp.o: ../extlibs/headers/GL/glew.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/icon.cpp.o: ../include/odfaeg/Core/action.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/icon.cpp.o: ../include/odfaeg/Core/archive.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/icon.cpp.o: ../include/odfaeg/Core/command.h
@@ -531,7 +538,6 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/icon.cpp.o: ../include/od
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/icon.cpp.o: ../include/odfaeg/Core/singleton.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/icon.cpp.o: ../include/odfaeg/Core/utilities.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/icon.cpp.o: ../include/odfaeg/Core/variant.h
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/icon.cpp.o: ../include/odfaeg/Graphics/GL/glew.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/icon.cpp.o: ../include/odfaeg/Graphics/GUI/icon.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/icon.cpp.o: ../include/odfaeg/Graphics/component.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/icon.cpp.o: ../include/odfaeg/Graphics/drawable.h
@@ -567,7 +573,10 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/icon.cpp.o: ../include/od
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/icon.cpp.o: ../include/odfaeg/Physics/collisionResultSet.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/icon.cpp.o: ../include/odfaeg/config.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/icon.cpp.o: ../src/odfaeg/Graphics/GUI/icon.cpp
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/icon.cpp.o: ../src/odfaeg/Graphics/GlDebug.hpp
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/icon.cpp.o: ../src/odfaeg/Graphics/glCheck.h
 
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.o: ../extlibs/headers/GL/glew.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.o: ../include/odfaeg/Core/action.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.o: ../include/odfaeg/Core/archive.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.o: ../include/odfaeg/Core/command.h
@@ -584,7 +593,6 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.o: ../include/o
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.o: ../include/odfaeg/Core/singleton.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.o: ../include/odfaeg/Core/utilities.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.o: ../include/odfaeg/Core/variant.h
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.o: ../include/odfaeg/Graphics/GL/glew.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.o: ../include/odfaeg/Graphics/GUI/label.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.o: ../include/odfaeg/Graphics/component.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.o: ../include/odfaeg/Graphics/drawable.h
@@ -623,7 +631,10 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.o: ../include/o
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.o: ../include/odfaeg/Physics/collisionResultSet.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.o: ../include/odfaeg/config.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.o: ../src/odfaeg/Graphics/GUI/label.cpp
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.o: ../src/odfaeg/Graphics/GlDebug.hpp
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/label.cpp.o: ../src/odfaeg/Graphics/glCheck.h
 
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menu.cpp.o: ../extlibs/headers/GL/glew.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menu.cpp.o: ../include/odfaeg/Core/action.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menu.cpp.o: ../include/odfaeg/Core/archive.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menu.cpp.o: ../include/odfaeg/Core/command.h
@@ -640,7 +651,6 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menu.cpp.o: ../include/od
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menu.cpp.o: ../include/odfaeg/Core/singleton.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menu.cpp.o: ../include/odfaeg/Core/utilities.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menu.cpp.o: ../include/odfaeg/Core/variant.h
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menu.cpp.o: ../include/odfaeg/Graphics/GL/glew.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menu.cpp.o: ../include/odfaeg/Graphics/GUI/menu.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menu.cpp.o: ../include/odfaeg/Graphics/GUI/menuItem.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menu.cpp.o: ../include/odfaeg/Graphics/GUI/menuItemListener.hpp
@@ -681,7 +691,10 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menu.cpp.o: ../include/od
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menu.cpp.o: ../include/odfaeg/Physics/collisionResultSet.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menu.cpp.o: ../include/odfaeg/config.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menu.cpp.o: ../src/odfaeg/Graphics/GUI/menu.cpp
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menu.cpp.o: ../src/odfaeg/Graphics/GlDebug.hpp
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menu.cpp.o: ../src/odfaeg/Graphics/glCheck.h
 
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menuItem.cpp.o: ../extlibs/headers/GL/glew.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menuItem.cpp.o: ../include/odfaeg/Core/action.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menuItem.cpp.o: ../include/odfaeg/Core/archive.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menuItem.cpp.o: ../include/odfaeg/Core/command.h
@@ -698,7 +711,6 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menuItem.cpp.o: ../includ
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menuItem.cpp.o: ../include/odfaeg/Core/singleton.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menuItem.cpp.o: ../include/odfaeg/Core/utilities.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menuItem.cpp.o: ../include/odfaeg/Core/variant.h
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menuItem.cpp.o: ../include/odfaeg/Graphics/GL/glew.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menuItem.cpp.o: ../include/odfaeg/Graphics/GUI/menuItem.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menuItem.cpp.o: ../include/odfaeg/Graphics/GUI/menuItemListener.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menuItem.cpp.o: ../include/odfaeg/Graphics/component.h
@@ -738,7 +750,10 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menuItem.cpp.o: ../includ
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menuItem.cpp.o: ../include/odfaeg/Physics/collisionResultSet.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menuItem.cpp.o: ../include/odfaeg/config.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menuItem.cpp.o: ../src/odfaeg/Graphics/GUI/menuItem.cpp
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menuItem.cpp.o: ../src/odfaeg/Graphics/GlDebug.hpp
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menuItem.cpp.o: ../src/odfaeg/Graphics/glCheck.h
 
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menubar.cpp.o: ../extlibs/headers/GL/glew.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menubar.cpp.o: ../include/odfaeg/Core/action.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menubar.cpp.o: ../include/odfaeg/Core/archive.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menubar.cpp.o: ../include/odfaeg/Core/command.h
@@ -755,7 +770,6 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menubar.cpp.o: ../include
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menubar.cpp.o: ../include/odfaeg/Core/singleton.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menubar.cpp.o: ../include/odfaeg/Core/utilities.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menubar.cpp.o: ../include/odfaeg/Core/variant.h
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menubar.cpp.o: ../include/odfaeg/Graphics/GL/glew.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menubar.cpp.o: ../include/odfaeg/Graphics/GUI/menu.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menubar.cpp.o: ../include/odfaeg/Graphics/GUI/menuItem.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menubar.cpp.o: ../include/odfaeg/Graphics/GUI/menuItemListener.hpp
@@ -797,7 +811,10 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menubar.cpp.o: ../include
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menubar.cpp.o: ../include/odfaeg/Physics/collisionResultSet.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menubar.cpp.o: ../include/odfaeg/config.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menubar.cpp.o: ../src/odfaeg/Graphics/GUI/menubar.cpp
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menubar.cpp.o: ../src/odfaeg/Graphics/GlDebug.hpp
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/menubar.cpp.o: ../src/odfaeg/Graphics/glCheck.h
 
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/node.cpp.o: ../extlibs/headers/GL/glew.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/node.cpp.o: ../include/odfaeg/Core/action.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/node.cpp.o: ../include/odfaeg/Core/archive.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/node.cpp.o: ../include/odfaeg/Core/command.h
@@ -847,7 +864,10 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/node.cpp.o: ../include/od
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/node.cpp.o: ../include/odfaeg/Physics/collisionResultSet.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/node.cpp.o: ../include/odfaeg/config.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/node.cpp.o: ../src/odfaeg/Graphics/GUI/node.cpp
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/node.cpp.o: ../src/odfaeg/Graphics/GlDebug.hpp
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/node.cpp.o: ../src/odfaeg/Graphics/glCheck.h
 
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/optionPane.cpp.o: ../extlibs/headers/GL/glew.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/optionPane.cpp.o: ../include/odfaeg/Core/action.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/optionPane.cpp.o: ../include/odfaeg/Core/archive.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/optionPane.cpp.o: ../include/odfaeg/Core/command.h
@@ -864,7 +884,6 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/optionPane.cpp.o: ../incl
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/optionPane.cpp.o: ../include/odfaeg/Core/singleton.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/optionPane.cpp.o: ../include/odfaeg/Core/utilities.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/optionPane.cpp.o: ../include/odfaeg/Core/variant.h
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/optionPane.cpp.o: ../include/odfaeg/Graphics/GL/glew.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/optionPane.cpp.o: ../include/odfaeg/Graphics/GUI/actionListener.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/optionPane.cpp.o: ../include/odfaeg/Graphics/GUI/button.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/optionPane.cpp.o: ../include/odfaeg/Graphics/GUI/optionPane.hpp
@@ -905,7 +924,10 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/optionPane.cpp.o: ../incl
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/optionPane.cpp.o: ../include/odfaeg/Physics/collisionResultSet.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/optionPane.cpp.o: ../include/odfaeg/config.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/optionPane.cpp.o: ../src/odfaeg/Graphics/GUI/optionPane.cpp
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/optionPane.cpp.o: ../src/odfaeg/Graphics/GlDebug.hpp
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/optionPane.cpp.o: ../src/odfaeg/Graphics/glCheck.h
 
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.o: ../extlibs/headers/GL/glew.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.o: ../include/odfaeg/Core/action.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.o: ../include/odfaeg/Core/archive.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.o: ../include/odfaeg/Core/command.h
@@ -922,7 +944,6 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.o: ../include/o
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.o: ../include/odfaeg/Core/singleton.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.o: ../include/odfaeg/Core/utilities.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.o: ../include/odfaeg/Core/variant.h
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.o: ../include/odfaeg/Graphics/GL/glew.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.o: ../include/odfaeg/Graphics/GUI/panel.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.o: ../include/odfaeg/Graphics/component.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.o: ../include/odfaeg/Graphics/drawable.h
@@ -960,7 +981,10 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.o: ../include/o
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.o: ../include/odfaeg/Physics/collisionResultSet.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.o: ../include/odfaeg/config.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.o: ../src/odfaeg/Graphics/GUI/panel.cpp
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.o: ../src/odfaeg/Graphics/GlDebug.hpp
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/panel.cpp.o: ../src/odfaeg/Graphics/glCheck.h
 
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/passwordField.cpp.o: ../extlibs/headers/GL/glew.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/passwordField.cpp.o: ../include/odfaeg/Core/action.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/passwordField.cpp.o: ../include/odfaeg/Core/archive.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/passwordField.cpp.o: ../include/odfaeg/Core/command.h
@@ -977,7 +1001,6 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/passwordField.cpp.o: ../i
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/passwordField.cpp.o: ../include/odfaeg/Core/singleton.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/passwordField.cpp.o: ../include/odfaeg/Core/utilities.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/passwordField.cpp.o: ../include/odfaeg/Core/variant.h
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/passwordField.cpp.o: ../include/odfaeg/Graphics/GL/glew.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/passwordField.cpp.o: ../include/odfaeg/Graphics/GUI/focusListener.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/passwordField.cpp.o: ../include/odfaeg/Graphics/GUI/passwordField.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/passwordField.cpp.o: ../include/odfaeg/Graphics/component.h
@@ -1017,7 +1040,10 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/passwordField.cpp.o: ../i
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/passwordField.cpp.o: ../include/odfaeg/Physics/collisionResultSet.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/passwordField.cpp.o: ../include/odfaeg/config.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/passwordField.cpp.o: ../src/odfaeg/Graphics/GUI/passwordField.cpp
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/passwordField.cpp.o: ../src/odfaeg/Graphics/GlDebug.hpp
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/passwordField.cpp.o: ../src/odfaeg/Graphics/glCheck.h
 
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/progressBar.cpp.o: ../extlibs/headers/GL/glew.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/progressBar.cpp.o: ../include/odfaeg/Core/action.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/progressBar.cpp.o: ../include/odfaeg/Core/archive.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/progressBar.cpp.o: ../include/odfaeg/Core/command.h
@@ -1034,7 +1060,6 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/progressBar.cpp.o: ../inc
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/progressBar.cpp.o: ../include/odfaeg/Core/singleton.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/progressBar.cpp.o: ../include/odfaeg/Core/utilities.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/progressBar.cpp.o: ../include/odfaeg/Core/variant.h
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/progressBar.cpp.o: ../include/odfaeg/Graphics/GL/glew.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/progressBar.cpp.o: ../include/odfaeg/Graphics/GUI/progressBar.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/progressBar.cpp.o: ../include/odfaeg/Graphics/component.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/progressBar.cpp.o: ../include/odfaeg/Graphics/drawable.h
@@ -1071,7 +1096,10 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/progressBar.cpp.o: ../inc
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/progressBar.cpp.o: ../include/odfaeg/Physics/collisionResultSet.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/progressBar.cpp.o: ../include/odfaeg/config.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/progressBar.cpp.o: ../src/odfaeg/Graphics/GUI/progressBar.cpp
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/progressBar.cpp.o: ../src/odfaeg/Graphics/GlDebug.hpp
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/progressBar.cpp.o: ../src/odfaeg/Graphics/glCheck.h
 
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/tabPane.cpp.o: ../extlibs/headers/GL/glew.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/tabPane.cpp.o: ../include/odfaeg/Core/action.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/tabPane.cpp.o: ../include/odfaeg/Core/archive.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/tabPane.cpp.o: ../include/odfaeg/Core/command.h
@@ -1088,7 +1116,6 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/tabPane.cpp.o: ../include
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/tabPane.cpp.o: ../include/odfaeg/Core/singleton.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/tabPane.cpp.o: ../include/odfaeg/Core/utilities.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/tabPane.cpp.o: ../include/odfaeg/Core/variant.h
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/tabPane.cpp.o: ../include/odfaeg/Graphics/GL/glew.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/tabPane.cpp.o: ../include/odfaeg/Graphics/GUI/label.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/tabPane.cpp.o: ../include/odfaeg/Graphics/GUI/panel.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/tabPane.cpp.o: ../include/odfaeg/Graphics/GUI/tabPane.hpp
@@ -1130,7 +1157,10 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/tabPane.cpp.o: ../include
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/tabPane.cpp.o: ../include/odfaeg/Physics/collisionResultSet.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/tabPane.cpp.o: ../include/odfaeg/config.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/tabPane.cpp.o: ../src/odfaeg/Graphics/GUI/tabPane.cpp
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/tabPane.cpp.o: ../src/odfaeg/Graphics/GlDebug.hpp
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/tabPane.cpp.o: ../src/odfaeg/Graphics/glCheck.h
 
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/table.cpp.o: ../extlibs/headers/GL/glew.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/table.cpp.o: ../include/odfaeg/Core/action.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/table.cpp.o: ../include/odfaeg/Core/archive.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/table.cpp.o: ../include/odfaeg/Core/command.h
@@ -1147,7 +1177,6 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/table.cpp.o: ../include/o
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/table.cpp.o: ../include/odfaeg/Core/singleton.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/table.cpp.o: ../include/odfaeg/Core/utilities.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/table.cpp.o: ../include/odfaeg/Core/variant.h
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/table.cpp.o: ../include/odfaeg/Graphics/GL/glew.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/table.cpp.o: ../include/odfaeg/Graphics/GUI/table.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/table.cpp.o: ../include/odfaeg/Graphics/component.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/table.cpp.o: ../include/odfaeg/Graphics/drawable.h
@@ -1184,7 +1213,10 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/table.cpp.o: ../include/o
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/table.cpp.o: ../include/odfaeg/Physics/collisionResultSet.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/table.cpp.o: ../include/odfaeg/config.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/table.cpp.o: ../src/odfaeg/Graphics/GUI/table.cpp
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/table.cpp.o: ../src/odfaeg/Graphics/GlDebug.hpp
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/table.cpp.o: ../src/odfaeg/Graphics/glCheck.h
 
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.o: ../extlibs/headers/GL/glew.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.o: ../include/odfaeg/Core/action.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.o: ../include/odfaeg/Core/archive.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.o: ../include/odfaeg/Core/command.h
@@ -1201,7 +1233,6 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.o: ../includ
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.o: ../include/odfaeg/Core/singleton.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.o: ../include/odfaeg/Core/utilities.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.o: ../include/odfaeg/Core/variant.h
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.o: ../include/odfaeg/Graphics/GL/glew.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.o: ../include/odfaeg/Graphics/GUI/focusListener.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.o: ../include/odfaeg/Graphics/GUI/textArea.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.o: ../include/odfaeg/Graphics/component.h
@@ -1241,6 +1272,8 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.o: ../includ
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.o: ../include/odfaeg/Physics/collisionResultSet.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.o: ../include/odfaeg/config.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.o: ../src/odfaeg/Graphics/GUI/textArea.cpp
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.o: ../src/odfaeg/Graphics/GlDebug.hpp
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GUI/textArea.cpp.o: ../src/odfaeg/Graphics/glCheck.h
 
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GlDebug.cpp.o: ../src/odfaeg/Graphics/GlDebug.cpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/GlDebug.cpp.o: ../src/odfaeg/Graphics/GlDebug.hpp
@@ -1839,6 +1872,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/lightRenderComponent.cpp.o: .
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/lightRenderComponent.cpp.o: ../src/odfaeg/Graphics/glCheck.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/lightRenderComponent.cpp.o: ../src/odfaeg/Graphics/lightRenderComponent.cpp
 
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/map.cpp.o: ../extlibs/headers/GL/glew.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/map.cpp.o: ../include/odfaeg/Core/action.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/map.cpp.o: ../include/odfaeg/Core/any.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/map.cpp.o: ../include/odfaeg/Core/archive.h
@@ -1929,6 +1963,8 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/map.cpp.o: ../include/odfaeg/
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/map.cpp.o: ../include/odfaeg/Physics/particule.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/map.cpp.o: ../include/odfaeg/Physics/particuleSystem.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/map.cpp.o: ../include/odfaeg/config.hpp
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/map.cpp.o: ../src/odfaeg/Graphics/GlDebug.hpp
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/map.cpp.o: ../src/odfaeg/Graphics/glCheck.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/map.cpp.o: ../src/odfaeg/Graphics/map.cpp
 
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/model.cpp.o: ../include/odfaeg/Core/any.h
@@ -2123,6 +2159,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/rectangleShape.cpp.o: ../incl
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/rectangleShape.cpp.o: ../include/odfaeg/config.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/rectangleShape.cpp.o: ../src/odfaeg/Graphics/rectangleShape.cpp
 
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/renderComponentManager.cpp.o: ../extlibs/headers/GL/glew.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/renderComponentManager.cpp.o: ../include/odfaeg/Core/action.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/renderComponentManager.cpp.o: ../include/odfaeg/Core/any.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/renderComponentManager.cpp.o: ../include/odfaeg/Core/archive.h
@@ -2143,7 +2180,6 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/renderComponentManager.cpp.o:
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/renderComponentManager.cpp.o: ../include/odfaeg/Core/stateParameter.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/renderComponentManager.cpp.o: ../include/odfaeg/Core/utilities.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/renderComponentManager.cpp.o: ../include/odfaeg/Core/variant.h
-src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/renderComponentManager.cpp.o: ../include/odfaeg/Graphics/GL/glew.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/renderComponentManager.cpp.o: ../include/odfaeg/Graphics/GUI/menu.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/renderComponentManager.cpp.o: ../include/odfaeg/Graphics/GUI/menuItem.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/renderComponentManager.cpp.o: ../include/odfaeg/Graphics/GUI/menuItemListener.hpp
@@ -2190,6 +2226,8 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/renderComponentManager.cpp.o:
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/renderComponentManager.cpp.o: ../include/odfaeg/Physics/boundingVolume.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/renderComponentManager.cpp.o: ../include/odfaeg/Physics/collisionResultSet.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/renderComponentManager.cpp.o: ../include/odfaeg/config.hpp
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/renderComponentManager.cpp.o: ../src/odfaeg/Graphics/GlDebug.hpp
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/renderComponentManager.cpp.o: ../src/odfaeg/Graphics/glCheck.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/renderComponentManager.cpp.o: ../src/odfaeg/Graphics/renderComponentManager.cpp
 
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/renderStates.cpp.o: ../include/odfaeg/Core/archive.h
@@ -3015,6 +3053,7 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/viewport.cpp.o: ../include/od
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/viewport.cpp.o: ../include/odfaeg/config.hpp
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/viewport.cpp.o: ../src/odfaeg/Graphics/viewport.cpp
 
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/world.cpp.o: ../extlibs/headers/GL/glew.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/world.cpp.o: ../include/odfaeg/Core/action.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/world.cpp.o: ../include/odfaeg/Core/any.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/world.cpp.o: ../include/odfaeg/Core/application.h
@@ -3114,6 +3153,8 @@ src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/world.cpp.o: ../include/odfae
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/world.cpp.o: ../include/odfaeg/Physics/particule.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/world.cpp.o: ../include/odfaeg/Physics/particuleSystem.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/world.cpp.o: ../include/odfaeg/config.hpp
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/world.cpp.o: ../src/odfaeg/Graphics/GlDebug.hpp
+src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/world.cpp.o: ../src/odfaeg/Graphics/glCheck.h
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/world.cpp.o: ../src/odfaeg/Graphics/world.cpp
 
 src/odfaeg/Graphics/CMakeFiles/odfaeg-graphics.dir/zSortingRenderComponent.cpp.o: ../include/odfaeg/Core/action.h

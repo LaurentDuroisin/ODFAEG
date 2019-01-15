@@ -14,6 +14,7 @@ namespace odfaeg {
             bChoose (position, size, font, "Choose", 15, rw),
             bCancel (position, size, font, "Cancel", 15, rw),
             font(font) {
+                rw.setPosition(sf::Vector2i(position.x, position.y));
                 pTop.setRelPosition(0.f, 0.f);
                 pTop.setRelSize(1.f, 0.1f);
                 pDirectories.setRelPosition(0.f, 0.1f);
@@ -22,10 +23,11 @@ namespace odfaeg {
                 pFiles.setRelSize(0.5f, 0.8f);
                 pBottom.setRelPosition(0.f, 0.9f);
                 pBottom.setRelSize(1.f, 0.1f);
-                /*pTop.setParent(this);
+                pTop.setParent(this);
                 pBottom.setParent(this);
                 pDirectories.setParent(this);
-                pFiles.setParent(this);*/
+                pFiles.setParent(this);
+                pFiles.setName("PFILES");
                 addChild(&pTop);
                 addChild(&pBottom);
                 addChild(&pDirectories);

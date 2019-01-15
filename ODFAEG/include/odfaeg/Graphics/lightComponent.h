@@ -1,6 +1,9 @@
 #ifndef ODFAEG_LIGHT_COMPONENT
 #define ODFAEG_LIGHT_COMPONENT
 #include "component.h"
+#include "../../../extlibs/headers/GL/glew.h"
+#include <SFML/OpenGL.hpp>
+#include "../../../src/odfaeg/Graphics/glCheck.h"
 namespace odfaeg {
     namespace graphic {
         class LightComponent : public Component {
@@ -67,9 +70,14 @@ namespace odfaeg {
                 }
                 std::multimap<int, LightComponent*, std::greater<int>>::iterator it;
                 for (it = sortedChildren.begin(); it != sortedChildren.end(); it++) {
-                    if (it->second->isVisible() && it->second->getPosition().x >= getPosition().x && it->second->getPosition().y >= getPosition().y
-                    && it->second->getPosition().x + it->second->getSize().x <= getPosition().x + getSize().x
-                    && it->second->getPosition().y + it->second->getSize().y <= getPosition().y + getSize().y) {
+                    if (it->second->isVisible()
+                        && it->second->getPosition().x + it->second->getSize().x >= getPosition().x
+                        && it->second->getPosition().y + it->second->getSize().y >= getPosition().y
+                        && it->second->getPosition().x <= getPosition().x + getSize().x
+                        && it->second->getPosition().y <= getPosition().y + getSize().y) {
+                        /*if(name == "PFILES" && it == sortedChildren.begin()) {
+                            std::cout<<"child pos : "<<it->second->getPosition()<<" child size : "<<it->second->getSize()<<std::endl;
+                        }*/
                         it->second->draw(target, states);
                     }
                 }

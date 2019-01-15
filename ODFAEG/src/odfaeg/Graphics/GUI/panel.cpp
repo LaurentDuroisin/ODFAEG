@@ -161,7 +161,9 @@ namespace odfaeg {
             void Panel::onDraw(RenderTarget& target, RenderStates states) {
                 rect.setPosition(getPosition());
                 rect.setSize(getSize());
-                target.draw(rect);
+                glCheck(glEnable(GL_SCISSOR_TEST));
+                glCheck(glScissor(getPosition().x, getWindow().getSize().y - (getPosition().y + getSize().y), getSize().x, getSize().y));
+                target.draw(rect, states);
                 for (unsigned int i = 0; i < sprites.size(); i++) {
                     target.draw(sprites[i], states);
                 }
@@ -171,14 +173,15 @@ namespace odfaeg {
             }
             void Panel::drawOn(RenderTarget& target, RenderStates states) {
                 if (scrollX || scrollY) {
-                    target.draw(corner);
+                    target.draw(corner, states);
                 }
                 if (scrollX) {
-                    target.draw(vertScrollBar);
+                    target.draw(vertScrollBar, states);
                 }
                 if (scrollY) {
-                    target.draw(horScrollBar);
+                    target.draw(horScrollBar, states);
                 }
+                glDisable(GL_SCISSOR_TEST);
             }
             void Panel::setBorderThickness(float thickness) {
                 rect.setOutlineThickness(thickness);
