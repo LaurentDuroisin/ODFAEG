@@ -12,5 +12,6 @@ class test : public odfaeg::core::Application {
    void onExec ();
    private : 
    std::vector<std::unique_ptr<Drawable>> drawables;
+   ResourceCache<> cache;
 };
 #endif

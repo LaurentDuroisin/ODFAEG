@@ -159,10 +159,11 @@ namespace odfaeg {
                 sprites.push_back(sprite);
             }
             void Panel::onDraw(RenderTarget& target, RenderStates states) {
-                rect.setPosition(getPosition());
-                rect.setSize(getSize());
                 glCheck(glEnable(GL_SCISSOR_TEST));
                 glCheck(glScissor(getPosition().x, getWindow().getSize().y - (getPosition().y + getSize().y), getSize().x, getSize().y));
+                std::cout<<"enable scissor test"<<std::endl;
+                rect.setPosition(getPosition());
+                rect.setSize(getSize());
                 target.draw(rect, states);
                 for (unsigned int i = 0; i < sprites.size(); i++) {
                     target.draw(sprites[i], states);
@@ -181,7 +182,8 @@ namespace odfaeg {
                 if (scrollY) {
                     target.draw(horScrollBar, states);
                 }
-                glDisable(GL_SCISSOR_TEST);
+                std::cout<<"disable scissor test"<<std::endl;
+                glCheck(glDisable(GL_SCISSOR_TEST));
             }
             void Panel::setBorderThickness(float thickness) {
                 rect.setOutlineThickness(thickness);

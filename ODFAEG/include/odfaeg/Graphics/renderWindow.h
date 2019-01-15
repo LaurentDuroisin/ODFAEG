@@ -131,7 +131,12 @@ namespace odfaeg
             ///
             ////////////////////////////////////////////////////////////
             sf::Image capture() const;
-
+            void setName (std::string name) {
+                this->name = name;
+            }
+            std::string getName() {
+                return name;
+            }
         protected:
 
             ////////////////////////////////////////////////////////////
@@ -154,7 +159,7 @@ namespace odfaeg
             virtual void onResize();
 
         private :
-
+            std::string name;
             ////////////////////////////////////////////////////////////
             /// \brief Activate the target for rendering
             ///

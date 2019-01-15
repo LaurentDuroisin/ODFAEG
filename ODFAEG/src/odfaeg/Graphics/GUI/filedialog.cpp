@@ -118,12 +118,12 @@ namespace odfaeg {
                 pFiles.clear();
             }
             void FileDialog::onDraw(RenderTarget& target, RenderStates states) {
-                if (rw.isOpen()) {
-                    rw.draw(pTop, states);
-                    rw.draw(pDirectories, states);
-                    rw.draw(pFiles, states);
-                    rw.draw(pBottom, states);
-                }
+                //if (rw.isOpen()) {
+                    target.draw(pTop, states);
+                    target.draw(pDirectories, states);
+                    target.draw(pFiles, states);
+                    target.draw(pBottom, states);
+                //}
             }
             void FileDialog::onDirSelected(Label* label) {
                 for (unsigned int i = 0; i < pFiles.getChildren().size(); i++) {

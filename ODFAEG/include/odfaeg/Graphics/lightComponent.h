@@ -63,6 +63,15 @@ namespace odfaeg {
             }
             void draw(RenderTarget& target, RenderStates states) {
                 //states.transform = getTransform();
+                getWindow().setActive(true);
+                if (getWindow().getName() == "WAPPLICATIONNEW") {
+                    GLboolean* params =  new GLboolean[1];
+                    glGetBooleanv(GL_SCISSOR_TEST, params);
+                    if (params[0] == GL_TRUE)
+                       std::cout<<getWindow().getName()<<" true"<<std::endl;
+                    else
+                       std::cout<<getWindow().getName()<<" false"<<std::endl;
+                }
                 onDraw(target, states);
                 std::multimap<int, LightComponent*, std::greater<int>> sortedChildren;
                 for (unsigned int i = 0; i < children.size(); i++) {

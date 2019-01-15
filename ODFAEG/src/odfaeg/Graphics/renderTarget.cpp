@@ -286,7 +286,6 @@ namespace odfaeg {
                 glCheck(glClearDepth(0));
                 glCheck(glDepthMask(GL_TRUE));
                 glCheck(glDisable(GL_SCISSOR_TEST));
-
                 m_cache.glStatesSet = true;
 
                 // Apply the default SFML states

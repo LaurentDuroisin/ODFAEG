@@ -8,27 +8,28 @@ int main(int argc, char* argv[]) {
     EXPORT_CLASS_GUID(ShapeRectShape, Shape, RectangleShape)
     ODFAEGCreator app(sf::VideoMode(1200,700),"ODFAEG Creator");
     return app.exec();
-    RenderWindow window(sf::VideoMode(1200, 700), "Scissor test");
+    /*RenderWindow window(sf::VideoMode(1200, 700), "Scissor test");
+    RenderWindow window2(sf::VideoMode(800, 600), "SubWindow");
     window.getView().move(600, 350, 0);
-    RectangleShape rect(Vec3f(1200, 700, 0));
-    RectangleShape rect2(Vec3f(200, 700, 0));
-    rect2.setPosition(Vec3f(0, 10, 0));
-    std::cout<<"rect pos : "<<rect2.getPosition()<<" rect size : "<<rect2.getSize()<<std::endl;
+    window2.getView().move(400, 300, 0);
+    Panel p1 (window,Vec3f(0, 0, 0), Vec3f(1200, 700, 0));
+    p1.setBackgroundColor(sf::Color::Red);
+    Panel p2 (window2,Vec3f(0, 0, 0),Vec3f(800, 600, 0));
+    p2.setBackgroundColor(sf::Color::Blue);
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
                 window.close();
+                window2.close();
             }
         }
+        window2.clear();
+        window2.draw(p2);
         window.clear();
-
-        //window.draw(rect);
-        glEnable(GL_SCISSOR_TEST);
-        glScissor(0, -10, 200, 700);
-        window.draw(rect2);
-        glDisable(GL_SCISSOR_TEST);
+        window.draw(p1);
         window.display();
+        window2.display();
     }
-    return 0;
+    return 0;*/
 }

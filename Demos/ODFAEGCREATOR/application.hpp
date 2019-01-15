@@ -42,6 +42,8 @@ class ODFAEGCreator : public odfaeg::core::Application,
     void onTexCoordsChanged(odfaeg::graphic::gui::TextArea* ta);
     void addShape(odfaeg::graphic::Shape *shape);
     bool removeShape (unsigned int id);
+    void updateScriptPos(odfaeg::graphic::Shape* shape);
+    void updateScriptText(odfaeg::graphic::Shape* shape, odfaeg::graphic::Texture* text);
     enum Fonts {
         Serif
     };

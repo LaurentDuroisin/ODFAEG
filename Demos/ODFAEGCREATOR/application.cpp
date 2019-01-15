@@ -21,6 +21,7 @@ void ODFAEGCreator::onLoad() {
     cache.addResourceManager(tm, "TextureManager");
 }
 void ODFAEGCreator::onInit() {
+    getRenderWindow().setName("MAINWINDOW");
     FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
     menuBar = new MenuBar(getRenderWindow());
     getRenderComponentManager().addComponent(menuBar);
@@ -94,9 +95,10 @@ void ODFAEGCreator::onInit() {
     addWindow(&fdTexturePath->getWindow());
     getRenderComponentManager().addComponent(fdTexturePath);
     wApplicationNew = new RenderWindow(sf::VideoMode(400, 300), "Create ODFAEG Application", sf::Style::Default, sf::ContextSettings(0, 0, 0, 3, 0));
-    View waView = wApplicationNew->getDefaultView();
+    wApplicationNew->setName("WAPPLICATIONNEW");
+    /*View waView = wApplicationNew->getDefaultView();
     waView.setCenter(Vec3f(wApplicationNew->getSize().x * 0.5f, wApplicationNew->getSize().y * 0.5f, 0));
-    wApplicationNew->setView(waView);
+    wApplicationNew->setView(waView);*/
     Label* label = new Label(*wApplicationNew, Vec3f(0, 0, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"Application name : ", 15);
     getRenderComponentManager().addComponent(label);
     ta = new TextArea(Vec3f(200, 0, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif), "", *wApplicationNew);
@@ -212,6 +214,24 @@ void ODFAEGCreator::onInit() {
     Command moveCursorCommand (moveCursorAction, FastDelegate<void>(&ODFAEGCreator::moveCursor, this, sf::Vector2f(-1, -1)));
     getListener().connect("MoveCursor", moveCursorCommand);
 }
+void ODFAEGCreator::updateScriptText(Shape* shape, Texture* text) {
+    TextureManager<>& tm = cache.resourceManager<Texture, std::string>("TextureManager");
+    std::string relativePath = tm.getPathByResource(text);
+    unsigned int id = tm.getIdByResource(text);
+    if(cppAppliContent.find("text"+conversionUIntString(id)) == std::string::npos) {
+        unsigned int pos = cppAppliContent.find("TextureManager<>& tm = cache.resourceManager<Texture, std::string>(\"TextureManager\");");
+        std::string subs = cppAppliContent.substr(pos);
+        pos += subs.find_first_of('\n') + 1;
+        cppAppliContent.insert(pos, "const Texture* text"+conversionUIntString(id)+" = tm.getResourceByAlias(\"+realtivePath+\");\n");
+    }
+    if (cppAppliContent.find("shape"+conversionUIntString(shape->getId())+"->setTexture") == std::string::npos) {
+        unsigned int pos = cppAppliContent.find("shape"+conversionUIntString(shape->getId()));
+        std::string subs = cppAppliContent.substr(pos);
+        pos += subs.find_first_of('\n') + 1;
+        cppAppliContent.insert(pos,"shape"+conversionUIntString(shape->getId())+"->setTexture(text"+conversionUIntString(id)+");\n");
+    } else {
+    }
+}
 void ODFAEGCreator::onRender(RenderComponentManager *cm) {
 
 }
@@ -250,8 +270,12 @@ void ODFAEGCreator::onExec() {
         std::string appliDir = fdTexturePath->getAppiDir();
         std::string relativePath = path.substr(appliDir.size()+1);
         TextureManager<>& tm = cache.resourceManager<Texture, std::string>("TextureManager");
-        tm.fromFileWithAlias(relativePath, "GRASS");
+        tm.fromFileWithAlias(relativePath, relativePath);
         textPaths.push_back(relativePath);
+        unsigned int pos = cppAppliContent.find("TextureManager<>& tm");
+        std::string subs = cppAppliContent.substr(pos);
+        pos += subs.find_first_of('\n') + 1;
+        cppAppliContent.insert(pos, "    tm.fromFileWithAlias("+relativePath+","+relativePath+");");
     }
     if (dpSelectTexture != nullptr && dpSelectTexture->isDroppedDown()) {
         bChooseText->setEventContextActivated(false);
@@ -403,6 +427,7 @@ void ODFAEGCreator::actionPerformed(Button* button) {
             header<<"   void onExec ();"<<std::endl;
             header<<"   private : "<<std::endl;
             header<<"   std::vector<std::unique_ptr<Drawable>> drawables;"<<std::endl;
+            header<<"   ResourceCache<> cache;"<<std::endl;
             header<<"};"<<std::endl;
             header<<"#endif"<<std::endl;
             header.close();
@@ -414,8 +439,11 @@ void ODFAEGCreator::actionPerformed(Button* button) {
             oss<<"Application (vm, title, sf::Style::Resize|sf::Style::Close, sf::ContextSettings(0, 0, 0, 3, 0)) {"<<std::endl;
             oss<<"}"<<std::endl;
             oss<<"void "<<appliname<<"::onLoad() {"<<std::endl;
+            oss<<"  TextureManager<> tm;"<<std::endl;
+            oss<<"  cache.addResourceManager(tm, \"TextureManager\");"<<std::endl;
             oss<<"}"<<std::endl;
             oss<<"void "<<appliname<<"::onInit() {"<<std::endl;
+            oss<<"  TextureManager<>& tm = cache.resourceManager<Texture, std::string>(\"TextureManager\");"<<std::endl;
             oss<<"}"<<std::endl;
             oss<<"void "<<appliname<<"::onRender(RenderComponentManager *cm) {"<<std::endl;
             oss<<"}"<<std::endl;
@@ -486,11 +514,7 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
         shape->setPosition(cursor.getPosition());
         displayInfos(shape.get());
         selectedObject = shape.get();
-        unsigned int pos = cppAppliContent.find("onInit() {");
-        pos += 11;
-        std::string toInsert = "    std::unique_ptr<sf::RectangleShape> shape"+conversionUIntString(shape->getId())+" = std::make_unique<RectangleShape>(Vec3f(100, 50, 0));\n"
-                               "    drawables.push_back(std::move(shape));\n";
-        cppAppliContent.insert(pos, toInsert);
+        addShape(shape.get());
         shapes.push_back(std::move(shape));
     }
     if (item->getText() == "Undo") {
@@ -503,11 +527,34 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
 void ODFAEGCreator::addShape(Shape *shape) {
     std::unique_ptr<Shape> ptr;
     ptr.reset(shape);
+    unsigned int pos = cppAppliContent.find("tm.getResourceByAlias");
+    if (pos != std::string::npos) {
+        std::string subs = cppAppliContent.substr(pos);
+        pos += subs.find_first_of('\n') + 1;
+        while (subs.find("tm.getResourceByAlias") != std::string::npos) {
+            subs = cppAppliContent.substr(pos);
+            pos += subs.find_first_of('\n') + 1;
+        }
+    } else {
+        pos = cppAppliContent.find("TextureManager<>& tm = cache.resourceManager<Texture, std::string>(\"TextureManager\");");
+        std::string subs = cppAppliContent.substr(pos);
+        pos += subs.find_first_of('\n') + 1;
+    }
+    std::string toInsert = "    std::unique_ptr<sf::RectangleShape> shape"+conversionUIntString(shape->getId())+" = std::make_unique<RectangleShape>(Vec3f(100, 50, 0));\n"
+                           "    drawables.push_back(std::move(shape));\n";
+    cppAppliContent.insert(pos, toInsert);
     shapes.push_back(std::move(ptr));
 }
 bool ODFAEGCreator::removeShape (unsigned int id) {
     for (auto it = shapes.begin(); it != shapes.end();it++) {
         if ((*it)->getId() == id) {
+            unsigned int pos = cppAppliContent.find("shape"+conversionUIntString(id));
+            do {
+                std::string subs = cppAppliContent.substr(pos);
+                unsigned int endpos = pos + subs.find_first_of('\n') + 1;
+                cppAppliContent.erase(pos, pos - endpos);
+                pos = cppAppliContent.find("shape"+conversionUIntString(id));
+            } while(pos != std::string::npos);
             it = shapes.erase(it);
             return true;
         }
@@ -688,6 +735,22 @@ void ODFAEGCreator::moveCursor(sf::Vector2f mousePos) {
         cursor.setPosition(Vec3f(mousePos.x-getRenderWindow().getView().getSize().x * 0.5f, mousePos.y-getRenderWindow().getView().getSize().y * 0.5f, 0));
     }
 }
+void ODFAEGCreator::updateScriptPos(Shape* shape) {
+    if(cppAppliContent.find("shape"+conversionUIntString(shape->getId())+"->setPosition") == std::string::npos) {
+        unsigned int pos = cppAppliContent.find("shape"+conversionUIntString(shape->getId())+" = std::make_unique<RectangleShape>");
+        std::string subs = cppAppliContent.substr(pos);
+        pos += subs.find_first_of('\n') + 1;
+        cppAppliContent.insert(pos,"    shape"+conversionUIntString(shape->getId())+"->setPosition(Vec3f("+conversionIntString(shape->getPosition().x)+","
+        +conversionIntString(selectedObject->getPosition().y)+","+conversionIntString(selectedObject->getPosition().z)+");\n");
+    } else {
+        unsigned int pos = cppAppliContent.find("shape"+conversionUIntString(shape->getId())+"->setPosition");
+        std::string subs = cppAppliContent.substr(pos);
+        unsigned int endpos = subs.find_first_of('\n') + pos + 1;
+        cppAppliContent.erase(pos, endpos - pos);
+        cppAppliContent.insert(pos,"shape"+conversionUIntString(shape->getId())+"->setPosition(Vec3f("+conversionIntString(shape->getPosition().x)+","
+        +conversionIntString(shape->getPosition().y)+","+conversionIntString(shape->getPosition().z)+");\n");
+    }
+}
 void ODFAEGCreator::onObjectPosChanged(TextArea* ta) {
     if (ta == tPosX) {
         if (is_number(ta->getText())) {
@@ -700,20 +763,7 @@ void ODFAEGCreator::onObjectPosChanged(TextArea* ta) {
             sg->addState(state);
             stateStack.addStateGroup(sg);
             selectedObject->setPosition(Vec3f(newXPos, selectedObject->getPosition().y, selectedObject->getPosition().z));
-            if(cppAppliContent.find("shape"+conversionUIntString(selectedObject->getId())+"->setPosition") == std::string::npos) {
-                unsigned int pos = cppAppliContent.find("shape"+conversionUIntString(selectedObject->getId())+" = std::make_unique<RectangleShape>");
-                std::string subs = cppAppliContent.substr(pos);
-                pos += subs.find_first_of('\n') + 1;
-                cppAppliContent.insert(pos,"    shape"+conversionUIntString(selectedObject->getId())+"->setPosition(Vec3f("+conversionIntString(newXPos)+","
-                +conversionIntString(selectedObject->getPosition().y)+","+conversionIntString(selectedObject->getPosition().z)+");\n");
-            } else {
-                unsigned int pos = cppAppliContent.find("shape"+conversionUIntString(selectedObject->getId())+"->setPosition");
-                std::string subs = cppAppliContent.substr(pos);
-                unsigned int endpos = subs.find_first_of('\n') + pos + 1;
-                cppAppliContent.erase(pos, endpos - pos);
-                cppAppliContent.insert(pos,"shape"+conversionUIntString(selectedObject->getId())+"->setPosition(Vec3f("+conversionIntString(newXPos)+","
-                +conversionIntString(selectedObject->getPosition().y)+","+conversionIntString(selectedObject->getPosition().z)+");\n");
-            }
+            updateScriptPos(selectedObject);
         }
     } else if (ta == tPosY) {
         if(is_number(ta->getText())) {
@@ -726,6 +776,7 @@ void ODFAEGCreator::onObjectPosChanged(TextArea* ta) {
             sg->addState(state);
             stateStack.addStateGroup(sg);
             selectedObject->setPosition(Vec3f(selectedObject->getPosition().x, newYPos, selectedObject->getPosition().z));
+            updateScriptPos(selectedObject);
         }
     } else if (ta == tPosZ) {
         if(is_number(ta->getText())) {
@@ -738,6 +789,7 @@ void ODFAEGCreator::onObjectPosChanged(TextArea* ta) {
             sg->addState(state);
             stateStack.addStateGroup(sg);
             selectedObject->setPosition(Vec3f(selectedObject->getPosition().x, selectedObject->getPosition().y, newZPos));
+            updateScriptPos(selectedObject);
         }
     }
 }
