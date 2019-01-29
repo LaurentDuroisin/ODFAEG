@@ -86,13 +86,13 @@ namespace odfaeg {
         //Projette un vecteur suivant la matrice de projection définie.
         math::Vec3f ProjMatrix::project (math::Vec3f vec3) {
             math::Matrix4f mat = matrix4f;
-            mat.m22 = math::Math::abs(mat.m22);
+            mat.m22 = -mat.m22;
             return matrix4f * vec3;
         }
         //Déprojette un vecteur suivant la matrice de projection définie.
         math::Vec3f ProjMatrix::unProject (math::Vec3f vec3f) {
             math::Matrix4f mat = matrix4f;
-            mat.m22 = math::Math::abs(mat.m22);
+            mat.m22 = -mat.m22;
             return matrix4f.inverse() * vec3f;
         }
         physic::BoundingBox ProjMatrix::getFrustum() {

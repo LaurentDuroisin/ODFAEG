@@ -48,7 +48,7 @@ namespace odfaeg {
             ////////////////////////////////////////////////////////////
             RenderTextureImplFBO::~RenderTextureImplFBO()
             {
-                ensureGlContext();
+                //ensureGlContext();
 
                 // Destroy the depth buffer
                 if (m_depthBuffer)
@@ -72,7 +72,7 @@ namespace odfaeg {
             ////////////////////////////////////////////////////////////
             bool RenderTextureImplFBO::isAvailable()
             {
-                ensureGlContext();
+                //ensureGlContext();
                 // Make sure that GLEW is initialized
                 priv::ensureGlewInit();
                 return GLEW_EXT_framebuffer_object != 0;

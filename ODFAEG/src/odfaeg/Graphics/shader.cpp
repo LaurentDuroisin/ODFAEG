@@ -107,7 +107,7 @@ namespace odfaeg {
         ////////////////////////////////////////////////////////////
         Shader::~Shader()
         {
-            ensureGlContext();
+            //ensureGlContext();
 
             // Destroy effect program
             if (m_shaderProgram) {
@@ -225,7 +225,7 @@ namespace odfaeg {
         {
             if (m_shaderProgram)
             {
-                ensureGlContext();
+                //ensureGlContext();
                 // Enable program
                 GLhandleARB program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
                 glCheck(glUseProgramObjectARB(m_shaderProgram));
@@ -246,7 +246,7 @@ namespace odfaeg {
         {
             if (m_shaderProgram)
             {
-                ensureGlContext();
+                //ensureGlContext();
                 // Enable program
                 GLhandleARB program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
                 glCheck(glUseProgramObjectARB(m_shaderProgram));
@@ -267,7 +267,7 @@ namespace odfaeg {
         {
             if (m_shaderProgram)
             {
-                ensureGlContext();
+                //ensureGlContext();
                 // Enable program
                 GLhandleARB program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
                 glCheck(glUseProgramObjectARB(m_shaderProgram));
@@ -288,7 +288,7 @@ namespace odfaeg {
         {
             if (m_shaderProgram)
             {
-                ensureGlContext();
+                //ensureGlContext();
                 // Enable program
                 GLhandleARB program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
                 glCheck(glUseProgramObjectARB(m_shaderProgram));
@@ -329,7 +329,7 @@ namespace odfaeg {
         {
             if (m_shaderProgram)
             {
-                ensureGlContext();
+                //ensureGlContext();
                 // Enable program
                 GLhandleARB program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
                 glCheck(glUseProgramObjectARB(m_shaderProgram));
@@ -351,7 +351,7 @@ namespace odfaeg {
         {
             if (m_shaderProgram)
             {
-                ensureGlContext();
+                //ensureGlContext();
 
                 // Find the location of the variable in the shader
                 int location = getParamLocation(name);
@@ -385,7 +385,7 @@ namespace odfaeg {
         ////////////////////////////////////////////////////////////
         void Shader::bindAttribute(int location, const std::string& name) {
             if (m_shaderProgram) {
-                ensureGlContext();
+                //ensureGlContext();
                 GLint n;
                 glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &n);
                 if (location < n) {
@@ -402,7 +402,7 @@ namespace odfaeg {
         {
             if (m_shaderProgram)
             {
-                ensureGlContext();
+                //ensureGlContext();
 
                 // Find the location of the variable in the shader
                 m_currentTexture = getParamLocation(name);
@@ -413,7 +413,7 @@ namespace odfaeg {
         ////////////////////////////////////////////////////////////
         void Shader::bind(const Shader* shader)
         {
-            ensureGlContext();
+            //ensureGlContext();
 
             if (shader && shader->m_shaderProgram)
             {
@@ -438,7 +438,7 @@ namespace odfaeg {
         ////////////////////////////////////////////////////////////
         bool Shader::isAvailable()
         {
-            ensureGlContext();
+            //ensureGlContext();
 
             // Make sure that GLEW is initialized
             priv::ensureGlewInit();
@@ -452,7 +452,7 @@ namespace odfaeg {
         ////////////////////////////////////////////////////////////
         bool Shader::compile(const char* vertexShaderCode, const char* fragmentShaderCode)
         {
-            ensureGlContext();
+            //ensureGlContext();
 
             // First make sure that we can use shaders
             if (!isAvailable())

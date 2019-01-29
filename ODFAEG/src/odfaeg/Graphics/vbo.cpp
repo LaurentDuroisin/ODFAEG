@@ -9,7 +9,7 @@ namespace odfaeg {
         }
 
         void VBO::create (const void* data, const unsigned int dataSize) {
-            ensureGlContext();
+            //ensureGlContext();
             if (m_vbo == 0) {
                 GLuint vbo;
                 glCheck(glGenBuffers(1, &vbo));
@@ -26,14 +26,14 @@ namespace odfaeg {
             }
         }
         bool VBO::isAvailable() {
-            ensureGlContext();
+            //ensureGlContext();
             // Make sure that GLEW is initialized
             priv::ensureGlewInit();
             return GLEW_ARB_vertex_buffer_object;
         }
         bool VBO::update(const void* data, const unsigned int dataSize) {
             if (isAvailable() && m_vbo != 0) {
-                ensureGlContext();
+                //ensureGlContext();
                 GLvoid *pos_vbo = nullptr;
                 glCheck(glBindBuffer(GL_ARRAY_BUFFER, m_vbo));
                 pos_vbo = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
@@ -48,7 +48,7 @@ namespace odfaeg {
         }
         VBO::~VBO() {
             if (m_vbo) {
-                ensureGlContext();
+                //ensureGlContext();
                 GLuint vbo = static_cast<GLuint>(m_vbo);
                 glDeleteBuffers(1, &vbo);
             }

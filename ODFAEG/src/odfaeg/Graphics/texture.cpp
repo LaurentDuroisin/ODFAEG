@@ -89,7 +89,7 @@ namespace odfaeg {
             // Destroy the OpenGL texture
             if (m_texture)
             {
-                ensureGlContext();
+                //ensureGlContext();
 
                 GLuint texture = static_cast<GLuint>(m_texture);
                 glCheck(glDeleteTextures(1, &texture));
@@ -126,7 +126,7 @@ namespace odfaeg {
             m_size.y        = height;
             m_actualSize    = actualSize;
             m_pixelsFlipped = false;
-            ensureGlContext();
+            //ensureGlContext();
 
             // Create the OpenGL texture if it doesn't exist yet
             if (!m_texture)
@@ -259,7 +259,7 @@ namespace odfaeg {
             if (!m_texture)
                 return Image();
 
-            ensureGlContext();
+            //ensureGlContext();
 
             // Make sure that the current texture binding will be preserved
             priv::TextureSaver save;
@@ -327,7 +327,7 @@ namespace odfaeg {
 
             if (pixels && m_texture)
             {
-                ensureGlContext();
+                //ensureGlContext();
 
                 // Make sure that the current texture binding will be preserved
                 priv::TextureSaver save;
@@ -392,7 +392,7 @@ namespace odfaeg {
 
                 if (m_texture)
                 {
-                    ensureGlContext();
+                    //ensureGlContext();
 
                     // Make sure that the current texture binding will be preserved
                     priv::TextureSaver save;
@@ -421,7 +421,7 @@ namespace odfaeg {
 
                 if (m_texture)
                 {
-                    ensureGlContext();
+                    //ensureGlContext();
 
                     // Make sure that the current texture binding will be preserved
                     priv::TextureSaver save;
@@ -444,7 +444,7 @@ namespace odfaeg {
         ////////////////////////////////////////////////////////////
         void Texture::bind(const Texture* texture, CoordinateType coordinateType)
         {
-            ensureGlContext();
+            //ensureGlContext();
 
             if (texture && texture->m_texture)
             {
@@ -505,7 +505,7 @@ namespace odfaeg {
         ////////////////////////////////////////////////////////////
         unsigned int Texture::getMaximumSize()
         {
-            ensureGlContext();
+            //ensureGlContext();
 
             GLint size;
             glCheck(glGetIntegerv(GL_MAX_TEXTURE_SIZE, &size));
@@ -533,7 +533,7 @@ namespace odfaeg {
         ////////////////////////////////////////////////////////////
         unsigned int Texture::getValidSize(unsigned int size)
         {
-            ensureGlContext();
+            //ensureGlContext();
 
             // Make sure that GLEW is initialized
             priv::ensureGlewInit();

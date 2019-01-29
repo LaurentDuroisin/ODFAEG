@@ -127,7 +127,6 @@ namespace sorrok {
     }
     void Caracter::setDir (Vec2f dir) {
         anims[baseAnimIndex + currentAnimIndex]->stop();
-        anims[baseAnimIndex + currentAnimIndex]->setCurrentFrame(0);
         float angleRadians = dir.getAngleBetween(Vec2f::yAxis);
         int angle = Math::toDegrees(angleRadians);
         //Sud

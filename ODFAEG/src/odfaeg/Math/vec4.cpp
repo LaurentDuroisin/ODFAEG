@@ -53,7 +53,7 @@ namespace odfaeg {
         Vec3f Vec3f::operator+ (const Vec3f &other) {
 
             Vector3f vec3 = this->getVec3sf() + other.getVec3sf();
-            return Vec3f (vec3.x, vec3.y, vec3.z, w + other.w);
+            return Vec3f (vec3.x, vec3.y, vec3.z, w);
 
         }
         Vec3f Vec3f::operator- (const Vec3f &other) {
@@ -66,7 +66,6 @@ namespace odfaeg {
             float x = this->x * other.x;
             float y = this->y * other.y;
             float z = this->z * other.z;
-            float w = this->w * other.w;
             return Vec3f (x, y, z, w);
         }
         Vec3f Vec3f::operator* (const float scale) {
@@ -116,14 +115,12 @@ namespace odfaeg {
            this->x *= other.x;
            this->y *= other.y;
            this->z *= other.z;
-           this->w *= other.w;
            return *this;
         }
         Vec3f& Vec3f::operator*= (const float scale) {
            this->x *= scale;
            this->y *= scale;
            this->z *= scale;
-           this->w *= scale;
            return *this;
         }
         Vec3f& Vec3f::operator/= (const Vec3f &other) {

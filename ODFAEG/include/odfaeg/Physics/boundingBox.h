@@ -177,6 +177,7 @@ namespace odfaeg {
                 std::vector<math::Vec3f> getFaceBissectors();
                 std::vector<math::Vec3f> getEdgeBissectors();
                 bool isFlat();
+                bool operator< (const BoundingBox& other) const;
             private :
                 void computeVectors();
                 std::vector<math::Vec3f> points;

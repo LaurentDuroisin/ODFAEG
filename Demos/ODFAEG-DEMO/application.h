@@ -55,6 +55,7 @@ namespace sorrok {
         odfaeg::audio::Player player;
         odfaeg::audio::Player pfire;
         odfaeg::graphic::VertexArray point;
+        odfaeg::graphic::RectangleShape luminosity;
     public :
         MyAppli(sf::VideoMode wm, std::string title);
         void gaignedFocus(odfaeg::graphic::gui::TextArea* textArea);

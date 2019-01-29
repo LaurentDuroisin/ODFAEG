@@ -775,5 +775,8 @@ namespace odfaeg {
         std::vector<math::Vec3f> BoundingBox::getFaceNormals() {
             return faceNormals;
         }
+        bool BoundingBox::operator< (const BoundingBox& other) const {
+            return (x + y + z) < (other.x + other.y + other.z);
+        }
     }
 }

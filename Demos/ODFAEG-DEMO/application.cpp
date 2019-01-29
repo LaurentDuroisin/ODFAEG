@@ -12,12 +12,14 @@ namespace sorrok {
         running = false;
         actualKey = sf::Keyboard::Key::Unknown;
         previousKey = sf::Keyboard::Key::Unknown;
-        getView().move(0, 300, 0);
+        getView().move(0, 300, 300);
         fpsCounter = 0;
-        //addClock(sf::Clock(), "FPS");
+        addClock(sf::Clock(), "FPS");
         day = false;
         sf::Listener::setUpVector(0.f, 0.f, 1.f);
-        ps = new ParticleSystem(Vec3f(0, 0, 150), Vec3f(0, 0, 0));
+        ps = new ParticleSystem(Vec3f(0, 0, 150), Vec3f(100, 100, 0));
+        luminosity = RectangleShape(Vec3f(getRenderWindow().getSize().x, getRenderWindow().getSize().y, 0));
+        luminosity.setFillColor(sf::Color(128, 128, 128, 10));
     }
     void MyAppli::gaignedFocus(gui::TextArea* textArea) {
         std::cout<<"gaigned focus"<<std::endl;
@@ -72,8 +74,7 @@ namespace sorrok {
     }
     void MyAppli::leftMouseButtonPressed(sf::Vector2f mousePos) {
         Vec2f mouse(mousePos.x, mousePos.y);
-        Vec3f finalPos = getRenderWindow().mapPixelToCoords(Vec3f(mouse.x, getRenderWindow().getSize().y-mouse.y, 0));
-        //std::cout<<mouse.x<<" "<<mouse.y<<std::endl;
+        Vec3f finalPos = getRenderWindow().mapPixelToCoords(Vec3f(mouse.x, mouse.y, 0));
         point.clear();
         point.append(Vertex(sf::Vector3f(finalPos.x, finalPos.y, finalPos.y), sf::Color(255, 0, 0)));
         std::vector<Vec2f> path = World::getPath(hero, finalPos);
@@ -150,7 +151,7 @@ namespace sorrok {
         walls[3]->getFaces()[0]->getMaterial().setTexId("WALLS");
         walls[4]->getFaces()[0]->getMaterial().setTexId("WALLS");
         walls[5]->getFaces()[0]->getMaterial().setTexId("WALLS");
-        /*std::ifstream ifs("FichierDeSerialisation");
+        std::ifstream ifs("FichierDeSerialisation");
         if(ifs) {
             ITextArchive ia(ifs);
             std::vector<Entity*> entities;
@@ -195,7 +196,7 @@ namespace sorrok {
                 }
             }
             ifs.close();
-        } else {*/
+        } else {
             BoundingBox mapZone(0, 0, 0, 1500, 1000, 0);
             World::generate_map(tiles, walls, Vec2f(100, 50), mapZone, false);
             Tile* thouse = new Tile(tm.getResourceByAlias("HOUSE"), Vec3f(0, 0, 0), Vec3f(250, 300, 0), sf::IntRect(0, 0, 250, 300));
@@ -238,7 +239,7 @@ namespace sorrok {
             w = new g2d::Wall(walls[3],&g2d::AmbientLight::getAmbientLight());
             w->setPosition(Vec3f(0, 130, 130 + w->getSize().y * 0.5f));
             World::addEntity(w);
-        //}
+        }
         ps->setTexture(*tm.getResourceByAlias("PARTICLE"));
         for (unsigned int i = 0; i < 10; i++) {
             ps->addTextureRect(sf::IntRect(i*10, 0, 10, 10));
@@ -258,7 +259,7 @@ namespace sorrok {
         World::addEntity(ps);
         View view = getView();
         //view.rotate(0, 0, 20);
-        ZSortingRenderComponent *frc1 = new ZSortingRenderComponent(getRenderWindow(),0, "E_BIGTILE");
+        OITRenderComponent *frc1 = new OITRenderComponent(getRenderWindow(),0, "E_BIGTILE");
         ShadowRenderComponent *frc2 = new ShadowRenderComponent(getRenderWindow(), 1, "E_WALL+E_DECOR+E_HERO");
         OITRenderComponent *frc3 = new OITRenderComponent(getRenderWindow(),2, "E_WALL+E_DECOR+E_HERO+E_PARTICLES");
         LightRenderComponent *frc4 = new LightRenderComponent(getRenderWindow(), 3, "E_WALL+E_DECOR+E_HERO+E_PONCTUAL_LIGHT");
@@ -360,13 +361,21 @@ namespace sorrok {
         World::drawOnComponents("E_WALL+E_DECOR+E_HERO+E_PARTICLES", 2);
         World::drawOnComponents("E_WALL+E_DECOR+E_HERO+E_PONCTUAL_LIGHT", 3);
         fpsCounter++;
-        /*if (getClock("FPS").getElapsedTime() >= sf::seconds(1.f)) {
+        if (getClock("FPS").getElapsedTime() >= sf::seconds(1.f)) {
             std::cout<<"FPS : "<<fpsCounter<<std::endl;
             fpsCounter = 0;
             getClock("FPS").restart();
-        }*/
+        }
     }
     void MyAppli::onDisplay(RenderWindow* window) {
+        //window->draw(point);
+        /*luminosity.setCenter(window->getView().getPosition());
+        View view = window->getView();
+        View defaultView = window->getView();
+        view.move(window->getSize().x * 0.5, window->getSize().x * 0.5, 0);
+        window->setView(view);
+        window->draw(luminosity, sf::BlendAlpha);
+        window->setView(defaultView);*/
         /*Entity* shadowMap = World::getShadowMap("E_WALL+E_DECOR+E_ANIMATION+E_hero", 2, 1);
         window->draw(*shadowMap, sf::BlendMultiply);*/
         //getView().rotate(0, 0, 20);
@@ -427,7 +436,6 @@ namespace sorrok {
         if (window == &getRenderWindow() && event.type == sf::Event::KeyReleased && hero->isMovingFromKeyboard()) {
             if (player.isPlaying())
                 player.stop();
-            std::cout<<"stop moving"<<std::endl;
             hero->setMoving(false);
             hero->setIsMovingFromKeyboard(false);
             previousKey = event.key.code;

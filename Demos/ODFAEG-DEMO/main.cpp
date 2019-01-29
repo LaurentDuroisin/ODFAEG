@@ -8,35 +8,6 @@ using namespace odfaeg::graphic;
 using namespace odfaeg::audio;
 using namespace sorrok;
 using namespace std;
-class SimpleAppli : public Application {
-    public :
-    SimpleAppli(sf::VideoMode mode, std::string title) : Application(mode, title) {
-    }
-    void onLoad() {}
-    void onInit () {
-        Font* font = new Font();
-        font->loadFromFile("fonts/FreeSerif.ttf");
-        wResuHero = new RenderWindow (sf::VideoMode(400, 300), "Create ODFAEG Application", sf::Style::Titlebar, sf::ContextSettings(0, 0, 4, 3, 0));
-        gui::Label* label = new gui::Label(*wResuHero, Vec3f(0, 0, 0), Vec3f(200, 50, 0),font,"5",15);
-        wResuHero->setVisible(true);
-        getRenderComponentManager().addComponent(label);
-        gui::Button* button = new gui::Button(Vec3f(0, 200, 0), Vec3f(400, 100, 0), font,"Respawn", 15, *wResuHero);
-        getRenderComponentManager().addComponent(button);
-        wResuHero->setPosition(sf::Vector2i(500, 400));
-        addWindow(wResuHero);
-    }
-    void onRender(odfaeg::graphic::RenderComponentManager *cm) {}
-    void onDisplay(odfaeg::graphic::RenderWindow* window) {}
-    void onUpdate (odfaeg::graphic::RenderWindow* window, sf::Event& event) {
-        if (window == &getRenderWindow() && event.type == sf::Event::Closed)
-           stop();
-        if (event.type == sf::Event::KeyPressed)
-            wResuHero->setVisible(false);
-    }
-    void onExec () {}
-    private :
-    RenderWindow* wResuHero;
-};
 int main(int argc, char* argv[])
 {
     EXPORT_CLASS_GUID(BoundingVolumeBoundingBox, BoundingVolume, BoundingBox)
@@ -48,8 +19,19 @@ int main(int argc, char* argv[])
     EXPORT_CLASS_GUID(EntityHero, Entity, Hero)
     MyAppli app(sf::VideoMode(800, 600, 32), "Test odfaeg");
     return app.exec();
-    /*impleAppli app(sf::VideoMode(800, 600), "test");
-    return app.exec();*/
+    // Create the main window.
+    RenderWindow window(sf::VideoMode(800, 600), "test");
+    View currentView(600, 800, 0, 600);
+    currentView.move(300, 300, 300);
+    Vec3f point(0, 0, 0);
+    Vec3f fragCoord = window.mapCoordsToPixel(point, currentView);
+    View previousView(600, 800, 0, 600);
+    Vec3f pointToHave = window.mapCoordsToPixel(point, previousView);
+    std::cout<<currentView.getViewVolume().getPosition()<<"frag coord : "<<fragCoord<<" point to have : "<<pointToHave<<std::endl;
+    fragCoord = window.mapPixelToCoords(fragCoord, currentView);
+    fragCoord = window.mapCoordsToPixel(fragCoord, previousView);
+    std::cout<<"coords : "<<fragCoord<<std::endl;
+    return 0;
 }
 
 
