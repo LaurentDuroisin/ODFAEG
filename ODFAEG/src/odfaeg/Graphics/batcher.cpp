@@ -244,6 +244,7 @@ namespace odfaeg {
             Batcher::Batcher() {
                 numVertices = 0;
                 numIndexes = 0;
+                nbLayers = 0;
             }
             void Batcher::addFace(Face* face) {
                 bool added = false;
@@ -258,6 +259,24 @@ namespace odfaeg {
                     Instance instance (face->getMaterial(), face->getVertexArray().getPrimitiveType());
                     instance.addVertexArray(face->getVertexArray(),face->getTransformMatrix());
                     instances.push_back(instance);
+                }
+                for (unsigned int i = 0; i < face->getVertexArray().getVertexCount(); i++) {
+                    math::Vec3f tPos = face->getTransformMatrix().transform(math::Vec3f(face->getVertexArray()[i].position.x, face->getVertexArray()[i].position.y, face->getVertexArray()[i].position.z));
+                    if (nbLayers == 0) {
+                        nbLayers++;
+                        tmpZPos.push_back(tPos.z);
+                    } else {
+                        bool found = false;
+                        for (unsigned int j = 0; j < tmpZPos.size() && !found; j++) {
+                            if (tmpZPos[j] == tPos.z) {
+                                found = true;
+                            }
+                        }
+                        if (!found) {
+                            tmpZPos.push_back(tPos.z);
+                            nbLayers++;
+                        }
+                    }
                 }
             }
             void Batcher::addShadowFace(Face* face, ViewMatrix viewMatrix, TransformMatrix shadowProjMatrix) {
@@ -288,8 +307,13 @@ namespace odfaeg {
             unsigned int Batcher::getNumVertices() {
                 return numVertices;
             }
+            unsigned int Batcher::getNbLayers() {
+                return nbLayers;
+            }
             void Batcher::clear() {
                 instances.clear();
+                nbLayers = 0;
+                tmpZPos.clear();
             }
     }
 }

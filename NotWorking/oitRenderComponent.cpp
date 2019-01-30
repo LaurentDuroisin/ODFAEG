@@ -86,7 +86,7 @@ namespace odfaeg {
                     clip_coords /= clip_coords.w;
                     vec4 old_FragCoord = viewportMatrix * clip_coords;
                     /*Doesn't work : it didn't get me the pixel of the previous frame at the previous fragment position.*/
-                    vec2 position = (old_FragCoord.xy / resolution.xy);
+                    vec2 position = (vec2(gl_FragCoord.x + uoffsets.x, gl_FragCoord.y - uoffsets.y) / resolution.xy);
                     vec4 colors[2];
                     colors[0] = vec4(0, 0, 0, 0);
                     colors[1] = texture2D(oldFrameBuffer, position);
@@ -139,8 +139,8 @@ namespace odfaeg {
                     float z = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;
                     colors[1] = color;
                     colors[0] = vec4(0, 0, 0, 0);
-                    float epsilon = 0.0000000000000000000000000000000000000000000000001;
-                    b = ((z - epsilon) < max_z || (z + epsilon) < max_z);
+                    float epsilon = 0.0000000000000000000000000000001;
+                    b = ((z + epsilon) < max_z || (z + epsilon) < max_z);
                     gl_FragColor = colors[int(b)];
                 })";
                 const std::string depthPeelingGenFragShader =
@@ -151,10 +151,10 @@ namespace odfaeg {
                     vec4 depth = texture2D(depthTexture, gl_TexCoord[0].xy);
                     float z = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;
                     vec4 colors[2];
-                    colors[0] = vec4(0, 0, 0, 1);
+                    colors[0] = vec4(0, 0, 0, 0);
                     colors[1] = vec4(0, 0, z, depth.a);
-                    float epsilon = 0.0000000000000000000000000000000000000000000000001;
-                    bool b = ((z + epsilon) < depth.z || (z - epsilon) < depth.z);
+                    float epsilon = 0.0000000000000000000000000000001;
+                    bool b = ((z + epsilon) < depth.z || (z + epsilon) < depth.z);
                     gl_FragColor = colors[int(b)];
                 })";
                 if (!depthBufferGenerator.loadFromMemory(vertexShader, depthGenFragShader))
@@ -240,7 +240,7 @@ namespace odfaeg {
         }
         bool OITRenderComponent::loadEntitiesOnComponent(std::vector<Entity*> vEntities)
         {
-            if (firstDraw) {
+            //if (firstDraw) {
                 /*I tried to redraw the previous frame by transforming fragments when the view is updated to compute the
                 transparency for new objects (which are in the updated view) only to reduce the
                 number of layers when performing the depthpeeling (otherwise it's too slow) but my shader doesn't work.
@@ -252,14 +252,14 @@ namespace odfaeg {
                 visibleEntities.clear();
                 insertNewEntities(newEntities);
                 update = true;
-            } else if (viewUpdated) {
+            /*} else if (viewUpdated) {
                 m_newInstances.clear();
                 visibleEntities.clear();
                 batcher.clear();
                 physic::BoundingBox viewArea = view.getViewVolume();
                 viewArea.setSize(viewArea.getSize().x, viewArea.getSize().y + 100, viewArea.getSize().z);
                 physic::BoundingBox oldViewArea = previousView.getViewVolume();
-                oldViewArea.setSize(oldViewArea.getSize().x, oldViewArea.getSize().y + 100, oldViewArea.getSize().z);
+                oldViewArea.setSize(oldViewArea.getSize().x, oldViewArea.getSize().y, oldViewArea.getSize().z);
                 std::vector<physic::BoundingBox> areas;
                 if (viewArea.getPosition().x < oldViewArea.getPosition().x && viewArea.getPosition().y < oldViewArea.getPosition().y) {
                     int a1PX = viewArea.getPosition().x + (oldViewArea.getPosition().x - viewArea.getPosition().x);
@@ -280,6 +280,7 @@ namespace odfaeg {
                     int a1SX = viewArea.getSize().x;
                     int a1SY = viewArea.getPosition().y - oldViewArea.getPosition().y;
                     physic::BoundingBox a1 (a1PX, a1PY, viewArea.getPosition().z, a1SX, a1SY, viewArea.getSize().z);
+                    //std::cout<<"a1 : "<<a1.getPosition()<<a1.getSize();
                     areas.push_back(a1);
                 } else if (viewArea.getPosition().x > oldViewArea.getPosition().x && viewArea.getPosition().y < oldViewArea.getPosition().y) {
                     int a1PX = viewArea.getPosition().x;
@@ -357,6 +358,7 @@ namespace odfaeg {
                     std::map<physic::BoundingBox, std::vector<Entity*>>::iterator it;
                     for (unsigned int j = 0; j < areas.size(); j++) {
                         if (areas[j].intersects(bounds)) {
+                            //std::cout<<"intersects"<<std::endl;
                             it = newEntities.find(areas[j]);
                             it->second.push_back(vEntities[i]);
                         }
@@ -364,7 +366,7 @@ namespace odfaeg {
                 }
                 m_instances = batcher.getInstances();
                 insertNewEntities(newEntities);
-            }
+            }*/
             return true;
         }
         void OITRenderComponent::setView(View view) {
@@ -383,7 +385,7 @@ namespace odfaeg {
         void OITRenderComponent::drawNextFrame() {
             update = false;
             /*TransformFragShader doesn't work."*/
-            if (!firstDraw && viewUpdated) {
+            /*if (!firstDraw && viewUpdated) {
                 transformFragShader.setParameter("oldViewMatrix", previousView.getViewMatrix().getMatrix().transpose());
                 ViewportMatrix vpm;
                 vpm.setViewport(previousView.getViewport().getPosition(), previousView.getViewport().getSize());
@@ -395,20 +397,26 @@ namespace odfaeg {
                 currentStates.blendMode = BlendNone;
                 currentStates.shader = &transformFragShader;
                 for (unsigned int i = 0; i < m_instances.size(); i++) {
+                    physic::BoundingBox bbox = previousView.getViewVolume();
+                    math::Vec3f bbScreenPos = frameBuffer.mapCoordsToPixel(bbox.getPosition(), view);
+                    frameBuffer.setActive();
+                    glCheck(glEnable(GL_SCISSOR_TEST));
+                    glCheck(glScissor(bbScreenPos.x, bbox.getSize().y - (bbScreenPos.y + bbox.getSize().y),bbox.getSize().x, bbox.getSize().y));
                     frameBuffer.draw(m_instances[i].getAllVertices(), currentStates);
+                    glCheck(glDisable(GL_SCISSOR_TEST));
                 }
                 frameBuffer.display();
-            }
+            }*/
             /*Need to draw the scene twice at the very first draw call because at the first call the depthtest (on the depth texture) never pass and it doesn't draw anything.
             this is very strange.*/
-            if (viewUpdated || firstDraw || secondDraw || animationUpdated) {
+           // if (viewUpdated || firstDraw || secondDraw || animationUpdated) {
                 depthBuffer.clear(sf::Color::Transparent);
                 frontBuffer.clear(sf::Color::Transparent);
                 currentStates.blendMode = BlendNone;
-                std::map<physic::BoundingBox, std::vector<Instance>>::iterator it;
+                std::map<physic::BoundingBox, std::pair<unsigned int, std::vector<Instance>>>::iterator it;
                 for (it = m_newInstances.begin(); it != m_newInstances.end(); it++) {
-                    for (unsigned int i = 0; i < it->second.size(); i++) {
-                         if (it->second[i].getMaterial().getTexture() == nullptr) {
+                    for (unsigned int i = 0; i < it->second.second.size(); i++) {
+                         if (it->second.second[i].getMaterial().getTexture() == nullptr) {
                             depthBufferGenerator.setParameter("haveTexture", 0);
                             simpleShader.setParameter("haveTexture", 0);
                          } else {
@@ -416,23 +424,24 @@ namespace odfaeg {
                             simpleShader.setParameter("haveTexture", 1);
                          }
                          currentStates.shader=&depthBufferGenerator;
-                         currentStates.texture=it->second[i].getMaterial().getTexture();
+                         currentStates.texture=it->second.second[i].getMaterial().getTexture();
                          physic::BoundingBox bbox = it->first;
                          math::Vec3f bbScreenPos = depthBuffer.mapCoordsToPixel(bbox.getPosition(), view);
-                         depthBuffer.setActive();
+                         /*depthBuffer.setActive();
                          glCheck(glEnable(GL_SCISSOR_TEST));
-                         glCheck(glScissor(bbScreenPos.x, bbox.getSize().y - (bbScreenPos.y + bbox.getSize().y),bbox.getSize().x, bbox.getSize().y));
-                         depthBuffer.draw(it->second[i].getAllVertices(),currentStates);
-                         glCheck(glDisable(GL_SCISSOR_TEST));
+                         glCheck(glScissor(bbScreenPos.x, bbox.getSize().y - (bbScreenPos.y + bbox.getSize().y),bbox.getSize().x, bbox.getSize().y));*/
+                         depthBuffer.draw(it->second.second[i].getAllVertices(),currentStates);
+                         //glCheck(glDisable(GL_SCISSOR_TEST));
                          currentStates.shader = nullptr;
-                         frontBuffer.setActive();
+                         /*frontBuffer.setActive();
                          glCheck(glEnable(GL_SCISSOR_TEST));
-                         glCheck(glScissor(bbScreenPos.x, bbox.getSize().y - (bbScreenPos.y + bbox.getSize().y),bbox.getSize().x, bbox.getSize().y));
-                         frontBuffer.draw(it->second[i].getAllVertices(), currentStates);
-                         glCheck(glDisable(GL_SCISSOR_TEST));
+                         glCheck(glScissor(bbScreenPos.x, bbox.getSize().y - (bbScreenPos.y + bbox.getSize().y),bbox.getSize().x, bbox.getSize().y));*/
+                         frontBuffer.draw(it->second.second[i].getAllVertices(), currentStates);
+                         //glCheck(glDisable(GL_SCISSOR_TEST));
                     }
                 }
                 frontBuffer.display();
+                depthBuffer.display();
                 frontBufferSprite.setCenter(view.getPosition());
                 currentStates.blendMode = sf::BlendMode(sf::BlendMode::Factor::OneMinusDstAlpha, sf::BlendMode::Factor::DstAlpha, sf::BlendMode::Add, sf::BlendMode::Factor::OneMinusDstAlpha, sf::BlendMode::Factor::One, sf::BlendMode::Equation::Add);
                 frameBuffer.draw(frontBufferSprite, currentStates);
@@ -443,19 +452,19 @@ namespace odfaeg {
                     currentStates.shader=&frameBufferGenerator;
                     currentStates.blendMode=sf::BlendMode(sf::BlendMode::Factor::OneMinusDstAlpha, sf::BlendMode::Factor::DstAlpha, sf::BlendMode::Equation::Add, sf::BlendMode::Factor::OneMinusDstAlpha, sf::BlendMode::Factor::One, sf::BlendMode::Equation::Add);
                     for (it = m_newInstances.begin(); it != m_newInstances.end(); it++) {
-                        for (unsigned int i = 0; i < it->second.size(); i++) {
-                            if (it->second[i].getMaterial().getTexture() == nullptr)
+                        for (unsigned int i = 0; i < it->second.second.size(); i++) {
+                            if (it->second.second[i].getMaterial().getTexture() == nullptr)
                                 frameBufferGenerator.setParameter("haveTexture", 0);
                             else
                                 frameBufferGenerator.setParameter("haveTexture", 1);
-                            currentStates.texture = it->second[i].getMaterial().getTexture();
+                            currentStates.texture = it->second.second[i].getMaterial().getTexture();
                             physic::BoundingBox bbox = it->first;
                             math::Vec3f bbScreenPos = frameBuffer.mapCoordsToPixel(bbox.getPosition(), view);
-                            frameBuffer.setActive();
+                            /*frameBuffer.setActive();
                             glCheck(glEnable(GL_SCISSOR_TEST));
-                            glCheck(glScissor(bbScreenPos.x, bbox.getSize().y - (bbScreenPos.y + bbox.getSize().y),bbox.getSize().x, bbox.getSize().y));
-                            frameBuffer.draw(it->second[i].getAllVertices(), currentStates);
-                            glCheck(glDisable(GL_SCISSOR_TEST));
+                            glCheck(glScissor(bbScreenPos.x, bbox.getSize().y - (bbScreenPos.y + bbox.getSize().y),bbox.getSize().x, bbox.getSize().y));*/
+                            frameBuffer.draw(it->second.second[i].getAllVertices(), currentStates);
+                            //glCheck(glDisable(GL_SCISSOR_TEST));
                         }
                     }
                 } else {
@@ -463,67 +472,70 @@ namespace odfaeg {
                         This solution works with n layers but it's too slow, I tried to optimize it to reduce the number of layers
                         by computing transparency only for objects added in the new view but it doensn't work.
                     */
-                    unsigned int nbLayers = 0;
+                    /*unsigned int nbLayers = 0;
                     unsigned int size = view.getSize().x * view.getSize().y * 4;
                     const sf::Uint8 * data = new unsigned char[size];
                     depthBuffer.display();
                     sf::Image img = depthBuffer.getTexture().copyToImage();
                     data = img.getPixelsPtr();
                     for (unsigned int i = 0; i < size / 4; i++) {
-                        if ((float)(data[i*4+2])  > nbLayers) {
-                            nbLayers=data[i*4+2];
+                        if ((float)(data[i*4+2])  != nbLayers) {
+                            nbLayers++;
                         }
-                    }
-                    for (unsigned int i = 0; i < nbLayers; i++) {
-                        for (it = m_newInstances.begin(); it != m_newInstances.end(); it++) {
-                            for (unsigned int i = 0; i < it->second.size(); i++) {
-                                currentStates.shader = &frameBufferGenerator;
+                    }*/
+                    for (it = m_newInstances.begin(); it != m_newInstances.end(); it++) {
+                        unsigned int nbLayers = (it->second.first > 0) ? it->second.first - 1 : 0;
+                        std::cout<<"nb layers : "<<nbLayers<<std::endl;
+                        for (unsigned int l = 0; l < nbLayers; l++) {
+
+                                for (unsigned int i = 0; i < it->second.second.size(); i++) {
+                                    currentStates.shader = &frameBufferGenerator;
+                                    currentStates.blendMode = sf::BlendNone;
+                                    frontBuffer.clear(sf::Color::Transparent);
+                                     if (it->second.second[i].getMaterial().getTexture() == nullptr) {
+                                        frameBufferGenerator.setParameter("haveTexture", 0);
+                                     } else {
+                                        frameBufferGenerator.setParameter("haveTexture", 1);
+                                     }
+                                     currentStates.texture=it->second.second[i].getMaterial().getTexture();
+                                     physic::BoundingBox bbox = it->first;
+                                     math::Vec3f bbScreenPos = frontBuffer.mapCoordsToPixel(bbox.getPosition(), view);
+                                     /*frontBuffer.setActive();
+                                     glCheck(glEnable(GL_SCISSOR_TEST));
+                                     glCheck(glScissor(bbScreenPos.x, bbox.getSize().y - (bbScreenPos.y + bbox.getSize().y),bbox.getSize().x, bbox.getSize().y));*/
+                                     frontBuffer.draw(it->second.second[i].getAllVertices(), currentStates);
+                                     //glCheck(glDisable(GL_SCISSOR_TEST));
+                                }
+                                frontBuffer.display();
+                                frontBufferSprite.setCenter(view.getPosition());
+                                Texture tmpDepthText(depthBuffer.getTexture());
+                                currentStates.shader = nullptr;
                                 currentStates.blendMode = sf::BlendNone;
-                                frontBuffer.clear(sf::Color::Transparent);
-                                 if (it->second[i].getMaterial().getTexture() == nullptr) {
-                                    frameBufferGenerator.setParameter("haveTexture", 0);
-                                 } else {
-                                    frameBufferGenerator.setParameter("haveTexture", 1);
-                                 }
-                                 currentStates.texture=it->second[i].getMaterial().getTexture();
-                                 physic::BoundingBox bbox = it->first;
-                                 math::Vec3f bbScreenPos = frontBuffer.mapCoordsToPixel(bbox.getPosition(), view);
-                                 frontBuffer.setActive();
-                                 glCheck(glEnable(GL_SCISSOR_TEST));
-                                 glCheck(glScissor(bbScreenPos.x, bbox.getSize().y - (bbScreenPos.y + bbox.getSize().y),bbox.getSize().x, bbox.getSize().y));
-                                 frontBuffer.draw(it->second[i].getAllVertices(), currentStates);
-                                 glCheck(glDisable(GL_SCISSOR_TEST));
-                            }
+                                //Problem : it doesn't draw anything on the depthBuffer after he's cleared.
+                                depthBuffer.clear(sf::Color::Transparent);
+                                currentStates.texture = &tmpDepthText;
+                                currentStates.shader = &depthPeelingGenerator;
+                                for (unsigned int i = 0; i < it->second.second.size(); i++) {
+                                     physic::BoundingBox bbox = it->first;
+                                     math::Vec3f bbScreenPos = frontBuffer.mapCoordsToPixel(bbox.getPosition(), view);
+                                     /*depthBuffer.setActive();
+                                     glCheck(glEnable(GL_SCISSOR_TEST));
+                                     glCheck(glScissor(bbScreenPos.x, bbox.getSize().y - (bbScreenPos.y + bbox.getSize().y),bbox.getSize().x, bbox.getSize().y));*/
+                                     depthBuffer.draw(it->second.second[i].getAllVertices(), currentStates);
+                                     //glCheck(glDisable(GL_SCISSOR_TEST));
+                                }
+                                depthBuffer.display();
+                                currentStates.shader = nullptr;
+                                currentStates.blendMode = sf::BlendMode(sf::BlendMode::Factor::OneMinusDstAlpha, sf::BlendMode::Factor::DstAlpha, sf::BlendMode::Add, sf::BlendMode::Factor::OneMinusDstAlpha, sf::BlendMode::Factor::One, sf::BlendMode::Equation::Add);
+                                frameBuffer.draw(frontBufferSprite, currentStates);
                         }
-                        frontBuffer.display();
-                        frontBufferSprite.setCenter(view.getPosition());
-                        currentStates.shader = &depthPeelingGenerator;
-                        currentStates.texture = &depthBuffer.getTexture();
-                        depthBuffer.setActive();
-                        glCheck(glClear(GL_DEPTH_BUFFER_BIT));
-                        for (it = m_newInstances.begin(); it != m_newInstances.end(); it++) {
-                            for (unsigned int i = 0; i < it->second.size(); i++) {
-                                 currentStates.texture=it->second[i].getMaterial().getTexture();
-                                 physic::BoundingBox bbox = it->first;
-                                 math::Vec3f bbScreenPos = frontBuffer.mapCoordsToPixel(bbox.getPosition(), view);
-                                 depthBuffer.setActive();
-                                 glCheck(glEnable(GL_SCISSOR_TEST));
-                                 glCheck(glScissor(bbScreenPos.x, bbox.getSize().y - (bbScreenPos.y + bbox.getSize().y),bbox.getSize().x, bbox.getSize().y));
-                                 depthBuffer.draw(it->second[i].getAllVertices(), currentStates);
-                                 glCheck(glDisable(GL_SCISSOR_TEST));
-                            }
-                        }
-                        depthBuffer.display();
-                        currentStates.shader = nullptr;
-                        currentStates.blendMode = sf::BlendMode(sf::BlendMode::Factor::OneMinusDstAlpha, sf::BlendMode::Factor::DstAlpha, sf::BlendMode::Add, sf::BlendMode::Factor::OneMinusDstAlpha, sf::BlendMode::Factor::One, sf::BlendMode::Equation::Add);
-                        frameBuffer.draw(frontBufferSprite, currentStates);
                     }
                 }
                 for (unsigned int i = 0; i < drawables.size(); i++) {
                     frameBuffer.draw(drawables[i].first.get(), drawables[i].second);
                 }
                 frameBuffer.display();
-                previousFrame.clear(backgroundColor);
+                /*previousFrame.clear(backgroundColor);
                 currentStates.blendMode = sf::BlendNone;
                 currentStates.shader = nullptr;
                 frameBufferSprite.setCenter(view.getPosition());
@@ -541,7 +553,7 @@ namespace odfaeg {
                 currentStates.shader = nullptr;
                 frameBuffer.draw(previousFrameBufferSprite, currentStates);
                 frameBuffer.display();
-            }
+            }*/
         }
        std::vector<Entity*> OITRenderComponent::getEntities() {
             return visibleEntities;
@@ -585,7 +597,7 @@ namespace odfaeg {
                     }
                     visibleEntities.push_back(it->second[i]);
                 }
-                m_newInstances.insert(std::make_pair(it->first, newBatcher.getInstances()));
+                m_newInstances.insert(std::make_pair(it->first, std::make_pair(newBatcher.getNbLayers(), newBatcher.getInstances())));
             }
             update = true;
         }

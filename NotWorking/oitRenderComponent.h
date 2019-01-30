@@ -136,7 +136,7 @@ namespace odfaeg {
             Batcher batcher, newBatcher; /**> A group of faces using the same materials and primitive type.*/
             sf::Color backgroundColor; /**> The background color.*/
             std::vector<Instance> m_instances; /**> Instances to draw. (Instanced rendering.) */
-            std::map<physic::BoundingBox, std::vector<Instance>> m_newInstances;
+            std::map<physic::BoundingBox, std::pair<unsigned int, std::vector<Instance>>> m_newInstances;
             std::vector<Entity*> visibleEntities; /**> Entities loaded*/
             RenderTexture frontBuffer; /**> the frame buffer.*/
             RenderTexture  depthBuffer; /**> the depth buffer.*/

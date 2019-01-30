@@ -418,10 +418,13 @@ namespace odfaeg {
             * \brief clean the instances.
             */
             void clear();
+            unsigned int getNbLayers();
         private :
             unsigned int numVertices; /**> the number of vertices.*/
             unsigned int numIndexes; /**> the number of indexes.*/
             std::vector<Instance> instances; /**> the instances.*/
+            unsigned int nbLayers;
+            std::vector<float> tmpZPos;
         };
     }
 }
