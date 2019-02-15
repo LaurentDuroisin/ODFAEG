@@ -8,10 +8,10 @@ namespace odfaeg {
                 background = sf::Color::Black;
                 rect.setFillColor(background);
                 scrollX = scrollY = false;
-                math::Vec3f mousePos (sf::Mouse::getPosition(getWindow()).x, sf::Mouse::getPosition(getWindow()).y, 0);
+                math::Vec3f mousePos (window::IMouse::getPosition(getWindow()).x, window::IMouse::getPosition(getWindow()).y, 0);
                 oldMouseX = mousePos.x;
                 oldMouseY = mousePos.y;
-                core::Action a (core::Action::EVENT_TYPE::MOUSE_BUTTON_HELD_DOWN, sf::Mouse::Right);
+                core::Action a (core::Action::EVENT_TYPE::MOUSE_BUTTON_HELD_DOWN, window::IMouse::Right);
                 core::Command cmd1(a, core::FastDelegate<bool>(&Panel::isOnXScroll, this),core::FastDelegate<void>(&Panel::moveXItems, this));
                 getListener().connect("scrollXMove", cmd1);
                 core::Command cmd2(a, core::FastDelegate<bool>(&Panel::isOnYScroll, this),core::FastDelegate<void>(&Panel::moveYItems, this));
@@ -19,7 +19,7 @@ namespace odfaeg {
                 maxSize = math::Vec2f(0, 0);
             }
             bool Panel::isOnXScroll() {
-                math::Vec3f mousePos (sf::Mouse::getPosition(getWindow()).x, sf::Mouse::getPosition(getWindow()).y, 0);
+                math::Vec3f mousePos (window::IMouse::getPosition(getWindow()).x, window::IMouse::getPosition(getWindow()).y, 0);
                 mouseDeltaX = mousePos.x - oldMouseX;
                 oldMouseX = mousePos.x;
                 if (scrollX) {
@@ -29,7 +29,7 @@ namespace odfaeg {
                 return false;
             }
             bool Panel::isOnYScroll() {
-                math::Vec3f mousePos (sf::Mouse::getPosition(getWindow()).x, sf::Mouse::getPosition(getWindow()).y, 0);
+                math::Vec3f mousePos (window::IMouse::getPosition(getWindow()).x, window::IMouse::getPosition(getWindow()).y, 0);
                 mouseDeltaY = mousePos.y - oldMouseY;
                 oldMouseY  = mousePos.y;
                 if (scrollY) {
@@ -92,10 +92,10 @@ namespace odfaeg {
                 maxSize = math::Vec3f(0, 0, 0);
                 std::vector<LightComponent*> children = getChildren();
                 for (unsigned int i = 0; i < children.size(); i++) {
-                    if (children[i]->getPosition().y + children[i]->getSize().y > maxSize.y)
-                        maxSize.y = children[i]->getPosition().y + children[i]->getSize().y;
-                    if (children[i]->getPosition().x + children[i]->getSize().x > maxSize.x)
-                        maxSize.x = children[i]->getPosition().x + children[i]->getSize().x;
+                    if (children[i]->getPosition().y - getPosition().y + children[i]->getSize().y > maxSize.y)
+                        maxSize.y = children[i]->getPosition().y - getPosition().y + children[i]->getSize().y;
+                    if (children[i]->getPosition().x - getPosition().x + children[i]->getSize().x > maxSize.x)
+                        maxSize.x = children[i]->getPosition().x - getPosition().x + children[i]->getSize().x;
                 }
                 for (unsigned int i = 0; i < sprites.size(); i++) {
                     if (sprites[i].getPosition().y + sprites[i].getSize().y > maxSize.y)
@@ -161,7 +161,6 @@ namespace odfaeg {
             void Panel::onDraw(RenderTarget& target, RenderStates states) {
                 glCheck(glEnable(GL_SCISSOR_TEST));
                 glCheck(glScissor(getPosition().x, getWindow().getSize().y - (getPosition().y + getSize().y), getSize().x, getSize().y));
-                std::cout<<"enable scissor test"<<std::endl;
                 rect.setPosition(getPosition());
                 rect.setSize(getSize());
                 target.draw(rect, states);
@@ -182,7 +181,6 @@ namespace odfaeg {
                 if (scrollY) {
                     target.draw(horScrollBar, states);
                 }
-                std::cout<<"disable scissor test"<<std::endl;
                 glCheck(glDisable(GL_SCISSOR_TEST));
             }
             void Panel::setBorderThickness(float thickness) {

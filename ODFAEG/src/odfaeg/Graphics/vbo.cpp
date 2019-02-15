@@ -2,12 +2,19 @@
 #include "glCheck.h"
 #include <iostream>
 #include <string.h>
+#include <GL/glew.h>
+#include <SFML/OpenGL.hpp>
 namespace odfaeg {
     namespace graphic {
         VBO::VBO() {
             m_vbo = 0;
         }
-
+        void VBO::bind() {
+            glCheck(glBindBuffer(GL_ARRAY_BUFFER, m_vbo));
+        }
+        void VBO::unbind() {
+            glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+        }
         void VBO::create (const void* data, const unsigned int dataSize) {
             //ensureGlContext();
             if (m_vbo == 0) {
@@ -19,7 +26,7 @@ namespace odfaeg {
 
             if (isAvailable() && m_vbo != 0 ) {
                 glCheck(glBindBuffer(GL_ARRAY_BUFFER, m_vbo));
-                glCheck(glBufferDataARB(GL_ARRAY_BUFFER_ARB,dataSize, data, GL_DYNAMIC_DRAW));
+                glCheck(glBufferDataARB(GL_ARRAY_BUFFER_ARB,dataSize, data, GL_STREAM_DRAW));
                 glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
             } else {
                 std::cerr<<"Failed to create the vbo, you should check if vbo are avalaible first! (by calling the VBO::isAvailable function)"<<std::endl;

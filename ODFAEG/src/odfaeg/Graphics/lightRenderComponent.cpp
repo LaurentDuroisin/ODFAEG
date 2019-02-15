@@ -5,7 +5,7 @@ using namespace sf;
 using namespace std;
 namespace odfaeg {
     namespace graphic {
-        LightRenderComponent::LightRenderComponent (RenderWindow& window, int layer, std::string expression,sf::ContextSettings settings) :
+        LightRenderComponent::LightRenderComponent (RenderWindow& window, int layer, std::string expression,window::ContextSettings settings) :
                     HeavyComponent(window, math::Vec3f(window.getView().getPosition().x, window.getView().getPosition().y, layer),
                                   math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0),
                                   math::Vec3f(window.getView().getSize().x + window.getView().getSize().x * 0.5f, window.getView().getPosition().y + window.getView().getSize().y * 0.5f, layer)),
@@ -13,38 +13,28 @@ namespace odfaeg {
                     expression(expression) {
                     update = false;
                     sf::Vector3i resolution ((int) window.getSize().x, (int) window.getSize().y, window.getView().getSize().z);
-                    depthBuffer = std::make_unique<RenderTexture>();
-                    specularTexture = std::make_unique<RenderTexture>();
-                    bumpTexture = std::make_unique<RenderTexture>();
-                    lightMap = std::make_unique<RenderTexture>();
-                    normalMap = std::make_unique<RenderTexture>();
                     settings.depthBits = 32;
-                    depthBuffer->create(resolution.x, resolution.y,settings);
-                    specularTexture->create(resolution.x, resolution.y,settings);
-                    bumpTexture->create(resolution.x, resolution.y,settings);
+                    depthBuffer.create(resolution.x, resolution.y,settings);
+                    specularTexture.create(resolution.x, resolution.y,settings);
+                    bumpTexture.create(resolution.x, resolution.y,settings);
                     settings.depthBits = 0;
-                    lightMap->create(resolution.x, resolution.y,settings);
-                    normalMap->create(resolution.x, resolution.y,settings);
-                    normalMap->setView(window.getView());
-                    depthBuffer->setView(window.getView());
-                    specularTexture->setView(window.getView());
-                    bumpTexture->setView(window.getView());
-                    lightMap->setView(window.getView());
-                    lightMapTile = std::make_unique<Tile>(&lightMap->getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
-                    depthBufferTile = std::make_unique<Tile>(&depthBuffer->getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
-                    normalMapTile = std::make_unique<Tile>(&normalMap->getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
-                    specularBufferTile = std::make_unique<Tile>(&specularTexture->getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
-                    bumpMapTile = std::make_unique<Tile>(&bumpTexture->getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
+                    lightMap.create(resolution.x, resolution.y,settings);
+                    normalMap.create(resolution.x, resolution.y,settings);
+                    normalMap.setView(window.getView());
+                    depthBuffer.setView(window.getView());
+                    specularTexture.setView(window.getView());
+                    bumpTexture.setView(window.getView());
+                    lightMap.setView(window.getView());
+                    lightMapTile = Sprite(lightMap.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
+                    depthBufferTile = Sprite(depthBuffer.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
+                    normalMapTile = Sprite(normalMap.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
+                    specularBufferTile = Sprite(specularTexture.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
+                    bumpMapTile = Sprite(bumpTexture.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
                     core::FastDelegate<bool> signal (&LightRenderComponent::needToUpdate, this);
                     core::FastDelegate<void> slot (&LightRenderComponent::drawNextFrame, this);
                     core::Command cmd(signal, slot);
                     getListener().connect("UPDATE", cmd);
                     if (Shader::isAvailable()) {
-                        lightMapGenerator = std::make_unique<Shader>();
-                        depthBufferGenerator = std::make_unique<Shader>();
-                        specularTextureGenerator = std::make_unique<Shader>();
-                        bumpTextureGenerator = std::make_unique<Shader>();
-                        normalMapGenerator = std::make_unique<Shader>();
                         const std::string  vertexShader =
                         "#version 130 \n"
                         "out mat4 projMat;"
@@ -93,6 +83,10 @@ namespace odfaeg {
                         "uniform float haveTexture;"
                         "in vec4 worldCoords;"
                         "in mat4 projMat;"
+                        "mat4 inverse(mat4 mat) {"
+                        "   mat4 inv;"
+                        "   return inv;"
+                        "}"
                         "void main () {"
                             "vec4 texel = texture2D(texture, gl_TexCoord[0].xy);"
                             "vec4 colors[2];"
@@ -113,6 +107,10 @@ namespace odfaeg {
                         "uniform float p;"
                         "uniform float haveTexture;"
                         "in mat4 projMat;"
+                        "mat4 inverse(mat4 mat) {"
+                        "   mat4 inv;"
+                        "   return inv;"
+                        "}"
                         "void main() {"
                             "vec4 texel = texture2D(texture, gl_TexCoord[0].xy);"
                             "vec4 colors[2];"
@@ -150,6 +148,10 @@ namespace odfaeg {
                          "uniform vec4 lightColor;"
                          "uniform vec4 lightPos;"
                          "in mat4 projMat;"
+                         "mat4 inverse(mat4 mat) {"
+                         "   mat4 inv;"
+                         "   return inv;"
+                         "}"
                          "void main () { "
                              "vec2 position = (gl_FragCoord.xy / resolution.xy);"
                              "vec4 normal = texture2D(normalMap, position);"
@@ -198,37 +200,37 @@ namespace odfaeg {
                                  "gl_FragColor = lightMapColor;"
                              "}"
                         "}";
-                        if (!depthBufferGenerator->loadFromMemory(depthGenVertexShader, depthGenFragShader))
+                        if (!depthBufferGenerator.loadFromMemory(depthGenVertexShader, depthGenFragShader))
                             throw core::Erreur(50, "Failed to load depth buffer generator shader", 0);
-                        if (!normalMapGenerator->loadFromMemory(buildNormalMapVertexShader, buildNormalMapFragmentShader))
+                        if (!normalMapGenerator.loadFromMemory(buildNormalMapVertexShader, buildNormalMapFragmentShader))
                             throw core::Erreur(51, "Failed to load normal generator shader", 0);
-                        if (!specularTextureGenerator->loadFromMemory(vertexShader, specularGenFragShader))
+                        if (!specularTextureGenerator.loadFromMemory(vertexShader, specularGenFragShader))
                             throw core::Erreur(52, "Failed to load specular texture generator shader", 0);
-                        if (!bumpTextureGenerator->loadFromMemory(buildNormalMapVertexShader, bumpGenFragShader))
+                        if (!bumpTextureGenerator.loadFromMemory(buildNormalMapVertexShader, bumpGenFragShader))
                             throw core::Erreur(53, "Failed to load bump texture generator shader", 0);
-                        if (!lightMapGenerator->loadFromMemory(vertexShader, perPixLightingFragmentShader))
+                        if (!lightMapGenerator.loadFromMemory(vertexShader, perPixLightingFragmentShader))
                             throw core::Erreur(54, "Failed to load light map generator shader", 0);
-                        normalMapGenerator->setParameter("texture", Shader::CurrentTexture);
-                        depthBufferGenerator->setParameter("texture", Shader::CurrentTexture);
-                        specularTextureGenerator->setParameter("texture",Shader::CurrentTexture);
-                        specularTextureGenerator->setParameter("maxM", Material::getMaxSpecularIntensity());
-                        specularTextureGenerator->setParameter("maxP", Material::getMaxSpecularPower());
-                        bumpTextureGenerator->setParameter("texture",Shader::CurrentTexture);
-                        lightMapGenerator->setParameter("resolution", resolution.x, resolution.y, resolution.z);
-                        lightMapGenerator->setParameter("normalMap", normalMap->getTexture());
-                        lightMapGenerator->setParameter("specularTexture",specularTexture->getTexture());
-                        lightMapGenerator->setParameter("bumpTexture",bumpTexture->getTexture());
-                        lightMapGenerator->setParameter("lightMap",lightMap->getTexture());
+                        normalMapGenerator.setParameter("texture", Shader::CurrentTexture);
+                        depthBufferGenerator.setParameter("texture", Shader::CurrentTexture);
+                        specularTextureGenerator.setParameter("texture",Shader::CurrentTexture);
+                        specularTextureGenerator.setParameter("maxM", Material::getMaxSpecularIntensity());
+                        specularTextureGenerator.setParameter("maxP", Material::getMaxSpecularPower());
+                        bumpTextureGenerator.setParameter("texture",Shader::CurrentTexture);
+                        lightMapGenerator.setParameter("resolution", resolution.x, resolution.y, resolution.z);
+                        lightMapGenerator.setParameter("normalMap", normalMap.getTexture());
+                        lightMapGenerator.setParameter("specularTexture",specularTexture.getTexture());
+                        lightMapGenerator.setParameter("bumpTexture",bumpTexture.getTexture());
+                        lightMapGenerator.setParameter("lightMap",lightMap.getTexture());
                     } else {
                         throw core::Erreur(55, "Shader not supported!", 0);
                     }
             }
-            void LightRenderComponent::pushEvent(sf::Event event, RenderWindow& rw) {
-                if (event.type == sf::Event::Resized && &getWindow() == &rw && isAutoResized()) {
+            void LightRenderComponent::pushEvent(window::IEvent event, RenderWindow& rw) {
+                if (event.type == window::IEvent::WINDOW_EVENT && event.window.type == window::IEvent::WINDOW_EVENT_RESIZED && &getWindow() == &rw && isAutoResized()) {
                     std::cout<<"recompute size"<<std::endl;
                     recomputeSize();
                     getListener().pushEvent(event);
-                    getView().reset(physic::BoundingBox(getView().getViewport().getPosition().x, getView().getViewport().getPosition().y, getView().getViewport().getPosition().z, event.size.width, event.size.height, getView().getViewport().getDepth()));
+                    getView().reset(physic::BoundingBox(getView().getViewport().getPosition().x, getView().getViewport().getPosition().y, getView().getViewport().getPosition().z, event.window.data1, event.window.data2, getView().getViewport().getDepth()));
                 }
             }
             bool LightRenderComponent::needToUpdate() {
@@ -247,41 +249,41 @@ namespace odfaeg {
             return expression;
         }
         void LightRenderComponent::clear() {
-             normalMap->clear(sf::Color::Transparent);
-             depthBuffer->clear(sf::Color::Transparent);
-             specularTexture->clear(sf::Color::Transparent);
-             bumpTexture->clear(sf::Color::Transparent);
-             lightMap->clear(sf::Color::Black);
+             normalMap.clear(sf::Color::Transparent);
+             depthBuffer.clear(sf::Color::Transparent);
+             specularTexture.clear(sf::Color::Transparent);
+             bumpTexture.clear(sf::Color::Transparent);
+             lightMap.clear(sf::Color::Black);
         }
-        Tile& LightRenderComponent::getNormalMapTile () {
-            return *normalMapTile;
+        Sprite& LightRenderComponent::getNormalMapTile () {
+            return normalMapTile;
         }
-        Tile& LightRenderComponent::getDepthBufferTile() {
-            return *depthBufferTile;
+        Sprite& LightRenderComponent::getDepthBufferTile() {
+            return depthBufferTile;
         }
-        Tile& LightRenderComponent::getspecularTile () {
-            return *specularBufferTile;
+        Sprite& LightRenderComponent::getspecularTile () {
+            return specularBufferTile;
         }
-        Tile& LightRenderComponent::getBumpTile() {
-            return *bumpMapTile;
+        Sprite& LightRenderComponent::getBumpTile() {
+            return bumpMapTile;
         }
-        Tile& LightRenderComponent::getLightTile() {
-            return *lightMapTile;
+        Sprite& LightRenderComponent::getLightTile() {
+            return lightMapTile;
         }
         const Texture& LightRenderComponent::getDepthBufferTexture() {
-            return depthBuffer->getTexture();
+            return depthBuffer.getTexture();
         }
         const Texture& LightRenderComponent::getnormalMapTexture() {
-            return normalMap->getTexture();
+            return normalMap.getTexture();
         }
         const Texture& LightRenderComponent::getSpecularTexture() {
-            return specularTexture->getTexture();
+            return specularTexture.getTexture();
         }
         const Texture& LightRenderComponent::getbumpTexture() {
-            return bumpTexture->getTexture();
+            return bumpTexture.getTexture();
         }
         const Texture& LightRenderComponent::getLightMapTexture() {
-            return lightMap->getTexture();
+            return lightMap.getTexture();
         }
         bool LightRenderComponent::loadEntitiesOnComponent(std::vector<Entity*> vEntities)
         {
@@ -309,11 +311,11 @@ namespace odfaeg {
         }
         void LightRenderComponent::setView(View view){
             this->view = view;
-            depthBuffer->setView(view);
-            normalMap->setView(view);
-            specularTexture->setView(view);
-            bumpTexture->setView(view);
-            lightMap->setView(view);
+            depthBuffer.setView(view);
+            normalMap.setView(view);
+            specularTexture.setView(view);
+            bumpTexture.setView(view);
+            lightMap.setView(view);
         }
         void LightRenderComponent::setExpression(std::string expression) {
             update = true;
@@ -329,63 +331,63 @@ namespace odfaeg {
             for (unsigned int i = 0; i < m_instances.size(); i++) {
                 float specularIntensity = m_instances[i].getMaterial().getSpecularIntensity();
                 float specularPower = m_instances[i].getMaterial().getSpecularPower();
-                specularTextureGenerator->setParameter("m", specularIntensity);
-                specularTextureGenerator->setParameter("p", specularPower);
+                specularTextureGenerator.setParameter("m", specularIntensity);
+                specularTextureGenerator.setParameter("p", specularPower);
                 if (m_instances[i].getMaterial().getTexture() != nullptr) {
-                    depthBufferGenerator->setParameter("haveTexture", 1.f);
-                    specularTextureGenerator->setParameter("haveTexture", 1.f);
+                    depthBufferGenerator.setParameter("haveTexture", 1.f);
+                    specularTextureGenerator.setParameter("haveTexture", 1.f);
                 } else {
-                    depthBufferGenerator->setParameter("haveTexture", 0.f);
-                    specularTextureGenerator->setParameter("haveTexture", 0.f);
+                    depthBufferGenerator.setParameter("haveTexture", 0.f);
+                    specularTextureGenerator.setParameter("haveTexture", 0.f);
                 }
                 if (m_instances[i].getMaterial().getBumpTexture() != nullptr) {
-                    bumpTextureGenerator->setParameter("haveTexture", 1.f);
+                    bumpTextureGenerator.setParameter("haveTexture", 1.f);
                 } else {
-                    bumpTextureGenerator->setParameter("haveTexture", 0.f);
+                    bumpTextureGenerator.setParameter("haveTexture", 0.f);
                 }
                 states.texture = m_instances[i].getMaterial().getTexture();
-                states.shader = depthBufferGenerator.get();
-                depthBuffer->draw(m_instances[i].getAllVertices(), states);
-                states.shader = specularTextureGenerator.get();
-                specularTexture->draw(m_instances[i].getAllVertices(), states);
-                states.shader = bumpTextureGenerator.get();
+                states.shader = &depthBufferGenerator;
+                depthBuffer.draw(m_instances[i].getAllVertices(), states);
+                states.shader = &specularTextureGenerator;
+                specularTexture.draw(m_instances[i].getAllVertices(), states);
+                states.shader = &bumpTextureGenerator;
                 states.texture = m_instances[i].getMaterial().getBumpTexture();
-                bumpTexture->draw(m_instances[i].getAllVertices(), states);
+                bumpTexture.draw(m_instances[i].getAllVertices(), states);
             }
-            states.shader = normalMapGenerator.get();
-            depthBuffer->display();
-            depthBufferTile->setCenter(view.getPosition());
-            normalMap->draw(*depthBufferTile, states);
-            states.shader = lightMapGenerator.get();
+            states.shader = &normalMapGenerator;
+            depthBuffer.display();
+            depthBufferTile.setCenter(view.getPosition());
+            normalMap.draw(depthBufferTile, states);
+            states.shader = &lightMapGenerator;
             states.blendMode = sf::BlendAdd;
             sf::Color ambientColor = g2d::AmbientLight::getAmbientLight().getColor();
             RectangleShape rect(size * 2.f);
             rect.setPosition(position - size * 0.5f);
             rect.setFillColor(ambientColor);
-            lightMap->draw(rect);
+            lightMap.draw(rect);
             for (unsigned int i = 0; i < m_light_instances.size(); i++) {
                 for (unsigned int j = 0; j < m_light_instances[i].getVertexArrays().size(); j++) {
                     states.transform =  m_light_instances[i].getTransforms()[j];
                     EntityLight* el = static_cast<EntityLight*> (m_light_instances[i].getVertexArrays()[j].getEntity());
                     math::Vec3f center = getWindow().mapCoordsToPixel(el->getLightCenter(), view);
                     center.w = el->getSize().x * 0.5f;
-                    lightMapGenerator->setParameter("lightPos", center.x, center.y, center.z, center.w);
-                    lightMapGenerator->setParameter("lightColor", el->getColor().r, el->getColor().g,el->getColor().b,el->getColor().a);
-                    lightMap->draw(m_light_instances[i].getVertexArrays()[j], states);
+                    lightMapGenerator.setParameter("lightPos", center.x, center.y, center.z, center.w);
+                    lightMapGenerator.setParameter("lightColor", el->getColor().r, el->getColor().g,el->getColor().b,el->getColor().a);
+                    lightMap.draw(m_light_instances[i].getVertexArrays()[j], states);
                 }
             }
-            specularTexture->display();
-            bumpTexture->display();
-            normalMap->display();
-            lightMap->display();
+            specularTexture.display();
+            bumpTexture.display();
+            normalMap.display();
+            lightMap.display();
         }
         std::vector<Entity*> LightRenderComponent::getEntities() {
             return visibleEntities;
         }
         void LightRenderComponent::draw(RenderTarget& target, RenderStates states) {
-            lightMapTile->setCenter(target.getView().getPosition());
+            lightMapTile.setCenter(target.getView().getPosition());
             states.blendMode = sf::BlendMultiply;
-            target.draw(*lightMapTile, states);
+            target.draw(lightMapTile, states);
         }
         View& LightRenderComponent::getView() {
             return view;

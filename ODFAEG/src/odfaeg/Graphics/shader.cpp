@@ -33,7 +33,7 @@
 #include <SFML/System/Err.hpp>
 #include <fstream>
 #include <vector>
-#include "../../../extlibs/headers/GL/glew.h"
+#include <GL/glew.h>
 #include <SFML/OpenGL.hpp>
 using namespace sf;
 
@@ -92,6 +92,8 @@ namespace odfaeg {
     namespace graphic {
         ////////////////////////////////////////////////////////////
         Shader::CurrentTextureType Shader::CurrentTexture;
+        unsigned int Shader::shading_language_version_major = 0;
+        unsigned int Shader::shading_language_version_minor = 0;
         ////////////////////////////////////////////////////////////
         Shader::Shader() :
         m_shaderProgram (0),
@@ -100,7 +102,8 @@ namespace odfaeg {
         m_params        (),
         m_vertexAttribs ()
         {
-
+            shading_language_version_major = getVersionMajor();
+            shading_language_version_minor = getVersionMinor();
         }
 
 
@@ -111,7 +114,10 @@ namespace odfaeg {
 
             // Destroy effect program
             if (m_shaderProgram) {
-                glCheck(glDeleteObjectARB(m_shaderProgram));
+                if (shading_language_version_major >= 3 && shading_language_version_minor >= 3)
+                    glCheck(glDeleteProgram(m_shaderProgram));
+                else
+                    glCheck(glDeleteObjectARB(m_shaderProgram));
             }
         }
 
@@ -225,18 +231,25 @@ namespace odfaeg {
         {
             if (m_shaderProgram)
             {
-                //ensureGlContext();
-                // Enable program
-                GLhandleARB program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
-                glCheck(glUseProgramObjectARB(m_shaderProgram));
+                if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
+                    glCheck(glUseProgram(m_shaderProgram));
+                    GLint location = glGetUniformLocation(m_shaderProgram, name.c_str());
+                    if (location != -1) {
+                        glCheck(glUniform1f(location, x));
+                    }
+                } else {
+                    // Enable program
+                    GLhandleARB program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
+                    glCheck(glUseProgramObjectARB(m_shaderProgram));
 
-                // Get parameter location and assign it new values
-                GLint location = getParamLocation(name);
-                if (location != -1)
-                    glCheck(glUniform1fARB(location, x));
+                    // Get parameter location and assign it new values
+                    GLint location = getParamLocation(name);
+                    if (location != -1)
+                        glCheck(glUniform1fARB(location, x));
 
-                // Disable program
-                glCheck(glUseProgramObjectARB(program));
+                    // Disable program
+                    glCheck(glUseProgramObjectARB(program));
+                }
             }
         }
 
@@ -246,18 +259,25 @@ namespace odfaeg {
         {
             if (m_shaderProgram)
             {
-                //ensureGlContext();
-                // Enable program
-                GLhandleARB program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
-                glCheck(glUseProgramObjectARB(m_shaderProgram));
+                if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
+                    glCheck(glUseProgram(m_shaderProgram));
+                    GLint location = glGetUniformLocation(m_shaderProgram, name.c_str());
+                    if (location != -1) {
+                        glCheck(glUniform2f(location, x, y));
+                    }
+                } else {
+                    // Enable program
+                    GLhandleARB program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
+                    glCheck(glUseProgramObjectARB(m_shaderProgram));
 
-                // Get parameter location and assign it new values
-                GLint location = getParamLocation(name);
-                if (location != -1)
-                    glCheck(glUniform2fARB(location, x, y));
+                    // Get parameter location and assign it new values
+                    GLint location = getParamLocation(name);
+                    if (location != -1)
+                        glCheck(glUniform2fARB(location, x, y));
 
-                // Disable program
-                glCheck(glUseProgramObjectARB(program));
+                    // Disable program
+                    glCheck(glUseProgramObjectARB(program));
+                }
             }
         }
 
@@ -267,18 +287,25 @@ namespace odfaeg {
         {
             if (m_shaderProgram)
             {
-                //ensureGlContext();
-                // Enable program
-                GLhandleARB program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
-                glCheck(glUseProgramObjectARB(m_shaderProgram));
+                 if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
+                    glCheck(glUseProgram(m_shaderProgram));
+                    GLint location = glGetUniformLocation(m_shaderProgram, name.c_str());
+                    if (location != -1) {
+                        glCheck(glUniform3f(location, x, y, z));
+                    }
+                } else {
+                    // Enable program
+                    GLhandleARB program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
+                    glCheck(glUseProgramObjectARB(m_shaderProgram));
 
-                // Get parameter location and assign it new values
-                GLint location = getParamLocation(name);
-                if (location != -1)
-                    glCheck(glUniform3fARB(location, x, y, z));
+                    // Get parameter location and assign it new values
+                    GLint location = getParamLocation(name);
+                    if (location != -1)
+                        glCheck(glUniform3fARB(location, x, y, z));
 
-                // Disable program
-                glCheck(glUseProgramObjectARB(program));
+                    // Disable program
+                    glCheck(glUseProgramObjectARB(program));
+                }
             }
         }
 
@@ -288,18 +315,27 @@ namespace odfaeg {
         {
             if (m_shaderProgram)
             {
-                //ensureGlContext();
-                // Enable program
-                GLhandleARB program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
-                glCheck(glUseProgramObjectARB(m_shaderProgram));
 
-                // Get parameter location and assign it new values
-                GLint location = getParamLocation(name);
-                if (location != -1)
-                    glCheck(glUniform4fARB(location, x, y, z, w));
 
-                // Disable program
-                glCheck(glUseProgramObjectARB(program));
+                 if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
+                    glCheck(glUseProgram(m_shaderProgram));
+                    GLint location = glGetUniformLocation(m_shaderProgram, name.c_str());
+                    if (location != -1) {
+                        glCheck(glUniform4f(location, x, y, z, w));
+                    }
+                } else {
+                    // Enable program
+                    GLhandleARB program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
+                    glCheck(glUseProgramObjectARB(m_shaderProgram));
+
+                    // Get parameter location and assign it new values
+                    GLint location = getParamLocation(name);
+                    if (location != -1)
+                        glCheck(glUniform4fARB(location, x, y, z, w));
+
+                    // Disable program
+                    glCheck(glUseProgramObjectARB(program));
+                }
             }
         }
 
@@ -329,19 +365,28 @@ namespace odfaeg {
         {
             if (m_shaderProgram)
             {
-                //ensureGlContext();
-                // Enable program
-                GLhandleARB program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
-                glCheck(glUseProgramObjectARB(m_shaderProgram));
 
-                // Get parameter location and assign it new values
-                GLint location = getParamLocation(name);
-                if (location != -1) {
-                    std::array<float, 16> glmatrix = matrix.toGlMatrix();
-                    glCheck(glUniformMatrix4fvARB(location, 1, GL_FALSE, glmatrix.data()));
+                 if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
+                    glCheck(glUseProgram(m_shaderProgram));
+                    GLint location = getParamLocation(name);
+                    if (location != -1) {
+                        glCheck(glUniformMatrix4fv(location, 1, GL_FALSE,matrix.toGlMatrix().data()));
+                    }
+                    glCheck(glUseProgram(0));
+                } else {
+                    // Enable program
+                    GLhandleARB program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
+                    glCheck(glUseProgramObjectARB(m_shaderProgram));
+
+                    // Get parameter location and assign it new values
+                    GLint location = getParamLocation(name);
+                    if (location != -1) {
+                        std::array<float, 16> glmatrix = matrix.toGlMatrix();
+                        glCheck(glUniformMatrix4fvARB(location, 1, GL_FALSE, glmatrix.data()));
+                    }
+                    // Disable program
+                    glCheck(glUseProgramObjectARB(program));
                 }
-                // Disable program
-                glCheck(glUseProgramObjectARB(program));
             }
         }
 
@@ -351,7 +396,7 @@ namespace odfaeg {
         {
             if (m_shaderProgram)
             {
-                //ensureGlContext();
+
 
                 // Find the location of the variable in the shader
                 int location = getParamLocation(name);
@@ -385,11 +430,15 @@ namespace odfaeg {
         ////////////////////////////////////////////////////////////
         void Shader::bindAttribute(int location, const std::string& name) {
             if (m_shaderProgram) {
-                //ensureGlContext();
+
                 GLint n;
                 glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &n);
                 if (location < n) {
-                    glCheck(glBindAttribLocationARB(m_shaderProgram,location,name.c_str()));
+                    if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
+                        glCheck(glBindAttribLocation(m_shaderProgram,location,name.c_str()));
+                    } else {
+                        glCheck(glBindAttribLocationARB(m_shaderProgram,location,name.c_str()));
+                    }
                     m_currentAttrib = getVertexAttribLocation(name);
                 } else {
                     err() << "Invalid attribute location " << location << " in vertex." << std::endl;
@@ -402,7 +451,7 @@ namespace odfaeg {
         {
             if (m_shaderProgram)
             {
-                //ensureGlContext();
+
 
                 // Find the location of the variable in the shader
                 m_currentTexture = getParamLocation(name);
@@ -413,24 +462,37 @@ namespace odfaeg {
         ////////////////////////////////////////////////////////////
         void Shader::bind(const Shader* shader)
         {
-            //ensureGlContext();
+
 
             if (shader && shader->m_shaderProgram)
             {
-                // Enable the program
-                glCheck(glUseProgramObjectARB(shader->m_shaderProgram));
+                if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
+                    glCheck(glUseProgram(shader->m_shaderProgram));
+                    shader->bindTextures();
+                    // Bind the current texture
+                    if (shader->m_currentTexture != -1)
+                        glCheck(glUniform1i(shader->m_currentTexture, 0));
 
-                // Bind the textures
-                shader->bindTextures();
+                } else {
+                    // Enable the program
+                    glCheck(glUseProgramObjectARB(shader->m_shaderProgram));
 
-                // Bind the current texture
-                if (shader->m_currentTexture != -1)
-                    glCheck(glUniform1iARB(shader->m_currentTexture, 0));
+                    // Bind the textures
+                    shader->bindTextures();
+
+                    // Bind the current texture
+                    if (shader->m_currentTexture != -1)
+                        glCheck(glUniform1iARB(shader->m_currentTexture, 0));
+                }
             }
             else
             {
-                // Bind no shader
-                glCheck(glUseProgramObjectARB(0));
+                if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
+                    glCheck(glUseProgram(0));
+                } else {
+                    // Bind no shader
+                    glCheck(glUseProgramObjectARB(0));
+                }
             }
         }
 
@@ -438,10 +500,12 @@ namespace odfaeg {
         ////////////////////////////////////////////////////////////
         bool Shader::isAvailable()
         {
-            //ensureGlContext();
+
 
             // Make sure that GLEW is initialized
             priv::ensureGlewInit();
+            if (shading_language_version_major >= 3 && shading_language_version_minor >= 3)
+                return true;
             return GLEW_ARB_shading_language_100 &&
                    GLEW_ARB_shader_objects       &&
                    GLEW_ARB_vertex_shader        &&
@@ -452,7 +516,7 @@ namespace odfaeg {
         ////////////////////////////////////////////////////////////
         bool Shader::compile(const char* vertexShaderCode, const char* fragmentShaderCode)
         {
-            //ensureGlContext();
+
 
             // First make sure that we can use shaders
             if (!isAvailable())
@@ -464,7 +528,10 @@ namespace odfaeg {
 
             // Destroy the shader if it was already created
             if (m_shaderProgram) {
-                glCheck(glDeleteObjectARB(m_shaderProgram));
+                if (shading_language_version_major >= 3 && shading_language_version_minor >= 3)
+                    glCheck(glDeleteProgram(m_shaderProgram));
+                else
+                    glCheck(glDeleteObjectARB(m_shaderProgram));
             }
 
             // Reset the internal state
@@ -473,74 +540,139 @@ namespace odfaeg {
             m_params.clear();
 
             // Create the program
-            m_shaderProgram = glCreateProgramObjectARB();
+            if (shading_language_version_major >= 3 && shading_language_version_minor >= 3)
+                m_shaderProgram = glCreateProgram();
+            else
+                m_shaderProgram = glCreateProgramObjectARB();
 
             // Create the vertex shader if needed
             if (vertexShaderCode)
             {
-                // Create and compile the shader
-                GLhandleARB vertexShader = glCreateShaderObjectARB(GL_VERTEX_SHADER_ARB);
-                glCheck(glShaderSourceARB(vertexShader, 1, &vertexShaderCode, NULL));
-                glCheck(glCompileShaderARB(vertexShader));
+                if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
+                    GLuint vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
+                    glCheck(glShaderSource(vertexShaderID, 1, &vertexShaderCode, nullptr));
+                    glCheck(glCompileShader(vertexShaderID));
+                    GLint success;
+                    glCheck(glGetShaderiv(vertexShaderID, GL_COMPILE_STATUS,&success));
+                    if (success == GL_FALSE) {
+                        int infoLogLength;
+                        glCheck(glGetShaderiv(vertexShaderID, GL_INFO_LOG_LENGTH, &infoLogLength));
+                        char log[infoLogLength];
+                        glCheck(glGetShaderInfoLog(vertexShaderID, infoLogLength, 0, &log[0]));
+                        err() << "Failed to compile vertex shader:" << std::endl
+                        << log << std::endl;
+                        glCheck(glDeleteShader(vertexShaderID));
+                        glCheck(glDeleteProgram(m_shaderProgram));
+                        m_shaderProgram = 0;
+                        return false;
+                    }
+                    glCheck(glAttachShader(m_shaderProgram, vertexShaderID));
+                    glCheck(glDeleteShader(vertexShaderID));
+                } else {
+                    // Create and compile the shader
+                    GLhandleARB vertexShader = glCreateShaderObjectARB(GL_VERTEX_SHADER_ARB);
+                    glCheck(glShaderSourceARB(vertexShader, 1, &vertexShaderCode, NULL));
+                    glCheck(glCompileShaderARB(vertexShader));
 
-                // Check the compile log
-                GLint success;
-                glCheck(glGetObjectParameterivARB(vertexShader, GL_OBJECT_COMPILE_STATUS_ARB, &success));
-                if (success == GL_FALSE)
-                {
-                    char log[1024];
-                    glCheck(glGetInfoLogARB(vertexShader, sizeof(log), 0, log));
-                    err() << "Failed to compile vertex shader:" << std::endl
-                          << log << std::endl;
+                    // Check the compile log
+                    GLint success;
+                    glCheck(glGetObjectParameterivARB(vertexShader, GL_OBJECT_COMPILE_STATUS_ARB, &success));
+                    if (success == GL_FALSE)
+                    {
+                        char log[1024];
+                        glCheck(glGetInfoLogARB(vertexShader, sizeof(log), 0, log));
+                        err() << "Failed to compile vertex shader:" << std::endl
+                              << log << std::endl;
+                        glCheck(glDeleteObjectARB(vertexShader));
+                        glCheck(glDeleteObjectARB(m_shaderProgram));
+                        m_shaderProgram = 0;
+                        return false;
+                    }
+                    glCheck(glAttachObjectARB(m_shaderProgram, vertexShader));
                     glCheck(glDeleteObjectARB(vertexShader));
-                    glCheck(glDeleteObjectARB(m_shaderProgram));
-                    m_shaderProgram = 0;
-                    return false;
                 }
-                glCheck(glAttachObjectARB(m_shaderProgram, vertexShader));
-                glCheck(glDeleteObjectARB(vertexShader));
             }
 
             // Create the fragment shader if needed
             if (fragmentShaderCode)
             {
                 // Create and compile the shader
-                GLhandleARB fragmentShader = glCreateShaderObjectARB(GL_FRAGMENT_SHADER_ARB);
-                glCheck(glShaderSourceARB(fragmentShader, 1, &fragmentShaderCode, NULL));
-                glCheck(glCompileShaderARB(fragmentShader));
+                if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
+                    GLuint fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
+                    glCheck(glShaderSource(fragmentShaderID, 1, &fragmentShaderCode, nullptr));
+                    glCheck(glCompileShader(fragmentShaderID));
+                    GLint success;
+                    glCheck(glGetShaderiv(fragmentShaderID, GL_COMPILE_STATUS,&success));
+                    if (success == GL_FALSE) {
+                        int infoLogLength;
+                        glCheck(glGetShaderiv(fragmentShaderID, GL_INFO_LOG_LENGTH, &infoLogLength));
+                        char log[infoLogLength];
+                        glCheck(glGetShaderInfoLog(fragmentShaderID, infoLogLength, 0, &log[0]));
+                        err() << "Failed to compile fragment shader:" << std::endl
+                        << log << std::endl;
+                        glCheck(glDeleteShader(fragmentShaderID));
+                        glCheck(glDeleteProgram(m_shaderProgram));
+                        m_shaderProgram = 0;
+                        return false;
+                    }
+                    glCheck(glAttachShader(m_shaderProgram, fragmentShaderID));
+                    glCheck(glDeleteShader(fragmentShaderID));
+                } else {
+                    GLhandleARB fragmentShader = glCreateShaderObjectARB(GL_FRAGMENT_SHADER_ARB);
+                    glCheck(glShaderSourceARB(fragmentShader, 1, &fragmentShaderCode, NULL));
+                    glCheck(glCompileShaderARB(fragmentShader));
 
-                // Check the compile log
+                    // Check the compile log
+                    GLint success;
+                    glCheck(glGetObjectParameterivARB(fragmentShader, GL_OBJECT_COMPILE_STATUS_ARB, &success));
+                    if (success == GL_FALSE)
+                    {
+                        char log[1024];
+                        glCheck(glGetInfoLogARB(fragmentShader, sizeof(log), 0, log));
+                        err() << "Failed to compile fragment shader:" << std::endl
+                              << log << std::endl;
+                        glCheck(glDeleteObjectARB(fragmentShader));
+                        glCheck(glDeleteObjectARB(m_shaderProgram));
+                        m_shaderProgram = 0;
+                        return false;
+                    }
+                    glCheck(glAttachObjectARB(m_shaderProgram, fragmentShader));
+                    glCheck(glDeleteObjectARB(fragmentShader));
+                }
+            }
+            if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
+                glCheck(glLinkProgram(m_shaderProgram));
                 GLint success;
-                glCheck(glGetObjectParameterivARB(fragmentShader, GL_OBJECT_COMPILE_STATUS_ARB, &success));
+                glCheck(glGetProgramiv(m_shaderProgram, GL_LINK_STATUS, &success));
+                if (success == GL_FALSE) {
+                    int infoLogLength;
+                    glCheck(glGetProgramiv(m_shaderProgram, GL_INFO_LOG_LENGTH, &infoLogLength));
+                    std::vector<char> programErrorMessage(std::max(infoLogLength, int(1)) );
+                    glCheck(glGetProgramInfoLog(m_shaderProgram, infoLogLength, nullptr, &programErrorMessage[0]));
+                    err() << "Failed to link shader:" << std::endl
+                         /* << log << std::endl*/;
+                    glCheck(glDeleteProgram(m_shaderProgram));
+                    m_shaderProgram = 0;
+                    return false;
+                }
+
+            } else {
+                // Link the program
+                glCheck(glLinkProgramARB(m_shaderProgram));
+
+                // Check the link log
+                GLint success;
+                glCheck(glGetObjectParameterivARB(m_shaderProgram, GL_OBJECT_LINK_STATUS_ARB, &success));
                 if (success == GL_FALSE)
                 {
                     char log[1024];
-                    glCheck(glGetInfoLogARB(fragmentShader, sizeof(log), 0, log));
-                    err() << "Failed to compile fragment shader:" << std::endl
+                    glCheck(glGetInfoLogARB(m_shaderProgram, sizeof(log), 0, log));
+                    err() << "Failed to link shader:" << std::endl
                           << log << std::endl;
-                    glCheck(glDeleteObjectARB(fragmentShader));
                     glCheck(glDeleteObjectARB(m_shaderProgram));
                     m_shaderProgram = 0;
                     return false;
                 }
-                glCheck(glAttachObjectARB(m_shaderProgram, fragmentShader));
-                glCheck(glDeleteObjectARB(fragmentShader));
-            }
-            // Link the program
-            glCheck(glLinkProgramARB(m_shaderProgram));
-
-            // Check the link log
-            GLint success;
-            glCheck(glGetObjectParameterivARB(m_shaderProgram, GL_OBJECT_LINK_STATUS_ARB, &success));
-            if (success == GL_FALSE)
-            {
-                char log[1024];
-                glCheck(glGetInfoLogARB(m_shaderProgram, sizeof(log), 0, log));
-                err() << "Failed to link shader:" << std::endl
-                      << log << std::endl;
-                glCheck(glDeleteObjectARB(m_shaderProgram));
-                m_shaderProgram = 0;
-                return false;
             }
             // Force an OpenGL flush, so that the shader will appear updated
             // in all contexts immediately (solves problems in multi-threaded apps)
@@ -557,20 +689,34 @@ namespace odfaeg {
             for (std::size_t i = 0; i < m_textures.size(); ++i)
             {
                 GLint index = static_cast<GLsizei>(i + 1);
-                glCheck(glUniform1iARB(it->first, index));
-                glCheck(glActiveTextureARB(GL_TEXTURE0_ARB + index));
+                if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
+                    glCheck(glUniform1i(it->first, index));
+                    glCheck(glActiveTexture(GL_TEXTURE0 + index));
+                } else {
+                    glCheck(glUniform1iARB(it->first, index));
+                    glCheck(glActiveTextureARB(GL_TEXTURE0_ARB + index));
+                }
                 Texture::bind(it->second);
                 ++it;
             }
-            // Make sure that the texture unit which is left active is the number 0
-            glCheck(glActiveTextureARB(GL_TEXTURE0_ARB));
+            if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
+                glCheck(glActiveTexture(GL_TEXTURE0));
+            } else {
+                // Make sure that the texture unit which is left active is the number 0
+                glCheck(glActiveTextureARB(GL_TEXTURE0_ARB));
+            }
         }
         int Shader::getVertexAttribLocation(const std::string& name) {
             VertexAttribTable::const_iterator it = m_vertexAttribs.find(name);
             if (it != m_vertexAttribs.end()) {
                 return it->second;
             } else {
-                int location = glGetAttribLocationARB(m_shaderProgram,name.c_str());
+                int location;
+                if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
+                    location = glGetAttribLocation(m_shaderProgram,name.c_str());
+                } else {
+                    location = glGetAttribLocationARB(m_shaderProgram,name.c_str());
+                }
                 if (location != -1)
                 {
                     // Location found: add it to the cache
@@ -599,7 +745,12 @@ namespace odfaeg {
             else
             {
                 // Not in cache, request the location from OpenGL
-                int location = glGetUniformLocationARB(m_shaderProgram, name.c_str());
+                int location;
+                if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
+                    location = glGetUniformLocation(m_shaderProgram, name.c_str());
+                } else {
+                    location = glGetUniformLocationARB(m_shaderProgram, name.c_str());
+                }
                 if (location != -1)
                 {
                     // Location found: add it to the cache
@@ -613,6 +764,20 @@ namespace odfaeg {
 
                 return location;
             }
+        }
+        unsigned int Shader::getVersionMajor() {
+            //ensureGlContext();
+            const GLubyte* glslversion = glGetString(GL_SHADING_LANGUAGE_VERSION);
+            if (glslversion)
+                return glslversion[0] - '0';
+            return 2;
+        }
+        unsigned int Shader::getVersionMinor() {
+            //ensureGlContext();
+            const GLubyte* glslversion = glGetString(GL_SHADING_LANGUAGE_VERSION);
+            if (glslversion)
+                return glslversion[1] - '0';
+            return 0;
         }
     }
 } // namespace sf

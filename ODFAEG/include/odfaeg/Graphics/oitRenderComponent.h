@@ -28,7 +28,7 @@ namespace odfaeg {
             * \param RenderWindow& window : the render window.
             * \param int layer : the layer's position.
             */
-            OITRenderComponent (RenderWindow& window, int layer, std::string expression, sf::ContextSettings settings = sf::ContextSettings(0, 0, 4, 3, 0));
+            OITRenderComponent (RenderWindow& window, int layer, std::string expression, window::ContextSettings settings = window::ContextSettings(0, 0, 4, 3, 0));
             /**
             * \fn bool loadEntitiesOnComponent(std::vector<Entity*> visibleEntities)
             * \brief load the given entities onto the component.
@@ -120,13 +120,17 @@ namespace odfaeg {
             * \return the tile.
             */
             Tile& getDepthBufferTile();
+            Tile& getOpaquePixelsTile();
+            Tile& getWeightedBlendedOITPass1Tile();
+            Tile& getWeightedBlendedOITPass2Tile();
+            Tile& getSemiTransparentPixelsTile();
             void changeVisibleEntities(Entity* toRemove, Entity* toAdd, EntityManager* em);
             /**
             * \fn register an event to the event stack of the component.
-            * \param sf::Event : the event to register.
+            * \param window::IEvent : the event to register.
             * \param Renderwindow : the window generating the event.
             */
-            void pushEvent(sf::Event event, RenderWindow& window);
+            void pushEvent(window::IEvent event, RenderWindow& window);
             void updateParticleSystems();
             private :
             std::vector<std::pair<std::reference_wrapper<Drawable>, RenderStates>> drawables;
@@ -141,15 +145,24 @@ namespace odfaeg {
             std::unique_ptr<RenderTexture>  bumpTexture;
             std::unique_ptr<RenderTexture>  refractionTexture;
             std::unique_ptr<RenderTexture>  normalMap;
+            std::unique_ptr<RenderTexture>  opaquePixels;
+            std::unique_ptr<RenderTexture>  semiTransparentPixels;
+            std::unique_ptr<RenderTexture> weightedBlendedOITPass1;
+            std::unique_ptr<RenderTexture> weightedBlendedOITPass2;
             std::unique_ptr<Shader> depthBufferGenerator; /**> the shader to generate the depth buffer.*/
             std::unique_ptr<Shader>  frameBufferGenerator; /**> the shader to generate the frame buffer.*/
             std::unique_ptr<Shader>  specularTextureGenerator;
             std::unique_ptr<Shader>  bumpTextureGenerator;
             std::unique_ptr<Shader>  refractionTextureGenerator;
             std::unique_ptr<Shader>  simpleShader;
+            std::unique_ptr<Shader>  filterNotOpaquePixels;
+            std::unique_ptr<Shader>  filterOpaquePixels;
+            std::unique_ptr<Shader>  generateWeightedBlendedOITPass1;
+            std::unique_ptr<Shader> generateWeightedBlendedOITPass2;
             RenderStates currentStates; /**> the current render states.*/
             View view; /**> the view of the component.*/
-            std::unique_ptr<Tile>  frameBufferTile, depthBufferTile, frontBufferTile; /**> the frame, depth and normal buffer.*/
+            std::unique_ptr<Tile>  frameBufferTile, depthBufferTile, frontBufferTile, opaquePixelsTile, semiTransparentsPixelsTile,
+            weightedBlendedOITPass1Tile, weightedBlendedOITPass2Tile; /**> the frame, depth and normal buffer.*/
             std::string expression;
             bool update;
         };

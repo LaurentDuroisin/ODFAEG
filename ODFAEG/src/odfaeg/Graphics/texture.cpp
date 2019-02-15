@@ -25,11 +25,11 @@
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
+#include <GL/glew.h>
 #include "../../../include/odfaeg/Graphics/texture.h"
-#include <SFML/Graphics/Image.hpp>
+#include "../../../include/odfaeg/Window/window.hpp"
 #include "glCheck.h"
 #include "textureSaver.h"
-#include <SFML/Window/Window.hpp>
 #include <SFML/System/Mutex.hpp>
 #include <SFML/System/Lock.hpp>
 #include <SFML/System/Err.hpp>
@@ -134,7 +134,7 @@ namespace odfaeg {
                 GLuint texture;
                 glCheck(glGenTextures(1, &texture));
                 m_texture = static_cast<unsigned int>(texture);
-                glCheck(glBindImageTextures(0, 1, &m_texture));
+                //glCheck(glBindImageTextures(0, 1, &m_texture));
             }
 
             // Make sure that the current texture binding will be preserved
@@ -357,14 +357,14 @@ namespace odfaeg {
 
 
         ////////////////////////////////////////////////////////////
-        void Texture::update(const Window& window)
+        void Texture::update(window::Window& window)
         {
             update(window, 0, 0);
         }
 
 
         ////////////////////////////////////////////////////////////
-        void Texture::update(const Window& window, unsigned int x, unsigned int y)
+        void Texture::update(window::Window& window, unsigned int x, unsigned int y)
         {
             assert(x + window.getSize().x <= m_size.x);
             assert(y + window.getSize().y <= m_size.y);

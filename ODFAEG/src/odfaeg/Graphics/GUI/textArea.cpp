@@ -14,12 +14,12 @@ namespace odfaeg {
                 rect = RectangleShape(size);
                 /*rect.setOutlineThickness(5.f);
                 rect.setOutlineColor(sf::Color::Black);*/
-                core::Action a2 (core::Action::MOUSE_BUTTON_PRESSED_ONCE, sf::Mouse::Left);
+                core::Action a2 (core::Action::MOUSE_BUTTON_PRESSED_ONCE, window::IMouse::Left);
                 core::Command cmd2(a2, core::FastDelegate<bool>(&TextArea::isMouseInTextArea, this), core::FastDelegate<void>(&TextArea::gaignedFocus, this));
                 core::Command cmd3(a2, core::FastDelegate<bool>(&TextArea::isMouseOutTextArea, this), core::FastDelegate<void>(&TextArea::lostFocus, this));
                 getListener().connect("CGFOCUS", cmd2);
                 getListener().connect("CLFOCUS", cmd3);
-                core::Action a3 (core::Action::MOUSE_BUTTON_PRESSED_ONCE, sf::Mouse::Left);
+                core::Action a3 (core::Action::MOUSE_BUTTON_PRESSED_ONCE, window::IMouse::Left);
                 core::Command cmd4(a3, core::FastDelegate<bool>(&TextArea::isMouseInTextArea, this), core::FastDelegate<void>(&TextArea::setCursorPos, this));
                 getListener().connect("CMOUSECLICKED", cmd4);
                 core::Action a4 (core::Action::TEXT_ENTERED);
@@ -31,7 +31,7 @@ namespace odfaeg {
                 setSize(text.getSize());
                 haveFocus = textChanged = false;
             }
-            void TextArea::onEventPushed(sf::Event event, RenderWindow& window) {
+            void TextArea::onEventPushed(window::IEvent event, RenderWindow& window) {
                 if (&window == &getWindow()) {
                     getListener().pushEvent(event);
                 }
@@ -40,7 +40,7 @@ namespace odfaeg {
                 return haveFocus;
             }
             void TextArea::setCursorPos() {
-                math::Vec2f mousePos = math::Vec2f(sf::Mouse::getPosition(getWindow()).x, sf::Mouse::getPosition(getWindow()).y);
+                math::Vec2f mousePos = math::Vec2f(window::IMouse::getPosition(getWindow()).x, window::IMouse::getPosition(getWindow()).y);
                 bool found = false;
                 for (unsigned int i = 0; i <= tmp_text.length() && !found; i++) {
                     sf::Vector2f pos = text.findCharacterPos(i);
@@ -91,7 +91,7 @@ namespace odfaeg {
             }
             bool TextArea::isMouseInTextArea() {
                 physic::BoundingBox bb = getGlobalBounds();
-                math::Vec2f mousePos = math::Vec2f(sf::Mouse::getPosition(getWindow()).x, sf::Mouse::getPosition(getWindow()).y);
+                math::Vec2f mousePos = math::Vec2f(window::IMouse::getPosition(getWindow()).x, window::IMouse::getPosition(getWindow()).y);
                 if (bb.isPointInside(mousePos)) {
                     return true;
                 }
@@ -99,14 +99,14 @@ namespace odfaeg {
             }
             bool TextArea::isMouseOutTextArea() {
                 physic::BoundingBox bb = getGlobalBounds();
-                math::Vec2f mousePos = math::Vec2f(sf::Mouse::getPosition(getWindow()).x, sf::Mouse::getPosition(getWindow()).y);
+                math::Vec2f mousePos = math::Vec2f(window::IMouse::getPosition(getWindow()).x, window::IMouse::getPosition(getWindow()).y);
                 if (bb.isPointInside(mousePos)) {
                     return false;
                 }
                 return true;
             }
-            void TextArea::onUpdate(RenderWindow* window, sf::Event& event) {
-                if (window == &getWindow() && event.type == sf::Event::TextEntered) {
+            void TextArea::onUpdate(RenderWindow* window, window::IEvent& event) {
+                if (window == &getWindow() && event.type == window::IEvent::TEXT_INPUT_EVENT) {
                     getListener().setCommandSlotParams("CTEXTENTERED", this, static_cast<char>(event.text.unicode));
                 }
             }

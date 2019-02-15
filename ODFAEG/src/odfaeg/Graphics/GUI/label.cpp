@@ -53,13 +53,13 @@ namespace odfaeg {
             void Label::setBorderThickness(float tickness) {
                 rect.setOutlineThickness(tickness);
             }
-            void Label::onUpdate(RenderWindow* window, sf::Event& event) {
+            void Label::onUpdate(RenderWindow* window, window::IEvent& event) {
                 if (&getWindow() == window) {
-                    if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
+                    if (event.type == window::IEvent::MOUSE_BUTTON_EVENT && event.mouseButton.type == window::IEvent::BUTTON_EVENT_PRESSED && event.mouseButton.button == window::IMouse::Left)
                         mousePos = math::Vec3f(event.mouseButton.x, event.mouseButton.y, 0);
                 }
             }
-            void Label::onEventPushed (sf::Event event, RenderWindow& window) {
+            void Label::onEventPushed (window::IEvent event, RenderWindow& window) {
 
             }
         }

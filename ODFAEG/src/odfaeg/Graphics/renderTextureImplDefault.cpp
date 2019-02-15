@@ -28,7 +28,6 @@
 #include "renderTextureImplDefault.h"
 #include "glCheck.h"
 #include "textureSaver.h"
-#include <SFML/Window/Context.hpp>
 #include <SFML/System/Err.hpp>
 
 using namespace sf;
@@ -38,7 +37,6 @@ namespace odfaeg {
         {
             ////////////////////////////////////////////////////////////
             RenderTextureImplDefault::RenderTextureImplDefault() :
-            m_context(0),
             m_width  (0),
             m_height (0)
             {
@@ -49,32 +47,18 @@ namespace odfaeg {
             ////////////////////////////////////////////////////////////
             RenderTextureImplDefault::~RenderTextureImplDefault()
             {
-                // Destroy the context
-                delete m_context;
+
             }
 
 
             ////////////////////////////////////////////////////////////
-            bool RenderTextureImplDefault::create(unsigned int width, unsigned int height, sf::ContextSettings settings, unsigned int)
+            bool RenderTextureImplDefault::create(unsigned int width, unsigned int height, window::ContextSettings settings, unsigned int)
             {
                 // Store the dimensions
                 m_width = width;
                 m_height = height;
-
-                // Create the in-memory OpenGL context
-                m_context = new Context(settings, width, height);
-
                 return true;
             }
-
-
-            ////////////////////////////////////////////////////////////
-            bool RenderTextureImplDefault::activate(bool active)
-            {
-                return m_context->setActive(active);
-            }
-
-
             ////////////////////////////////////////////////////////////
             void RenderTextureImplDefault::updateTexture(unsigned int textureId)
             {

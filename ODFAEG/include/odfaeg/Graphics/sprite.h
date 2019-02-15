@@ -163,6 +163,7 @@ namespace odfaeg {
                 ///
                 ////////////////////////////////////////////////////////////
                 const sf::Color& getColor() const;
+                bool operator== (const Sprite& other) const;
             private :
 
                 ////////////////////////////////////////////////////////////

@@ -31,7 +31,7 @@ namespace odfaeg {
                     backDepthBuffer = std::make_unique<RenderTexture>();
                     shadowMap->create(frcm->getWindow().getSize().x, frcm->getWindow().getSize().y,frcm->getWindow().getSettings());
                     lightMap->create(frcm->getWindow().getSize().x, frcm->getWindow().getSize().y,frcm->getWindow().getSettings());
-                    sf::ContextSettings settings = frcm->getWindow().getSettings();
+                    window::ContextSettings settings = frcm->getWindow().getSettings();
                     settings.depthBits = 32;
                     stencilBuffer->create(frcm->getWindow().getSize().x, frcm->getWindow().getSize().y,settings);
                     normalMap->create(frcm->getWindow().getSize().x, frcm->getWindow().getSize().y,frcm->getWindow().getSettings());
@@ -65,6 +65,10 @@ namespace odfaeg {
                     "uniform vec3 resolution;"
                     "uniform float haveTexture;"
                     "in mat4 projMat;"
+                    "mat4 inverse(mat4 mat) {"
+                    "   mat4 inv;"
+                    "   return inv;"
+                    "}"
                     "void main () {"
                         "vec2 position = ( gl_FragCoord.xy / resolution.xy );"
                         "vec4 previous_depth_alpha = texture2D(depthBuffer, position);"
@@ -123,6 +127,10 @@ namespace odfaeg {
                      "uniform vec4 lightColor;"
                      "uniform vec4 lightPos;"
                      "in mat4 projMat;"
+                     "mat4 inverse(mat4 mat) {"
+                     "   mat4 inv;"
+                     "   return inv;"
+                     "}"
                      "void main () { "
                          "vec2 position = vec2 (gl_FragCoord.xy / resolution.xy);"
                          "vec4 normal = texture2D(normalMap, position);"
@@ -186,6 +194,10 @@ namespace odfaeg {
                     "uniform sampler2D texture;"
                     "uniform float haveTexture;"
                     "in mat4 projMat;"
+                    "mat4 inverse(mat4 mat) {"
+                    "   mat4 inv;"
+                    "   return inv;"
+                    "}"
                     "void main() {"
                     "   vec4 color = (haveTexture == 1) ? texture2D(texture, gl_TexCoord[0].xy) * gl_Color : gl_Color;"
                     "   float z = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
@@ -222,6 +234,10 @@ namespace odfaeg {
                     "uniform float haveTexture;"
                     "in vec4 shadowCoords;"
                     "in mat4 projMat;"
+                    "mat4 inverse(mat4 mat) {"
+                    "   mat4 inv;"
+                    "   return inv;"
+                    "}"
                     "void main() {"
                     "   vec4 color = (haveTexture == 1) ? texture2D(texture, gl_TexCoord[0].xy) * gl_Color : gl_Color;"
                     "   vec4 stencil = texture2D (stencilBuffer, shadowCoords.xy);"
@@ -267,6 +283,10 @@ namespace odfaeg {
                     "uniform sampler2D backDepthBuffer;"
                     "uniform float haveTexture;"
                     "in mat4 projMat;"
+                    "mat4 inverse(mat4 mat) {"
+                    "   mat4 inv;"
+                    "   return inv;"
+                    "}"
                     "void main() {"
                         "vec2 position = vec2 (gl_FragCoord.xy / resolution.xy);"
                         "vec4 refraction = texture2D(refractionTexture, position);"

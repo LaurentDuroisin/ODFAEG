@@ -171,7 +171,8 @@ namespace odfaeg {
                 m_transforms.push_back(tm);
                 m_vertexArrays.push_back(va);
                 for (unsigned int i = 0; i < va.getVertexCount(); i++) {
-                    Vertex v (tm.transform(math::Vec3f(va[i].position.x, va[i].position.y, va[i].position.z)), va[i].color, va[i].texCoords);
+                    math::Vec3f t = tm.transform(math::Vec3f(va[i].position.x, va[i].position.y, va[i].position.z));
+                    Vertex v (sf::Vector3f(t.x, t.y, t.z), va[i].color, va[i].texCoords);
                     vertices.append(v);
                 }
             }
@@ -181,7 +182,8 @@ namespace odfaeg {
                 shadowProjMatrix.combine(viewMatrix.getMatrix());
                 shadowProjMatrix.combine(tm.getMatrix());
                 for (unsigned int i = 0; i < va.getVertexCount(); i++) {
-                    Vertex v (shadowProjMatrix.transform(math::Vec3f(va[i].position.x, va[i].position.y, va[i].position.z)), va[i].color, va[i].texCoords);
+                    math::Vec3f t = shadowProjMatrix.transform(math::Vec3f(va[i].position.x, va[i].position.y, va[i].position.z));
+                    Vertex v (sf::Vector3f(t.x, t.y, t.z), va[i].color, va[i].texCoords);
                     vertices.append(v);
                 }
             }
@@ -209,7 +211,8 @@ namespace odfaeg {
                     m_vertexArrays.push_back(va);
                     m_transforms.push_back(tm);
                     for (unsigned int i = 0; i < va.getVertexCount(); i++) {
-                        Vertex v (tm.transform(math::Vec3f(va[i].position.x, va[i].position.y, va[i].position.z)), va[i].color, va[i].texCoords);
+                        math::Vec3f t = tm.transform(math::Vec3f(va[i].position.x, va[i].position.y, va[i].position.z));
+                        Vertex v (sf::Vector3f(t.x, t.y, t.z), va[i].color, va[i].texCoords);
                         vertices.append(v);
                     }
                 }

@@ -1,9 +1,8 @@
 #include "../../../include/odfaeg/Graphics/renderTarget.h"
-#include "../../../extlibs/headers/GL/glew.h"
+#include <GL/glew.h>
 #include <SFML/OpenGL.hpp>
 #include "glCheck.h"
 #include "../../../include/odfaeg/Graphics/drawable.h"
-#include "GLExtensions.hpp"
 namespace
 {
     // Convert an sf::BlendMode::Factor constant to the corresponding OpenGL constant.
@@ -32,8 +31,8 @@ namespace
         switch (blendEquation)
         {
             default:
-            case sf::BlendMode::Add:             return GLEXT_GL_FUNC_ADD;
-            case sf::BlendMode::Subtract:        return GLEXT_GL_FUNC_SUBTRACT;
+            case sf::BlendMode::Add:             return GL_FUNC_ADD;
+            case sf::BlendMode::Subtract:        return GL_FUNC_SUBTRACT;
         }
     }
 }
@@ -45,12 +44,26 @@ namespace odfaeg {
         m_defaultView(), m_view(), m_cache()
         {
             m_cache.glStatesSet = false;
+            m_vao = m_versionMajor = m_versionMinor = 0;
         }
-
-
+        void RenderTarget::setVersionMajor (unsigned int versionMajor) {
+            m_versionMajor = versionMajor;
+        }
+        void RenderTarget::setVersionMinor (unsigned int versionMinor) {
+            m_versionMinor = versionMinor;
+        }
+        unsigned int RenderTarget::getVersionMajor() {
+            return m_versionMajor;
+        }
+        unsigned int RenderTarget::getVersionMinor() {
+            return m_versionMinor;
+        }
         ////////////////////////////////////////////////////////////
         RenderTarget::~RenderTarget()
         {
+            if (m_versionMajor >= 3 && m_versionMinor >= 3 && m_vao) {
+                glCheck(glDeleteVertexArrays(1, &m_vao));
+            }
         }
 
 
@@ -99,7 +112,7 @@ namespace odfaeg {
                                         ,math::Vec3f(view.getViewport().getWidth(), view.getViewport().getHeight(), 1));
             math::Vec3f coords = vpm.toNormalizedCoordinates(point);
             coords = view.getProjMatrix().unProject(coords);
-            coords /= coords.w;
+            coords = coords.normalizeToVec3();
             coords = view.getViewMatrix().inverseTransform(coords);
             return coords;
         }
@@ -116,12 +129,10 @@ namespace odfaeg {
             math::Vec3f(view.getViewport().getWidth(), view.getViewport().getHeight(), 1));
             math::Vec3f coords = view.getViewMatrix().transform(point);
             coords = view.getProjMatrix().project(coords);
-            coords /= coords.w;
+            coords = coords.normalizeToVec3();
             coords = vpm.toViewportCoordinates(coords);
             return coords;
         }
-
-
         ////////////////////////////////////////////////////////////
         void RenderTarget::draw(Drawable& drawable, RenderStates states)
         {
@@ -149,7 +160,7 @@ namespace odfaeg {
                     applyCurrentView();
                 // Check if the vertex count is low enough so that we can pre-transform them
                 bool useVertexCache = (vertexCount <= StatesCache::VertexCacheSize);
-                if (useVertexCache)
+                if (useVertexCache /*&& !GL_ARB_vertex_buffer_object*/)
                 {
 
                     // Pre-transform the vertices and store them into the vertex cache
@@ -188,7 +199,7 @@ namespace odfaeg {
                     applyShader(states.shader);
 
                 // If we pre-transform the vertices, we must use our internal vertex cache
-                if (useVertexCache)
+                if (useVertexCache /*&& !GL_ARB_vertex_buffer_object*/)
                 {
                     // ... and if we already used it previously, we don't need to set the pointers again
                     if (!m_cache.useVertexCache)
@@ -197,11 +208,52 @@ namespace odfaeg {
                         vertices = nullptr;
                 }
                 // Setup the pointers to the vertices' components
-               if (vertices) {
-                    const char* data = reinterpret_cast<const char*>(vertices);
-                    glCheck(glVertexPointer(3, GL_FLOAT, sizeof(Vertex), data + 0));
-                    glCheck(glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(Vertex), data + 12));
-                    glCheck(glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), data + 16));
+                if (vertices) {
+                    if (m_versionMajor >= 3 && m_versionMinor >= 3) {
+                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, states.vboVertexID));
+                        glCheck(glEnableVertexAttribArray(0));
+                        glCheck(glEnableVertexAttribArray(1));
+                        glCheck(glEnableVertexAttribArray(2));
+                        glCheck(glVertexAttribPointer(0, 3,GL_FLOAT,GL_FALSE,sizeof(Vertex), (GLvoid*) 0));
+                        glCheck(glVertexAttribPointer(1, 4,GL_UNSIGNED_BYTE,GL_TRUE,sizeof(Vertex),(GLvoid*) 12));
+                        glCheck(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) 16));
+                        glCheck(glDisableVertexAttribArray(0));
+                        glCheck(glDisableVertexAttribArray(1));
+                        glCheck(glDisableVertexAttribArray(2));
+                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                    } /*else if (GL_ARB_vertex_buffer_object) {
+                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, states.vboVertexID));
+                        glCheck(glEnableClientState(GL_COLOR_ARRAY));
+                        glCheck(glEnableClientState(GL_TEXTURE_COORD_ARRAY));
+                        glCheck(glEnableClientState(GL_VERTEX_ARRAY));
+                        glCheck(glVertexPointer(3, GL_FLOAT, sizeof(Vertex), (GLvoid*) 0 ));
+                        glCheck(glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(Vertex), (GLvoid*) 12));
+                        glCheck(glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex),(GLvoid*) 16));
+                        glCheck(glDisableClientState(GL_COLOR_ARRAY));
+                        glCheck(glDisableClientState(GL_TEXTURE_COORD_ARRAY));
+                        glCheck(glDisableClientState(GL_VERTEX_ARRAY));
+                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                    } */else {
+                        const char* data = reinterpret_cast<const char*>(vertices);
+                        glCheck(glEnableClientState(GL_COLOR_ARRAY));
+                        glCheck(glEnableClientState(GL_TEXTURE_COORD_ARRAY));
+                        glCheck(glEnableClientState(GL_VERTEX_ARRAY));
+                        glCheck(glVertexPointer(3, GL_FLOAT, sizeof(Vertex), data + 0 ));
+                        glCheck(glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(Vertex), data + 12));
+                        glCheck(glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), data + 16));
+                        glCheck(glDisableClientState(GL_COLOR_ARRAY));
+                        glCheck(glDisableClientState(GL_TEXTURE_COORD_ARRAY));
+                        glCheck(glDisableClientState(GL_VERTEX_ARRAY));
+                    }
+                }
+                if (m_versionMajor >= 3 && m_versionMinor >= 3) {
+                    glCheck(glEnableVertexAttribArray(0));
+                    glCheck(glEnableVertexAttribArray(1));
+                    glCheck(glEnableVertexAttribArray(2));
+                } else {
+                    glCheck(glEnableClientState(GL_COLOR_ARRAY));
+                    glCheck(glEnableClientState(GL_TEXTURE_COORD_ARRAY));
+                    glCheck(glEnableClientState(GL_VERTEX_ARRAY));
                 }
                 // Find the OpenGL primitive type
                 static const GLenum modes[] = {GL_POINTS, GL_LINES, GL_LINE_STRIP, GL_TRIANGLES,
@@ -209,10 +261,19 @@ namespace odfaeg {
                 GLenum mode = modes[type];
                 // Draw the primitives
                 glCheck(glDrawArrays(mode, 0, vertexCount));
+                if (m_versionMajor >= 3 && m_versionMinor >= 3) {
+                    glCheck(glDisableVertexAttribArray(0));
+                    glCheck(glDisableVertexAttribArray(1));
+                    glCheck(glDisableVertexAttribArray(2));
+                } else {
+                    // Draw the primitives
+                    glCheck(glDisableClientState(GL_COLOR_ARRAY));
+                    glCheck(glDisableClientState(GL_TEXTURE_COORD_ARRAY));
+                    glCheck(glDisableClientState(GL_VERTEX_ARRAY));
+                }
                 // Unbind the shader, if any
                 if (states.shader)
                     applyShader(nullptr);
-
                 // Update the cache
                 m_cache.useVertexCache = useVertexCache;
             }
@@ -271,10 +332,6 @@ namespace odfaeg {
                           << std::endl;        }
 
                 #endif
-                // Define the default OpenGL states
-                glCheck(glEnableClientState(GL_COLOR_ARRAY));
-                glCheck(glEnableClientState(GL_TEXTURE_COORD_ARRAY));
-                glCheck(glEnableClientState(GL_VERTEX_ARRAY));
                 glCheck(glDisable(GL_CULL_FACE));
                 glCheck(glDisable(GL_LIGHTING));
                 glCheck(glEnable(GL_DEPTH_TEST));
@@ -306,7 +363,12 @@ namespace odfaeg {
         ////////////////////////////////////////////////////////////
         void RenderTarget::initialize()
         {
-
+            if (m_versionMajor >= 3 && m_versionMinor >= 3) {
+                GLuint vaoID;
+                glCheck(glGenVertexArrays(1, &vaoID));
+                m_vao = static_cast<unsigned int>(vaoID);
+                glCheck(glBindVertexArray(m_vao));
+            }
             // Setup the default and current views
             m_defaultView = View (static_cast<float>(getSize().x), static_cast<float>(getSize().y), -static_cast<float>(getSize().y) - 100, static_cast<float>(getSize().y)+100);
             m_defaultView.reset(physic::BoundingBox(0, 0, -static_cast<float>(getSize().y) - 100,static_cast<float>(getSize().x), static_cast<float>(getSize().y),static_cast<float>(getSize().y)+100));
@@ -339,29 +401,29 @@ namespace odfaeg {
         void RenderTarget::applyBlendMode(const BlendMode& mode)
         {
             // Apply the blend mode, falling back to the non-separate versions if necessary
-            if (GLEXT_blend_func_separate)
+            /*if (GLEXT_blend_func_separate)
             {
                 glCheck(GLEXT_glBlendFuncSeparate(
                     factorToGlConstant(mode.colorSrcFactor), factorToGlConstant(mode.colorDstFactor),
                     factorToGlConstant(mode.alphaSrcFactor), factorToGlConstant(mode.alphaDstFactor)));
             }
             else
-            {
+            {*/
                 glCheck(glBlendFunc(
                     factorToGlConstant(mode.colorSrcFactor),
                     factorToGlConstant(mode.colorDstFactor)));
-            }
+            //}
 
-            if (GLEXT_blend_equation_separate)
+            /*if (GLEXT_blend_equation_separate)
             {
                 glCheck(GLEXT_glBlendEquationSeparate(
                     equationToGlConstant(mode.colorEquation),
                     equationToGlConstant(mode.alphaEquation)));
             }
             else
-            {
-                glCheck(GLEXT_glBlendEquation(equationToGlConstant(mode.colorEquation)));
-            }
+            {*/
+                glCheck(glBlendEquation(equationToGlConstant(mode.colorEquation)));
+            //}
 
             m_cache.lastBlendMode = mode;
         }

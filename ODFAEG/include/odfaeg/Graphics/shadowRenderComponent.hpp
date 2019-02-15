@@ -25,13 +25,13 @@ namespace odfaeg {
           */
         class ODFAEG_GRAPHICS_API ShadowRenderComponent : public HeavyComponent {
             public :
-                ShadowRenderComponent (RenderWindow& window, int layer, std::string expression,sf::ContextSettings settings = sf::ContextSettings(0, 0, 4, 3, 0));
+                ShadowRenderComponent (RenderWindow& window, int layer, std::string expression,window::ContextSettings settings = window::ContextSettings(0, 0, 4, 3, 0));
                 void drawNextFrame();
                 std::vector<Entity*> getEntities();
                 void draw(RenderTarget& target, RenderStates states);
                 void draw(Drawable& drawable, RenderStates states) {
                 }
-                void pushEvent(sf::Event event, RenderWindow& rw);
+                void pushEvent(window::IEvent event, RenderWindow& rw);
                 bool needToUpdate();
                 View& getView();
                 int getLayer();

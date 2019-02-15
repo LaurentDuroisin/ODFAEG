@@ -114,8 +114,7 @@ namespace odfaeg {
            for (it = components.begin(); it != components.end(); it++) {
                if (it->second->isEventContextActivated()) {
                    it->second->processEvents();
-                   if (it->second->isAutoResized())
-                       it->second->recomputeSize();
+                   it->second->recomputeSize();
                }
            }
            core::Command::clearEventsStack();

@@ -12,7 +12,7 @@ namespace odfaeg {
                 rect = RectangleShape(getSize());
                 rect.setOutlineThickness(1);
                 rect.setOutlineColor(sf::Color::Black);
-                core::Action a (odfaeg::core::Action::MOUSE_BUTTON_PRESSED_ONCE, sf::Mouse::Left);
+                core::Action a (odfaeg::core::Action::MOUSE_BUTTON_PRESSED_ONCE, window::IMouse::Left);
                 core::Command menuSelected (a, core::FastDelegate<void>(&Menu::onClick, this));
                 //La fonction connect n'est pas appelée.
                 getListener().connect("MenuSelected"+t, menuSelected);
@@ -63,13 +63,13 @@ namespace odfaeg {
             }
             bool Menu::isMouseOnMenu() {
                 physic::BoundingBox bb = getGlobalBounds();
-                math::Vec2f mousePos = math::Vec2f(sf::Mouse::getPosition(getWindow()).x, sf::Mouse::getPosition(getWindow()).y);
+                math::Vec2f mousePos = math::Vec2f(window::IMouse::getPosition(getWindow()).x, window::IMouse::getPosition(getWindow()).y);
                 if (bb.isPointInside(mousePos)) {
                     return true;
                 }
                 return false;
             }
-            void Menu::onEventPushed(sf::Event event, RenderWindow& window) {
+            void Menu::onEventPushed(window::IEvent event, RenderWindow& window) {
                 if (&getWindow() == &window) {
                     getListener().pushEvent(event);
                 }

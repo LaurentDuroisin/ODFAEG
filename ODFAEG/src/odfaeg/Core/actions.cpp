@@ -11,82 +11,84 @@ namespace odfaeg {
             pressed = false;
             switch (type) {
                 case CLOSED :
-                    startEvent.type = sf::Event::Closed;
+                    startEvent.type = window::IEvent::WINDOW_EVENT;
+                    startEvent.window.type = window::IEvent::WINDOW_EVENT_CLOSED;
                     break;
                 case RESIZED :
-                    startEvent.type = sf::Event::Resized;
+                    startEvent.type = window::IEvent::WINDOW_EVENT;
+                    startEvent.window.type = window::IEvent::WINDOW_EVENT_RESIZED;
                     break;
                 case LOST_FOCUS :
-                    startEvent.type = sf::Event::LostFocus;
+                    startEvent.type = window::IEvent::WINDOW_EVENT;
+                    startEvent.window.type = window::IEvent::WINDOW_EVENT_FOCUS_LOST;
                     break;
                 case GAIGNED_FOCUS :
-                    startEvent.type = sf::Event::GainedFocus;
+                    startEvent.type = window::IEvent::WINDOW_EVENT;
+                    startEvent.window.type = window::IEvent::WINDOW_EVENT_FOCUS_GAIGNED;
                     break;
                 case TEXT_ENTERED :
-                    startEvent.type = sf::Event::TextEntered;
+                    startEvent.type = window::IEvent::TEXT_INPUT_EVENT;
+                    startEvent.text.type = window::IEvent::TEXT_INPUT_EVENT;
                     startEvent.text.unicode = 0;
                     break;
                 case MOUSE_WHEEL_MOVED :
-                    startEvent.type = sf::Event::MouseWheelMoved;
+                    startEvent.type = window::IEvent::MOUSE_WHEEL_EVENT;
                     break;
                 case MOUSE_MOVED :
-                    startEvent.type = sf::Event::MouseMoved;
+                    startEvent.type = window::IEvent::MOUSE_MOTION_EVENT;
                     break;
                 case MOUSE_ENTERED :
-                    startEvent.type = sf::Event::MouseEntered;
+                    startEvent.type = window::IEvent::MOUSE_EVENT_ENTER;
                     break;
                 case MOUSE_LEFT :
-                    startEvent.type = sf::Event::MouseEntered;
-                    break;
-                case JOYSTICK_MOVED :
-                    startEvent.type = sf::Event::MouseLeft;
-                    break;
-                case JOYSTICK_CONNECTED :
-                    startEvent.type = sf::Event::JoystickConnected;
-                    break;
-                case JOYSTICK_DISCONNECTED :
-                    startEvent.type = sf::Event::JoystickDisconnected;
+                    startEvent.type = window::IEvent::MOUSE_EVENT_LEAVE;
                     break;
                 default :
                     throw Erreur (1, "Invalid type!", 2);
             }
             is_not = false;
         }
-        Action::Action (EVENT_TYPE type, sf::Keyboard::Key key) : type(type) {
+        Action::Action (EVENT_TYPE type, window::IKeyboard::Key key) : type(type) {
             leaf = true;
             pressed = false;
             switch (type) {
             case KEY_PRESSED_ONCE :
-                startEvent.type = sf::Event::KeyPressed;
-                startEvent.key.code = key;
+                startEvent.type = window::IEvent::KEYBOARD_EVENT;
+                startEvent.keyboard.type = window::IEvent::KEY_EVENT_PRESSED;
+                startEvent.keyboard.code = key;
                 break;
             case KEY_HELD_DOWN :
-                startEvent.type = sf::Event::KeyPressed;
-                startEvent.key.code = key;
+                startEvent.type = window::IEvent::KEYBOARD_EVENT;
+                startEvent.keyboard.type = window::IEvent::KEY_EVENT_PRESSED;
+                startEvent.keyboard.code = key;
                 break;
             case KEY_RELEASED :
-                startEvent.type = sf::Event::KeyReleased;
-                startEvent.key.code = key;
+                startEvent.type = window::IEvent::KEYBOARD_EVENT;
+                startEvent.keyboard.type = window::IEvent::KEY_EVENT_RELEASED;
+                startEvent.keyboard.code = key;
                 break;
             default :
                 throw Erreur (1, "Invalid type!", 2);
             }
             is_not = false;
         }
-        Action::Action (EVENT_TYPE type, sf::Mouse::Button button) : type(type) {
+        Action::Action (EVENT_TYPE type, window::IMouse::Button button) : type(type) {
             leaf = true;
             pressed = false;
             switch (type) {
                 case MOUSE_BUTTON_PRESSED_ONCE :
-                    startEvent.type = sf::Event::MouseButtonPressed;
+                    startEvent.type = window::IEvent::MOUSE_BUTTON_EVENT;
+                    startEvent.mouseButton.type = window::IEvent::BUTTON_EVENT_PRESSED;
                     startEvent.mouseButton.button = button;
                     break;
                 case MOUSE_BUTTON_HELD_DOWN :
-                    startEvent.type = sf::Event::MouseButtonPressed;
+                    startEvent.type = window::IEvent::MOUSE_BUTTON_EVENT;
+                    startEvent.mouseButton.type = window::IEvent::BUTTON_EVENT_PRESSED;
                     startEvent.mouseButton.button = button;
                     break;
                 case MOUSE_BUTTON_RELEASED :
-                    startEvent.type = sf::Event::MouseButtonReleased;
+                    startEvent.type = window::IEvent::MOUSE_BUTTON_EVENT;
+                    startEvent.mouseButton.type = window::IEvent::BUTTON_EVENT_RELEASED;
                     startEvent.mouseButton.button = button;
                     break;
                 default :
@@ -139,26 +141,26 @@ namespace odfaeg {
             if (!leaf) {
                 return comparator(this, std::ref(*leftChild), std::ref(*rightChild));
             } else {
-                /*if (startEvent.type == sf::Event::TextEntered)
+                /*if (startEvent.type == window::IEvent::TextEntered)
                     std::cout<<"text entered : "<<startEvent.text.unicode<<std::endl;*/
                 //std::cout<<"triggered"<<std::endl;
 
                 if (type == KEY_HELD_DOWN && !is_not) {
-                    return sf::Keyboard::isKeyPressed(startEvent.key.code);
+                    return window::IKeyboard::isKeyPressed(static_cast<window::IKeyboard::Key>(startEvent.keyboard.code));
                 }
                 if (type == KEY_HELD_DOWN && is_not) {
-                    return !sf::Keyboard::isKeyPressed(startEvent.key.code);
+                    return !window::IKeyboard::isKeyPressed(static_cast<window::IKeyboard::Key>(startEvent.keyboard.code));
                 }
                 if (type == MOUSE_BUTTON_HELD_DOWN && !is_not) {
-                    return sf::Mouse::isButtonPressed(startEvent.mouseButton.button);
+                    return window::IMouse::isButtonPressed(static_cast<window::IMouse::Button>(startEvent.mouseButton.button));
                 }
                 if (type == MOUSE_BUTTON_HELD_DOWN && is_not) {
-                    return !sf::Mouse::isButtonPressed(startEvent.mouseButton.button);
+                    return !window::IMouse::isButtonPressed(static_cast<window::IMouse::Button>(startEvent.mouseButton.button));
                 }
                 /*else if (type == JOYSTICK_BUTTON_HELD_DOWN)
                     return sf::Joystick::isButtonPressed(startEvent.joystickButton.button);*/
 
-                vector<sf::Event> events = Command::getEvents();
+                vector<window::IEvent> events = Command::getEvents();
                 for (unsigned int i = 0; i < events.size(); i++) {
                     /*if (type == KEY_HELD_DOWN || type == MOUSE_BUTTON_HELD_DOWN) {
                         if (!is_not)
@@ -168,13 +170,17 @@ namespace odfaeg {
                     } else {*/
                         /*Sometimes the event stored to startEvent is deleted*/
                         if (!is_not && Command::equalEvent(events[i], startEvent) && !pressed) {
-                            if (events[i].type == sf::Event::KeyPressed && startEvent.type == sf::Event::KeyPressed
-                                || events[i].type == sf::Event::MouseButtonPressed && startEvent.type == sf::Event::MouseButtonPressed)
+                            if (events[i].type == window::IEvent::KEYBOARD_EVENT && events[i].keyboard.type == window::IEvent::KEY_EVENT_PRESSED
+                                && startEvent.type == window::IEvent::KEYBOARD_EVENT && startEvent.keyboard.type == window::IEvent::KEY_EVENT_PRESSED
+                                || events[i].type == window::IEvent::MOUSE_BUTTON_EVENT && events[i].mouseButton.type == window::IEvent::BUTTON_EVENT_PRESSED
+                                && startEvent.type == window::IEvent::MOUSE_BUTTON_EVENT && startEvent.mouseButton.type == window::IEvent::BUTTON_EVENT_PRESSED)
                                 pressed = true;
                             return true;
                         } else if (is_not && !Command::equalEvent(events[i], startEvent) && !pressed) {
-                            if (events[i].type == sf::Event::KeyPressed && startEvent.type == sf::Event::KeyPressed
-                                || events[i].type == sf::Event::MouseButtonPressed && startEvent.type == sf::Event::MouseButtonPressed)
+                            if (events[i].type == window::IEvent::KEYBOARD_EVENT && events[i].keyboard.type == window::IEvent::KEY_EVENT_RELEASED
+                                && startEvent.type == window::IEvent::KEYBOARD_EVENT && startEvent.keyboard.type == window::IEvent::KEY_EVENT_RELEASED
+                                || events[i].type == window::IEvent::MOUSE_BUTTON_EVENT && events[i].mouseButton.type == window::IEvent::BUTTON_EVENT_RELEASED
+                                && startEvent.type == window::IEvent::MOUSE_BUTTON_EVENT && startEvent.mouseButton.type == window::IEvent::BUTTON_EVENT_RELEASED)
                                 pressed = true;
                             return true;
                         }
@@ -202,13 +208,13 @@ namespace odfaeg {
 
         }
 
-        void Action::setPressed(sf::Event event) {
+        void Action::setPressed(window::IEvent event) {
             if (!leaf) {
                 leftChild->setPressed(event);
                 rightChild->setPressed(event);
             } else {
-                if ((type == KEY_PRESSED_ONCE && event.type == sf::Event::KeyReleased && event.key.code == startEvent.key.code) ||
-                    (type == MOUSE_BUTTON_PRESSED_ONCE && event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == startEvent.mouseButton.button)) {
+                if ((type == KEY_PRESSED_ONCE && event.type == window::IEvent::KEYBOARD_EVENT && event.keyboard.type == window::IEvent::KEY_EVENT_PRESSED && event.keyboard.code == startEvent.keyboard.code) ||
+                    (type == MOUSE_BUTTON_PRESSED_ONCE && event.type == window::IEvent::MOUSE_BUTTON_EVENT && event.mouseButton.type == window::IEvent::BUTTON_EVENT_PRESSED && event.mouseButton.button == startEvent.mouseButton.button)) {
                      pressed = false;
                 }
             }
@@ -221,14 +227,14 @@ namespace odfaeg {
                 actions.push_back(this);
             }
         }
-        bool Action::containsEvent(sf::Event& event) {
+        bool Action::containsEvent(window::IEvent& event) {
             if (!leaf) {
                 return leftChild->containsEvent(event) || rightChild->containsEvent(event);
             } else {
                 return Command::equalEvent(event, startEvent);
             }
         }
-        void Action::getEvents(std::vector<sf::Event>& events) {
+        void Action::getEvents(std::vector<window::IEvent>& events) {
             if (!leaf) {
                 leftChild->getEvents(events);
                 rightChild->getEvents(events);

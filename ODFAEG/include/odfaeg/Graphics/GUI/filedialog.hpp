@@ -21,7 +21,7 @@ namespace odfaeg {
                     void onFileSelected(Label* label);
                     void clear();
                     void onDraw(RenderTarget& target, RenderStates states = RenderStates::Default);
-                    void onEventPushed (sf::Event event, RenderWindow& window);
+                    void onEventPushed (window::IEvent event, RenderWindow& window);
                     std::string getPathChosen();
                     std::string getAppiDir();
                     void actionPerformed(Button* button);

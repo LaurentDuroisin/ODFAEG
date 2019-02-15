@@ -23,13 +23,13 @@ namespace odfaeg {
                 bool isMouseInTextArea();
                 bool isMouseOutTextArea();
                 void onTextEntered(char caracter);
-                void onUpdate(RenderWindow* window, sf::Event& event);
+                void onUpdate(RenderWindow* window, window::IEvent& event);
                 std::string getText();
                 void setText(std::string text);
                 void setCursorPos();
                 bool hasFocus();
                 bool isTextChanged();
-                void onEventPushed(sf::Event event, RenderWindow& window);
+                void onEventPushed(window::IEvent event, RenderWindow& window);
                 std::string getName();
             private :
                 int currentIndex;

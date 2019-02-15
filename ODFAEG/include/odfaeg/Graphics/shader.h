@@ -32,10 +32,8 @@
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include <SFML/Graphics/Export.hpp>
 #include <SFML/Graphics/Transform.hpp>
 #include <SFML/Graphics/Color.hpp>
-#include <SFML/Window/GlResource.hpp>
 #include <SFML/System/NonCopyable.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/System/Vector3.hpp>
@@ -56,7 +54,7 @@ namespace odfaeg {
         /// \brief Shader class (vertex and fragment)
         ///
         ////////////////////////////////////////////////////////////
-        class ODFAEG_GRAPHICS_API Shader : sf::GlResource, sf::NonCopyable
+        class ODFAEG_GRAPHICS_API Shader : sf::NonCopyable
         {
         public :
 
@@ -510,6 +508,8 @@ namespace odfaeg {
             ///
             ////////////////////////////////////////////////////////////
             static bool isAvailable();
+            unsigned int getVersionMajor();
+            unsigned int getVersionMinor();
         private :
 
             ////////////////////////////////////////////////////////////
@@ -554,7 +554,8 @@ namespace odfaeg {
             ////////////////////////////////////////////////////////////
             // Member data
             ////////////////////////////////////////////////////////////
-            unsigned int m_shaderProgram;      ///< OpenGL identifier for the program
+            unsigned int m_shaderProgram;
+            static unsigned int shading_language_version_major, shading_language_version_minor;      ///< OpenGL identifier for the program
             int          m_currentTexture;     ///< Location of the current texture in the shader
             int          m_currentAttrib;      ///< Location of the current vertex attribute in the shader.
             TextureTable m_textures;           ///< Texture variables in the shader, mapped to their location

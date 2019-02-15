@@ -13,12 +13,12 @@ namespace odfaeg {
             core::Command cmd(signal, slot);
             getListener().connect("UPDATE", cmd);
         }
-        void ZSortingRenderComponent::pushEvent(sf::Event event, RenderWindow& rw) {
-            if (event.type == sf::Event::Resized && &getWindow() == &rw && isAutoResized()) {
+        void ZSortingRenderComponent::pushEvent(window::IEvent event, RenderWindow& rw) {
+            if (event.type == window::IEvent::WINDOW_EVENT && event.window.type == window::IEvent::WINDOW_EVENT_RESIZED && &getWindow() == &rw && isAutoResized()) {
                 std::cout<<"recompute size"<<std::endl;
                 recomputeSize();
                 getListener().pushEvent(event);
-                getView().reset(physic::BoundingBox(getView().getViewport().getPosition().x, getView().getViewport().getPosition().y, getView().getViewport().getPosition().z, event.size.width, event.size.height, getView().getViewport().getDepth()));
+                getView().reset(physic::BoundingBox(getView().getViewport().getPosition().x, getView().getViewport().getPosition().y, getView().getViewport().getPosition().z, event.window.data1, event.window.data2, getView().getViewport().getDepth()));
             }
         }
         bool ZSortingRenderComponent::needToUpdate() {

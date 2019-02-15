@@ -5,7 +5,7 @@ using namespace sf;
 using namespace std;
 namespace odfaeg {
     namespace graphic {
-        ShadowRenderComponent::ShadowRenderComponent (RenderWindow& window, int layer, std::string expression,sf::ContextSettings settings) :
+        ShadowRenderComponent::ShadowRenderComponent (RenderWindow& window, int layer, std::string expression,window::ContextSettings settings) :
             HeavyComponent(window, math::Vec3f(window.getView().getPosition().x, window.getView().getPosition().y, layer),
                           math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0),
                           math::Vec3f(window.getView().getSize().x + window.getView().getSize().x * 0.5f, window.getView().getPosition().y + window.getView().getSize().y * 0.5f, layer)),
@@ -15,6 +15,9 @@ namespace odfaeg {
                 sf::Vector3i resolution ((int) window.getSize().x, (int) window.getSize().y, window.getView().getSize().z);
                 shadowMap = std::make_unique<RenderTexture>();
                 stencilBuffer = std::make_unique<RenderTexture>();
+                shadowMap->create(resolution.x, resolution.y,settings);
+                settings.depthBits = 32;
+                stencilBuffer->create(resolution.x, resolution.y,settings);
                 stencilBufferTile = std::make_unique<Tile>(&stencilBuffer->getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
                 shadowTile = std::make_unique<Tile>(&shadowMap->getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
                 core::FastDelegate<bool> signal (&ShadowRenderComponent::needToUpdate, this);
@@ -22,9 +25,6 @@ namespace odfaeg {
                 core::Command cmd(signal, slot);
                 getListener().connect("UPDATE", cmd);
                 if (Shader::isAvailable()) {
-                    shadowMap->create(resolution.x, resolution.y,settings);
-                    settings.depthBits = 32;
-                    stencilBuffer->create(resolution.x, resolution.y,settings);
                     buildShadowMapShader = std::make_unique<Shader>();
                     perPixShadowShader = std::make_unique<Shader>();
                     const std::string buildShadowMapVertexShader =
@@ -41,6 +41,10 @@ namespace odfaeg {
                         "uniform sampler2D texture;"
                         "uniform float haveTexture;"
                         "in mat4 projMat;"
+                        "mat4 inverse(mat4 mat) {"
+                        "   mat4 inv;"
+                        "   return inv;"
+                        "}"
                         "void main() {"
                         "   vec4 texel = texture2D(texture, gl_TexCoord[0].xy);"
                         "   vec4 colors[2];"
@@ -70,6 +74,10 @@ namespace odfaeg {
                         "uniform float haveTexture;"
                         "in vec4 shadowCoords;"
                         "in mat4 projMat;"
+                        "mat4 inverse(mat4 mat) {"
+                        "   mat4 inv;"
+                        "   return inv;"
+                        "}"
                         "void main() {"
                         "   vec4 texel = texture2D(texture, gl_TexCoord[0].xy);"
                         "   vec4 colors[2];"
@@ -175,11 +183,11 @@ namespace odfaeg {
                 states.blendMode = sf::BlendMultiply;
                 target.draw(*shadowTile, states);
             }
-            void ShadowRenderComponent::pushEvent(sf::Event event, RenderWindow& rw) {
-                if (event.type == sf::Event::Resized && &getWindow() == &rw && isAutoResized()) {
+            void ShadowRenderComponent::pushEvent(window::IEvent event, RenderWindow& rw) {
+                if (event.type == window::IEvent::WINDOW_EVENT && event.window.type == window::IEvent::WINDOW_EVENT_RESIZED && &getWindow() == &rw && isAutoResized()) {
                     recomputeSize();
                     getListener().pushEvent(event);
-                    getView().reset(physic::BoundingBox(getView().getViewport().getPosition().x, getView().getViewport().getPosition().y, getView().getViewport().getPosition().z, event.size.width, event.size.height, getView().getViewport().getDepth()));
+                    getView().reset(physic::BoundingBox(getView().getViewport().getPosition().x, getView().getViewport().getPosition().y, getView().getViewport().getPosition().z, event.window.data1, event.window.data2, getView().getViewport().getDepth()));
                 }
             }
             bool ShadowRenderComponent::needToUpdate() {

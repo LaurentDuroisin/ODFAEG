@@ -32,20 +32,20 @@
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include <SFML/Graphics/Export.hpp>
-#include <SFML/Graphics/Image.hpp>
-#include <SFML/Window/GlResource.hpp>
 #include "../../../include/odfaeg/Graphics/export.hpp"
-#include <typeinfo>
 #include "../Core/archive.h"
 #include "../Math/matrix4.h"
+#include <SFML/Graphics/Image.hpp>
 namespace sf {
-    class Window;
     class InputStream;
+    class Image;
 }
 
 namespace odfaeg
 {
+    namespace window {
+        class Window;
+    }
     namespace graphic {
         class RenderTarget;
         class RenderTexture;
@@ -55,7 +55,7 @@ namespace odfaeg
         /// \brief Image living on the graphics card that can be used for drawing
         ///
         ////////////////////////////////////////////////////////////
-        class ODFAEG_GRAPHICS_API Texture : sf::GlResource
+        class ODFAEG_GRAPHICS_API Texture
         {
         public :
 
@@ -342,7 +342,7 @@ namespace odfaeg
             /// \param window Window to copy to the texture
             ///
             ////////////////////////////////////////////////////////////
-            void update(const sf::Window& window);
+            void update(window::Window& window);
 
             ////////////////////////////////////////////////////////////
             /// \brief Update a part of the texture from the contents of a window
@@ -359,7 +359,7 @@ namespace odfaeg
             /// \param y      Y offset in the texture where to copy the source window
             ///
             ////////////////////////////////////////////////////////////
-            void update(const sf::Window& window, unsigned int x, unsigned int y);
+            void update(window::Window& window, unsigned int x, unsigned int y);
 
             ////////////////////////////////////////////////////////////
             /// \brief Enable or disable the smooth filter

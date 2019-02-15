@@ -26,6 +26,7 @@
 // Headers
 ////////////////////////////////////////////////////////////
 #include "glCheck.h"
+#include <GL/glew.h>
 #include <SFML/System/Err.hpp>
 using namespace sf;
 namespace odfaeg
