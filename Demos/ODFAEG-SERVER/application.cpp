@@ -76,6 +76,7 @@ namespace sorrok {
             thouse->getFaces()[0]->getMaterial().setTexId("HOUSE");
             g2d::Decor* decor = new g2d::Decor(thouse, &g2d::AmbientLight::getAmbientLight());
             decor->setPosition(Vec3f(-100, 250, 400));
+            decor->setShadowCenter(Vec3f(0, 500, 0));
             BoundingVolume *bb = new BoundingBox(decor->getGlobalBounds().getPosition().x, decor->getGlobalBounds().getPosition().y + decor->getGlobalBounds().getSize().y * 0.4f, 0,
             decor->getGlobalBounds().getSize().x, decor->getGlobalBounds().getSize().y * 0.25f, 0);
             decor->setCollisionVolume(bb);
@@ -84,16 +85,15 @@ namespace sorrok {
             Tile* tf1 = new Tile(nullptr, Vec3f(0, 100, 150), Vec3f(100, 100, 0), sf::IntRect(0, 0, 150, 200));
             tf1->getFaces()[0]->getMaterial().setTexId("FIRE1");
             g2d::Decor *fire1 = new g2d::Decor(tf1, &g2d::AmbientLight::getAmbientLight());
-            //decor->setShadowCenter(Vec2f(0, 60));
-            //decor->changeGravityCenter(Vec3f(50, 50, 0));
+            fire1->setShadowCenter(Vec3f(0, 200, 0));
             Tile* tf2 = new Tile(nullptr, Vec3f(0, 100, 150), Vec3f(100, 100, 0), sf::IntRect(0, 0, 150, 200));
             tf2->getFaces()[0]->getMaterial().setTexId("FIRE2");
             g2d::Decor *fire2 = new g2d::Decor(tf2, &g2d::AmbientLight::getAmbientLight());
-            //decor->setShadowCenter(Vec2f(0, 60));
-            //decor->changeGravityCenter(Vec3f(50, 50, 0));
+            fire2->setShadowCenter(Vec3f(0, 200, 0));
             Tile* tf3 = new Tile(nullptr, Vec3f(0, 100, 150), Vec3f(100, 100, 0), sf::IntRect(0, 0, 150, 200));
             tf3->getFaces()[0]->getMaterial().setTexId("FIRE3");
             g2d::Decor *fire3 = new g2d::Decor(tf3, &g2d::AmbientLight::getAmbientLight());
+            fire3->setShadowCenter(Vec3f(0, 200, 0));
             //decor->setShadowCenter(Vec2f(0, 60));
             //decor->changeGravityCenter(Vec3f(50, 50, 0));
             //fire1->setShadowCenter(Vec2f(80, 100));
@@ -123,6 +123,8 @@ namespace sorrok {
         monsterZone.addTriangle(pts[2], pts[0], pts[3]);
         Monster* monster = new Monster("Ogro", "Orc","MapTest",1,monsterZone);
         Vec3f pos = monster->respawn();
+        Item item("HP potion", Item::HP_POTION);
+        monster->addLootableItem(item, 0.5);
         tmpPosition = pos;
         monster->setCenter(pos);
         World::addEntity(monster);
@@ -163,24 +165,27 @@ namespace sorrok {
                 packet<<"MONSTERSINFOS"+oss.str();
                 user->sendTcpPacket(packet);
             } else if (request == "MOVEFROMKEYBOARD") {
-                std::cout<<"move from keyboard!"<<std::endl;
                 int id = conversionStringInt(infos[1]);
                 Hero* hero = static_cast<Hero*> (World::getEntity(id));
                 Vec2f dir (conversionStringFloat(infos[2]), conversionStringFloat(infos[3]));
                 sf::Int64 last_cli_time = conversionStringLong(infos[4]);
                 sf::Int64 elapsedTime = user->getClientTime() - last_cli_time;
+                sf::Int64 transferTime = user->getPingAvg();
+                sf::Int64 cli_time = user->getClientTime();
                 hero->setDir(Vec2f(dir.x, dir.y));
                 hero->setMoving(true);
                 hero->setIsMovingFromKeyboard(true);
                 hero->setFightingMode(false);
                 hero->setAttacking(false);
-                Vec2f actualPos = hero->getCenter();
-                Vec2f newPos = actualPos + dir * hero->getSpeed() * elapsedTime;
+                Vec3f newPos = hero->getCenter();
+                std::string response = "NEWPOS"+conversionIntString(hero->getId())+"*"+conversionLongString(transferTime)+"*"+conversionFloatString(newPos.x)+"*"+conversionFloatString(newPos.y)+"*"+conversionFloatString(newPos.z)+"*"+conversionLongString(cli_time)+"*"
+                +conversionIntString(hero->isMoving())+"*"+conversionIntString(hero->isInFightingMode())+"*"+conversionIntString(hero->isAttacking())+"*"+conversionIntString(hero->isAlive())+"*"+conversionIntString(hero->getLife());
                 SymEncPacket packet;
-                packet<<"MOVEFROMKEYBOARD";
+                packet<<response;
                 user->sendTcpPacket(packet);
             //Update the caracter states for a mouse move and update it's position from the transfer time.
             } else if (request == "MOVEFROMPATH") {
+                std::cout<<"move from path"<<std::endl;
                 int id = conversionStringInt(infos[1]);
                 Hero* hero = static_cast<Hero*> (World::getEntity(id));
                 Vec3f fPos (conversionStringInt(infos[2]), conversionStringInt(infos[3]), 0);
@@ -217,8 +222,8 @@ namespace sorrok {
                             if (World::collide(caracter, ray)) {
                                 newPos = actualPos;
                             }
-                            std::string response = "NEWPOS"+conversionIntString(caracter->getId())+"*"+conversionLongString(transferTime)+"*"+conversionFloatString(newPos.x)+"*"+conversionFloatString(newPos.y)+"*"+conversionLongString(cli_time)+"*"
-                            +conversionIntString(caracter->isMoving())+"*"+conversionIntString(caracter->isInFightingMode())+"*"+conversionIntString(caracter->isAttacking())+"*"+conversionIntString(caracter->isAlive());
+                            std::string response = "NEWPOS"+conversionIntString(caracter->getId())+"*"+conversionLongString(transferTime)+"*"+conversionFloatString(newPos.x)+"*"+conversionFloatString(newPos.y)+"*"+conversionFloatString(newPos.z)+"*"+conversionLongString(cli_time)+"*"
+                            +conversionIntString(caracter->isMoving())+"*"+conversionIntString(caracter->isInFightingMode())+"*"+conversionIntString(caracter->isAttacking())+"*"+conversionIntString(caracter->isAlive())+"*"+conversionIntString(caracter->getLife());
                             sf::Packet packet;
                             packet<<response;
                             user->sendUdpPacket(packet);
@@ -231,8 +236,8 @@ namespace sorrok {
                                 newPos.computeDist(caracter->getPath()[caracter->getPath().size() - 1]) <= 1) {
                                 newPos = caracter->getPath()[caracter->getPath().size() - 1];
                             }
-                            std::string response = "NEWPOS"+conversionIntString(caracter->getId())+"*"+conversionLongString(transferTime)+"*"+conversionFloatString(newPos.x)+"*"+conversionFloatString(newPos.y)+"*"+conversionLongString(cli_time)+"*"
-                            +conversionIntString(caracter->isMoving())+"*"+conversionIntString(caracter->isInFightingMode())+"*"+conversionIntString(caracter->isAttacking())+"*"+conversionIntString(caracter->isAlive());;
+                            std::string response = "NEWPOS"+conversionIntString(caracter->getId())+"*"+conversionLongString(transferTime)+"*"+conversionFloatString(newPos.x)+"*"+conversionFloatString(newPos.y)+"*"+conversionFloatString(newPos.z)+"*"+conversionLongString(cli_time)+"*"
+                            +conversionIntString(caracter->isMoving())+"*"+conversionIntString(caracter->isInFightingMode())+"*"+conversionIntString(caracter->isAttacking())+"*"+conversionIntString(caracter->isAlive())+"*"+conversionIntString(caracter->getLife());
                             sf::Packet packet;
                             packet<<response;
                             user->sendUdpPacket(packet);
@@ -241,15 +246,14 @@ namespace sorrok {
                         sf::Int64 transferTime = user->getPingAvg();
                         sf::Int64 cli_time = user->getClientTime();
                         Vec3f newPos = caracter->getCenter();
-                        std::string response = "NEWPOS"+conversionIntString(caracter->getId())+"*"+conversionLongString(transferTime)+"*"+conversionFloatString(newPos.x)+"*"+conversionFloatString(newPos.y)+"*"+conversionLongString(cli_time)+"*"
-                        +conversionIntString(caracter->isMoving())+"*"+conversionIntString(caracter->isInFightingMode())+"*"+conversionIntString(caracter->isAttacking())+"*"+conversionIntString(caracter->isAlive());
+                        std::string response = "NEWPOS"+conversionIntString(caracter->getId())+"*"+conversionLongString(transferTime)+"*"+conversionFloatString(newPos.x)+"*"+conversionFloatString(newPos.y)+"*"+conversionFloatString(newPos.z)+"*"+conversionLongString(cli_time)+"*"
+                        +conversionIntString(caracter->isMoving())+"*"+conversionIntString(caracter->isInFightingMode())+"*"+conversionIntString(caracter->isAttacking())+"*"+conversionIntString(caracter->isAlive())+"*"+conversionIntString(caracter->getLife());
                         sf::Packet packet;
                         packet<<response;
                         user->sendUdpPacket(packet);
                     }
                 }
             } else if (request == "STOPCARMOVE") {
-                std::cout<<"stop moving"<<std::endl;
                 sf::Int64 transferTime = user->getPingAvg();
                 int id = conversionStringInt(infos[1]);
                 Caracter* caracter = static_cast<Caracter*> (World::getEntity(id));
@@ -263,8 +267,8 @@ namespace sorrok {
                         newPos = caracter->getCenter() - Vec3f(caracter->getDir().x, caracter->getDir().y, 0) * delta_time * caracter->getSpeed();
                         caracter->setCenter(newPos);
                     }
-                    std::string response = "NEWPOS"+conversionIntString(caracter->getId())+"*"+conversionLongString(transferTime)+"*"+conversionFloatString(newPos.x)+"*"+conversionFloatString(newPos.y)+"*"+conversionLongString(cli_time)+"*"
-                        +conversionIntString(caracter->isMoving())+"*"+conversionIntString(caracter->isInFightingMode())+"*"+conversionIntString(caracter->isAttacking())+"*"+conversionIntString(caracter->isAlive());
+                    std::string response = "NEWPOS"+conversionIntString(caracter->getId())+"*"+conversionLongString(transferTime)+"*"+conversionFloatString(newPos.x)+"*"+conversionFloatString(newPos.y)+"*"+conversionFloatString(newPos.z)+"*"+conversionLongString(cli_time)+"*"
+                        +conversionIntString(caracter->isMoving())+"*"+conversionIntString(caracter->isInFightingMode())+"*"+conversionIntString(caracter->isAttacking())+"*"+conversionIntString(caracter->isAlive())+"*"+conversionIntString(caracter->getLife());
                     SymEncPacket packet;
                     packet<<response;
                     user->sendTcpPacket(packet);
@@ -329,6 +333,14 @@ namespace sorrok {
                 SymEncPacket packet;
                 packet<<"CONNECTED";
                 user->sendTcpPacket(packet);
+                std::vector<Entity*> caracters = World::getEntities("E_HERO+E_MONSTER");
+                for (unsigned int i = 0; i < caracters.size(); i++) {
+                    if (dynamic_cast<Caracter*> (caracters[i])) {
+                        Caracter* caracter = static_cast<Caracter*>(caracters[i]);
+                        caracter->getRegen().clear();
+                        caracter->getDamages().clear();
+                    }
+                }
                 /*std::string pseudo = infos[1];
                 std::string pswd = infos[2];
                 sql::Statement* stmt = con->createStatement();
@@ -349,6 +361,9 @@ namespace sorrok {
         std::vector<Entity*> caracters = World::getEntities("E_HERO+E_MONSTER");
         for (unsigned int i = 0; i < caracters.size(); i++) {
             Caracter* caracter = static_cast<Caracter*>(caracters[i]);
+            /*if (caracter->getType() == "E_HERO") {
+                std::cout<<"hero life : "<<caracter->getLife()<<std::endl;
+            }*/
             if (caracter->isAlive()) {
                 if (caracter->isMoving()) {
                     if (dynamic_cast<Hero*>(caracter) != nullptr && static_cast<Hero*>(caracter)->isMovingFromKeyboard()) {
@@ -411,7 +426,6 @@ namespace sorrok {
                             packet<<response;
                             users[i]->sendTcpPacket(packet);
                         }
-                        std::cout<<caracter->getType()<<" start moving to the ennemi!"<<std::endl;
                     } else {
                         if(dynamic_cast<Monster*>(caracter->getFocusedCaracter())) {
                             Monster* m = static_cast<Monster*>(caracter->getFocusedCaracter());
@@ -431,7 +445,6 @@ namespace sorrok {
                             Network::sendTcpPacket(packet);
                         }
                         if (caracter->getDamages().empty()) {
-                            std::cout<<"send damages"<<std::endl;
                             std::vector<int> damages;
                             int nb = 10.f / caracter->getAttackSpeed();
                             for (unsigned int i = 0; i < nb; i++) {
@@ -450,20 +463,21 @@ namespace sorrok {
                                     damage = atk - def;
                                 }
                                 damage = (damage < 0) ? 0 : damage;
-                                std::cout<<"damage : "<<damage<<std::endl;
                                 damages.push_back(damage);
                             }
                             caracter->setDamages(damages);
-                            SymEncPacket packet;
                             int size = damages.size();
-                            std::string response = "DMG"+conversionIntString(caracter->getId())+"*"+conversionIntString(size)+"*";
+                            std::string response = "DMG"+conversionIntString(caracter->getId())+conversionIntString(size)+"*";
                             for(unsigned int i = 0; i < damages.size(); i++) {
-                                response += conversionIntString(damages[i]);
-                                if (i != damages.size() - 1)
-                                    response += "*";
+                                response += conversionIntString(damages[i])+"*";
                             }
-                            packet<<response;
-                            Network::sendTcpPacket(packet);
+                            for (unsigned int i = 0; i < Network::getUsers().size(); i++) {
+                                std::string userResponse = response;
+                                userResponse+=conversionLongString(Network::getUsers()[i]->getClientTime());
+                                SymEncPacket packet;
+                                packet<<userResponse;
+                                Network::getUsers()[i]->sendTcpPacket(packet);
+                            }
                         }
                         if (caracter->getTimeOfLastAttack().asSeconds() >= caracter->getAttackSpeed()) {
                             caracter->restartAttackSpeed();
@@ -474,27 +488,38 @@ namespace sorrok {
                                 SymEncPacket packet;
                                 packet<<"DEATH"+conversionIntString(caracter->getFocusedCaracter()->getId());
                                 Network::sendTcpPacket(packet);
+                                if (caracter->getFocusedCaracter()->getType() == "E_MONSTER") {
+                                    std::vector<Item> items = static_cast<Monster*>(caracter->getFocusedCaracter())->getLootedItems();
+                                    std::ostringstream oss;
+                                    OTextArchive ota(oss);
+                                    ota(items);
+                                    SymEncPacket packet;
+                                    std::string response = "ITEMS"+oss.str();
+                                    packet<<response;
+                                    Network::sendTcpPacket(packet);
+                                }
                             }
                         }
                     }
                 }
                 if (!caracter->isInFightingMode() && !caracter->isMoving()) {
                     if (caracter->getRegen().empty()) {
-                        std::cout<<"send régèn!"<<std::endl;
                         std::vector<int> regen;
                         int nb = 10.f / caracter->getRegenHpSpeed();
-                        std::string response = "RGN"+conversionIntString(caracter->getId())+"*"+conversionIntString(nb)+"*";
+                        std::string response = "RGN"+conversionIntString(caracter->getId())+conversionIntString(nb)+"*";
                         for (unsigned int i = 0; i < nb; i++) {
                             int rgn = Math::random(caracter->getRegenHpAmountMin(), caracter->getRegenHpAmountMax());
                             regen.push_back(rgn);
-                            response += conversionIntString(rgn);
-                            if (i != nb - 1)
-                                response += "*";
+                            response += conversionIntString(rgn)+"*";
                         }
                         caracter->setRegen(regen);
-                        SymEncPacket packet;
-                        packet<<response;
-                        Network::sendTcpPacket(packet);
+                        for (unsigned int i = 0; i < Network::getUsers().size(); i++) {
+                            std::string userResponse = response;
+                            userResponse+=conversionLongString(Network::getUsers()[i]->getClientTime());
+                            SymEncPacket packet;
+                            packet<<userResponse;
+                            Network::getUsers()[i]->sendTcpPacket(packet);
+                        }
                     }
                     if (caracter->getTimeOfLastHpRegen().asSeconds() >= caracter->getRegenHpSpeed()) {
                         caracter->restartRegenHP();
@@ -515,7 +540,6 @@ namespace sorrok {
 
             if (monster->isAlive()) {
                 if (!monster->isInFightingMode() && !monster->isMoving() && monster->getClkLastMove().getElapsedTime().asMicroseconds() >= monster->getTimeUntilNextMove().asMicroseconds()) {
-                    std::cout<<"monster moves to a new location!"<<std::endl;
                     Vec3f finalPos;
                     do {
                         finalPos = monster->respawn();
@@ -544,7 +568,6 @@ namespace sorrok {
                         users[i]->sendTcpPacket(packet);
                     }
                 } else if (monster->isInFightingMode() && monster->getSavedPos().computeDist(Vec2f(monster->getCenter().x, monster->getCenter().y)) >= 200) {
-                    std::cout<<"monster goes back"<<std::endl;
                     std::vector<Vec2f> path = World::getPath(monster, monster->getSavedPos());
                     monster->setPath(path);
                     monster->setMoving(true);
@@ -588,7 +611,6 @@ namespace sorrok {
         }
     }
     void MyAppli::onDisconnected(User* user) {
-        std::cout<<"user disconnected!"<<std::endl;
         std::vector<Entity*> heroes = World::getEntities("E_HERO");
         for (unsigned int i = 0; i < heroes.size(); i++) {
             if (user == static_cast<Hero*>(heroes[i])->getUser()) {

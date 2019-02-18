@@ -1,10 +1,11 @@
 
-#include <iostream>
-#include <string>
-#include <vector>
+
 // *** END ***
 #ifndef MY_APPLI
 #define MY_APPLI
+#include <iostream>
+#include <string>
+#include <vector>
 #include "odfaeg/Graphics/fastRenderComponent.hpp"
 #include "odfaeg/Graphics/zSortingRenderComponent.hpp"
 #include "odfaeg/Graphics/shadowRenderComponent.hpp"
@@ -27,13 +28,13 @@
 #include "odfaeg/Graphics/animationUpdater.h"
 #include "hero.hpp"
 #include "odfaeg/Graphics/billBoard.h"
-#include "odfaeg/Physics/emmiters.h"
+#include "odfaeg/Physics/emmiters.h"*/
 #include "odfaeg/Audio/player.h"
 #include "odfaeg/Graphics/GUI/textArea.hpp"
 #include "odfaeg/Graphics/GUI/optionPane.hpp"
 #include <fstream>
 namespace sorrok {
-    class MyAppli : public odfaeg::core::Application, public odfaeg::graphic::gui::FocusListener {
+    class MyAppli : public odfaeg::core::Application/*, public odfaeg::graphic::gui::FocusListener*/ {
     private :
         const float speed = 0.2f;
         odfaeg::graphic::EntitiesUpdater *eu;
@@ -41,7 +42,7 @@ namespace sorrok {
         bool running;
         odfaeg::graphic::g2d::Wall *w;
         Caracter* hero;
-        sf::Keyboard::Key actualKey, previousKey;
+        odfaeg::window::IKeyboard::Key actualKey, previousKey;
         std::vector<odfaeg::graphic::Tile*> tiles;
         std::vector<odfaeg::graphic::Tile*> walls;
         odfaeg::graphic::Map* theMap;
@@ -59,7 +60,7 @@ namespace sorrok {
     public :
         MyAppli(sf::VideoMode wm, std::string title);
         void gaignedFocus(odfaeg::graphic::gui::TextArea* textArea);
-        void keyHeldDown (sf::Keyboard::Key key);
+        void keyHeldDown (odfaeg::window::IKeyboard::Key key);
         void leftMouseButtonPressed(sf::Vector2f mousePos);
         bool mouseInside (sf::Vector2f mousePos);
         void onMouseInside (sf::Vector2f mousePos);
@@ -67,7 +68,7 @@ namespace sorrok {
         void onInit ();
         void onRender(odfaeg::graphic::RenderComponentManager *cm);
         void onDisplay(odfaeg::graphic::RenderWindow* window);
-        void onUpdate (odfaeg::graphic::RenderWindow* window, sf::Event& event);
+        void onUpdate (odfaeg::graphic::RenderWindow* window, odfaeg::window::IEvent& event);
         void onExec ();
     };
 }

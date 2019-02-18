@@ -73,7 +73,7 @@ namespace sorrok {
         int getRegenHpAmount();
         void setRegenHpAmount(int regenHpAmount);
         Entity* getCurrentFrame() const;
-        void onDraw(odfaeg::graphic::RenderTarget&, odfaeg::graphic::RenderStates) const;
+        void onDraw(odfaeg::graphic::RenderTarget&, odfaeg::graphic::RenderStates);
         void onMove(odfaeg::math::Vec3f& t);
         virtual void setIsMovingFromKeyboard(bool b) {}
         virtual bool isMovingFromKeyboard() = 0;

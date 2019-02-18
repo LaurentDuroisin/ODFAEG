@@ -204,7 +204,7 @@ namespace sorrok {
     string Caracter::getClass () {
         return classs;
     }
-    void Caracter::onDraw(RenderTarget &target, RenderStates states) const {
+    void Caracter::onDraw(RenderTarget &target, RenderStates states) {
         target.draw(*getCurrentFrame(), states);
     }
     Entity* Caracter::getCurrentFrame() const {

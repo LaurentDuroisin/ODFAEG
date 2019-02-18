@@ -18,7 +18,7 @@ namespace sorrok {
          int x = Math::random(exts[0][1], exts[0][0]);
          int y = Math::random(exts[1][1], exts[1][0]);
          int z = y;
-         setAlive(true);
+         setAlive(true, nullptr, nullptr);
          restartRespawn();
          return Vec3f(x, y, z);
     }

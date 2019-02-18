@@ -3,6 +3,7 @@
 #include <vector>
 #include "odfaeg/Physics/boundingPolyhedron.h"
 #include "caracter.h"
+#include "item.hpp"
 namespace sorrok {
     class Monster : public Caracter {
     public :
@@ -21,6 +22,8 @@ namespace sorrok {
         sf::Time getMoveTimeInterval1();
         sf::Time getMoveTimeInterval2();
         sf::Time getTimeUntilNextMove();
+        void addLootableItem(Item item, float dropRate);
+        std::vector<Item> getLootedItems();
         void setTimeUntilNextMove(sf::Time time);
         sf::Clock& getClkLastMove();
         bool isMovingFromKeyboard();
@@ -32,6 +35,7 @@ namespace sorrok {
         sf::Clock clockLastMove;
         odfaeg::math::Vec3f savedPos;
         odfaeg::physic::BoundingPolyhedron zone;
+        std::multimap<float, Item> lootableItems;
     };
 }
 #endif

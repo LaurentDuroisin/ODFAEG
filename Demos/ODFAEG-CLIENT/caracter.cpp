@@ -4,6 +4,7 @@
 using namespace std;
 using namespace odfaeg::core;
 using namespace odfaeg::graphic;
+using namespace odfaeg::graphic::gui;
 using namespace odfaeg::physic;
 using namespace odfaeg::math;
 namespace sorrok {
@@ -35,6 +36,19 @@ namespace sorrok {
         addAttribute("isMoving",i);
         addAttribute("isInFightingMode", i);
         addAttribute("isAttacking", i);
+        dmgTransferTime = rgnTransferTime = 0;
+    }
+    void Caracter::setDmgTransferTime(sf::Int64 time) {
+        dmgTransferTime = time;
+    }
+    void Caracter::setRgnTransferTime(sf::Int64 time) {
+        rgnTransferTime = time;
+    }
+    sf::Int64 Caracter::getDmgTransferTime() {
+        return dmgTransferTime;
+    }
+    sf::Int64 Caracter::getRgnTransferTime() {
+        return rgnTransferTime;
     }
     void Caracter::onMove(Vec3f& t) {
         Entity::onMove(t);
@@ -72,9 +86,10 @@ namespace sorrok {
     void Caracter::setRegenHpAmountMax(int regenHpAmount) {
         this->regenHpAmountMax = regenHpAmount;
     }
-    void Caracter::setLife(int life) {
+    void Caracter::setLife(int life, gui::ProgressBar* hpBar) {
         this->life = life;
-        clockRegenHp.restart();
+        if (getType() == "E_HERO")
+            hpBar->setValue(life);
     }
     int Caracter::getLife() {
         return life;
@@ -108,7 +123,7 @@ namespace sorrok {
             }
         }
     }
-    void Caracter::setAlive(bool b) {
+    void Caracter::setAlive(bool b, ProgressBar* hpBar, ProgressBar* xpBar) {
         if (alive == true && b == false) {
             if(getType() == "E_HERO") {
                 std::cout<<"hero death"<<std::endl;
@@ -118,6 +133,8 @@ namespace sorrok {
             anims[baseAnimIndex + currentAnimIndex]->setCurrentFrame(0);
             baseAnimIndex = TIPPING_OVER;
             anims[baseAnimIndex + currentAnimIndex]->play(false);
+            damages.clear();
+            regen.clear();
             restartRespawn();
             World::update();
         } else if (alive == false && b == true) {
@@ -125,9 +142,8 @@ namespace sorrok {
                 std::cout<<"hero alive"<<std::endl;
             }
             changeAttribute("isAlive",Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
-            damages.clear();
             baseAnimIndex = WALKING;
-            setLife(getMaxLife());
+            setLife(getMaxLife(), hpBar);
             World::update();
         }
         alive = b;
@@ -141,6 +157,9 @@ namespace sorrok {
     void Caracter::setFightingMode(bool b) {
         if (fightingMode = true && b == false || fightingMode == false && b == true) {
             changeAttribute("isInFightingMode",Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
+        }
+        if (fightingMode == false && b == true) {
+            regen.clear();
         }
         this->fightingMode = b;
     }
@@ -209,6 +228,9 @@ namespace sorrok {
 
     void Caracter::setMoving (bool b) {
         if (moving != b) {
+            if (moving == true && b == false) {
+                regen.clear();
+            }
             this->moving = b;
             if (moving) {
                 changeAttribute("isMoving",Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
@@ -269,14 +291,12 @@ namespace sorrok {
     Caracter* Caracter::getFocusedCaracter() {
         return focusedCaracter;
     }
-    void Caracter::attackFocusedCaracter(int attack, gui::ProgressBar* hpBar, gui::ProgressBar* xpBar) {
+    void Caracter::attackFocusedCaracter(int attack, ProgressBar* hpBar) {
         anims[baseAnimIndex + currentAnimIndex]->play(false);
-        focusedCaracter->setLife(focusedCaracter->getLife() - attack);
+        focusedCaracter->setLife(focusedCaracter->getLife() - attack, hpBar);
         if (focusedCaracter->getLife() <= 0 && focusedCaracter->isAlive()) {
-            focusedCaracter->setLife(0);
+            focusedCaracter->setLife(0, hpBar);
         }
-        if (focusedCaracter->getType() == "E_HERO")
-            hpBar->setValue(focusedCaracter->getLife());
     }
     sf::Time Caracter::getTimeBeforeLastRespawn() {
         return timeBefLastRespawn;

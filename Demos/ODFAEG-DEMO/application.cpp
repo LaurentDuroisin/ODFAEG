@@ -3,69 +3,71 @@
 
 using namespace odfaeg;
 using namespace odfaeg::graphic;
+using namespace odfaeg::window;
 using namespace odfaeg::math;
 using namespace odfaeg::physic;
 using namespace odfaeg::core;
 using namespace odfaeg::audio;
 namespace sorrok {
-    MyAppli::MyAppli(sf::VideoMode wm, std::string title) : Application (wm, title, sf::Style::Default, sf::ContextSettings(0, 0, 4, 3, 0)) {
+    MyAppli::MyAppli(sf::VideoMode wm, std::string title) : Application (wm, title, sf::Style::Default, ContextSettings(0, 0, 4, 3, 0)) {
         running = false;
-        actualKey = sf::Keyboard::Key::Unknown;
-        previousKey = sf::Keyboard::Key::Unknown;
+        actualKey = IKeyboard::Key::Unknown;
+        previousKey = IKeyboard::Key::Unknown;
         getView().move(0, 300, 300);
         fpsCounter = 0;
         addClock(sf::Clock(), "FPS");
         day = false;
         sf::Listener::setUpVector(0.f, 0.f, 1.f);
         ps = new ParticleSystem(Vec3f(0, 0, 150), Vec3f(100, 100, 0));
-        luminosity = RectangleShape(Vec3f(getRenderWindow().getSize().x, getRenderWindow().getSize().y, 0));
-        luminosity.setFillColor(sf::Color(128, 128, 128, 10));
+        /*luminosity = RectangleShape(Vec3f(getRenderWindow().getSize().x, getRenderWindow().getSize().y, 0));
+        luminosity.setFillColor(sf::Color(128, 128, 128, 10));*/
     }
     void MyAppli::gaignedFocus(gui::TextArea* textArea) {
         std::cout<<"gaigned focus"<<std::endl;
     }
-    void MyAppli::keyHeldDown (sf::Keyboard::Key key) {
+    void MyAppli::keyHeldDown (IKeyboard::Key key) {
         //BoundingRectangle rect (pos.x, pos.y, getView().getSize().x, getView().getSize().y);
-        if (actualKey != sf::Keyboard::Key::Unknown && key == sf::Keyboard::Key::Z) {
+        if (actualKey != IKeyboard::Key::Unknown && key == IKeyboard::Key::Z) {
             if (!hero->isMoving()) {
-                if (actualKey != previousKey) {
+                std::cout<<"previous key : "<<previousKey<<std::endl<<"actual key : "<<actualKey<<std::endl;
+                //if (actualKey != previousKey) {
                     Vec2f dir(0, -1);
                     hero->setDir(dir);
                     sf::Listener::setDirection(dir.x, dir.y, 0);
-                }
+                //}
                 hero->setMoving(true);
                 hero->setIsMovingFromKeyboard(true);
                 hero->setAttacking(false);
             }
-        } else if (actualKey != sf::Keyboard::Key::Unknown && key == sf::Keyboard::Key::Q) {
+        } else if (actualKey != IKeyboard::Key::Unknown && key == IKeyboard::Key::Q) {
             if (!hero->isMoving()) {
-                if (actualKey != previousKey) {
+                //if (actualKey != previousKey) {
                     Vec2f dir(-1, 0);
                     hero->setDir(dir);
                     sf::Listener::setDirection(dir.x, dir.y, 0);
-                }
+                //}
                 hero->setMoving(true);
                 hero->setIsMovingFromKeyboard(true);
                 hero->setAttacking(false);
             }
-        } else if (actualKey != sf::Keyboard::Key::Unknown && actualKey == sf::Keyboard::Key::S) {
+        } else if (actualKey != IKeyboard::Key::Unknown && actualKey == IKeyboard::Key::S) {
             if (!hero->isMoving()) {
-                if (actualKey != previousKey) {
+                //if (actualKey != previousKey) {
                     Vec2f dir(0, 1);
                     hero->setDir(dir);
                     sf::Listener::setDirection(dir.x, dir.y, 0);
-                }
+                //}
                 hero->setMoving(true);
                 hero->setIsMovingFromKeyboard(true);
                 hero->setAttacking(false);
             }
-        } else if (actualKey != sf::Keyboard::Key::Unknown && key == sf::Keyboard::Key::D) {
+        } else if (actualKey != IKeyboard::Key::Unknown && key == IKeyboard::Key::D) {
             if (!hero->isMoving()) {
-                if (actualKey != previousKey) {
+                //if (actualKey != previousKey) {
                     Vec2f dir(1, 0);
                     hero->setDir(dir);
                     sf::Listener::setDirection(dir.x, dir.y, 0);
-                }
+                //}
                 hero->setIsMovingFromKeyboard(true);
                 hero->setMoving(true);
                 hero->setAttacking(false);
@@ -123,7 +125,7 @@ namespace sorrok {
         if (!day)
             g2d::AmbientLight::getAmbientLight().setColor(sf::Color::Blue);
         TextureManager<> &tm = cache.resourceManager<Texture, std::string>("TextureManager");
-        FontManager<> &fm = cache.resourceManager<Font, std::string>("FontManager");
+        FontManager<> &fm = cache.resourceManager<odfaeg::graphic::Font, std::string>("FontManager");
         Vec2f pos (getView().getPosition().x - getView().getSize().x * 0.5f, getView().getPosition().y - getView().getSize().y * 0.5f);
         BoundingBox bx (pos.x, pos.y, 0, getView().getSize().x, getView().getSize().y, 0);
         theMap = new Map(&getRenderComponentManager(), "Map test", 100, 50);
@@ -259,10 +261,10 @@ namespace sorrok {
         World::addEntity(ps);
         View view = getView();
         //view.rotate(0, 0, 20);
-        OITRenderComponent *frc1 = new OITRenderComponent(getRenderWindow(),0, "E_BIGTILE");
-        ShadowRenderComponent *frc2 = new ShadowRenderComponent(getRenderWindow(), 1, "E_WALL+E_DECOR+E_HERO");
-        OITRenderComponent *frc3 = new OITRenderComponent(getRenderWindow(),2, "E_WALL+E_DECOR+E_HERO+E_PARTICLES");
-        LightRenderComponent *frc4 = new LightRenderComponent(getRenderWindow(), 3, "E_WALL+E_DECOR+E_HERO+E_PONCTUAL_LIGHT");
+        ZSortingRenderComponent *frc1 = new ZSortingRenderComponent(getRenderWindow(),0, "E_BIGTILE");
+        ShadowRenderComponent *frc2 = new ShadowRenderComponent(getRenderWindow(), 1, "E_WALL+E_DECOR+E_HERO", window::ContextSettings(0, 0, 4, 3, 0));
+        OITRenderComponent *frc3 = new OITRenderComponent(getRenderWindow(),2, "E_WALL+E_DECOR+E_HERO+E_PARTICLES", window::ContextSettings(0, 0, 4, 3, 0));
+        LightRenderComponent *frc4 = new LightRenderComponent(getRenderWindow(), 3, "E_WALL+E_DECOR+E_HERO+E_PONCTUAL_LIGHT",window::ContextSettings(0, 0, 4, 3, 0));
         getRenderComponentManager().addComponent(frc1);
         getRenderComponentManager().addComponent(frc2);
         getRenderComponentManager().addComponent(frc3);
@@ -325,13 +327,13 @@ namespace sorrok {
 
         //World::computeIntersectionsWithWalls();
         World::update();
-        Action a1 (Action::EVENT_TYPE::KEY_HELD_DOWN, sf::Keyboard::Key::Z);
-        Action a2 (Action::EVENT_TYPE::KEY_HELD_DOWN, sf::Keyboard::Key::Q);
-        Action a3 (Action::EVENT_TYPE::KEY_HELD_DOWN, sf::Keyboard::Key::S);
-        Action a4 (Action::EVENT_TYPE::KEY_HELD_DOWN, sf::Keyboard::Key::D);
-        Action a5 (Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, sf::Mouse::Left);
+        Action a1 (Action::EVENT_TYPE::KEY_HELD_DOWN, IKeyboard::Key::Z);
+        Action a2 (Action::EVENT_TYPE::KEY_HELD_DOWN, IKeyboard::Key::Q);
+        Action a3 (Action::EVENT_TYPE::KEY_HELD_DOWN, IKeyboard::Key::S);
+        Action a4 (Action::EVENT_TYPE::KEY_HELD_DOWN, IKeyboard::Key::D);
+        Action a5 (Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
         Action combined  = a1 || a2 || a3 || a4;
-        Command moveAction(combined, FastDelegate<void>(&MyAppli::keyHeldDown, this, sf::Keyboard::Unknown));
+        Command moveAction(combined, FastDelegate<void>(&MyAppli::keyHeldDown, this, IKeyboard::Unknown));
         getListener().connect("MoveAction", moveAction);
         Command mouseInsideAction(a5, FastDelegate<bool>(&MyAppli::mouseInside,this, sf::Vector2f(-1, -1)), FastDelegate<void>(&MyAppli::onMouseInside, this, sf::Vector2f(-1,-1)));
         getListener().connect("MouseInside",mouseInsideAction);
@@ -421,32 +423,33 @@ namespace sorrok {
         rect2.setPosition(Vec3f(Vec3f(hero->getCollisionVolume()->getPosition().x, hero->getCollisionVolume()->getPosition().y, hero->getPosition().z)));
         window->draw(rect2);*/
     }
-    void MyAppli::onUpdate (RenderWindow* window, sf::Event& event) {
+    void MyAppli::onUpdate (RenderWindow* window, IEvent& event) {
         // check all the window's events that were triggered since the last iteration of the loop
-        if (window == &getRenderWindow() && event.type == sf::Event::Closed) {
+        if (window == &getRenderWindow() && event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_CLOSED) {
             stop();
             pfire.stop();
 
         }
-        if (window == &getRenderWindow() && event.type == sf::Event::KeyPressed) {
+        if (window == &getRenderWindow() && event.type == IEvent::KEYBOARD_EVENT && event.keyboard.type == IEvent::KEY_EVENT_PRESSED) {
             previousKey = actualKey;
-            actualKey = event.key.code;
-            getListener().setCommandSlotParams("MoveAction", this, event.key.code);
+            actualKey = static_cast<IKeyboard::Key>(event.keyboard.code);
+            std::cout<<"previous key : "<<previousKey<<std::endl<<"actual key : "<<actualKey<<std::endl;
+            getListener().setCommandSlotParams("MoveAction", this, static_cast<IKeyboard::Key>(event.keyboard.code));
         }
-        if (window == &getRenderWindow() && event.type == sf::Event::KeyReleased && hero->isMovingFromKeyboard()) {
+        if (window == &getRenderWindow() & event.type == IEvent::KEYBOARD_EVENT && event.keyboard.type == IEvent::KEY_EVENT_RELEASED && hero->isMovingFromKeyboard()) {
             if (player.isPlaying())
                 player.stop();
             hero->setMoving(false);
             hero->setIsMovingFromKeyboard(false);
-            previousKey = event.key.code;
-            actualKey = sf::Keyboard::Key::Unknown;
+            previousKey = static_cast<IKeyboard::Key>(event.keyboard.code);
+            actualKey = IKeyboard::Key::Unknown;
         }
-        if (event.type == sf::Event::MouseMoved) {
-            sf::Vector2f mousePos = sf::Vector2f(event.mouseMove.x, event.mouseMove.y);
+        if (event.type == IEvent::MOUSE_MOTION_EVENT) {
+            sf::Vector2f mousePos = sf::Vector2f(event.mouseMotion.x, event.mouseMotion.y);
             getListener().setCommandSigParams("MouseInside", this, mousePos);
             getListener().setCommandSlotParams("MouseInside", this, mousePos);
         }
-        if (event.type == sf::Event::MouseButtonPressed) {
+        if (event.type == IEvent::MOUSE_BUTTON_EVENT && event.mouseButton.type == IEvent::BUTTON_EVENT_PRESSED) {
             sf::Vector2f mousePos (event.mouseButton.x, event.mouseButton.y);
             getListener().setCommandSlotParams("LeftMouseButtonPressedAction", this, mousePos);
         }

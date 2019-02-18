@@ -33,7 +33,7 @@ namespace sorrok {
         timeBefLastRespawn = sf::seconds(10.f);
     }
     void Caracter::setIsAttacked(bool attacked) {
-        if (attacked == false) {
+        if (this->attacked == true && attacked == false) {
             damages.clear();
         }
         this->attacked = attacked;
@@ -114,6 +114,7 @@ namespace sorrok {
         }
         if (alive == true && b == false) {
             damages.clear();
+            regen.clear();
         }
         alive = b;
     }
@@ -124,6 +125,9 @@ namespace sorrok {
         return attacking;
     }
     void Caracter::setFightingMode(bool b) {
+        if (fightingMode == false && b == true) {
+            regen.clear();
+        }
         this->fightingMode = b;
     }
     bool Caracter::operator== (Entity &other) {
@@ -157,6 +161,8 @@ namespace sorrok {
         return dir;
     }
     void Caracter::setMoving (bool b) {
+        if (moving == true && b == false)
+            regen.clear();
         this->moving = b;
     }
     bool Caracter::isMoving () {

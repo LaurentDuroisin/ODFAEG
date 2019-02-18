@@ -44,7 +44,7 @@ namespace sorrok {
         virtual bool isMonster() = 0;
         void setRange(int range);
         int getRange();
-        void setLife(int life);
+        void setLife(int life, odfaeg::graphic::gui::ProgressBar* hpBar);
         void setMaxLife(int life);
         int getLife ();
         int getMaxLife();
@@ -57,7 +57,7 @@ namespace sorrok {
         void setFightingMode(bool b);
         bool isInFightingMode();
         bool isAttacking ();
-        void setAlive(bool b);
+        void setAlive(bool b, odfaeg::graphic::gui::ProgressBar* hpBar, odfaeg::graphic::gui::ProgressBar* xpBar);
         bool isAlive();
         void setAttacking(bool b);
         void setCurrentXp(int xp);
@@ -65,7 +65,7 @@ namespace sorrok {
         void setLevel (int level);
         sf::Time getTimeOfLastAttack();
         sf::Time getTimeOfLastHpRegen();
-        void attackFocusedCaracter(int attack, odfaeg::graphic::gui::ProgressBar* hpBar, odfaeg::graphic::gui::ProgressBar* xpBar);
+        void attackFocusedCaracter(int attack, odfaeg::graphic::gui::ProgressBar* hpBar);
         void setFocusedCaracter(Caracter* caracter);
         Caracter* getFocusedCaracter();
         void up (int xp);
@@ -89,6 +89,10 @@ namespace sorrok {
         void restartRespawn();
         std::vector<int>& getDamages();
         void setDamages(std::vector<int> damages);
+        void setDmgTransferTime(sf::Int64 time);
+        void setRgnTransferTime(sf::Int64 time);
+        sf::Int64 getDmgTransferTime();
+        sf::Int64 getRgnTransferTime();
         template <typename Archive>
         void vtserialize(Archive & ar) {
             Entity::vtserialize(ar);
@@ -127,6 +131,7 @@ namespace sorrok {
         ANIMS baseAnimIndex;
         sf::Time timeBefLastRespawn;
         std::vector<int> damages, regen;
+        sf::Int64 dmgTransferTime, rgnTransferTime;
     };
 }
 #endif

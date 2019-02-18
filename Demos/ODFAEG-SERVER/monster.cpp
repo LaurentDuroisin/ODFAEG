@@ -1,5 +1,6 @@
 #include "monster.h"
 #include <iostream>
+#include "odfaeg/Math/maths.h"
 using namespace std;
 using namespace odfaeg::math;
 using namespace odfaeg::graphic;
@@ -49,6 +50,20 @@ namespace sorrok {
     }
     Vec3f Monster::getSavedPos() {
         return savedPos;
+    }
+    void Monster::addLootableItem(Item item, float dropRate) {
+        lootableItems.insert(std::make_pair(dropRate, item));
+    }
+    std::vector<Item> Monster::getLootedItems() {
+        std::vector<Item> items;
+        std::map<float, Item>::iterator it;
+        float nb = Math::random(0, 1);
+        for (it = lootableItems.begin(); it != lootableItems.end(); it++) {
+            if (nb <= it->first) {
+                items.push_back(it->second);
+            }
+        }
+        return items;
     }
     Monster::~Monster() {
     }

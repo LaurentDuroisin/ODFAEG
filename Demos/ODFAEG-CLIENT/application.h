@@ -24,6 +24,7 @@
 #include "hero.h"
 #include "monster.h"
 #include "odfaeg/Network/network.h"
+#include "odfaeg/Graphics/sprite.h"
 #include "odfaeg/Graphics/zSortingRenderComponent.hpp"
 #include "odfaeg/Graphics/shadowRenderComponent.hpp"
 #include "odfaeg/Graphics/lightRenderComponent.hpp"
@@ -32,8 +33,19 @@
 #include "odfaeg/Graphics/GUI/textArea.hpp"
 #include "odfaeg/Graphics/GUI/passwordField.hpp"
 #include "odfaeg/Graphics/GUI/progressBar.hpp"
+#include "odfaeg/Graphics/GUI/panel.hpp"
+#include "odfaeg/Graphics/GUI/table.hpp"
+#include "odfaeg/Graphics/GUI/icon.hpp"
+#include "item.hpp"
 #include <fstream>
+#include <unordered_map>
 namespace sorrok {
+    class HashSprite {
+        public:
+            std::size_t operator()(odfaeg::graphic::Sprite const& s) const {
+                return s.getPosition().x + s.getPosition().y + s.getPosition().z;
+            }
+    };
     class MyAppli : public odfaeg::core::Application,
                     public odfaeg::graphic::gui::ActionListener {
     private :
@@ -44,7 +56,7 @@ namespace sorrok {
         odfaeg::graphic::g2d::Wall *w;
         Caracter* hero;
         Caracter* monster;
-        sf::Keyboard::Key actualKey, previousKey;
+        odfaeg::window::IKeyboard::Key actualKey, previousKey;
         std::vector<odfaeg::graphic::Tile*> tiles;
         std::vector<odfaeg::graphic::Tile*> walls;
         odfaeg::graphic::Map* theMap;
@@ -60,13 +72,17 @@ namespace sorrok {
         odfaeg::graphic::gui::PasswordField* taPassword;
         odfaeg::graphic::gui::Button* button, *idButton, *invButton;
         odfaeg::graphic::gui::ProgressBar* hpBar, *xpBar;
+        odfaeg::graphic::gui::Panel* pItems;
         bool isClientAuthentified;
+        std::unordered_map<odfaeg::graphic::Sprite, std::vector<Item>, HashSprite> cristals;
+        std::pair<odfaeg::graphic::Sprite, std::vector<Item>> selectedCristal;
     public :
         enum Fonts {
             Serif
         };
         MyAppli(sf::VideoMode wm, std::string title);
-        void keyHeldDown (sf::Keyboard::Key key);
+        void keyHeldDown (odfaeg::window::IKeyboard::Key key);
+        void pickUpItems (odfaeg::window::IKeyboard::Key key);
         void leftMouseButtonPressed(sf::Vector2f mousePos);
         void rightMouseButtonPressed(sf::Vector2f mousePos);
         bool mouseInside (sf::Vector2f mousePos);
@@ -75,7 +91,7 @@ namespace sorrok {
         void onInit ();
         void onRender(odfaeg::graphic::RenderComponentManager *cm);
         void onDisplay(odfaeg::graphic::RenderWindow* window);
-        void onUpdate (odfaeg::graphic::RenderWindow* window, sf::Event& event);
+        void onUpdate (odfaeg::graphic::RenderWindow* window, odfaeg::window::IEvent& event);
         void onExec ();
         void actionPerformed(odfaeg::graphic::gui::Button* item);
     };
