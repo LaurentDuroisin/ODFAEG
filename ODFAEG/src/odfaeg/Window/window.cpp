@@ -33,7 +33,7 @@ namespace odfaeg {
         void Window::create(VideoMode mode, const String& title, Uint32 style, const ContextSettings& settings)
         {
             m_window = WindowFactory::create();
-            //SFML already have its own fullscreen window so we don't need to maange it.
+            //SFML already have its own fullscreen window so we don't need to manage it.
             #if defined (SFML)
                 m_window->create(mode, title, style, settings);
             #else

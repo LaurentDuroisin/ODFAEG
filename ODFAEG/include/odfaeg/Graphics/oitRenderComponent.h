@@ -2,7 +2,7 @@
 #define ODFAEG_OIT_RENDER_COMPONENT_HPP
 #include "renderWindow.h"
 #include "renderTexture.h"
-#include "tile.h"
+#include "sprite.h"
 #include "entityManager.h"
 #include "heavyComponent.h"
 #include "../Physics/particuleSystem.h"
@@ -113,17 +113,17 @@ namespace odfaeg {
             */
             const Texture& getBumpTexture();
             const Texture& getRefractionTexture();
-            Tile& getFrameBufferTile ();
+            Sprite& getFrameBufferTile ();
             /**
             * \fn getDepthBufferTile ()
             * \brief get the depth buffer tile.
             * \return the tile.
             */
-            Tile& getDepthBufferTile();
-            Tile& getOpaquePixelsTile();
-            Tile& getWeightedBlendedOITPass1Tile();
-            Tile& getWeightedBlendedOITPass2Tile();
-            Tile& getSemiTransparentPixelsTile();
+            Sprite& getDepthBufferTile();
+            Sprite& getOpaquePixelsTile();
+            Sprite& getWeightedBlendedOITPass1Tile();
+            Sprite& getWeightedBlendedOITPass2Tile();
+            Sprite& getSemiTransparentPixelsTile();
             void changeVisibleEntities(Entity* toRemove, Entity* toAdd, EntityManager* em);
             /**
             * \fn register an event to the event stack of the component.
@@ -139,29 +139,29 @@ namespace odfaeg {
             std::vector<Instance> m_instances; /**> Instances to draw. (Instanced rendering.) */
             std::vector<std::unique_ptr<Face>> additionalFaces;
             std::vector<Entity*> visibleEntities; /**> Entities loaded*/
-            std::unique_ptr<RenderTexture> frontBuffer; /**> the frame buffer.*/
-            std::unique_ptr<RenderTexture>  depthBuffer; /**> the depth buffer.*/
-            std::unique_ptr<RenderTexture>  frameBuffer; /**> specular components.*/
-            std::unique_ptr<RenderTexture>  bumpTexture;
-            std::unique_ptr<RenderTexture>  refractionTexture;
-            std::unique_ptr<RenderTexture>  normalMap;
-            std::unique_ptr<RenderTexture>  opaquePixels;
-            std::unique_ptr<RenderTexture>  semiTransparentPixels;
-            std::unique_ptr<RenderTexture> weightedBlendedOITPass1;
-            std::unique_ptr<RenderTexture> weightedBlendedOITPass2;
-            std::unique_ptr<Shader> depthBufferGenerator; /**> the shader to generate the depth buffer.*/
-            std::unique_ptr<Shader>  frameBufferGenerator; /**> the shader to generate the frame buffer.*/
-            std::unique_ptr<Shader>  specularTextureGenerator;
-            std::unique_ptr<Shader>  bumpTextureGenerator;
-            std::unique_ptr<Shader>  refractionTextureGenerator;
-            std::unique_ptr<Shader>  simpleShader;
-            std::unique_ptr<Shader>  filterNotOpaquePixels;
-            std::unique_ptr<Shader>  filterOpaquePixels;
-            std::unique_ptr<Shader>  generateWeightedBlendedOITPass1;
-            std::unique_ptr<Shader> generateWeightedBlendedOITPass2;
+            RenderTexture frontBuffer; /**> the frame buffer.*/
+            RenderTexture  depthBuffer; /**> the depth buffer.*/
+            RenderTexture  frameBuffer; /**> specular components.*/
+            RenderTexture  bumpTexture;
+            RenderTexture  refractionTexture;
+            RenderTexture  normalMap;
+            RenderTexture  opaquePixels;
+            RenderTexture  semiTransparentPixels;
+            RenderTexture weightedBlendedOITPass1;
+            RenderTexture weightedBlendedOITPass2;
+            Shader depthBufferGenerator; /**> the shader to generate the depth buffer.*/
+            Shader frameBufferGenerator; /**> the shader to generate the frame buffer.*/
+            Shader specularTextureGenerator;
+            Shader bumpTextureGenerator;
+            Shader refractionTextureGenerator;
+            Shader simpleShader;
+            Shader filterNotOpaquePixels;
+            Shader filterOpaquePixels;
+            Shader generateWeightedBlendedOITPass1;
+            Shader generateWeightedBlendedOITPass2;
             RenderStates currentStates; /**> the current render states.*/
             View view; /**> the view of the component.*/
-            std::unique_ptr<Tile>  frameBufferTile, depthBufferTile, frontBufferTile, opaquePixelsTile, semiTransparentsPixelsTile,
+            Sprite  frameBufferTile, depthBufferTile, frontBufferTile, opaquePixelsTile, semiTransparentsPixelsTile,
             weightedBlendedOITPass1Tile, weightedBlendedOITPass2Tile; /**> the frame, depth and normal buffer.*/
             std::string expression;
             bool update;

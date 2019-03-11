@@ -1,4 +1,5 @@
 #include "../../../include/odfaeg/Window/context.hpp"
+#include "../../../include/odfaeg/Window/contextImpl.hpp"
 namespace odfaeg {
     namespace window {
         Context::Context() :
@@ -42,6 +43,28 @@ namespace odfaeg {
         const ContextSettings& Context::getSettings() const {
             ContextSettings empty(0, 0, 0, 0, 0);
             return m_context ? m_context->getSettings() : empty;
+        }
+        ////////////////////////////////////////////////////////////
+        GlFunctionPointer Context::getFunction(const char* name)
+        {
+            #if defined (SFML)
+                return sf::Context::getFunction(name);
+            #else
+                return ContextImpl::getFunction(name);
+            #endif
+        }
+        ////////////////////////////////////////////////////////////
+        bool Context::isExtensionAvailable(const char* name)
+        {
+            #if defined (SFML)
+                return sf::Context::isExtensionAvailable(name);
+            #else
+                return ContextImpl::isExtensionAvalaible(name);
+            #endif
+        }
+        Context::~Context() {
+            if (m_context)
+                delete m_context;
         }
     }
 }

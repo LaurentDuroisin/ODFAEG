@@ -2,6 +2,15 @@
 #include <SFML/System/Mutex.hpp>
 #include <SFML/System/Lock.hpp>
 #include <iostream>
+#if defined(ODFAEG_SYSTEM_WINDOWS)
+
+    typedef const GLubyte* (APIENTRY *glGetStringiFuncType)(GLenum, GLuint);
+
+#else
+
+    typedef const GLubyte* (*glGetStringiFuncType)(GLenum, GLuint);
+
+#endif
 using namespace sf;
 namespace {
     ThreadLocalPtr<odfaeg::window::ContextImpl> current_ContextImpl (nullptr);
@@ -11,13 +20,76 @@ namespace odfaeg {
     namespace window {
         using namespace sf;
         IContext* ContextImpl::sharedContext = nullptr;
+        std::vector<std::string> ContextImpl::extensions = std::vector<std::string>();
         unsigned int ContextImpl::nbContexts = 0;
+        void ContextImpl::initResource() {
+            if (nbContexts == 0) {
+                sharedContext = new ContextImplType();
+                ContextSettings settings;
+                sharedContext->create(settings, 1, 1);
+                sharedContext->setActive(true);
+                nbContexts++;
+            }
+            sharedContext->setActive(false);
+        }
+        void ContextImpl::cleanupResource() {
+            nbContexts--;
+            if (nbContexts == 0) {
+                sharedContext->setActive(false);
+                delete sharedContext;
+            }
+        }
         ContextImpl::ContextImpl() {
             if (nbContexts == 0) {
                 sharedContext = new ContextImplType();
                 ContextSettings settings;
                 sharedContext->create(settings, 1, 1);
                 sharedContext->setActive(true);
+                // Load our extensions vector
+                extensions.clear();
+
+                // Check whether a >= 3.0 context is available
+                int majorVersion = 0;
+                glGetIntegerv(GL_MAJOR_VERSION, &majorVersion);
+
+                if (glGetError() == GL_INVALID_ENUM)
+                {
+                    // Try to load the < 3.0 way
+                    const char* extensionString = reinterpret_cast<const char*>(glGetString(GL_EXTENSIONS));
+
+                    do
+                    {
+                        const char* extension = extensionString;
+
+                        while(*extensionString && (*extensionString != ' '))
+                            extensionString++;
+
+                        extensions.push_back(std::string(extension, extensionString));
+                    }
+                    while (*extensionString++);
+                }
+                else
+                {
+                    // Try to load the >= 3.0 way
+                    glGetStringiFuncType glGetStringiFunc = NULL;
+                    glGetStringiFunc = reinterpret_cast<glGetStringiFuncType>(getFunction("glGetStringi"));
+
+                    if (glGetStringiFunc)
+                    {
+                        int numExtensions = 0;
+                        glGetIntegerv(GL_NUM_EXTENSIONS, &numExtensions);
+
+                        if (numExtensions)
+                        {
+                            for (unsigned int i = 0; i < static_cast<unsigned int>(numExtensions); ++i)
+                            {
+                                const char* extensionString = reinterpret_cast<const char*>(glGetStringiFunc(GL_EXTENSIONS, i));
+
+                                extensions.push_back(extensionString);
+                            }
+                        }
+                    }
+                }
                 nbContexts++;
             }
             sharedContext->setActive(false);
@@ -90,6 +162,28 @@ namespace odfaeg {
                 score += 100000000;
 
             return score;
+        }
+        ////////////////////////////////////////////////////////////
+        GlFunctionPointer ContextImpl::getFunction(const char* name)
+        {
+            #if !defined(ODFAEG_OPENGL_ES)
+
+                Lock lock(mutex);
+
+                return ContextImplType::getFunction(name);
+
+            #else
+
+                return 0;
+
+            #endif
+        }
+        bool ContextImpl::isExtensionAvalaible(const char* name) {
+            for (unsigned int i = 0; i < extensions.size(); i++) {
+                if (extensions[i] == name)
+                    return true;
+            }
+            return false;
         }
         ContextImpl::~ContextImpl() {
             nbContexts--;

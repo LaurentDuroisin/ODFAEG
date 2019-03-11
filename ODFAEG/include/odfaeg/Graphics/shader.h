@@ -41,6 +41,7 @@
 #include <map>
 #include <string>
 #include "../../../include/odfaeg/Graphics/export.hpp"
+#include "../../../include/odfaeg/Window/iGlResource.hpp"
 
 namespace sf
 {
@@ -54,7 +55,7 @@ namespace odfaeg {
         /// \brief Shader class (vertex and fragment)
         ///
         ////////////////////////////////////////////////////////////
-        class ODFAEG_GRAPHICS_API Shader : sf::NonCopyable
+        class ODFAEG_GRAPHICS_API Shader : sf::NonCopyable, window::IGLResource
         {
         public :
 

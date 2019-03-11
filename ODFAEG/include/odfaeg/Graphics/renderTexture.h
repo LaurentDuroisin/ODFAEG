@@ -35,6 +35,7 @@
 #include "texture.h"
 #include "renderTarget.h"
 #include "../../../include/odfaeg/Window/context.hpp"
+#include "../../../include/odfaeg/Window/iGlResource.hpp"
 class RenderTextureImpl;
 namespace odfaeg {
     namespace graphic {
@@ -48,7 +49,7 @@ namespace odfaeg {
         /// \brief Target for off-screen 2D rendering into a texture
         ///
         ////////////////////////////////////////////////////////////
-        class ODFAEG_GRAPHICS_API RenderTexture : public RenderTarget
+        class ODFAEG_GRAPHICS_API RenderTexture : public RenderTarget, window::IGLResource
         {
         public :
 

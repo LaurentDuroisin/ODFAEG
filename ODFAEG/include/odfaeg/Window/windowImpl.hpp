@@ -4,13 +4,14 @@
 #include "contextImpl.hpp"
 #include <SFML/Window/WindowHandle.hpp>
 #include <SFML/System/Clock.hpp>
+#include "glResource.hpp"
 #if defined (ODFAEG_SYSTEM_LINUX)
 #include "../../../include/odfaeg/Window/x11Window.hpp"
 typedef odfaeg::window::X11Window WindowImplType;
 #endif
 namespace odfaeg {
     namespace window {
-        class WindowImpl : public WindowImplType {
+        class WindowImpl : public WindowImplType, GLResource {
         public :
             WindowImpl ();
             ////////////////////////////////////////////////////////////

@@ -36,6 +36,7 @@
 #include "../Core/archive.h"
 #include "../Math/matrix4.h"
 #include <SFML/Graphics/Image.hpp>
+#include "../../../include/odfaeg/Window/iGlResource.hpp"
 namespace sf {
     class InputStream;
     class Image;
@@ -55,7 +56,7 @@ namespace odfaeg
         /// \brief Image living on the graphics card that can be used for drawing
         ///
         ////////////////////////////////////////////////////////////
-        class ODFAEG_GRAPHICS_API Texture
+        class ODFAEG_GRAPHICS_API Texture : window::IGLResource
         {
         public :
 

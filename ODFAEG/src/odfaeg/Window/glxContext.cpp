@@ -1,3 +1,4 @@
+#include "glxExtensions.hpp"
 #include "../../../include/odfaeg/Window/glxContext.hpp"
 #include "../../../include/odfaeg/Window/contextImpl.hpp"
 #include "../../../include/odfaeg/Window/display.hpp"
@@ -9,6 +10,23 @@ typedef Bool (*glXMakeContextCurrentARBProc)(::Display*, GLXDrawable, GLXDrawabl
 namespace odfaeg {
     namespace window {
         using namespace sf;
+        ////////////////////////////////////////////////////////////
+        void ensureExtensionsInit(::Display* display, int screen)
+        {
+            static bool initialized = false;
+            if (!initialized)
+            {
+                initialized = true;
+                // We don't check the return value since the extension
+                // flags are cleared even if loading fails
+                sfglx_LoadFunctions(display, screen);
+            }
+        }
+        ////////////////////////////////////////////////////////////
+        GlFunctionPointer GlxContext::getFunction(const char* name)
+        {
+            return reinterpret_cast<GlFunctionPointer>(glXGetProcAddressARB(reinterpret_cast<const GLubyte*>(name)));
+        }
         bool GlxContext::ctxErrorOccurred = false;
         // Helper to check for extension string presence.  Adapted from:
         //   http://www.opengl.org/resources/features/OGLextensions/
@@ -49,6 +67,7 @@ namespace odfaeg {
         }
         GlxContext::GlxContext() {
             m_display = Display::openDisplay();
+            ensureExtensionsInit(m_display, DefaultScreen(m_display));
             m_windowLess = true;
             pbuf = 0;
             ctx = nullptr;
@@ -192,8 +211,8 @@ namespace odfaeg {
                 ctx = glXCreateContext(m_display, &vi, NULL, GL_TRUE);
             } else {
                 int context_attribs[] = {
-                        GLX_CONTEXT_MAJOR_VERSION_ARB, settings.versionMajor,
-                        GLX_CONTEXT_MINOR_VERSION_ARB, settings.versionMinor,
+                        GLX_CONTEXT_MAJOR_VERSION_ARB, (int) settings.versionMajor,
+                        GLX_CONTEXT_MINOR_VERSION_ARB, (int) settings.versionMinor,
                         None
                 };
                 ctx = glXCreateContextAttribsARB(m_display, *bestFbc, shared, True, context_attribs);
@@ -202,8 +221,8 @@ namespace odfaeg {
                 if ( !ctxErrorOccurred && ctx ) {
                     /* create temporary pbuffer */
                     int pbuffer_attribs[] = {
-                            GLX_PBUFFER_WIDTH, width,
-                            GLX_PBUFFER_HEIGHT, height,
+                            GLX_PBUFFER_WIDTH, (int) width,
+                            GLX_PBUFFER_HEIGHT, (int) height,
                             None
                     };
                     pbuf = glXCreatePbuffer(m_display, *bestFbc, pbuffer_attribs);
@@ -343,8 +362,8 @@ namespace odfaeg {
             {
                 int context_attribs[] =
                 {
-                    GLX_CONTEXT_MAJOR_VERSION_ARB, settings.versionMajor,
-                    GLX_CONTEXT_MINOR_VERSION_ARB, settings.versionMinor,
+                    GLX_CONTEXT_MAJOR_VERSION_ARB, (int) settings.versionMajor,
+                    GLX_CONTEXT_MINOR_VERSION_ARB, (int) settings.versionMinor,
                     //GLX_CONTEXT_FLAGS_ARB        , GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
                     None
                 };
@@ -430,7 +449,10 @@ namespace odfaeg {
             return settings;
         }
         void GlxContext::display() {
-            glXSwapBuffers(m_display, m_window);
+            if (pbuf)
+                glXSwapBuffers(m_display, pbuf);
+            else if (m_window)
+                glXSwapBuffers(m_display, m_window);
         }
         void GlxContext::setVerticalSyncEnabled(bool enable) {
             //For later.

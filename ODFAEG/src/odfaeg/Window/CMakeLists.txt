@@ -35,7 +35,20 @@ set(SRC_WINDOW
 	${INCROOT}/window.hpp
 	${SRCROOT}/window.cpp
 	${INCROOT}/context.hpp
-	${SRCROOT}/context.cpp		
+	${SRCROOT}/context.cpp	
+	${INCROOT}/iGlResource.hpp
+	${INCROOT}/glResource.hpp
+	${SRCROOT}/glResource.cpp
+	${SRCROOT}/glxExtensions.hpp
+	${SRCROOT}/glxExtensions.cpp	
+	${INCROOT}/sfmlWindowImpl.hpp
+	${SRCROOT}/sfmlWindowImpl.cpp
+	${INCROOT}/sfmlKeyboard.hpp
+	${SRCROOT}/sfmlKeyboard.cpp
+	${INCROOT}/sfmlMouse.hpp
+	${SRCROOT}/sfmlMouse.cpp
+	${INCROOT}/sfmlContextImpl.hpp
+	${SRCROOT}/sfmlContextImpl.cpp
 )
 
 include_directories(${CMAKE_INCLUDE_PATH} ${FREETYPE_INCLUDE_DIRS})

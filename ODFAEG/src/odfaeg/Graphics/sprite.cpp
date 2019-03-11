@@ -54,7 +54,7 @@ namespace odfaeg {
            m_vertices.append(v4);
         }
         bool Sprite::operator== (const Sprite& other) const {
-            return m_vertices == other.m_vertices && m_texture == other.m_texture;
+            return const_cast<Sprite*>(this)->getTransform() == const_cast<Sprite&>(other).getTransform() && m_vertices == other.m_vertices && m_texture == other.m_texture;
         }
         ////////////////////////////////////////////////////////////
         void Sprite::setTexture(const Texture& texture, bool resetRect)

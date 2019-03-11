@@ -1,8 +1,10 @@
 #include "../../../include/odfaeg/Graphics/renderTarget.h"
+#include "../../../include/odfaeg/Graphics/glExtensions.hpp"
 #include <GL/glew.h>
 #include <SFML/OpenGL.hpp>
 #include "glCheck.h"
 #include "../../../include/odfaeg/Graphics/drawable.h"
+
 namespace
 {
     // Convert an sf::BlendMode::Factor constant to the corresponding OpenGL constant.
@@ -31,8 +33,8 @@ namespace
         switch (blendEquation)
         {
             default:
-            case sf::BlendMode::Add:             return GL_FUNC_ADD;
-            case sf::BlendMode::Subtract:        return GL_FUNC_SUBTRACT;
+            case sf::BlendMode::Add:             return GLEXT_GL_FUNC_ADD;
+            case sf::BlendMode::Subtract:        return GLEXT_GL_FUNC_SUBTRACT;
         }
     }
 }
@@ -62,7 +64,7 @@ namespace odfaeg {
         RenderTarget::~RenderTarget()
         {
             if (m_versionMajor >= 3 && m_versionMinor >= 3 && m_vao) {
-                glCheck(glDeleteVertexArrays(1, &m_vao));
+                //glCheck(glDeleteVertexArrays(1, &m_vao));
             }
         }
 
@@ -210,7 +212,7 @@ namespace odfaeg {
                 // Setup the pointers to the vertices' components
                 if (vertices) {
                     if (m_versionMajor >= 3 && m_versionMinor >= 3) {
-                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, states.vboVertexID));
+                        /*glCheck(glBindBuffer(GL_ARRAY_BUFFER, states.vboVertexID));
                         glCheck(glEnableVertexAttribArray(0));
                         glCheck(glEnableVertexAttribArray(1));
                         glCheck(glEnableVertexAttribArray(2));
@@ -220,7 +222,7 @@ namespace odfaeg {
                         glCheck(glDisableVertexAttribArray(0));
                         glCheck(glDisableVertexAttribArray(1));
                         glCheck(glDisableVertexAttribArray(2));
-                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));*/
                     } /*else if (GL_ARB_vertex_buffer_object) {
                         glCheck(glBindBuffer(GL_ARRAY_BUFFER, states.vboVertexID));
                         glCheck(glEnableClientState(GL_COLOR_ARRAY));
@@ -233,7 +235,7 @@ namespace odfaeg {
                         glCheck(glDisableClientState(GL_TEXTURE_COORD_ARRAY));
                         glCheck(glDisableClientState(GL_VERTEX_ARRAY));
                         glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
-                    } */else {
+                    }*/ else {
                         const char* data = reinterpret_cast<const char*>(vertices);
                         glCheck(glEnableClientState(GL_COLOR_ARRAY));
                         glCheck(glEnableClientState(GL_TEXTURE_COORD_ARRAY));
@@ -247,9 +249,9 @@ namespace odfaeg {
                     }
                 }
                 if (m_versionMajor >= 3 && m_versionMinor >= 3) {
-                    glCheck(glEnableVertexAttribArray(0));
+                    /*glCheck(glEnableVertexAttribArray(0));
                     glCheck(glEnableVertexAttribArray(1));
-                    glCheck(glEnableVertexAttribArray(2));
+                    glCheck(glEnableVertexAttribArray(2));*/
                 } else {
                     glCheck(glEnableClientState(GL_COLOR_ARRAY));
                     glCheck(glEnableClientState(GL_TEXTURE_COORD_ARRAY));
@@ -262,9 +264,9 @@ namespace odfaeg {
                 // Draw the primitives
                 glCheck(glDrawArrays(mode, 0, vertexCount));
                 if (m_versionMajor >= 3 && m_versionMinor >= 3) {
-                    glCheck(glDisableVertexAttribArray(0));
+                    /*glCheck(glDisableVertexAttribArray(0));
                     glCheck(glDisableVertexAttribArray(1));
-                    glCheck(glDisableVertexAttribArray(2));
+                    glCheck(glDisableVertexAttribArray(2));*/
                 } else {
                     // Draw the primitives
                     glCheck(glDisableClientState(GL_COLOR_ARRAY));
@@ -332,6 +334,7 @@ namespace odfaeg {
                           << std::endl;        }
 
                 #endif
+                priv::ensureExtensionsInit();
                 glCheck(glDisable(GL_CULL_FACE));
                 glCheck(glDisable(GL_LIGHTING));
                 glCheck(glEnable(GL_DEPTH_TEST));
@@ -364,10 +367,10 @@ namespace odfaeg {
         void RenderTarget::initialize()
         {
             if (m_versionMajor >= 3 && m_versionMinor >= 3) {
-                GLuint vaoID;
+                /*GLuint vaoID;
                 glCheck(glGenVertexArrays(1, &vaoID));
                 m_vao = static_cast<unsigned int>(vaoID);
-                glCheck(glBindVertexArray(m_vao));
+                glCheck(glBindVertexArray(m_vao));*/
             }
             // Setup the default and current views
             m_defaultView = View (static_cast<float>(getSize().x), static_cast<float>(getSize().y), -static_cast<float>(getSize().y) - 100, static_cast<float>(getSize().y)+100);
@@ -401,30 +404,29 @@ namespace odfaeg {
         void RenderTarget::applyBlendMode(const BlendMode& mode)
         {
             // Apply the blend mode, falling back to the non-separate versions if necessary
-            /*if (GLEXT_blend_func_separate)
+            if (GLEXT_blend_func_separate)
             {
                 glCheck(GLEXT_glBlendFuncSeparate(
                     factorToGlConstant(mode.colorSrcFactor), factorToGlConstant(mode.colorDstFactor),
                     factorToGlConstant(mode.alphaSrcFactor), factorToGlConstant(mode.alphaDstFactor)));
             }
             else
-            {*/
+            {
                 glCheck(glBlendFunc(
                     factorToGlConstant(mode.colorSrcFactor),
                     factorToGlConstant(mode.colorDstFactor)));
-            //}
+            }
 
-            /*if (GLEXT_blend_equation_separate)
+            if (GLEXT_blend_equation_separate)
             {
                 glCheck(GLEXT_glBlendEquationSeparate(
                     equationToGlConstant(mode.colorEquation),
                     equationToGlConstant(mode.alphaEquation)));
             }
             else
-            {*/
-                glCheck(glBlendEquation(equationToGlConstant(mode.colorEquation)));
-            //}
-
+            {
+                glCheck(GLEXT_glBlendEquation(equationToGlConstant(mode.colorEquation)));
+            }
             m_cache.lastBlendMode = mode;
         }
         ////////////////////////////////////////////////////////////

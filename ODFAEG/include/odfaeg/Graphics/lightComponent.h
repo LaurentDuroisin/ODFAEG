@@ -107,7 +107,7 @@ namespace odfaeg {
                 }
                 return chlds;
             }
-            void onUpdate(RenderWindow* rw, sf::Event& event) {
+            virtual void onUpdate(RenderWindow* rw, window::IEvent& event) {
                 for (unsigned int i = 0; i < children.size(); i++) {
                     children[i]->onUpdate(rw, event);
                 }

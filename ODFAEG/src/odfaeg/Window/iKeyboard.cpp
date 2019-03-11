@@ -4,6 +4,8 @@ namespace odfaeg {
         bool IKeyboard::isKeyPressed(Key key) {
             #if defined(ODFAEG_SYSTEM_LINUX)
                 return X11Keyboard::isKeyPressed(key);
+            #eif defined (SFML)
+                return SFMLKeyboard::isKeyPressed(key);
             #endif
         }
     }

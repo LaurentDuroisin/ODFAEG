@@ -15,6 +15,9 @@ namespace odfaeg {
                 void setVerticalSyncEnabled(bool enabled);
                 bool setActive(bool active);
                 const ContextSettings& getSettings() const;
+                static GlFunctionPointer getFunction(const char* name);
+                static bool isExtensionAvailable(const char* name);
+                ~Context();
             private :
                 IContext* m_context;
         };

@@ -4,6 +4,7 @@
 #include <SFML/Window/WindowHandle.hpp>
 namespace odfaeg {
     namespace window {
+        typedef void (*GlFunctionPointer)();
         class IContext {
             public :
             virtual bool setActive(bool active) = 0;

@@ -13,53 +13,38 @@ namespace odfaeg {
             expression(expression) {
             update = false;
             sf::Vector3i resolution ((int) window.getSize().x, (int) window.getSize().y, window.getView().getSize().z);
-            depthBuffer = std::make_unique<RenderTexture>();
-            frontBuffer = std::make_unique<RenderTexture>();
-            frameBuffer = std::make_unique<RenderTexture>();
-            bumpTexture = std::make_unique<RenderTexture>();
-            opaquePixels = std::make_unique<RenderTexture>();
-            semiTransparentPixels = std::make_unique<RenderTexture>();
-            weightedBlendedOITPass1 = std::make_unique<RenderTexture>();
-            weightedBlendedOITPass2 = std::make_unique<RenderTexture>();
-            refractionTexture = std::make_unique<RenderTexture>();
             settings.depthBits = 32;
-            depthBuffer->create(resolution.x, resolution.y,settings);
-            frontBuffer->create(resolution.x, resolution.y,settings);
-            opaquePixels->create(resolution.x, resolution.y, settings);
+            depthBuffer.create(resolution.x, resolution.y,settings);
+            frontBuffer.create(resolution.x, resolution.y,settings);
+            opaquePixels.create(resolution.x, resolution.y, settings);
             settings.depthBits = 0;
-            semiTransparentPixels->create(resolution.x, resolution.y, settings);
-            weightedBlendedOITPass1->create(resolution.x, resolution.y, settings);
-            weightedBlendedOITPass2->create(resolution.x, resolution.y, settings);
-            frameBuffer->create(resolution.x, resolution.y,settings);
-            bumpTexture->create(resolution.x, resolution.y,settings);
-            refractionTexture->create(resolution.x, resolution.y,settings);
-            frontBuffer->setView(window.getView());
-            depthBuffer->setView(window.getView());
-            frameBuffer->setView(window.getView());
-            bumpTexture->setView(window.getView());
-            refractionTexture->setView(window.getView());
-            frontBufferTile = std::make_unique<Tile>(&frontBuffer->getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
-            depthBufferTile = std::make_unique<Tile>(&depthBuffer->getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
-            frameBufferTile = std::make_unique<Tile>(&frameBuffer->getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
-            opaquePixelsTile = std::make_unique<Tile>(&opaquePixels->getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
-            semiTransparentsPixelsTile = std::make_unique<Tile>(&semiTransparentPixels->getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
-            weightedBlendedOITPass1Tile = std::make_unique<Tile>(&weightedBlendedOITPass1->getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
-            weightedBlendedOITPass2Tile = std::make_unique<Tile>(&weightedBlendedOITPass2->getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
+            semiTransparentPixels.create(resolution.x, resolution.y, settings);
+            weightedBlendedOITPass1.create(resolution.x, resolution.y, settings);
+            weightedBlendedOITPass2.create(resolution.x, resolution.y, settings);
+            frameBuffer.create(resolution.x, resolution.y,settings);
+            bumpTexture.create(resolution.x, resolution.y,settings);
+            refractionTexture.create(resolution.x, resolution.y,settings);
+            frontBuffer.setView(window.getView());
+            depthBuffer.setView(window.getView());
+            frameBuffer.setView(window.getView());
+            bumpTexture.setView(window.getView());
+            weightedBlendedOITPass1.setView(window.getView());
+            weightedBlendedOITPass2.setView(window.getView());
+            refractionTexture.setView(window.getView());
+            semiTransparentPixels.setView(window.getView());
+            opaquePixels.setView(window.getView());
+            frontBufferTile = Sprite(frontBuffer.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
+            depthBufferTile = Sprite(depthBuffer.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
+            frameBufferTile = Sprite(frameBuffer.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
+            opaquePixelsTile = Sprite(opaquePixels.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
+            semiTransparentsPixelsTile = Sprite(semiTransparentPixels.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
+            weightedBlendedOITPass1Tile = Sprite(weightedBlendedOITPass1.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
+            weightedBlendedOITPass2Tile = Sprite(weightedBlendedOITPass2.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
             core::FastDelegate<bool> signal (&OITRenderComponent::needToUpdate, this);
             core::FastDelegate<void> slot (&OITRenderComponent::drawNextFrame, this);
             core::Command cmd(signal, slot);
             getListener().connect("UPDATE", cmd);
             if (Shader::isAvailable()) {
-                frameBufferGenerator = std::make_unique<Shader>();
-                depthBufferGenerator = std::make_unique<Shader>();
-                specularTextureGenerator = std::make_unique<Shader>();
-                bumpTextureGenerator = std::make_unique<Shader>();
-                refractionTextureGenerator = std::make_unique<Shader>();
-                simpleShader = std::make_unique<Shader>();
-                filterNotOpaquePixels = std::make_unique<Shader>();
-                filterOpaquePixels = std::make_unique<Shader>();
-                generateWeightedBlendedOITPass1 = std::make_unique<Shader>();
-                generateWeightedBlendedOITPass2 = std::make_unique<Shader>();
                 const std::string  simpleVertexShader =
                 "#version 130 \n"
                 "void main () {"
@@ -124,7 +109,7 @@ namespace odfaeg {
                     "colors[0] = vec4(0, 0, 0, 0);"
                     "colors[1] = vec4(0, 0, z, color.a);"
                     "b = (color.a == 1);"
-                    "gl_FragColor = vec4(0, 0, z, color.a);"
+                    "gl_FragColor = colors[int(b)]; /*vec4(0, 0, z, color.a);*/"
                 "}";
                 const std::string frameBufferGenFragShader =
                 "#version 130 \n"
@@ -223,13 +208,13 @@ namespace odfaeg {
                    "void main() {"
                    "    vec2 position = ( gl_FragCoord.xy / resolution.xy );"
                    "    float max_z = texture2D(depthBuffer, position).z;"
-                   "    vec4 color = (haveTexture==1) ? gl_Color * texture2D(texture, gl_TexCoord[0].xy) : gl_Color;"
+                   "    vec4 color = (haveTexture > 0.9) ? gl_Color * texture2D(texture, gl_TexCoord[0].xy) : gl_Color;"
                    "    float z = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
                    "    float weight = max(min(1.0, max(max(color.r, color.g), color.b) * color.a), color.a) * clamp(0.03 / (1e-5 + pow(z / 200, 4.0)), 1e-2, 3e3);"
                    "    vec4 colors[2];"
                    "    colors[0] = vec4(0, 0, 0, 0);"
                    "    colors[1] = vec4(color.rgb * color.a, color.a) * weight;"
-                   "    bool b = (color.a != 1 && z > max_z);"
+                   "    bool b = (color.a != 1 && z >= max_z);"
                    "    gl_FragColor = colors[int(b)];"
                    "}";
                    const std::string generateWeightedBlendedOITPass2FragShader =
@@ -245,13 +230,13 @@ namespace odfaeg {
                    "}"
                    "void main() {"
                    "    vec2 position = ( gl_FragCoord.xy / resolution.xy );"
-                   "    vec4 color = (haveTexture==1) ? gl_Color * texture2D(texture, gl_TexCoord[0].xy) : gl_Color;"
+                   "    vec4 color = (haveTexture > 0.9) ? gl_Color * texture2D(texture, gl_TexCoord[0].xy) : gl_Color;"
                    "    float max_z = texture2D(depthBuffer, position).z;"
                    "    float z = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
                    "    vec4 colors[2];"
                    "    colors[0] = vec4(0, 0, 0, 0);"
-                   "    colors[1] = vec4(0, 0, 0, color.a);"
-                   "    bool b = (color.a != 1 && z > max_z);"
+                   "    colors[1] = color;"
+                   "    bool b = (color.a != 1 && z >= max_z);"
                    "    gl_FragColor = colors[int(b)];"
                    "}";
                    const std::string filterOpaquePixelsFragShad =
@@ -275,63 +260,63 @@ namespace odfaeg {
                    "    bool b = (haveTexture > 0.9);"
                    "    vec4 color = colors[int(b)];"
                    "    vec4 accum = texture2D(rt0, position);"
-                   "    float z = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
                    "    float reveal = texture2D(rt1, position).a;"
+                   "    float z = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
                    "    float max_z = texture2D(depthBuffer, position).z;"
                    "    colors[0] = vec4(0, 0, 0, 0);"
-                   "    colors[1] = vec4(vec3(1, 1, 1) * color.a * color.rgb * color.a, 1);"
-                   "    b = (color.a != 1 && z > max_z);"
-                   "    /*gl_FragColor = vec4(accum.rgb / max(accum.a, 1e-5), reveal);*/"
+                   "    colors[1] = /*color;*/ vec4(accum.rgb / max(accum.a, 1e-5), reveal); /*vec4(vec3(1, 1, 1) * color.a * color.rgb * color.a, 1);*/"
+                   "    b = (color.a != 1 && z >= max_z);"
+                   "    gl_FragColor = vec4(accum.rgb / max(accum.a, 1e-5), reveal);"
                    "    gl_FragColor = colors[int(b)];"
                    "}";
-                if (!depthBufferGenerator->loadFromMemory(vertexShader, depthGenFragShader))
+                if (!depthBufferGenerator.loadFromMemory(vertexShader, depthGenFragShader))
                     throw core::Erreur(50, "Failed to load depth buffer generator shader", 0);
-                if (!frameBufferGenerator->loadFromMemory(vertexShader, frameBufferGenFragShader))
+                if (!frameBufferGenerator.loadFromMemory(vertexShader, frameBufferGenFragShader))
                     throw core::Erreur(51, "Failed to load frame buffer generator shader", 0);
-                if (!specularTextureGenerator->loadFromMemory(vertexShader, specularGenFragShader))
+                if (!specularTextureGenerator.loadFromMemory(vertexShader, specularGenFragShader))
                     throw core::Erreur(52, "Failed to load specular texture generator shader", 0);
-                if (!bumpTextureGenerator->loadFromMemory(vertexShader, bumpGenFragShader))
+                if (!bumpTextureGenerator.loadFromMemory(vertexShader, bumpGenFragShader))
                     throw core::Erreur(53, "Failed to load bump texture generator shader", 0);
-                if (!refractionTextureGenerator->loadFromMemory(vertexShader, refractionGenFragShader))
+                if (!refractionTextureGenerator.loadFromMemory(vertexShader, refractionGenFragShader))
                     throw core::Erreur(54, "Failed to load refraction texture generator shader", 0);
-                if (!filterNotOpaquePixels->loadFromMemory(simpleVertexShader, filterNotOpaquePixelsFragShad)) {
+                if (!filterNotOpaquePixels.loadFromMemory(simpleVertexShader, filterNotOpaquePixelsFragShad)) {
                     throw core::Erreur(55, "Failed to load filter not opaque pixels shader", 0);
                 }
-                if (!generateWeightedBlendedOITPass1->loadFromMemory(vertexShader, generateWeightedBlendedOITPass1FragShader)) {
+                if (!generateWeightedBlendedOITPass1.loadFromMemory(vertexShader, generateWeightedBlendedOITPass1FragShader)) {
                     throw core::Erreur(56, "Failed to load generate weighted blended oit pass 1 shader", 0);
                 }
-                if (!generateWeightedBlendedOITPass2->loadFromMemory(vertexShader, generateWeightedBlendedOITPass2FragShader)) {
+                if (!generateWeightedBlendedOITPass2.loadFromMemory(vertexShader, generateWeightedBlendedOITPass2FragShader)) {
                     throw core::Erreur(56, "Failed to load generate weighted blended oit pass 2 shader", 0);
                 }
-                if (!filterOpaquePixels->loadFromMemory(vertexShader, filterOpaquePixelsFragShad)) {
+                if (!filterOpaquePixels.loadFromMemory(vertexShader, filterOpaquePixelsFragShad)) {
                     throw core::Erreur(57, "Failed to load generate filter opaque pixels shader", 0);
                 }
-                filterNotOpaquePixels->setParameter("texture", Shader::CurrentTexture);
-                generateWeightedBlendedOITPass1->setParameter("texture", Shader::CurrentTexture);
-                generateWeightedBlendedOITPass1->setParameter("depthBuffer", depthBuffer->getTexture());
-                generateWeightedBlendedOITPass1->setParameter("resolution", resolution.x, resolution.y, resolution.z);
-                generateWeightedBlendedOITPass2->setParameter("depthBuffer", depthBuffer->getTexture());
-                generateWeightedBlendedOITPass2->setParameter("texture", Shader::CurrentTexture);
-                generateWeightedBlendedOITPass2->setParameter("resolution", resolution.x, resolution.y, resolution.z);
-                filterOpaquePixels->setParameter("texture", Shader::CurrentTexture);
-                filterOpaquePixels->setParameter("resolution", resolution.x, resolution.y, resolution.z);
-                filterOpaquePixels->setParameter("depthBuffer", depthBuffer->getTexture());
-                filterOpaquePixels->setParameter("rt0", weightedBlendedOITPass1->getTexture());
-                filterOpaquePixels->setParameter("rt1", weightedBlendedOITPass2->getTexture());
-                frameBufferGenerator->setParameter("resolution",resolution.x, resolution.y, resolution.z);
-                frameBufferGenerator->setParameter("depthBuffer", depthBuffer->getTexture());
-                frameBufferGenerator->setParameter("texture", Shader::CurrentTexture);
-                depthBufferGenerator->setParameter("texture", Shader::CurrentTexture);
-                specularTextureGenerator->setParameter("resolution",resolution.x, resolution.y, resolution.z);
+                filterNotOpaquePixels.setParameter("texture", Shader::CurrentTexture);
+                generateWeightedBlendedOITPass1.setParameter("texture", Shader::CurrentTexture);
+                generateWeightedBlendedOITPass1.setParameter("depthBuffer", depthBuffer.getTexture());
+                generateWeightedBlendedOITPass1.setParameter("resolution", resolution.x, resolution.y, resolution.z);
+                generateWeightedBlendedOITPass2.setParameter("depthBuffer", depthBuffer.getTexture());
+                generateWeightedBlendedOITPass2.setParameter("texture", Shader::CurrentTexture);
+                generateWeightedBlendedOITPass2.setParameter("resolution", resolution.x, resolution.y, resolution.z);
+                filterOpaquePixels.setParameter("texture", Shader::CurrentTexture);
+                filterOpaquePixels.setParameter("resolution", resolution.x, resolution.y, resolution.z);
+                filterOpaquePixels.setParameter("depthBuffer", depthBuffer.getTexture());
+                filterOpaquePixels.setParameter("rt0", weightedBlendedOITPass1.getTexture());
+                filterOpaquePixels.setParameter("rt1", weightedBlendedOITPass2.getTexture());
+                frameBufferGenerator.setParameter("resolution",resolution.x, resolution.y, resolution.z);
+                frameBufferGenerator.setParameter("depthBuffer", depthBuffer.getTexture());
+                frameBufferGenerator.setParameter("texture", Shader::CurrentTexture);
+                depthBufferGenerator.setParameter("texture", Shader::CurrentTexture);
+                specularTextureGenerator.setParameter("resolution",resolution.x, resolution.y, resolution.z);
                 //specularTextureGenerator->setParameter("specularTexture",specularTexture->getTexture());
-                specularTextureGenerator->setParameter("texture",Shader::CurrentTexture);
-                specularTextureGenerator->setParameter("maxM", Material::getMaxSpecularIntensity());
-                specularTextureGenerator->setParameter("maxP", Material::getMaxSpecularPower());
-                bumpTextureGenerator->setParameter("resolution",resolution.x, resolution.y, resolution.z);
-                bumpTextureGenerator->setParameter("bumpTexture",bumpTexture->getTexture());
-                bumpTextureGenerator->setParameter("texture",Shader::CurrentTexture);
-                refractionTextureGenerator->setParameter("resolution",resolution.x, resolution.y, resolution.z);
-                refractionTextureGenerator->setParameter("bumpTexture",bumpTexture->getTexture());
+                specularTextureGenerator.setParameter("texture",Shader::CurrentTexture);
+                specularTextureGenerator.setParameter("maxM", Material::getMaxSpecularIntensity());
+                specularTextureGenerator.setParameter("maxP", Material::getMaxSpecularPower());
+                bumpTextureGenerator.setParameter("resolution",resolution.x, resolution.y, resolution.z);
+                bumpTextureGenerator.setParameter("bumpTexture",bumpTexture.getTexture());
+                bumpTextureGenerator.setParameter("texture",Shader::CurrentTexture);
+                refractionTextureGenerator.setParameter("resolution",resolution.x, resolution.y, resolution.z);
+                refractionTextureGenerator.setParameter("bumpTexture",bumpTexture.getTexture());
                 backgroundColor = sf::Color::Transparent;
             } else {
                 throw core::Erreur(55, "Shader not supported!", 0);
@@ -364,42 +349,42 @@ namespace odfaeg {
             this->backgroundColor = color;
         }
         void OITRenderComponent::clear() {
-             frameBuffer->clear(backgroundColor);
-             depthBuffer->clear(sf::Color::Transparent);
-             frontBuffer->clear(sf::Color::Transparent);
-             bumpTexture->clear(sf::Color::Transparent);
-             refractionTexture->clear(sf::Color::Transparent);
-             opaquePixels->clear(sf::Color::Transparent);
-             semiTransparentPixels->clear(sf::Color::Transparent);
-             weightedBlendedOITPass1->clear(sf::Color::Transparent);
-             weightedBlendedOITPass2->clear(sf::Color::White);
+             frameBuffer.clear(backgroundColor);
+             depthBuffer.clear(sf::Color::Transparent);
+             frontBuffer.clear(sf::Color::Transparent);
+             bumpTexture.clear(sf::Color::Transparent);
+             refractionTexture.clear(sf::Color::Transparent);
+             opaquePixels.clear(sf::Color::Transparent);
+             semiTransparentPixels.clear(sf::Color::Transparent);
+             weightedBlendedOITPass1.clear(sf::Color::Transparent);
+             weightedBlendedOITPass2.clear(sf::Color::White);
         }
-        Tile& OITRenderComponent::getFrameBufferTile () {
-            return *frameBufferTile;
+        Sprite& OITRenderComponent::getFrameBufferTile () {
+            return frameBufferTile;
         }
-        Tile& OITRenderComponent::getDepthBufferTile() {
-            return *depthBufferTile;
+        Sprite& OITRenderComponent::getDepthBufferTile() {
+            return depthBufferTile;
         }
-        Tile& OITRenderComponent::getOpaquePixelsTile () {
-            return *opaquePixelsTile;
+        Sprite& OITRenderComponent::getOpaquePixelsTile () {
+            return opaquePixelsTile;
         }
-        Tile& OITRenderComponent::getSemiTransparentPixelsTile() {
-            return *semiTransparentsPixelsTile;
+        Sprite& OITRenderComponent::getSemiTransparentPixelsTile() {
+            return semiTransparentsPixelsTile;
         }
-        Tile& OITRenderComponent::getWeightedBlendedOITPass1Tile() {
-            return *weightedBlendedOITPass1Tile;
+        Sprite& OITRenderComponent::getWeightedBlendedOITPass1Tile() {
+            return weightedBlendedOITPass1Tile;
         }
-        Tile& OITRenderComponent::getWeightedBlendedOITPass2Tile() {
-            return *weightedBlendedOITPass2Tile;
+        Sprite& OITRenderComponent::getWeightedBlendedOITPass2Tile() {
+            return weightedBlendedOITPass2Tile;
         }
         const Texture& OITRenderComponent::getDepthBufferTexture() {
-            return depthBuffer->getTexture();
+            return depthBuffer.getTexture();
         }
         const Texture& OITRenderComponent::getFrameBufferTexture() {
-            return frameBuffer->getTexture();
+            return frameBuffer.getTexture();
         }
         const Texture& OITRenderComponent::getFrontBufferTexture() {
-            return frontBuffer->getTexture();
+            return frontBuffer.getTexture();
         }
         bool OITRenderComponent::loadEntitiesOnComponent(std::vector<Entity*> vEntities)
         {
@@ -419,15 +404,15 @@ namespace odfaeg {
         }
         void OITRenderComponent::setView(View view) {
             this->view = view;
-            frameBuffer->setView(view);
-            depthBuffer->setView(view);
-            frontBuffer->setView(view);
-            bumpTexture->setView(view);
-            refractionTexture->setView(view);
-            opaquePixels->setView(view);
-            semiTransparentPixels->setView(view);
-            weightedBlendedOITPass1->setView(view);
-            weightedBlendedOITPass2->setView(view);
+            frameBuffer.setView(view);
+            depthBuffer.setView(view);
+            frontBuffer.setView(view);
+            bumpTexture.setView(view);
+            refractionTexture.setView(view);
+            opaquePixels.setView(view);
+            semiTransparentPixels.setView(view);
+            weightedBlendedOITPass1.setView(view);
+            weightedBlendedOITPass2.setView(view);
         }
         void OITRenderComponent::setExpression(std::string expression) {
             update = true;
@@ -435,82 +420,85 @@ namespace odfaeg {
         }
         void OITRenderComponent::drawNextFrame() {
             update = false;
-            currentStates.blendMode = sf::BlendNone;
+            /*currentStates.blendMode = sf::BlendNone;
             for (unsigned int i = 0; i < m_instances.size(); i++) {
                  if (m_instances[i].getMaterial().getTexture() == nullptr)
-                    depthBufferGenerator->setParameter("haveTexture", 0);
+                    depthBufferGenerator.setParameter("haveTexture", 0);
                  else
-                    depthBufferGenerator->setParameter("haveTexture", 1);
+                    depthBufferGenerator.setParameter("haveTexture", 1);
                  currentStates.texture=m_instances[i].getMaterial().getTexture();
-                 currentStates.shader=depthBufferGenerator.get();
-                 depthBuffer->draw(m_instances[i].getAllVertices(),currentStates);
+                 currentStates.shader=&depthBufferGenerator;
+                 depthBuffer.draw(m_instances[i].getAllVertices(),currentStates);
                  currentStates.shader=nullptr;
-                 frontBuffer->draw(m_instances[i].getAllVertices(), currentStates);
+                 frontBuffer.draw(m_instances[i].getAllVertices(), currentStates);
             }
-            frontBuffer->display();
-            frontBufferTile->setCenter(view.getPosition());
-            frameBuffer->draw(*frontBufferTile, currentStates);
-            currentStates.shader=frameBufferGenerator.get();
+            frontBuffer.display();
+            frontBufferTile.setCenter(view.getPosition());
+            frameBuffer.draw(frontBufferTile, currentStates);
+            currentStates.shader=&frameBufferGenerator;
             currentStates.blendMode=sf::BlendMode(sf::BlendMode::Factor::OneMinusDstAlpha, sf::BlendMode::Factor::DstAlpha, sf::BlendMode::Equation::Add, sf::BlendMode::Factor::OneMinusDstAlpha, sf::BlendMode::Factor::One, sf::BlendMode::Equation::Add);
             for (unsigned int i = 0; i < m_instances.size(); i++) {
                 if (m_instances[i].getMaterial().getTexture() == nullptr)
-                    frameBufferGenerator->setParameter("haveTexture", 0);
+                    frameBufferGenerator.setParameter("haveTexture", 0);
                  else
-                    frameBufferGenerator->setParameter("haveTexture", 1);
+                    frameBufferGenerator.setParameter("haveTexture", 1);
                 currentStates.texture = m_instances[i].getMaterial().getTexture();
-                frameBuffer->draw(m_instances[i].getAllVertices(), currentStates);
-            }
-            for (unsigned int i = 0; i < drawables.size(); i++) {
-                frameBuffer->draw(drawables[i].first.get(), drawables[i].second);
-            }
-            /*for (unsigned int i = 0; i < m_instances.size(); i++) {
+                frameBuffer.draw(m_instances[i].getAllVertices(), currentStates);
+            }*/
+            for (unsigned int i = 0; i < m_instances.size(); i++) {
                  if (m_instances[i].getMaterial().getTexture() == nullptr) {
-                    depthBufferGenerator->setParameter("haveTexture", 0);
-                    filterNotOpaquePixels->setParameter("haveTexture", 0);
-                    generateWeightedBlendedOITPass1->setParameter("haveTexture", 0);
-                    generateWeightedBlendedOITPass2->setParameter("haveTexture", 0);
+                    depthBufferGenerator.setParameter("haveTexture", 0);
+                    filterNotOpaquePixels.setParameter("haveTexture", 0);
+                    generateWeightedBlendedOITPass1.setParameter("haveTexture", 0);
+                    generateWeightedBlendedOITPass2.setParameter("haveTexture", 0);
                  } else {
-                    depthBufferGenerator->setParameter("haveTexture", 1);
-                    filterNotOpaquePixels->setParameter("haveTexture", 1);
-                    generateWeightedBlendedOITPass1->setParameter("haveTexture", 1);
-                    generateWeightedBlendedOITPass2->setParameter("haveTexture", 1);
+                    depthBufferGenerator.setParameter("haveTexture", 1);
+                    filterNotOpaquePixels.setParameter("haveTexture", 1);
+                    generateWeightedBlendedOITPass1.setParameter("haveTexture", 1);
+                    generateWeightedBlendedOITPass2.setParameter("haveTexture", 1);
                  }
                  currentStates.blendMode = sf::BlendNone;
                  currentStates.texture=m_instances[i].getMaterial().getTexture();
-                 currentStates.shader=depthBufferGenerator.get();
-                 depthBuffer->draw(m_instances[i].getAllVertices(),currentStates);
-                 currentStates.shader=filterNotOpaquePixels.get();
-                 opaquePixels->draw(m_instances[i].getAllVertices(), currentStates);
+                 currentStates.shader=&depthBufferGenerator;
+                 depthBuffer.draw(m_instances[i].getAllVertices(),currentStates);
+                 currentStates.blendMode = sf::BlendAlpha;
+                 currentStates.shader=&filterNotOpaquePixels;
+                 opaquePixels.draw(m_instances[i].getAllVertices(), currentStates);
                  currentStates.blendMode = sf::BlendMode(sf::BlendMode::Factor::One, sf::BlendMode::Factor::One,sf::BlendMode::Equation::Add);
-                 currentStates.shader = generateWeightedBlendedOITPass1.get();
-                 weightedBlendedOITPass1->draw(m_instances[i].getAllVertices(), currentStates);
+                 currentStates.shader = &generateWeightedBlendedOITPass1;
+                 weightedBlendedOITPass1.draw(m_instances[i].getAllVertices(), currentStates);
                  currentStates.blendMode = sf::BlendMode(sf::BlendMode::Factor::Zero, sf::BlendMode::Factor::OneMinusSrcAlpha,sf::BlendMode::Equation::Add);
-                 currentStates.shader = generateWeightedBlendedOITPass2.get();
-                 weightedBlendedOITPass2->draw(m_instances[i].getAllVertices(), currentStates);
+                 currentStates.shader = &generateWeightedBlendedOITPass2;
+                 weightedBlendedOITPass2.draw(m_instances[i].getAllVertices(), currentStates);
             }
             for (unsigned int i = 0; i < m_instances.size(); i++) {
                  if (m_instances[i].getMaterial().getTexture() == nullptr) {
-                    filterOpaquePixels->setParameter("haveTexture", 0);
+                    filterOpaquePixels.setParameter("haveTexture", 0);
                  } else {
-                    filterOpaquePixels->setParameter("haveTexture", 1);
+                    filterOpaquePixels.setParameter("haveTexture", 1);
                  }
-                 sf::BlendMode blendMode(sf::BlendMode::Factor::One, sf::BlendMode::Factor::One,sf::BlendMode::Equation::Add,sf::BlendMode::Factor::One, sf::BlendMode::Factor::Zero,sf::BlendMode::Equation::Add);
-                 currentStates.shader = filterOpaquePixels.get();
+                 sf::BlendMode blendMode(sf::BlendMode::Factor::OneMinusSrcAlpha, sf::BlendMode::Factor::SrcAlpha,sf::BlendMode::Equation::Add);
+                 currentStates.shader = &filterOpaquePixels;
                  currentStates.blendMode = blendMode;
-                 semiTransparentPixels->draw(m_instances[i].getAllVertices(), currentStates);
+                 semiTransparentPixels.draw(m_instances[i].getAllVertices(), currentStates);
             }
-            opaquePixels->display();
-            semiTransparentPixels->display();
+            for (unsigned int i = 0; i < drawables.size(); i++) {
+                frameBuffer.draw(drawables[i].first.get(), drawables[i].second);
+            }
+            opaquePixels.display();
+            semiTransparentPixels.display();
             currentStates.blendMode = sf::BlendAlpha;
             currentStates.shader = nullptr;
-            opaquePixelsTile->setCenter(view.getPosition());
-            semiTransparentsPixelsTile->setCenter(view.getPosition());
-            frameBuffer->draw(*opaquePixelsTile, currentStates);
-            frameBuffer->draw(*semiTransparentsPixelsTile, currentStates);*/
-            depthBuffer->display();
-            frameBuffer->display();
-            bumpTexture->display();
-            refractionTexture->display();
+            opaquePixelsTile.setCenter(view.getPosition());
+            semiTransparentsPixelsTile.setCenter(view.getPosition());
+            frameBuffer.draw(opaquePixelsTile, currentStates);
+            frameBuffer.draw(semiTransparentsPixelsTile, currentStates);
+            depthBuffer.display();
+            frameBuffer.display();
+            bumpTexture.display();
+            weightedBlendedOITPass1.display();
+            weightedBlendedOITPass2.display();
+            refractionTexture.display();
         }
         std::vector<Entity*> OITRenderComponent::getEntities() {
             return visibleEntities;
@@ -520,8 +508,8 @@ namespace odfaeg {
             drawables.push_back(std::make_pair(std::ref(drawable), states));
         }
         void OITRenderComponent::draw(RenderTarget& target, RenderStates states) {
-            frameBufferTile->setCenter(target.getView().getPosition());
-            target.draw(*frameBufferTile, states);
+            frameBufferTile.setCenter(target.getView().getPosition());
+            target.draw(frameBufferTile, states);
             drawables.clear();
         }
 
@@ -532,10 +520,10 @@ namespace odfaeg {
             return getPosition().z;
         }
         const Texture& OITRenderComponent::getBumpTexture() {
-            return bumpTexture->getTexture();
+            return bumpTexture.getTexture();
         }
         const Texture& OITRenderComponent::getRefractionTexture() {
-            return refractionTexture->getTexture();
+            return refractionTexture.getTexture();
         }
         void OITRenderComponent::updateParticleSystems() {
             for (unsigned int i = 0; i < visibleEntities.size(); i++) {

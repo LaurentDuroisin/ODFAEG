@@ -13,20 +13,16 @@ namespace odfaeg {
             expression(expression) {
                 update = false;
                 sf::Vector3i resolution ((int) window.getSize().x, (int) window.getSize().y, window.getView().getSize().z);
-                shadowMap = std::make_unique<RenderTexture>();
-                stencilBuffer = std::make_unique<RenderTexture>();
-                shadowMap->create(resolution.x, resolution.y,settings);
+                shadowMap.create(resolution.x, resolution.y,settings);
                 settings.depthBits = 32;
-                stencilBuffer->create(resolution.x, resolution.y,settings);
-                stencilBufferTile = std::make_unique<Tile>(&stencilBuffer->getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
-                shadowTile = std::make_unique<Tile>(&shadowMap->getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
+                stencilBuffer.create(resolution.x, resolution.y,settings);
+                stencilBufferTile = Sprite(stencilBuffer.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
+                shadowTile = Sprite(shadowMap.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
                 core::FastDelegate<bool> signal (&ShadowRenderComponent::needToUpdate, this);
                 core::FastDelegate<void> slot (&ShadowRenderComponent::drawNextFrame, this);
                 core::Command cmd(signal, slot);
                 getListener().connect("UPDATE", cmd);
                 if (Shader::isAvailable()) {
-                    buildShadowMapShader = std::make_unique<Shader>();
-                    perPixShadowShader = std::make_unique<Shader>();
                     const std::string buildShadowMapVertexShader =
                         "#version 130 \n"
                         "out mat4 projMat;"
@@ -93,15 +89,15 @@ namespace odfaeg {
                         "   vec4 visibility = colors[int(b)];"
                         "   gl_FragColor = visibility;"
                         "}";
-                    if (!buildShadowMapShader->loadFromMemory(buildShadowMapVertexShader, buildShadowMapFragmentShader)) {
+                    if (!buildShadowMapShader.loadFromMemory(buildShadowMapVertexShader, buildShadowMapFragmentShader)) {
                         throw core::Erreur(53, "Error, failed to load build shadow map shader", 3);
                     }
-                    if (!perPixShadowShader->loadFromMemory(perPixShadowVertexShader, perPixShadowFragmentShader)) {
+                    if (!perPixShadowShader.loadFromMemory(perPixShadowVertexShader, perPixShadowFragmentShader)) {
                         throw core::Erreur(54, "Error, failed to load per pix shadow map shader", 3);
                     }
-                    buildShadowMapShader->setParameter("texture", Shader::CurrentTexture);
-                    perPixShadowShader->setParameter("stencilBuffer", stencilBuffer->getTexture());
-                    perPixShadowShader->setParameter("texture", Shader::CurrentTexture);
+                    buildShadowMapShader.setParameter("texture", Shader::CurrentTexture);
+                    perPixShadowShader.setParameter("stencilBuffer", stencilBuffer.getTexture());
+                    perPixShadowShader.setParameter("texture", Shader::CurrentTexture);
                 } else {
                     throw core::Erreur(55, "Shader not supported!", 0);
                 }
@@ -113,38 +109,38 @@ namespace odfaeg {
                 math::Vec3f forward = view.getPosition() - lightView.getPosition();
                 math::Vec3f target = lightView.getPosition() + forward;
                 lightView.lookAt(target.x, target.y, target.z);
-                stencilBuffer->setView(lightView);
+                stencilBuffer.setView(lightView);
                 math::Vec3f v = lightView.getPosition() - view.getPosition();
                 RenderStates states;
-                states.shader = buildShadowMapShader.get();
+                states.shader = &buildShadowMapShader;
                 physic::BoundingBox viewArea = view.getViewVolume();
                 math::Vec3f position (viewArea.getPosition().x,viewArea.getPosition().y, view.getPosition().z);
                 math::Vec3f size (viewArea.getWidth(), viewArea.getHeight(), 0);
                 for (unsigned int i = 0; i < m_instances.size(); i++) {
                     states.texture = m_instances[i].getMaterial().getTexture();
                     if (m_instances[i].getMaterial().getTexture() != nullptr) {
-                        buildShadowMapShader->setParameter("haveTexture", 1);
+                        buildShadowMapShader.setParameter("haveTexture", 1);
                     } else {
-                        buildShadowMapShader->setParameter("haveTexture", 0);
+                        buildShadowMapShader.setParameter("haveTexture", 0);
                     }
-                    stencilBuffer->draw(m_instances[i].getAllVertices(), states);
+                    stencilBuffer.draw(m_instances[i].getAllVertices(), states);
                 }
-                stencilBuffer->display();
-                stencilBufferTile->setPosition(position);
-                shadowMap->setView(view);
+                stencilBuffer.display();
+                stencilBufferTile.setPosition(position);
+                shadowMap.setView(view);
                 math::Matrix4f biasMatrix(0.5f, 0.0f, 0.0f, 0.0f,
                                           0.0f, 0.5f, 0.0f, 0.0f,
                                           0.0f, 0.0f, 0.5f, 0.0f,
                                           0.5f, 0.5f, 0.5f, 1.f);
                 math::Matrix4f depthBiasMatrix = biasMatrix * view.getViewMatrix().getMatrix() * view.getProjMatrix().getMatrix();
-                perPixShadowShader->setParameter("depthBiasMatrix", depthBiasMatrix.transpose());
-                states.shader = perPixShadowShader.get();
+                perPixShadowShader.setParameter("depthBiasMatrix", depthBiasMatrix.transpose());
+                states.shader = &perPixShadowShader;
                 for (unsigned int i = 0; i < m_shadow_instances.size(); i++) {
                     states.texture = m_shadow_instances[i].getMaterial().getTexture();
                     if (m_shadow_instances[i].getMaterial().getTexture() != nullptr) {
-                        perPixShadowShader->setParameter("haveTexture", 1);
+                        perPixShadowShader.setParameter("haveTexture", 1);
                     } else {
-                        perPixShadowShader->setParameter("haveTexture", 0);
+                        perPixShadowShader.setParameter("haveTexture", 0);
                     }
                     /*for (unsigned int j = 0; j < m_instances[i].getVertexArrays().size(); j++) {
                         states.transform = m_instances[i].getTransforms()[j];
@@ -167,21 +163,21 @@ namespace odfaeg {
                         perPixShadowShader->setParameter("shadowProjMat", tm.getMatrix().transpose());
                         shadowMap->draw(m_instances[i].getVertexArrays()[j], states);
                     }*/
-                    shadowMap->draw(m_shadow_instances[i].getAllVertices(), states);
+                    shadowMap.draw(m_shadow_instances[i].getAllVertices(), states);
                 }
                 /*RectangleShape rect(size * 2.f);
                 rect.setPosition(position - size * 0.5f);
                 rect.setFillColor(sf::Color(100, 100, 100, 128));
                 shadowMap->draw(rect);*/
-                shadowMap->display();
+                shadowMap.display();
             }
             std::vector<Entity*> ShadowRenderComponent::getEntities() {
                 return visibleEntities;
             }
             void ShadowRenderComponent::draw(RenderTarget& target, RenderStates states) {
-                shadowTile->setCenter(target.getView().getPosition());
+                shadowTile.setCenter(target.getView().getPosition());
                 states.blendMode = sf::BlendMultiply;
-                target.draw(*shadowTile, states);
+                target.draw(shadowTile, states);
             }
             void ShadowRenderComponent::pushEvent(window::IEvent event, RenderWindow& rw) {
                 if (event.type == window::IEvent::WINDOW_EVENT && event.window.type == window::IEvent::WINDOW_EVENT_RESIZED && &getWindow() == &rw && isAutoResized()) {
@@ -200,16 +196,16 @@ namespace odfaeg {
                 return getPosition().z;
             }
             const Texture& ShadowRenderComponent::getStencilBufferTexture() {
-                return stencilBuffer->getTexture();
+                return stencilBuffer.getTexture();
             }
             const Texture& ShadowRenderComponent::getShadowMapTexture() {
-                return shadowMap->getTexture();
+                return shadowMap.getTexture();
             }
-            Tile& ShadowRenderComponent::getFrameBufferTile () {
-                return *stencilBufferTile;
+            Sprite& ShadowRenderComponent::getFrameBufferTile () {
+                return stencilBufferTile;
             }
-            Tile& ShadowRenderComponent::getDepthBufferTile() {
-                return *shadowTile;
+            Sprite& ShadowRenderComponent::getDepthBufferTile() {
+                return shadowTile;
             }
             void ShadowRenderComponent::setExpression(std::string expression) {
                 update = true;
@@ -220,7 +216,7 @@ namespace odfaeg {
             }
             void ShadowRenderComponent::setView(View view) {
                 this->view = view;
-                shadowMap->setView(view);
+                shadowMap.setView(view);
             }
             bool ShadowRenderComponent::loadEntitiesOnComponent(std::vector<Entity*> vEntities)
             {
@@ -257,8 +253,8 @@ namespace odfaeg {
                 return true;
             }
             void ShadowRenderComponent::clear() {
-                 shadowMap->clear(sf::Color::White);
-                 stencilBuffer->clear(sf::Color::Transparent);
+                 shadowMap.clear(sf::Color::White);
+                 stencilBuffer.clear(sf::Color::Transparent);
             }
             void ShadowRenderComponent::changeVisibleEntities(Entity* toRemove, Entity* toAdd, EntityManager* em) {
                 bool removed;

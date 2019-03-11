@@ -8,6 +8,7 @@ namespace odfaeg {
         class GlxContext : public IContext {
             public :
                 GlxContext();
+                static GlFunctionPointer getFunction(const char* name);
                 static XVisualInfo selectBestVisual(::Display* display, unsigned int bitsPerPixel, const ContextSettings& settings);
                 virtual bool setActive(bool current);
                 virtual void create(::Window window, IContext* shared = nullptr);

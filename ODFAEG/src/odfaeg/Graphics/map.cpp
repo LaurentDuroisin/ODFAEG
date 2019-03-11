@@ -665,24 +665,26 @@ namespace odfaeg {
             gridMap->setBaseChangementMatrix(bm);
         }
         void Map::insertAnimatedVisibleEntity (Entity *ae, std::vector<Entity*>& entities, View& view) {
-            if (ae->isAnimated()) {
-                insertAnimatedVisibleEntity(static_cast<AnimatedEntity*> (ae)->getCurrentFrame(), entities, view);
-            } else {
-                physic::BoundingBox bx (view.getViewVolume().getPosition().x,view.getViewVolume().getPosition().y,view.getViewVolume().getPosition().z,view.getViewVolume().getWidth(), view.getViewVolume().getHeight(), view.getViewVolume().getDepth());
-                vector<Entity*> children;
-                getChildren(ae, children, "*");
-                if (!containsVisibleEntity(ae)) {
-                    physic::BoundingBox bx2 = ae->getGlobalBounds();
-                    if (bx.intersects(bx2)) {
-
-                        entities.push_back(ae);
-                    }
-                }
-                for (unsigned int i = 0; i < children.size(); i++) {
-                    if (!containsVisibleEntity(children[i])) {
-                        physic::BoundingBox bx2 = children[i]->getGlobalBounds();
+            if (containsVisibleParentEntity(ae->getRootEntity())) {
+                if (ae->isAnimated()) {
+                    insertAnimatedVisibleEntity(static_cast<AnimatedEntity*> (ae)->getCurrentFrame(), entities, view);
+                } else {
+                    physic::BoundingBox bx (view.getViewVolume().getPosition().x,view.getViewVolume().getPosition().y,view.getViewVolume().getPosition().z,view.getViewVolume().getWidth(), view.getViewVolume().getHeight(), view.getViewVolume().getDepth());
+                    vector<Entity*> children;
+                    getChildren(ae, children, "*");
+                    if (!containsVisibleEntity(ae)) {
+                        physic::BoundingBox bx2 = ae->getGlobalBounds();
                         if (bx.intersects(bx2)) {
-                            entities.push_back(children[i]);
+
+                            entities.push_back(ae);
+                        }
+                    }
+                    for (unsigned int i = 0; i < children.size(); i++) {
+                        if (!containsVisibleEntity(children[i])) {
+                            physic::BoundingBox bx2 = children[i]->getGlobalBounds();
+                            if (bx.intersects(bx2)) {
+                                entities.push_back(children[i]);
+                            }
                         }
                     }
                 }
@@ -1142,7 +1144,7 @@ namespace odfaeg {
                                     normalMap->setView(frcm->getRenderComponent(i)->getView());
                                     normalMap->clear(sf::Color::Transparent);
                                     if (dynamic_cast<OITRenderComponent*>(frcm->getRenderComponent(i)) != nullptr) {
-                                        Tile& heightMapTile = static_cast<OITRenderComponent*>(frcm->getRenderComponent(i))->getDepthBufferTile();
+                                        Sprite& heightMapTile = static_cast<OITRenderComponent*>(frcm->getRenderComponent(i))->getDepthBufferTile();
                                         heightMapTile.setCenter(frcm->getRenderComponent(i)->getView().getPosition());
                                         states.shader = buildNormalMapShader.get();
                                         states.blendMode = sf::BlendNone;
