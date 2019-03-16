@@ -4,7 +4,7 @@ namespace odfaeg {
     namespace graphic {
         namespace gui {
             FileDialog::FileDialog(math::Vec3f position, math::Vec3f size, const Font* font) :
-            rw(sf::VideoMode(size.x, size.y), "File Dialog", sf::Style::Default, window::ContextSettings(3, 0, 0, 0, 0)),
+            rw(sf::VideoMode(size.x, size.y), "File Dialog", sf::Style::Default, sf::ContextSettings(0, 0, 0, 3, 0)),
             LightComponent (rw, position, size, size * 0.5),
             pTop(rw, position, size),
             pBottom (rw, position, size),
@@ -60,7 +60,7 @@ namespace odfaeg {
                             lDirectory->setRelSize(1, 0.04f);
                             pDirectories.addChild(lDirectory);
                             lDirectory->setText(sf::String(textDir));
-                            core::Action a (core::Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, window::IMouse::Left);
+                            core::Action a (core::Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, sf::Mouse::Left);
                             core::Command cmd (a, core::FastDelegate<bool>(&Label::isMouseInside, lDirectory), core::FastDelegate<void>(&FileDialog::onDirSelected, this, lDirectory));
                             if(ent->d_type == DT_DIR) {
                                 lDirectory->setForegroundColor(sf::Color::Red);
@@ -87,7 +87,7 @@ namespace odfaeg {
                             lFile->setRelSize(1.f, 0.04f);
                             pFiles.addChild(lFile);
                             lFile->setText(sf::String(fileNames));
-                            core::Action a (core::Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, window::IMouse::Left);
+                            core::Action a (core::Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, sf::Mouse::Left);
                             core::Command cmd (a, core::FastDelegate<bool>(&Label::isMouseInside, lFile), core::FastDelegate<void>(&FileDialog::onFileSelected, this, lFile));
                             if(ent->d_type == DT_DIR) {
                                 lFile->setForegroundColor(sf::Color::Red);
@@ -156,7 +156,7 @@ namespace odfaeg {
                                 lFile->setRelSize(1.f, 0.04f);
                                 pFiles.addChild(lFile);
                                 lFile->setText(fileNames);
-                                core::Action a (core::Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, window::IMouse::Left);
+                                core::Action a (core::Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, sf::Mouse::Left);
                                 core::Command cmd (a, core::FastDelegate<bool>(&Label::isMouseInside, lFile), core::FastDelegate<void>(&FileDialog::onFileSelected, this, lFile));
                                 if(ent->d_type == DT_DIR) {
                                     lFile->setForegroundColor(sf::Color::Red);
@@ -207,7 +207,7 @@ namespace odfaeg {
                                 lFile->setRelSize(1.f, 0.04f);
                                 pFiles.addChild(lFile);
                                 lFile->setText(fileNames);
-                                core::Action a (core::Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, window::IMouse::Left);
+                                core::Action a (core::Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, sf::Mouse::Left);
                                 core::Command cmd (a, core::FastDelegate<bool>(&Label::isMouseInside, lFile), core::FastDelegate<void>(&FileDialog::onFileSelected, this, lFile));
                                 if(ent->d_type == DT_DIR) {
                                     lFile->setForegroundColor(sf::Color::Red);
@@ -236,9 +236,8 @@ namespace odfaeg {
             std::string FileDialog::getAppiDir() {
                 return appliDir;
             }
-            void FileDialog::onEventPushed(window::IEvent event, RenderWindow& window) {
-                if (event.type == window::IEvent::WINDOW_EVENT
-                    && event.mouseButton.type == window::IEvent::WINDOW_EVENT_CLOSED) {
+            void FileDialog::onEventPushed(sf::Event event, RenderWindow& window) {
+                if (event.type == sf::Event::Closed) {
                     rw.setVisible(false);
                 }
                 /*for (unsigned int i = 0; i < pDirectories.getChildren().size(); i++) {

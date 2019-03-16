@@ -37,7 +37,7 @@ namespace odfaeg {
             }
             bool Button::isMouseInButton() {
                 physic::BoundingBox bb = getGlobalBounds();
-                //math::Vec2f mousePos = math::Vec2f(window::IMouse::getPosition(getWindow()).x, window::IMouse::getPosition(getWindow()).y);
+                //math::Vec2f mousePos = math::Vec2f(sf::Mouse::getPosition(getWindow()).x, sf::Mouse::getPosition(getWindow()).y);
                 if (bb.isPointInside(mousePos)) {
                     return true;
                 }
@@ -46,19 +46,18 @@ namespace odfaeg {
             void Button::addActionListener (ActionListener *al) {
                 core::FastDelegate<bool> trigger(&Button::isMouseInButton, this);
                 core::FastDelegate<void> slot(&ActionListener::actionPerformed,al, this);
-                core::Action a (core::Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, window::IMouse::Left);
+                core::Action a (core::Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, sf::Mouse::Left);
                 core::Command cmd(a, trigger, slot);
                 getListener().connect("CBUTTONCLICKED", cmd);
             }
-            void Button::onEventPushed (window::IEvent event, RenderWindow& window) {
+            void Button::onEventPushed (sf::Event event, RenderWindow& window) {
                 if (&getWindow() == &window)
                     getListener().pushEvent(event);
             }
-            void Button::onUpdate (RenderWindow* window, window::IEvent& event) {
+            void Button::onUpdate (RenderWindow* window, sf::Event& event) {
                 if (&getWindow() == window) {
-                    if (event.type == window::IEvent::MOUSE_BUTTON_EVENT
-                        && event.mouseButton.type == window::IEvent::BUTTON_EVENT_PRESSED
-                        && event.mouseButton.button == window::IMouse::Left) {
+                    if (event.type == sf::Event::MouseButtonPressed
+                        && event.mouseButton.button == sf::Mouse::Left) {
                         mousePos = math::Vec3f(event.mouseButton.x, event.mouseButton.y, 0);
                     }
                 }

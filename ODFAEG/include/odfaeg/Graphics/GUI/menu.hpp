@@ -13,7 +13,7 @@ namespace odfaeg {
                 void onDraw(RenderTarget& target, RenderStates states=RenderStates::Default);
                 void onClick();
                 bool isMouseOnMenu();
-                void onEventPushed(window::IEvent event, RenderWindow& window);
+                void onEventPushed(sf::Event event, RenderWindow& window);
             private :
                 RectangleShape rect;
                 Text text;

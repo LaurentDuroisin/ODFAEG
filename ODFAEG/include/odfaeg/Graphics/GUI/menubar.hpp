@@ -10,7 +10,7 @@ namespace odfaeg {
                 void addMenu(Menu* menu);
                 void clear();
                 void onDraw(RenderTarget& target, RenderStates states=RenderStates::Default);
-                void onEventPushed(window::IEvent event, RenderWindow& window);
+                void onEventPushed(sf::Event event, RenderWindow& window);
             private :
                 RectangleShape rect;
                 sf::Color background;

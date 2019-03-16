@@ -18,7 +18,7 @@ namespace odfaeg {
                 Label* lTabName = new Label(getWindow(),math::Vec3f(tabXPos,getPosition().y+10,0),math::Vec3f(100,15,0),&font,tabName,15);
                 lTabName->setBorderColor(sf::Color::Red);
                 lTabName->setBorderThickness(1.f);
-                core::Action a (core::Action::MOUSE_BUTTON_PRESSED_ONCE, window::IMouse::Left);
+                core::Action a (core::Action::MOUSE_BUTTON_PRESSED_ONCE, sf::Mouse::Left);
                 core::Command cmd (a, core::FastDelegate<bool>(&Label::isMouseInside, lTabName), core::FastDelegate<void>(&TabPane::onTabChanged, this, panel));
                 lTabName->getListener().connect("ChangeTab", cmd);
                 lTabName->setParent(this);

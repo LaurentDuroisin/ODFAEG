@@ -3,12 +3,10 @@
 #include "export.hpp"
 #include <map>
 #include "signal.h"
+#include <SFML/Graphics.hpp>
 #include <functional>
 #include <memory>
 #include <iostream>
-#include "../Window/iEvent.hpp"
-#include "../Window/iKeyboard.hpp"
-#include "../Window/iMouse.hpp"
 /**
   *\namespace odfaeg
   * the namespace of the Opensource Development Framework Adapted for Every Games.
@@ -23,7 +21,7 @@ namespace odfaeg {
           * \version 1.0
           * \date 1/02/2014
           * Link one or more SFML Events to ACTIONS, and determine when the action is triggered.
-          * The window::IEvents are stored into the leafs of a BSP tree structure.
+          * The sf::Events are stored into the leafs of a BSP tree structure.
           * It means that combined actions contains two children :
             -The first action child is linked to the first SFML event.
             -The second action child is linked to the second SFML event.
@@ -36,7 +34,7 @@ namespace odfaeg {
             *   \brief the types of the events witch are linked to actions.
             *   COMBINED_WITH_OR, COMBINED_WITH_X_OR AND COMBINED_WITH_AND define a combination of actions.
             *   the action is triggered if one or/and the passed sf:Events are triggered.
-            *   by exemple if CLOSED is passed, an window::IEvent of type Closed is stored.
+            *   by exemple if CLOSED is passed, an sf::Event of type Closed is stored.
             */
             enum EVENT_TYPE {
                 KEY_PRESSED_ONCE, KEY_HELD_DOWN, KEY_RELEASED,
@@ -56,13 +54,13 @@ namespace odfaeg {
             *  \param type : the type of the event. (KEY_PRESSED_ONCE, KEY_HELD_DOWN or KEY_RELEASED, other types are invalid)
             *  \param key : the key of the keyevent.
             */
-            Action (EVENT_TYPE type, window::IKeyboard::Key key);
-            /**\fn Action (EVENT_TYPE type, window::IMouse::Button button)
+            Action (EVENT_TYPE type, sf::Keyboard::Key key);
+            /**\fn Action (EVENT_TYPE type, sf::Mouse::Button button)
             *  \brief constructor (define an action with a mouse event)
             *  \param type : the type of the event. (MOUSE_BUTTON_PRESSED_ONCE, MOUSE_BUTTON_HELD_DOWN or MOUSE_BUTTON_RELEASED, other types are invalid)
             *  \param button : the button of the mouseevent.
             */
-            Action (EVENT_TYPE type, window::IMouse::Button button);
+            Action (EVENT_TYPE type, sf::Mouse::Button button);
             /**\fn bool andComparator (Action *a1, Action *a2)
             *  \brief check if two actions are triggered.
             *  \param a1 : the first action. (the left child)
@@ -109,14 +107,14 @@ namespace odfaeg {
             Action operator&& (Action other);
             /**\fn bool containsEvent ();
             *  \brief return true if the action contains the passed event.
-            *  \param window::IEvent& the passed event.
+            *  \param sf::Event& the passed event.
             *  \return true if the action is triggered, false otherwise.
             */
-            bool containsEvent (window::IEvent& event);
+            bool containsEvent (sf::Event& event);
             /**\fn bool isTriggered ();
-            *  \brief return true if the action is triggered, the triggered window::IEvents are stored into the
-            * ActionMap class, the window::IEvents are passed to this function and if an sf:Event is contained in
-            * a leaf action, the window::IEvent is evaluated with this one.
+            *  \brief return true if the action is triggered, the triggered sf::Events are stored into the
+            * ActionMap class, the sf::Events are passed to this function and if an sf:Event is contained in
+            * a leaf action, the sf::event is evaluated with this one.
             *  \return true if the action is triggered, false otherwise.
             */
             bool isTriggered ();
@@ -127,33 +125,33 @@ namespace odfaeg {
             *  \param rightChild : the right child.
             */
             Action (EVENT_TYPE type, Action leftChild, Action rightChild);
-            /**\fn setPressed (window::IEvent event, bool pressed)
+            /**\fn setPressed (sf::Event event, bool pressed)
             *  \brief reset the states of the event. (For key pressed events and mouse button pressed envents types only)
             *  this function is necessary to avoid that PRESSED_ONCE action's types occurs more than once while the key or a button is held down.
-            *  \param window::IEvent : the event onwich we want to reset the state.
+            *  \param sf::Event : the event onwich we want to reset the state.
             **/
-            void setPressed (window::IEvent event);
+            void setPressed (sf::Event event);
             void setPressed (bool pressed) {
                 this->pressed = pressed;
             }
-            /**\fn void getEvents(std::vector<window::IEvent>& events);
-            *  \param the list of all window::IEvents contained into the BSP-tree.
+            /**\fn void getEvents(std::vector<sf::Event>& events);
+            *  \param the list of all sf::Events contained into the BSP-tree.
             */
-            void getEvents(std::vector<window::IEvent>& events);
+            void getEvents(std::vector<sf::Event>& events);
             void getActions(std::vector<Action*>& actions);
             bool isPressed() {
                 return pressed;
             }
             Action& operator=(const Action& action);
             private :
-            /**\fn bool equalEvent (window::IEvent event, window::IEvent other)
-            *  \brief compare two window::IEvents. (The events are equal if the event's types and params are equal)
-            *  \return true if the two window::IEvent are equal, false otherwise.
+            /**\fn bool equalEvent (sf::Event event, sf::Event other)
+            *  \brief compare two sf::Events. (The events are equal if the event's types and params are equal)
+            *  \return true if the two sf::Event are equal, false otherwise.
             */
-            //bool equalEvent (window::IEvent event, window::IEvent other);
+            //bool equalEvent (sf::Event event, sf::Event other);
             bool pressed; /**< the state of the event contained into the BSP tree*/
             EVENT_TYPE type; /**< the type of the event.*/
-            window::IEvent startEvent; /**< the window::IEvent linked to the action. (for single actions only)*/
+            sf::Event startEvent; /**< the sf::event linked to the action. (for single actions only)*/
             bool leaf; /**< determine if the action is a single or a combined action*/
             std::unique_ptr<Action> leftChild;
             std::unique_ptr<Action> rightChild;/**<pointers to the two action's children if the action is a combined action*/

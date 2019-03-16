@@ -3,7 +3,7 @@
 namespace odfaeg {
     namespace graphic {
         using namespace sf;
-        SDLRenderWindow::SDLRenderWindow(unsigned int width, unsigned int height, const std::string& title, const window::ContextSettings& settings, bool useDepthTest)
+        SDLRenderWindow::SDLRenderWindow(unsigned int width, unsigned int height, const std::string& title, const sf::ContextSettings& settings, bool useDepthTest)
         {
             size = sf::Vector2u(width, height);
             this->useDepthTest = useDepthTest;
@@ -43,12 +43,12 @@ namespace odfaeg {
         }
         void SDLRenderWindow::onCreate() {
             SDL_GL_SetAttribute(SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1);
-            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, settings.versionMajor);
-            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, settings.versionMinor);
+            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, settings.majorVersion);
+            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, settings.minorVersion);
             SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, settings.stencilBits);
             SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, settings.depthBits);
-            SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, (settings.antiAliasingLevel > 0) ? 1 : 0);
-            SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, settings.antiAliasingLevel);
+            SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, (settings.antialiasingLevel > 0) ? 1 : 0);
+            SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, settings.antialiasingLevel);
             context = SDL_GL_CreateContext(window);
             priv::ensureGlewInit();
             /*glewExperimental = GL_TRUE;
@@ -61,12 +61,12 @@ namespace odfaeg {
             {
                 err() << "Failed to initialize GLEW, " << glewGetErrorString(status) << std::endl;
             }*/
-            /*if (settings.majorVersion >= 3 && settings.minorVersion >= 3 && vertexArrayId == 0) {
+            if (settings.majorVersion >= 3 && settings.minorVersion >= 3 && vertexArrayId == 0) {
                 GLuint vao;
                 glCheck(glGenVertexArrays(1, &vao));
                 vertexArrayId = reinterpret_cast<unsigned int>(vao);
                 glCheck(glBindVertexArray(vertexArrayId));
-            }*/
+            }
             // Just initialize the render target part
             RenderTarget::initialize();
         }

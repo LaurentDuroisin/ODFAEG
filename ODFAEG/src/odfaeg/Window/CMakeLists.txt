@@ -7,49 +7,7 @@ set(SRC_WINDOW
 	${INCROOT}/sdlWindow.hpp
 	${SRCROOT}/sdlWindow.cpp
 	${INCROOT}/x11Window.hpp
-	${SRCROOT}/x11Window.cpp
-	${INCROOT}/glxContext.hpp
-	${SRCROOT}/glxContext.cpp
-	${INCROOT}/contextImpl.hpp
-	${SRCROOT}/contextImpl.cpp	
-	${INCROOT}/contextSettings.hpp
-	${SRCROOT}/contextSettings.cpp
-	${INCROOT}/display.hpp
-	${SRCROOT}/display.cpp
-	${INCROOT}/x11Keyboard.hpp
-	${SRCROOT}/x11Keyboard.cpp
-	${INCROOT}/x11Mouse.hpp
-	${SRCROOT}/x11Mouse.cpp
-	${INCROOT}/iKeyboard.hpp
-	${SRCROOT}/iKeyboard.cpp
-	${INCROOT}/iMouse.hpp
-	${SRCROOT}/iMouse.cpp
-	${INCROOT}/windowImpl.hpp
-	${SRCROOT}/windowImpl.cpp
-	${INCROOT}/iWindow.hpp
-	${INCROOT}/iContext.hpp
-	${INCROOT}/windowFactory.hpp
-	${SRCROOT}/windowFactory.cpp
-	${INCROOT}/contextFactory.hpp
-	${SRCROOT}/contextFactory.cpp
-	${INCROOT}/window.hpp
-	${SRCROOT}/window.cpp
-	${INCROOT}/context.hpp
-	${SRCROOT}/context.cpp	
-	${INCROOT}/iGlResource.hpp
-	${INCROOT}/glResource.hpp
-	${SRCROOT}/glResource.cpp
-	${SRCROOT}/glxExtensions.hpp
-	${SRCROOT}/glxExtensions.cpp	
-	${INCROOT}/sfmlWindowImpl.hpp
-	${SRCROOT}/sfmlWindowImpl.cpp
-	${INCROOT}/sfmlKeyboard.hpp
-	${SRCROOT}/sfmlKeyboard.cpp
-	${INCROOT}/sfmlMouse.hpp
-	${SRCROOT}/sfmlMouse.cpp
-	${INCROOT}/sfmlContextImpl.hpp
-	${SRCROOT}/sfmlContextImpl.cpp
-)
+	${SRCROOT}/x11Window.cpp)
 
 include_directories(${CMAKE_INCLUDE_PATH} ${FREETYPE_INCLUDE_DIRS})
 link_directories(${CMAKE_LIBRARY_PATH})

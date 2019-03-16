@@ -22,7 +22,7 @@ namespace odfaeg {
                 void onNoOption();
                 void onYesOption();
                 void onEnter();
-                void onEventPushed(window::IEvent event, RenderWindow& window);
+                void onEventPushed(sf::Event event, RenderWindow& window);
                 ~OptionPane();
             private :
                 sf::Color backgroundColor;

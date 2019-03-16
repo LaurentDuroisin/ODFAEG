@@ -32,10 +32,11 @@
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
+#include <SFML/Graphics/Export.hpp>
 #include "texture.h"
 #include "renderTarget.h"
-#include "../../../include/odfaeg/Window/context.hpp"
-#include "../../../include/odfaeg/Window/iGlResource.hpp"
+
+
 class RenderTextureImpl;
 namespace odfaeg {
     namespace graphic {
@@ -49,7 +50,7 @@ namespace odfaeg {
         /// \brief Target for off-screen 2D rendering into a texture
         ///
         ////////////////////////////////////////////////////////////
-        class ODFAEG_GRAPHICS_API RenderTexture : public RenderTarget, window::IGLResource
+        class ODFAEG_GRAPHICS_API RenderTexture : public RenderTarget
         {
         public :
 
@@ -88,7 +89,7 @@ namespace odfaeg {
             /// \return True if creation has been successful
             ///
             ////////////////////////////////////////////////////////////
-            bool create(unsigned int width, unsigned int height, window::ContextSettings = window::ContextSettings());
+            bool create(unsigned int width, unsigned int height, sf::ContextSettings = sf::ContextSettings());
             ////////////////////////////////////////////////////////////
             /// \brief Enable or disable texture smoothing
             ///
@@ -189,15 +190,26 @@ namespace odfaeg {
             ///
             ////////////////////////////////////////////////////////////
             const Texture& getTexture() const;
-            const window::ContextSettings& getSettings() const;
         private :
-            bool activate(bool active);
+
+            ////////////////////////////////////////////////////////////
+            /// \brief Activate the target for rendering
+            ///
+            /// This function is called by the base class
+            /// everytime it's going to use OpenGL calls.
+            ///
+            /// \param active True to make the target active, false to deactivate it
+            ///
+            /// \return True if the function succeeded
+            ///
+            ////////////////////////////////////////////////////////////
+            virtual bool activate(bool active);
+
             ////////////////////////////////////////////////////////////
             // Member data
             ////////////////////////////////////////////////////////////
             priv::RenderTextureImpl* m_impl;    ///< Platform/hardware specific implementation
-            Texture                  m_texture; ///< Target texture to draw on
-            window::Context          m_context; ///< Need to use a separating opengl context otherwise it doesn't work because opengl resource are messed up.
+            Texture                 m_texture; ///< Target texture to draw on
         };
     }
 

@@ -17,11 +17,11 @@ namespace odfaeg {
                 sf::Color getBackgroundColor();
                 void setForegroundColor(sf::Color color);
                 sf::Color getForegroundColor();
-                void onEventPushed(window::IEvent event, RenderWindow& window);
+                void onEventPushed(sf::Event event, RenderWindow& window);
                 void setText(std::string text);
                 std::string getText();
                 bool isMouseInside();
-                void onUpdate(RenderWindow* window, window::IEvent& event);
+                void onUpdate(RenderWindow* window, sf::Event& event);
                 void setBorderColor(sf::Color color);
                 void setBorderThickness(float thickness);
                 unsigned int getCharacterSize() {

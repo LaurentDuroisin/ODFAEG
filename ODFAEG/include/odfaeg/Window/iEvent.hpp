@@ -5,23 +5,18 @@ namespace odfaeg {
     namespace window {
         struct IEvent {
             enum EventType {
-                WINDOW_EVENT, KEYBOARD_EVENT, TEXT_INPUT_EVENT, MOUSE_MOTION_EVENT, MOUSE_BUTTON_EVENT, MOUSE_WHEEL_EVENT, MOUSE_EVENT_ENTER,
-                MOUSE_EVENT_LEAVE
+                WINDOW_EVENT, KEYBOARD_EVENT, TEXT_INPUT_EVENT, MOUSE_MOTION_EVENT, MOUSE_BUTTON_EVENT, MOUSE_WHEEL_EVENT
             };
             enum WindowEventID {
                 WINDOW_EVENT_CLOSED, WINDOW_EVENT_HIDDEN, WINDOW_EVENT_SHOWN, WINDOW_EVENT_EXPOSED,
-                WINDOW_EVENT_RESIZED, WINDOW_EVENT_FOCUS_LOST, WINDOW_EVENT_FOCUS_GAIGNED, WINDOW_EVENT_MINIMIZED, WINDOW_EVENT_MAXIMIZED
-            };
-            enum KeyEventID {
-                KEY_EVENT_PRESSED, KEY_EVENT_RELEASED
-            };
-            enum MouseEventID {
-                BUTTON_EVENT_PRESSED, BUTTON_EVENT_RELEASED
+                WINDOW_EVENT_RESIZED, WINDOW_EVENT_FOCUS_LOST, WINDOW_EVENT_FOCUS_GAIGNED, WINDOW_EVENT_ENTER,
+                WINDOW_EVENT_LEAVE, WINDOW_EVENT_MINIMIZED, WINDOW_EVENT_MAXIMIZED
             };
             struct WindowEvent {
                 unsigned int type;
                 unsigned int timestamp;
                 unsigned long long int windowID;
+                unsigned int event;
                 int data1;
                 int data2;
             };
@@ -29,7 +24,7 @@ namespace odfaeg {
                 unsigned int type;
                 unsigned int timestamp;
                 unsigned int windowID;
-                long long int unicode;
+                long long int text;
             };
             struct KeyboardEvent {
                 unsigned int type;
@@ -38,11 +33,8 @@ namespace odfaeg {
                 unsigned int state;
                 unsigned int repeat;
                 unsigned int scancode;
-                unsigned int code;
-                bool alt;
-                bool control;
-                bool shift;
-                bool system;
+                unsigned int keycode;
+                unsigned int mod;
             };
             struct MouseMotionEvent {
                 unsigned int type;

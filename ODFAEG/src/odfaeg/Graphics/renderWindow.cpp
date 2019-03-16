@@ -1,4 +1,4 @@
-#include <SFML/OpenGL.hpp>
+
 #include "../../../include/odfaeg/Graphics/renderWindow.h"
 #include "glCheck.h"
 //#include "GlDebug.hpp"
@@ -13,7 +13,7 @@ namespace odfaeg {
         }
 
         ////////////////////////////////////////////////////////////
-        RenderWindow::RenderWindow(VideoMode mode, const String& title, Uint32 style, const window::ContextSettings& settings)
+        RenderWindow::RenderWindow(VideoMode mode, const String& title, Uint32 style, const ContextSettings& settings)
         {
             // Don't call the base class constructor because it contains virtual function calls
             create(mode, title, style, settings);
@@ -23,7 +23,7 @@ namespace odfaeg {
 
 
         ////////////////////////////////////////////////////////////
-        RenderWindow::RenderWindow(WindowHandle handle, const window::ContextSettings& settings)
+        RenderWindow::RenderWindow(WindowHandle handle, const ContextSettings& settings)
         {
             // Don't call the base class constructor because it contains virtual function calls
             create(handle, settings);
@@ -52,7 +52,7 @@ namespace odfaeg {
         }
 
         ////////////////////////////////////////////////////////////
-        Image RenderWindow::capture()
+        Image RenderWindow::capture() const
         {
             Image image;
             if (setActive())
@@ -77,8 +77,6 @@ namespace odfaeg {
         void RenderWindow::onCreate()
         {
             priv::ensureGlewInit();
-            RenderTarget::setVersionMajor(getSettings().versionMajor);
-            RenderTarget::setVersionMinor(getSettings().versionMinor);
             // Just initialize the render target part
             RenderTarget::initialize();
         }

@@ -40,7 +40,6 @@ set(SRC
 	${SRCROOT}/time.cpp
 	${INCROOT}/clock.h
 	${SRCROOT}/clock.cpp
-	${INCROOT}/variant.h
 	)	
 
 include_directories(${CMAKE_INCLUDE_PATH})

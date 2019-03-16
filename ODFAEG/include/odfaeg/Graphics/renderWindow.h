@@ -37,7 +37,8 @@
 #include "renderTarget.h"
 #include <SFML/Graphics/Image.hpp>
 #include <string>
-#include "../../../include/odfaeg/Window/window.hpp"
+
+
 namespace odfaeg
 {
     namespace graphic {
@@ -45,7 +46,7 @@ namespace odfaeg
         /// \brief Window that can serve as a target for 2D drawing
         ///
         ////////////////////////////////////////////////////////////
-        class ODFAEG_GRAPHICS_API RenderWindow : public window::Window, public RenderTarget
+        class ODFAEG_GRAPHICS_API RenderWindow : public sf::Window, public RenderTarget
         {
         public :
 
@@ -77,7 +78,7 @@ namespace odfaeg
             /// \param settings Additional settings for the underlying OpenGL context
             ///
             ////////////////////////////////////////////////////////////
-            RenderWindow(sf::VideoMode mode, const sf::String& title, sf::Uint32 style = sf::Style::Default, const window::ContextSettings& settings = window::ContextSettings());
+            RenderWindow(sf::VideoMode mode, const sf::String& title, sf::Uint32 style = sf::Style::Default, const sf::ContextSettings& settings = sf::ContextSettings());
 
             ////////////////////////////////////////////////////////////
             /// \brief Construct the window from an existing control
@@ -94,7 +95,7 @@ namespace odfaeg
             /// \param settings Additional settings for the underlying OpenGL context
             ///
             ////////////////////////////////////////////////////////////
-            explicit RenderWindow(sf::WindowHandle handle, const window::ContextSettings& settings = window::ContextSettings());
+            explicit RenderWindow(sf::WindowHandle handle, const sf::ContextSettings& settings = sf::ContextSettings());
 
             ////////////////////////////////////////////////////////////
             /// \brief Destructor
@@ -129,7 +130,7 @@ namespace odfaeg
             /// \return Image containing the captured contents
             ///
             ////////////////////////////////////////////////////////////
-            sf::Image capture();
+            sf::Image capture() const;
             void setName (std::string name) {
                 this->name = name;
             }

@@ -19,7 +19,7 @@ namespace odfaeg {
         /**
         * \file listener.h
         * \class Listener
-        * \brief this class connect one or more command to an id, get the window::IEvent and check if the command is triggered.
+        * \brief this class connect one or more command to an id, get the sf::Event and check if the command is triggered.
         * this class use a thread to execute the commands, and wait until we call a methode to check if the commands are trigered.
         * \author Duroisin.L
         * \version 1.0
@@ -89,11 +89,11 @@ namespace odfaeg {
                  }
                  return false;
              }
-             /** \fn void pushEvent (window::IEvent event)
+             /** \fn void pushEvent (sf::Event event)
              *   \brief push an event into the event stack.
-             *   \param window::IEvent : the window::IEvent to pass into the stack.
+             *   \param sf::Event : the sf::event to pass into the stack.
              */
-             void pushEvent(window::IEvent event) {
+             void pushEvent(sf::Event event) {
                  std::map<std::string, Command>::iterator it;
                  for (it = commands.begin(); it != commands.end(); it++) {
                     if(it->second.containsBufferEvent(event)) {
@@ -128,7 +128,7 @@ namespace odfaeg {
                     }
                     /*Action* action = it->second.getAction();
                     if (action != nullptr) {
-                        std::vector<window::IEvent> events;
+                        std::vector<sf::Event> events;
                         action->getEvents(events);
                         for (unsigned int i = 0; i < events.size(); i++) {
                             Command::removeEvent(events[i]);

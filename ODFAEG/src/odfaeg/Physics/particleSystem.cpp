@@ -265,9 +265,7 @@ namespace odfaeg
                 {
                     graphic::Vertex vertex;
                     math::Vec3f pos = tm.transform(math::Vec3f(quad[i].position.x, quad[i].position.y,quad[i].position.z));
-                    vertex.position.x = pos.x;
-                    vertex.position.y = pos.y;
-                    vertex.position.z = pos.z;
+                    vertex.position = pos;
                     vertex.texCoords = quad[i].texCoords;
                     vertex.color = it->color;
                     mVertices.append(vertex);

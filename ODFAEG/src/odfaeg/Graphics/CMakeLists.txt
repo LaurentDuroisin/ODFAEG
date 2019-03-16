@@ -104,10 +104,11 @@ set(SRC_GRAPHICS
 	${SRCROOT}/sdlRenderWindow.cpp	
 	${INCROOT}/world.h
 	${SRCROOT}/world.cpp
+	${INCROOT}/lightComponent.hpp
 	${INCROOT}/glExtensions.hpp
-	${SRCROOT}/glExtensions.cpp	
 	${INCROOT}/glLoader.hpp
-	${SRCROOT}/glLoader.cpp)
+	${SRCROOT}/glLoader.cpp
+	${INCROOT}/animationUpdater.h)
 source_group ("graphics" FILES ${SRC_GRAPHICS})
 	
 set(SRC_GRAPHICS_2D

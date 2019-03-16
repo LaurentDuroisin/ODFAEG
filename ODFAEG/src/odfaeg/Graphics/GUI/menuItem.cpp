@@ -34,13 +34,13 @@ namespace odfaeg {
                 void MenuItem::addMenuItemListener (MenuItemListener *mil) {
                     core::FastDelegate<bool> trigger(&MenuItem::isMouseOnMenu, this);
                     core::FastDelegate<void> slot(&MenuItemListener::actionPerformed,mil, this);
-                    core::Action a (core::Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, window::IMouse::Left);
+                    core::Action a (core::Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, sf::Mouse::Left);
                     core::Command cmd(a, trigger, slot);
                     getListener().connect("CITEMCLICKED"+getText(), cmd);
                 }
                 bool MenuItem::isMouseOnMenu() {
                     physic::BoundingBox bb = getGlobalBounds();
-                    math::Vec2f mousePos = math::Vec2f(window::IMouse::getPosition(getWindow()).x, window::IMouse::getPosition(getWindow()).y);
+                    math::Vec2f mousePos = math::Vec2f(sf::Mouse::getPosition(getWindow()).x, sf::Mouse::getPosition(getWindow()).y);
                     if (bb.isPointInside(mousePos)) {
                         return true;
                     }
@@ -49,7 +49,7 @@ namespace odfaeg {
                 std::string MenuItem::getText() {
                     return text.getString();
                 }
-                void MenuItem::onEventPushed(window::IEvent event, RenderWindow& window) {
+                void MenuItem::onEventPushed(sf::Event event, RenderWindow& window) {
                     if (&window == &getWindow())
                         getListener().pushEvent(event);
                 }

@@ -29,7 +29,7 @@
 // Headers
 ////////////////////////////////////////////////////////////
 #include "glCheck.h"
-#include <SFML/OpenGL.hpp>
+
 
 namespace odfaeg {
     namespace graphic {

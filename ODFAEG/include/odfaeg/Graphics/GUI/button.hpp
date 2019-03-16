@@ -19,8 +19,8 @@ namespace odfaeg {
                     std::string getText();
                     void addActionListener(ActionListener* al);
                     bool isMouseInButton();
-                    void onEventPushed(window::IEvent event, RenderWindow& window);
-                    void onUpdate(RenderWindow* window, window::IEvent& event);
+                    void onEventPushed(sf::Event event, RenderWindow& window);
+                    void onUpdate(RenderWindow* window, sf::Event& event);
                 private :
                     math::Vec3f size;
                     Text text;

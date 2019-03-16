@@ -3,7 +3,7 @@ namespace odfaeg {
     namespace graphic {
         namespace gui {
             OptionPane::OptionPane(math::Vec3f position, math::Vec3f size, const Font* font, sf::String t, TYPE type) :
-                rw (sf::VideoMode(size.x, size.y), "Option Pane", sf::Style::Default, window::ContextSettings(3, 0, 0, 0, 0)),
+                rw (sf::VideoMode(size.x, size.y), "Option Pane", sf::Style::Default, sf::ContextSettings(0, 0, 0, 3, 0)),
                 LightComponent (rw, position, size, size * 0.5f),
                 type(type) {
                 rw.getView().move(size.x * 0.5f, size.y * 0.5f, size.z * 0.5f);
@@ -14,7 +14,7 @@ namespace odfaeg {
                     core::FastDelegate<bool> trigger2(&Button::isMouseInButton, no);
                     core::FastDelegate<void> slot1(&OptionPane::onYesOption, this);
                     core::FastDelegate<void> slot2(&OptionPane::onNoOption, this);
-                    core::Action a (core::Action::MOUSE_BUTTON_PRESSED_ONCE,window::IMouse::Left);
+                    core::Action a (core::Action::MOUSE_BUTTON_PRESSED_ONCE,sf::Mouse::Left);
                     core::Command cmd1 (a, trigger1, slot1);
                     core::Command cmd2 (a, trigger2, slot2);
                     getListener().connect("YESOPTION", cmd1);
@@ -22,7 +22,7 @@ namespace odfaeg {
                 } else {
                     yes = nullptr;
                     no = nullptr;
-                    core::Action a (core::Action::KEY_PRESSED_ONCE, window::IKeyboard::Return);
+                    core::Action a (core::Action::KEY_PRESSED_ONCE, sf::Keyboard::Return);
                     core::FastDelegate<void> slot(&OptionPane::onEnter, this);
                     core::Command cmd (a, slot);
                     getListener().connect("ONENTER", cmd);
@@ -80,8 +80,8 @@ namespace odfaeg {
             void OptionPane::setText(std::string t) {
                 text.setString(sf::String(t.c_str()));
             }
-            void OptionPane::onEventPushed (window::IEvent event, RenderWindow& window) {
-                if (event.type == window::IEvent::WINDOW_EVENT && event.window.type == window::IEvent::WINDOW_EVENT_CLOSED) {
+            void OptionPane::onEventPushed (sf::Event event, RenderWindow& window) {
+                if (event.type == sf::Event::Closed) {
                     rw.setVisible(false);
                 }
                 yes->onUpdate(&getWindow(), event);

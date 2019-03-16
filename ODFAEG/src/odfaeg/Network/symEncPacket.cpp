@@ -12,8 +12,8 @@ namespace odfaeg {
         }
         void SymEncPacket::onReceive (const void* data, size_t dataSize) {
             unsigned char* buffer;
-            std::size_t dstSize = 0;
-            buffer = aes.ossl_decrypt(reinterpret_cast<const unsigned char*> (data), dataSize, reinterpret_cast<unsigned int&>(dstSize));
+            unsigned int dstSize = 0;
+            buffer = aes.ossl_decrypt(reinterpret_cast<const unsigned char*> (data), reinterpret_cast<unsigned int&>(dataSize), dstSize);
             append(&buffer[0], dstSize);
         }
     }

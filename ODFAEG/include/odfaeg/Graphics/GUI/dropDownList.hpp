@@ -17,11 +17,11 @@ namespace odfaeg {
                     void clear();
                     void addItem(std::string t, unsigned int charSize);
                     void onDraw (RenderTarget& target, RenderStates states = RenderStates::Default);
-                    void onUpdate(RenderWindow* window, window::IEvent& event);
+                    void onUpdate(RenderWindow* window, sf::Event& event);
                     bool isMouseOnTriangle();
                     void onTriangleClicked();
                     void onItemSelected(Label* label);
-                    void onEventPushed(window::IEvent event, RenderWindow& window);
+                    void onEventPushed(sf::Event event, RenderWindow& window);
                     void recomputePos();
                     bool isDroppedDown();
                     bool isValueChanged();

@@ -61,8 +61,8 @@ namespace odfaeg {
             */
             virtual void recomputeSize() = 0;
             virtual void clear() = 0;
-            virtual void pushEvent(window::IEvent event, RenderWindow& window) = 0;
-            virtual void onUpdate(RenderWindow* window, window::IEvent& event) {}
+            virtual void pushEvent(sf::Event event, RenderWindow& window) = 0;
+            virtual void onUpdate(RenderWindow* window, sf::Event& event) {}
             core::Listener& getListener() {
                 return listener;
             }

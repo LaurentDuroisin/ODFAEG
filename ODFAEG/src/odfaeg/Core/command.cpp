@@ -1,7 +1,7 @@
 #include "../../../include/odfaeg/Core/command.h"
 namespace odfaeg {
     namespace core {
-        std::vector<window::IEvent> Command::events = std::vector<window::IEvent> ();
+        std::vector<sf::Event> Command::events = std::vector<sf::Event> ();
 
         Command::Command (Action action, FastDelegate<void> slot) : slot(slot)
         {
@@ -25,9 +25,9 @@ namespace odfaeg {
                trigger = std::make_unique<FastDelegate<bool>>(*other.trigger);
             name = other.name;
         }
-        bool Command::containsEvent (window::IEvent &event)
+        bool Command::containsEvent (sf::Event &event)
         {
-            std::vector<window::IEvent>::iterator it;
+            std::vector<sf::Event>::iterator it;
             for (it = events.begin(); it != events.end(); it++)
             {
                 if (equalEvent(event, *it))
@@ -51,7 +51,7 @@ namespace odfaeg {
             return false;
         }
 
-        bool Command::containsBufferEvent(window::IEvent& event) {
+        bool Command::containsBufferEvent(sf::Event& event) {
             if (action != nullptr)
                 return action->containsEvent(event);
             return false;
@@ -62,9 +62,9 @@ namespace odfaeg {
             events.clear();
         }
 
-        void Command::pushEvent (window::IEvent& event)
+        void Command::pushEvent (sf::Event& event)
         {
-            std::vector<window::IEvent>::iterator it;
+            std::vector<sf::Event>::iterator it;
             bool containsEvent = false;
             for (it = events.begin(); it != events.end(); it++)
             {
@@ -78,7 +78,7 @@ namespace odfaeg {
         Action* Command::getAction() {
             return action.get();
         }
-        std::vector<window::IEvent> Command::getEvents()
+        std::vector<sf::Event> Command::getEvents()
         {
             return events;
         }
@@ -89,8 +89,8 @@ namespace odfaeg {
             slot();
         }
 
-        void Command::removeEvent(window::IEvent& event) {
-            std::vector<window::IEvent>::iterator it;
+        void Command::removeEvent(sf::Event& event) {
+            std::vector<sf::Event>::iterator it;
             for (it = events.begin(); it != events.end();) {
                 if (equalEvent(*it, event))
                     it = events.erase(it);
@@ -98,26 +98,41 @@ namespace odfaeg {
                     it++;
             }
         }
-        bool Command::equalEvent (window::IEvent event, window::IEvent other) {
+        bool Command::equalEvent (sf::Event event, sf::Event other) {
             if (event.type != other.type)
                 return false;
-            if (event.type == window::IEvent::EventType::TEXT_INPUT_EVENT) {
+            if (event.type == sf::Event::Resized) {
+                return event.size.width == other.size.width && event.size.height == other.size.height;
+            }
+            if (event.type == sf::Event::TextEntered) {
                 if (other.text.unicode == 0) {
                     return true;
                 }
                 return event.text.unicode == other.text.unicode;
             }
-            if (event.type == window::IEvent::KEYBOARD_EVENT && event.keyboard.type == window::IEvent::KEY_EVENT_PRESSED
-                || event.type == window::IEvent::KEYBOARD_EVENT && event.keyboard.type == window::IEvent::KEY_EVENT_RELEASED) {
-                if (other.keyboard.code == window::IKeyboard::Unknown)
+            if (event.type == sf::Event::KeyPressed || event.type == sf::Event::KeyReleased) {
+                if (other.key.code == sf::Keyboard::Unknown)
                     return true;
-                return event.keyboard.code == other.keyboard.code;
+                return event.key.code == other.key.code;
             }
-            if (event.type == window::IEvent::MOUSE_BUTTON_EVENT && event.mouseButton.type == window::IEvent::BUTTON_EVENT_PRESSED
-                || event.type == window::IEvent::MOUSE_BUTTON_EVENT && event.mouseButton.type == window::IEvent::BUTTON_EVENT_RELEASED) {
+            if (event.type == sf::Event::MouseWheelMoved) {
+                return event.mouseWheel.delta == other.mouseWheel.delta;
+            }
+            if (event.type == sf::Event::MouseButtonPressed || event.type == sf::Event::MouseButtonReleased) {
                 if (event.mouseButton.button == -1)
                     return true;
                 return event.mouseButton.button == other.mouseButton.button;
+            }
+            if (event.type == sf::Event::MouseMoved) {
+                return true;
+            }
+            if (event.type == sf::Event::JoystickButtonPressed || event.type == sf::Event::JoystickButtonReleased) {
+                return event.joystickButton.joystickId == other.joystickButton.joystickId
+                    && event.joystickButton.button == other.joystickButton.button;
+            }
+            if (event.type == sf::Event::JoystickMoved) {
+                return event.joystickMove.joystickId == other.joystickMove.joystickId
+                    && event.joystickMove.position == other.joystickMove.position;
             }
             return false;
         }

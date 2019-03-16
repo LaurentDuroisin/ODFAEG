@@ -39,7 +39,6 @@
 #include FT_BITMAP_H
 #include <cstdlib>
 #include <cstring>
-#include <SFML/OpenGL.hpp>
 
 using namespace sf;
 namespace

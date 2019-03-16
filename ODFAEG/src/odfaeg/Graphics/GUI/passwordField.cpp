@@ -20,7 +20,7 @@ namespace odfaeg {
                 core::Command cmd3(a2, core::FastDelegate<bool>(&PasswordField::isMouseOutTextArea, this), core::FastDelegate<void>(&PasswordField::lostFocus, this));
                 getListener().connect("CGFOCUS"+t, cmd2);
                 getListener().connect("CLFOCUS"+t, cmd3);
-                core::Action a3 (core::Action::MOUSE_BUTTON_PRESSED_ONCE, window::IMouse::Left);
+                core::Action a3 (core::Action::MOUSE_BUTTON_PRESSED_ONCE, sf::Mouse::Left);
                 core::Command cmd4(a3, core::FastDelegate<bool>(&PasswordField::isMouseInTextArea, this), core::FastDelegate<void>(&PasswordField::setCursorPos, this));
                 getListener().connect("CMOUSECLICKED"+t, cmd4);
                 core::Action a4 (core::Action::TEXT_ENTERED);
@@ -30,7 +30,7 @@ namespace odfaeg {
                 setSize(text.getSize());
                 haveFocus = false;
             }
-            void PasswordField::onEventPushed(window::IEvent event, RenderWindow& window) {
+            void PasswordField::onEventPushed(sf::Event event, RenderWindow& window) {
                 if (&window == &getWindow()) {
                     getListener().pushEvent(event);
                 }
@@ -39,7 +39,7 @@ namespace odfaeg {
                 return haveFocus;
             }
             void PasswordField::setCursorPos() {
-                math::Vec2f mousePos = math::Vec2f(window::IMouse::getPosition(getWindow()).x, window::IMouse::getPosition(getWindow()).y);
+                math::Vec2f mousePos = math::Vec2f(sf::Mouse::getPosition(getWindow()).x, sf::Mouse::getPosition(getWindow()).y);
                 bool found = false;
                 for (unsigned int i = 0; i <= tmp_text.length() && !found; i++) {
                     sf::Vector2f pos = text.findCharacterPos(i);
@@ -87,7 +87,7 @@ namespace odfaeg {
             }
             bool PasswordField::isMouseInTextArea() {
                 physic::BoundingBox bb = getGlobalBounds();
-                math::Vec2f mousePos = math::Vec2f(window::IMouse::getPosition(getWindow()).x, window::IMouse::getPosition(getWindow()).y);
+                math::Vec2f mousePos = math::Vec2f(sf::Mouse::getPosition(getWindow()).x, sf::Mouse::getPosition(getWindow()).y);
                 if (bb.isPointInside(mousePos)) {
                     return true;
                 }
@@ -95,14 +95,14 @@ namespace odfaeg {
             }
             bool PasswordField::isMouseOutTextArea() {
                 physic::BoundingBox bb = getGlobalBounds();
-                math::Vec2f mousePos = math::Vec2f(window::IMouse::getPosition(getWindow()).x, window::IMouse::getPosition(getWindow()).y);
+                math::Vec2f mousePos = math::Vec2f(sf::Mouse::getPosition(getWindow()).x, sf::Mouse::getPosition(getWindow()).y);
                 if (bb.isPointInside(mousePos)) {
                     return false;
                 }
                 return true;
             }
-            void PasswordField::onUpdate(RenderWindow* window, window::IEvent& event) {
-                if (window == &getWindow() && event.type == window::IEvent::TEXT_INPUT_EVENT) {
+            void PasswordField::onUpdate(RenderWindow* window, sf::Event& event) {
+                if (window == &getWindow() && event.type == sf::Event::TextEntered) {
                     getListener().setCommandSlotParams("CTEXTENTERED"+id_text, this, static_cast<char>(event.text.unicode));
                 }
             }

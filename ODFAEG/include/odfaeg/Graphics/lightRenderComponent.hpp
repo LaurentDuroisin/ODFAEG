@@ -2,7 +2,7 @@
 #define ODFAEG_LIGHT_RENDER_COMPONENT_HPP
 #include "renderWindow.h"
 #include "renderTexture.h"
-#include "sprite.h"
+#include "tile.h"
 #include "entityManager.h"
 #include "heavyComponent.h"
 #include "2D/ambientLight.h"
@@ -25,17 +25,17 @@ namespace odfaeg {
           */
         class ODFAEG_GRAPHICS_API LightRenderComponent : public HeavyComponent {
             public :
-                LightRenderComponent (RenderWindow& window, int layer, std::string expression,window::ContextSettings settings = window::ContextSettings(0, 0, 4, 3, 0));
-                void pushEvent(window::IEvent event, RenderWindow& rw);
+                LightRenderComponent (RenderWindow& window, int layer, std::string expression,sf::ContextSettings settings = sf::ContextSettings(0, 0, 4, 3, 0));
+                void pushEvent(sf::Event event, RenderWindow& rw);
                 bool needToUpdate();
                 void changeVisibleEntities(Entity* toRemove, Entity* toAdd, EntityManager* em);
                 std::string getExpression();
                 void clear();
-                Sprite& getNormalMapTile ();
-                Sprite& getDepthBufferTile();
-                Sprite& getspecularTile ();
-                Sprite& getBumpTile();
-                Sprite& getLightTile();
+                Tile& getNormalMapTile ();
+                Tile& getDepthBufferTile();
+                Tile& getspecularTile ();
+                Tile& getBumpTile();
+                Tile& getLightTile();
                 const Texture& getDepthBufferTexture();
                 const Texture& getnormalMapTexture();
                 const Texture& getSpecularTexture();
@@ -57,17 +57,17 @@ namespace odfaeg {
                 std::vector<Instance> m_instances; /**> Instances to draw. (Instanced rendering.) */
                 std::vector<Instance> m_light_instances; /**> Instances to draw. (Instanced rendering.) */
                 std::vector<Entity*> visibleEntities; /**> Entities loaded*/
-                RenderTexture depthBuffer; /**> the stencil buffer.*/
-                RenderTexture normalMap; /**> the shadow map.*/
-                RenderTexture bumpTexture;
-                RenderTexture specularTexture;
-                RenderTexture lightMap;
-                Sprite  depthBufferTile, normalMapTile, bumpMapTile, specularBufferTile, lightMapTile; /**> the stencil and shadow map buffer.*/
-                Shader depthBufferGenerator; /**> the shader to generate the stencil buffer.*/
-                Shader normalMapGenerator; /**> the shader to generate the shadow map.*/
-                Shader specularTextureGenerator;
-                Shader bumpTextureGenerator;
-                Shader lightMapGenerator;
+                std::unique_ptr<RenderTexture> depthBuffer; /**> the stencil buffer.*/
+                std::unique_ptr<RenderTexture> normalMap; /**> the shadow map.*/
+                std::unique_ptr<RenderTexture> bumpTexture;
+                std::unique_ptr<RenderTexture> specularTexture;
+                std::unique_ptr<RenderTexture> lightMap;
+                std::unique_ptr<Tile>  depthBufferTile, normalMapTile, bumpMapTile, specularBufferTile, lightMapTile; /**> the stencil and shadow map buffer.*/
+                std::unique_ptr<Shader> depthBufferGenerator; /**> the shader to generate the stencil buffer.*/
+                std::unique_ptr<Shader> normalMapGenerator; /**> the shader to generate the shadow map.*/
+                std::unique_ptr<Shader> specularTextureGenerator;
+                std::unique_ptr<Shader> bumpTextureGenerator;
+                std::unique_ptr<Shader> lightMapGenerator;
                 View view; /**> the view of the component.*/
                 std::string expression;
                 bool update;

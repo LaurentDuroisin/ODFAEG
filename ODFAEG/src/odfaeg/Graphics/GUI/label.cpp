@@ -11,7 +11,6 @@ namespace odfaeg {
                 rect = RectangleShape (size);
                 background = sf::Color::Black;
                 rect.setFillColor(background);
-                mousePos = math::Vec3f(0, 0, 0);
             }
             void Label::setForegroundColor(sf::Color color) {
                 text.setColor(color);
@@ -54,13 +53,13 @@ namespace odfaeg {
             void Label::setBorderThickness(float tickness) {
                 rect.setOutlineThickness(tickness);
             }
-            void Label::onUpdate(RenderWindow* window, window::IEvent& event) {
+            void Label::onUpdate(RenderWindow* window, sf::Event& event) {
                 if (&getWindow() == window) {
-                    if (event.type == window::IEvent::MOUSE_MOTION_EVENT)
-                        mousePos = math::Vec3f(event.mouseMotion.x, event.mouseMotion.y, 0);
+                    if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
+                        mousePos = math::Vec3f(event.mouseButton.x, event.mouseButton.y, 0);
                 }
             }
-            void Label::onEventPushed (window::IEvent event, RenderWindow& window) {
+            void Label::onEventPushed (sf::Event event, RenderWindow& window) {
 
             }
         }

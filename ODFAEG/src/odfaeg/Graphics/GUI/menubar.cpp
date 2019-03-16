@@ -22,7 +22,7 @@ namespace odfaeg {
             void MenuBar::onDraw(RenderTarget& target, RenderStates states) {
                 target.draw(rect);
             }
-            void MenuBar::onEventPushed(window::IEvent event, RenderWindow& window) {
+            void MenuBar::onEventPushed(sf::Event event, RenderWindow& window) {
                 if (&window == &getWindow()) {
                     getListener().pushEvent(event);
                 }

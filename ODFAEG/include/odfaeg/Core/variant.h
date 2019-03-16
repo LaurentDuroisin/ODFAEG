@@ -631,11 +631,6 @@ namespace odfaeg {
                     return visitor(ref, std::forward<Args>(args)...);
                 } // apply
             }; // struct NaryVisitor
-            template <typename Visitor, typename Arg, typename... Vs>
-            auto apply_nary_visitor_impl(
-                Visitor& visitor, Arg& arg, Vs&&... vs
-            )
-            -> typename Visitor::result_type;
 
             template <typename Visitor, typename T0, typename... Ts, typename... Vs>
             auto apply_nary_visitor_impl(
@@ -669,14 +664,7 @@ namespace odfaeg {
                                                    std::forward<Vs>(vs)...);
                 }
             }; // struct NaryApplier
-            template <typename Visitor, typename Arg, typename... Vs>
-            auto apply_nary_visitor_impl(
-                Visitor& visitor, Arg& arg, Vs&&... vs
-            )
-            -> typename Visitor::result_type
-            {
-                return visitor(arg);
-            }
+
             template <typename Visitor, typename T0, typename... Ts, typename... Vs>
             auto apply_nary_visitor_impl(
                 Visitor& visitor, Variant<T0, Ts...>& v0, Vs&&... vs

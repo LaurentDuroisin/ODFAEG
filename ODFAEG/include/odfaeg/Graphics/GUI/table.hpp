@@ -1,7 +1,6 @@
 #ifndef ODFAEG_TABLE_HPP
 #define ODFAEG_TABLE_HPP
 #include "../lightComponent.h"
-#include "../rectangleShape.h"
 namespace odfaeg {
     namespace graphic {
         namespace gui {

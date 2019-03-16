@@ -29,7 +29,8 @@
 // Headers
 ////////////////////////////////////////////////////////////
 #include <SFML/System/NonCopyable.hpp>
-#include "../../../include/odfaeg/Window/contextSettings.hpp"
+#include <SFML/Graphics.hpp>
+
 namespace odfaeg
 {
     namespace graphic {
@@ -60,7 +61,18 @@ namespace odfaeg
                 /// \return True if creation has been successful
                 ///
                 ////////////////////////////////////////////////////////////
-                virtual bool create(unsigned int width, unsigned int height, window::ContextSettings settings, unsigned int textureId) = 0;
+                virtual bool create(unsigned int width, unsigned int height, sf::ContextSettings, unsigned int textureId) = 0;
+
+                ////////////////////////////////////////////////////////////
+                /// \brief Activate or deactivate the render texture for rendering
+                ///
+                /// \param active True to activate, false to deactivate
+                ///
+                /// \return True on success, false on failure
+                ///
+                ////////////////////////////////////////////////////////////
+                virtual bool activate(bool active) = 0;
+
                 ////////////////////////////////////////////////////////////
                 /// \brief Update the pixels of the target texture
                 ///

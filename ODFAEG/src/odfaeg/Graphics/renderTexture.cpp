@@ -27,6 +27,7 @@
 ////////////////////////////////////////////////////////////
 #include "renderTextureImplFBO.h"
 #include "renderTextureImplDefault.h"
+#include <SFML/System/Err.hpp>
 #include "../../../include/odfaeg/Graphics/renderTexture.h"
 #include <SFML/OpenGL.hpp>
 #include "glCheck.h"
@@ -45,21 +46,17 @@ namespace odfaeg
         ////////////////////////////////////////////////////////////
         RenderTexture::~RenderTexture()
         {
-            //delete m_context;
             delete m_impl;
         }
 
 
         ////////////////////////////////////////////////////////////
-        bool RenderTexture::create(unsigned int width, unsigned int height, window::ContextSettings settings)
+        bool RenderTexture::create(unsigned int width, unsigned int height, ContextSettings settings)
         {
-            m_context.create(settings, width, height);
-            RenderTarget::setVersionMajor(m_context.getSettings().versionMajor);
-            RenderTarget::setVersionMinor(m_context.getSettings().versionMinor);
             // Create the texture
             if(!m_texture.create(width, height))
             {
-                std::cerr<< "Impossible to create render texture (failed to create the target texture)" << std::endl;
+                err() << "Impossible to create render texture (failed to create the target texture)" << std::endl;
                 return false;
             }
             // We disable smoothing by default for render textures
@@ -74,13 +71,12 @@ namespace odfaeg
             }
             else
             {
-                std::cout<<"FBO not avalaible"<<std::endl;
                 // Use default implementation
                 m_impl = new priv::RenderTextureImplDefault;
             }
 
             // Initialize the render texture
-            if (!m_impl->create(width, height, m_context.getSettings(), m_texture.m_texture))
+            if (!m_impl->create(width, height, settings, m_texture.m_texture))
                 return false;
             // We can now initialize the render target part
             RenderTarget::initialize();
@@ -119,7 +115,7 @@ namespace odfaeg
         ////////////////////////////////////////////////////////////
         bool RenderTexture::setActive(bool active)
         {
-            return m_impl && m_context.setActive(active);
+            return m_impl && m_impl->activate(active);
         }
 
 
@@ -147,10 +143,9 @@ namespace odfaeg
         {
             return m_texture;
         }
-        const window::ContextSettings& RenderTexture::getSettings() const {
-            return m_context.getSettings();
-        }
-        bool RenderTexture::activate(bool active) {
+        ////////////////////////////////////////////////////////////
+        bool RenderTexture::activate(bool active)
+        {
             return setActive(active);
         }
     }

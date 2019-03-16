@@ -22,13 +22,18 @@
 //
 ////////////////////////////////////////////////////////////
 
-#ifndef ODFAEG_RENDER_TEXTURE_IMPL_FBO_HPP
-#define ODFAEG_RENDER_TEXTURE_IMPL_FBO_HPP
+#ifndef SFML_RENDER_TEXTURE_IMPL_FBO_HPP
+#define SFML_RENDER_TEXTURE_IMPL_FBO_HPP
 
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
 #include "renderTextureImpl.h"
+#include <SFML/Window/Context.hpp>
+#include <SFML/Window/GlResource.hpp>
+#include <GL/glew.h>
+#include <SFML/OpenGL.hpp>
+
 namespace odfaeg {
     namespace graphic {
         namespace priv
@@ -38,7 +43,7 @@ namespace odfaeg {
             ///        FrameBuffer Object OpenGL extension
             ///
             ////////////////////////////////////////////////////////////
-            class RenderTextureImplFBO : public RenderTextureImpl
+            class RenderTextureImplFBO : public RenderTextureImpl, sf::GlResource
             {
             public :
 
@@ -74,7 +79,18 @@ namespace odfaeg {
                 /// \return True if creation has been successful
                 ///
                 ////////////////////////////////////////////////////////////
-                virtual bool create(unsigned int width, unsigned int height, window::ContextSettings settings, unsigned int textureId);
+                virtual bool create(unsigned int width, unsigned int height, sf::ContextSettings settings, unsigned int textureId);
+
+                ////////////////////////////////////////////////////////////
+                /// \brief Activate or deactivate the render texture for rendering
+                ///
+                /// \param active True to activate, false to deactivate
+                ///
+                /// \return True on success, false on failure
+                ///
+                ////////////////////////////////////////////////////////////
+                virtual bool activate(bool active);
+
                 ////////////////////////////////////////////////////////////
                 /// \brief Update the pixels of the target texture
                 ///
@@ -82,12 +98,13 @@ namespace odfaeg {
                 ///
                 ////////////////////////////////////////////////////////////
                 virtual void updateTexture(unsigned textureId);
+
                 ////////////////////////////////////////////////////////////
                 // Member data
                 ////////////////////////////////////////////////////////////
+                sf::Context*     m_context;     ///< Needs a separate OpenGL context for not messing up the other ones
                 unsigned int m_frameBuffer; ///< OpenGL frame buffer object
                 unsigned int m_depthBuffer; ///< Optional depth buffer attached to the frame buffer
-                unsigned int m_versionMajor, m_versionMinor;
             };
         }
 
