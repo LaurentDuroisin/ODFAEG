@@ -137,11 +137,14 @@ namespace odfaeg {
                 oss<<typeid(data).name()<<"*"<<reinterpret_cast<unsigned long long int>(&data);
                 std::map<std::string, long long int>::iterator it = adresses.find(oss.str());
                 if (it != adresses.end()) {
+                    //std::cout<<"id : "<<it->second<<std::endl;
                     buffer<<it->second<<std::endl;
                 } else {
                     std::pair<std::string, long long int> newAddress (oss.str(), nbSerialized);
                     adresses.insert(newAddress);
                     buffer<<newAddress.second<<std::endl;
+                    //std::cout<<"id : "<<newAddress.second<<std::endl;
+                    //std::cout<<"fundamental data : "<<data<<std::endl;
                     buffer<<data<<std::endl;
                     nbSerialized++;
                 }
@@ -161,12 +164,15 @@ namespace odfaeg {
                     oss<<typeid(*data).name()<<"*"<<reinterpret_cast<unsigned long long int>(data);
                     std::map<std::string, long long int>::iterator it = adresses.find(oss.str());
                     if (it != adresses.end()) {
+                        //std::cout<<"id : "<<it->second<<std::endl;
                         buffer<<it->second<<std::endl;
                     } else {
                         std::pair<std::string, long long int> newAddress (oss.str(), nbSerialized);
                         adresses.insert(newAddress);
                         buffer<<newAddress.second<<std::endl;
+                        //std::cout<<"id : "<<newAddress.second<<std::endl;
                         buffer<<(*data)<<std::endl;
+                        //std::cout<<"fundamental data : "<<(*data)<<std::endl;
                         nbSerialized++;
                     }
                 } else {
@@ -184,11 +190,14 @@ namespace odfaeg {
                 std::map<std::string, long long int>::iterator it = adresses.find(oss.str());
                 if (it != adresses.end()) {
                     buffer<<it->second<<std::endl;
+                    //std::cout<<"id : "<<it->second<<std::endl;
                 } else {
                     std::pair<std::string, long long int> newAddress (oss.str(), nbSerialized);
                     adresses.insert(newAddress);
                     buffer<<newAddress.second<<std::endl;
+                    //std::cout<<"id : "<<newAddress.second<<std::endl;
                     buffer<<data<<std::endl;
+                    //std::cout<<"enum data : "<<data<<std::endl;
                     nbSerialized++;
                 }
             }
@@ -203,11 +212,14 @@ namespace odfaeg {
                     std::map<std::string, long long int>::iterator it = adresses.find(oss.str());
                     if (it != adresses.end()) {
                         buffer<<it->second<<std::endl;
+                        //std::cout<<"id : "<<it->second<<std::endl;
                     } else {
                         std::pair<std::string, long long int> newAddress (oss.str(), nbSerialized);
                         adresses.insert(newAddress);
                         buffer<<newAddress.second<<std::endl;
+                        //std::cout<<"id : "<<newAddress.second<<std::endl;
                         buffer<<(*data)<<std::endl;
+                        //std::cout<<"enum data : "<<(*data)<<std::endl;
                         nbSerialized++;
                     }
                 } else {
@@ -233,12 +245,15 @@ namespace odfaeg {
                 std::map<std::string, long long int>::iterator it = adresses.find(oss.str());
                 if (it != adresses.end()) {
                     buffer<<it->second<<std::endl;
+                    //std::cout<<"id : "<<it->second<<std::endl;
                 } else {
                     std::pair<std::string, long long int> newAddress (oss.str(), nbSerialized);
                     adresses.insert(newAddress);
                     buffer<<newAddress.second<<std::endl;
+                    //std::cout<<"id : "<<newAddress.second<<std::endl;
                     std::size_t str_size = data.length();
                     buffer<<str_size<<std::endl;
+                    //std::cout<<"str size : "<<str_size<<std::endl;
                     const char* datas = data.c_str();
                     nbSerialized++;
                     for (unsigned int i = 0; i < str_size; i++)
@@ -263,12 +278,15 @@ namespace odfaeg {
                     std::map<std::string, long long int>::iterator it = adresses.find(oss.str());
                     if (it != adresses.end()) {
                         buffer<<it->second<<std::endl;
+                        //std::cout<<"id : "<<it->second<<std::endl;
                     } else {
                         std::pair<std::string, long long int> newAddress (oss.str(), nbSerialized);
                         adresses.insert(newAddress);
                         buffer<<newAddress.second<<std::endl;
+                        //std::cout<<"id : "<<newAddress.second<<std::endl;
                         std::size_t str_size = data->length();
                         buffer<<str_size<<std::endl;
+                        //std::cout<<"str size : "<<str_size<<std::endl;
                         const char* datas = data->c_str();
                         nbSerialized++;
                         for (unsigned int i = 0; i < str_size; i++)
@@ -298,10 +316,12 @@ namespace odfaeg {
                 std::map<std::string, long long int>::iterator it = adresses.find(oss.str());
                 if (it != adresses.end()) {
                     buffer<<it->second<<std::endl;
+                    //std::cout<<"id : "<<it->second<<std::endl;
                 } else {
                     std::pair<std::string, long long int> newAddress (oss.str(), nbSerialized);
                     adresses.insert(newAddress);
                     buffer<<newAddress.second<<std::endl;
+                    //std::cout<<"id : "<<newAddress.second<<std::endl;
                     nbSerialized++;
                     object.serialize(*this);
                 }
@@ -325,10 +345,12 @@ namespace odfaeg {
                     std::map<std::string, long long int>::iterator it = adresses.find(oss.str());
                     if (it != adresses.end()) {
                         buffer<<it->second<<std::endl;
+                        //std::cout<<"id : "<<it->second<<std::endl;
                     } else {
                         std::pair<std::string, long long int> newAddress (oss.str(), nbSerialized);
                         adresses.insert(newAddress);
                         buffer<<newAddress.second<<std::endl;
+                        //std::cout<<"id : "<<newAddress.second<<std::endl;
                         nbSerialized++;
                         object->serialize(*this);
                     }
@@ -357,10 +379,12 @@ namespace odfaeg {
                 std::map<std::string, long long int>::iterator it = adresses.find(oss.str());
                 if (it != adresses.end()) {
                     buffer<<it->second<<std::endl;
+                    //std::cout<<"id : "<<it->second<<std::endl;
                 } else {
                     std::pair<std::string, long long int> newAddress (oss.str(), nbSerialized);
                     adresses.insert(newAddress);
                     buffer<<newAddress.second<<std::endl;
+                    //std::cout<<"id : "<<newAddress.second<<std::endl;
                     nbSerialized++;
                     if (typeid(decltype(object)).name() == typeid(object).name()) {
                         object.vtserialize(*this);
@@ -390,19 +414,23 @@ namespace odfaeg {
                     std::map<std::string, long long int>::iterator it = adresses.find(oss.str());
                     if (it != adresses.end()) {
                         buffer<<it->second<<std::endl;
+                        //std::cout<<"id : "<<it->second<<std::endl;
                     } else {
                         std::pair<std::string, long long int> newAddress (oss.str(), nbSerialized);
                         adresses.insert(newAddress);
                         buffer<<newAddress.second<<std::endl;
+                        //std::cout<<"id : "<<newAddress.second<<std::endl;
                         std::string typeName = "BaseType";
                         if (typeid(decltype(*object)).name() == typeid(*object).name()) {
                             buffer<<typeName<<std::endl;
+                            //std::cout<<"type name : "<<typeName<<std::endl;
                             nbSerialized++;
                             object->vtserialize(*this);
                         } else {
                             object->key.register_object(object);
                             typeName = object->key.getTypeName();
                             buffer<<typeName<<std::endl;
+                            //std::cout<<"type name : "<<typeName<<std::endl;
                             nbSerialized++;
                             object->key.serialize_object("serialize", "OTextArchive", *this);
                         }
@@ -423,6 +451,7 @@ namespace odfaeg {
             void operator() (std::vector<O>& data) {
                 std::size_t size = data.size();
                 buffer<<size<<std::endl;
+                //std::cout<<"vector size : "<<size<<std::endl;
                 for (unsigned int i = 0; i < data.size(); i++)
                      (*this)(data[i]);
             }
@@ -432,13 +461,14 @@ namespace odfaeg {
             }
             template <class T1, class T2>
             void operator() (std::pair<T1, T2>& pair) {
-                (*this)(std::move(pair.first));
-                (*this)(std::move(pair.second));
+                (*this)(pair.first);
+                (*this)(pair.second);
             }
             template <class T1, class T2>
             void operator() (std::map<T1, T2>&  map) {
                 std::size_t size = map.size();
                 buffer<<size<<std::endl;
+                //std::cout<<"map size : "<<size<<std::endl;
                 typename std::map<T1, T2>::iterator it;
                 for (it = map.begin(); it != map.end(); it++) {
                     (*this)(*it);
@@ -689,6 +719,7 @@ namespace odfaeg {
                 buffer>>id;
                 char space;
                 buffer.get(space);
+                //std::cout<<"id : "<<id<<std::endl;
                 std::map<long long int, std::string>::iterator it = adresses.find(id);
                 if (it != adresses.end()) {
                     std::istringstream iss(it->second);
@@ -703,6 +734,7 @@ namespace odfaeg {
                     buffer>>data;
                     char space;
                     buffer.get(space);
+                    //std::cout<<"fundamental data : "<<data<<std::endl;
                 }
             }
             /**
@@ -716,6 +748,7 @@ namespace odfaeg {
                 buffer>>id;
                 char space;
                 buffer.get(space);
+                //std::cout<<"id : "<<id<<std::endl;
                 std::map<long long int, std::string>::iterator it = adresses.find(id);
                 if (it != adresses.end()) {
                     std::istringstream iss(it->second);
@@ -730,6 +763,7 @@ namespace odfaeg {
                     buffer.get(data);
                     char space;
                     buffer.get(space);
+                    //std::cout<<"char data : "<<data<<std::endl;
                 }
             }
             /**
@@ -743,6 +777,7 @@ namespace odfaeg {
                 buffer>>id;
                 char space;
                 buffer.get(space);
+                //std::cout<<"id : "<<id<<std::endl;
                 std::map<long long int, std::string>::iterator it = adresses.find(id);
                 if (it != adresses.end()) {
                     std::istringstream iss(it->second);
@@ -757,6 +792,7 @@ namespace odfaeg {
                     buffer.get((char&) data);
                     char space;
                     buffer.get(space);
+                    //std::cout<<"unsigned char data : "<<data<<std::endl;
                 }
             }
 
@@ -774,6 +810,7 @@ namespace odfaeg {
                 buffer>>id;
                 char space;
                 buffer.get(space);
+                //std::cout<<"id : "<<id<<std::endl;
                 if (id != -1) {
                     std::map<long long int, std::string>::iterator it = adresses.find(id);
                     if (it != adresses.end()) {
@@ -788,6 +825,7 @@ namespace odfaeg {
                         adresses.insert(newAddress);
                         nbDeserialized++;
                         buffer>>(*data);
+                        //std::cout<<"fundamental data : "<<(*data)<<std::endl;
                         char space;
                         buffer.get(space);
                     }
@@ -809,6 +847,7 @@ namespace odfaeg {
                 buffer>>id;
                 char space;
                 buffer.get(space);
+                //std::cout<<"id : "<<id<<std::endl;
                 if (id != -1) {
                     std::map<long long int, std::string>::iterator it = adresses.find(id);
                     if (it != adresses.end()) {
@@ -825,6 +864,7 @@ namespace odfaeg {
                         buffer>>(*data);
                         char space;
                         buffer.get(space);
+                        //std::cout<<"char data : "<<(*data)<<std::endl;
                     }
                 } else {
                     data = nullptr;
@@ -844,6 +884,7 @@ namespace odfaeg {
                 buffer>>id;
                 char space;
                 buffer.get(space);
+                //std::cout<<"id : "<<id<<std::endl;
                 if (id != -1) {
                     std::map<long long int, std::string>::iterator it = adresses.find(id);
                     if (it != adresses.end()) {
@@ -860,6 +901,7 @@ namespace odfaeg {
                         buffer>>((char&) *data);
                         char space;
                         buffer.get(space);
+                        //std::cout<<"unsigned char data"<<(*data)<<std::endl;
                     }
                 } else {
                     data = nullptr;
@@ -874,6 +916,7 @@ namespace odfaeg {
                 buffer>>id;
                 char space;
                 buffer.get(space);
+                //std::cout<<"id : "<<id<<std::endl;
                 std::map<long long int, std::string>::iterator it = adresses.find(id);
                 if (it != adresses.end()) {
                     std::istringstream iss(it->second);
@@ -885,6 +928,7 @@ namespace odfaeg {
                     data = static_cast<E>(eVal);
                     char space;
                     buffer.get(space);
+                    //std::cout<<"enum val : "<<eVal<<std::endl;
                     std::ostringstream oss;
                     oss<<typeid(data).name()<<"*"<<reinterpret_cast<unsigned long long int>(&data);
                     std::pair<long long int, std::string> newAddress (id, oss.str());
@@ -901,6 +945,7 @@ namespace odfaeg {
                 buffer>>id;
                 char space;
                 buffer.get(space);
+                //std::cout<<"id : "<<id<<std::endl;
                 if (id != -1) {
                     std::map<long long int, std::string>::iterator it = adresses.find(id);
                     if (it != adresses.end()) {
@@ -914,6 +959,7 @@ namespace odfaeg {
                         *data = static_cast<E>(eVal);
                         char space;
                         buffer.get(space);
+                        //std::cout<<"enum val : "<<eVal<<std::endl;
                         std::ostringstream oss;
                         oss<<typeid(*data).name()<<"*"<<reinterpret_cast<unsigned long long int>(data);
                         std::pair<long long int, std::string> newAddress (id, oss.str());
@@ -941,6 +987,7 @@ namespace odfaeg {
                 buffer>>id;
                 char space;
                 buffer.get(space);
+                //std::cout<<"id : "<<id<<std::endl;
                 std::map<long long int, std::string>::iterator it = adresses.find(id);
                 if (it != adresses.end()) {
                     std::istringstream iss(it->second);
@@ -951,6 +998,7 @@ namespace odfaeg {
                     buffer>>str_size;
                     char space;
                     buffer.get(space);
+                    //std::cout<<"str size : "<<str_size<<std::endl;
                     char* datas = new char[str_size];
                     nbDeserialized++;
                     for (unsigned int i = 0; i < str_size; i++) {
@@ -979,6 +1027,7 @@ namespace odfaeg {
                 buffer>>id;
                 char space;
                 buffer.get(space);
+                //std::cout<<"id : "<<id<<std::endl;
                 if (id != -1) {
                     std::map<long long int, std::string>::iterator it = adresses.find(id);
                     if (it != adresses.end()) {
@@ -990,6 +1039,7 @@ namespace odfaeg {
                         buffer>>str_size;
                         char space;
                         buffer.get(space);
+                        //std::cout<<"str size : "<<str_size<<std::endl;
                         char* datas = new char [str_size];
                         nbDeserialized++;
                         for (unsigned int i = 0; i < str_size; i++)
@@ -1022,6 +1072,7 @@ namespace odfaeg {
                 buffer>>id;
                 char space;
                 buffer.get(space);
+                //std::cout<<"id : "<<id<<std::endl;
                 std::map<long long int, std::string>::iterator it = adresses.find(id);
                 if (it != adresses.end()) {
                     std::istringstream iss(it->second);
@@ -1053,6 +1104,7 @@ namespace odfaeg {
                 buffer>>id;
                 char space;
                 buffer.get(space);
+                //std::cout<<"id : "<<id<<std::endl;
                 if (id != -1) {
                     std::map<long long int, std::string>::iterator it = adresses.find(id);
                     if (it != adresses.end()) {
@@ -1091,6 +1143,7 @@ namespace odfaeg {
                 buffer>>id;
                 char space;
                 buffer.get(space);
+                //std::cout<<"id : "<<id<<std::endl;
                 std::map<long long int, std::string>::iterator it = adresses.find(id);
                 if (it != adresses.end()) {
                     std::istringstream iss(it->second);
@@ -1128,6 +1181,7 @@ namespace odfaeg {
                 buffer>>id;
                 char space;
                 buffer.get(space);
+                //std::cout<<"id : "<<id<<std::endl;
                 if (id != -1) {
                     std::map<long long int, std::string>::iterator it = adresses.find(id);
                     if (it != adresses.end()) {
@@ -1137,6 +1191,7 @@ namespace odfaeg {
                     } else {
                         std::string typeName;
                         getline(buffer, typeName);
+                        std::cout<<"type name : "<<typeName<<std::endl;
                         if (typeName == "BaseType") {
                             object = new O();
                             std::ostringstream oss;
@@ -1179,6 +1234,7 @@ namespace odfaeg {
                 buffer>>id;
                 char space;
                 buffer.get(space);
+                //std::cout<<"id : "<<id<<std::endl;
                 if (id != -1) {
                     std::map<long long int, std::string>::iterator it = adresses.find(id);
                     if (it != adresses.end()) {
@@ -1188,6 +1244,7 @@ namespace odfaeg {
                     } else {
                         std::string typeName;
                         getline(buffer, typeName);
+                        //std::cout<<"typename : "<<typeName<<std::endl;
                         object = dynamic_cast<O*>(O::allocate(typeName));
                         std::ostringstream oss;
                         oss<<typeid(*object).name()<<"*"<<reinterpret_cast<unsigned long long int>(object);
@@ -1213,6 +1270,7 @@ namespace odfaeg {
                 buffer>>size;
                 char space;
                 buffer.get(space);
+                //std::cout<<"vector size : "<<size<<std::endl;
                 for (unsigned int i = 0; i < size; i++) {
                     O object;
                     (*this)(object);
@@ -1240,6 +1298,7 @@ namespace odfaeg {
                 buffer>>size;
                 char space;
                 buffer.get(space);
+                //std::cout<<"map size : "<<size<<std::endl;
                 for (unsigned int i = 0; i < size; i++) {
                     std::pair<T1, T2> pair;
                     (*this)(pair);

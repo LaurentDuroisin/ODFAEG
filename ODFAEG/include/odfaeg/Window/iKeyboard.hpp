@@ -1,5 +1,6 @@
 #ifndef ODFAEG_IKEYBOARD_HPP
 #define ODFAEG_IKEYBOARD_HPP
+#include "../config.hpp"
 namespace odfaeg {
     namespace window {
         class IKeyboard {

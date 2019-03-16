@@ -9,6 +9,18 @@ namespace odfaeg {
         GLResource::~GLResource() {
             //ContextImpl::cleanupResource();
         }
+        ////////////////////////////////////////////////////////////
+        GLResource::TransientContextLock::TransientContextLock()
+        {
+            //ContextImpl::acquireTransientContext();
+        }
+
+
+        ////////////////////////////////////////////////////////////
+        GLResource::TransientContextLock::~TransientContextLock()
+        {
+            //ContextImpl::releaseTransientContext();
+        }
     }
 }
 

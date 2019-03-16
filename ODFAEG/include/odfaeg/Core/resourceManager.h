@@ -327,7 +327,7 @@ namespace odfaeg
                 typename std::map<I, unsigned int>::iterator it = mAliasMap.find(alias);
                 if (it == mAliasMap.end()) {
                     if (!resource->loadFromFile(path, args...)) {
-                        throw Erreur(6, "ResourceManager::load - Failed to load ",0);
+                        throw Erreur(6, "ResourceManager::load - Failed to load "+path,0);
                     }
                     // If loading successful, insert resource to map
                     insertResource(path, std::move(resource), alias);
@@ -380,7 +380,7 @@ namespace odfaeg
             if (!exists(path)) {
                 std::unique_ptr<R> resource = std::make_unique<R>();
                 if (!func(resource, path, args...)) {
-                    throw Erreur(6, "ResourceManager::load - Failed to load ",0);
+                    throw Erreur(6, "ResourceManager::load - Failed to load "+path,0);
                     delete resource;
                 }
                 insertResource(path, std::move(resource));
@@ -633,7 +633,7 @@ namespace odfaeg
         }
         template <typename R, typename I>
         ResourceManager<R, I>::~ResourceManager () {
-            deleteAll();
+            //deleteAll();
         }
         template <typename R, typename I>
         std::unique_ptr<ResourceManagerBase> ResourceManager<R, I>::clone() {

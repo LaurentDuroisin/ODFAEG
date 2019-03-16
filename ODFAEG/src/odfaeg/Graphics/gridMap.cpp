@@ -41,6 +41,23 @@ namespace odfaeg {
             int endX = (x + entity->getGlobalBounds().getWidth());
             int endY = (y + entity->getGlobalBounds().getHeight());
             bool added = false;
+            /*std::array<math::Vec2f, 4> pos;
+            pos[0] = math::Vec2f(x, y);
+            pos[1] = math::Vec2f(x, y + endY);
+            pos[2] = math::Vec2f(x + endX, y + endY);
+            pos[3] = math::Vec2f(x + endX, y);
+
+            for (unsigned int i = 0; i < pos.size(); i++) {
+                if (!(containsEntity(entity, pos[i]))) {
+                    CellMap *cm = getGridCellAt(pos[i]);
+                    if (cm == nullptr) {
+                        createCellMap(pos[i]);
+                        cm = getGridCellAt(pos[i]);
+                    }
+                    added = true;
+                    cm->addEntity(entity);
+                }
+            }*/
             for (int i = x; i <= endX; i+= offsetX) {
                 for (int j = y; j <= endY; j+= offsetY)  {
                     math::Vec2f pos (i, j);
@@ -298,7 +315,7 @@ namespace odfaeg {
             for (unsigned int i = 0; i < casesMap.size(); i++) {
                 CellMap *cell = casesMap[i];
                 if (cell != nullptr) {
-                     for (unsigned int n = 0; n < cell->getEntitiesInside().size(); n++) {
+                     for (unsigned int n = 0; n < cell->getNbEntitiesInside(); n++) {
                         bool contains = false;
                         for (unsigned int j = 0; j < allEntities.size(); j++) {
                             if (allEntities[j] == cell->getEntityInside(n))
@@ -567,7 +584,6 @@ namespace odfaeg {
         }
     }
 }
-
 
 
 

@@ -2,6 +2,7 @@
 #include <SFML/System/Mutex.hpp>
 #include <SFML/System/Lock.hpp>
 #include <iostream>
+#include <cassert>
 #if defined(ODFAEG_SYSTEM_WINDOWS)
 
     typedef const GLubyte* (APIENTRY *glGetStringiFuncType)(GLenum, GLuint);
@@ -12,16 +13,15 @@
 
 #endif
 using namespace sf;
-namespace {
-    ThreadLocalPtr<odfaeg::window::ContextImpl> current_ContextImpl (nullptr);
-    sf::Mutex mutex;
-}
 namespace odfaeg {
     namespace window {
-        using namespace sf;
-        IContext* ContextImpl::sharedContext = nullptr;
         std::vector<std::string> ContextImpl::extensions = std::vector<std::string>();
         unsigned int ContextImpl::nbContexts = 0;
+        unsigned int ContextImpl::resourceCount = 0;
+        sf::Mutex ContextImpl::mutex;
+        sf::ThreadLocalPtr<ContextImpl> ContextImpl::current_ContextImpl(nullptr);
+        sf::ThreadLocalPtr<ContextImpl::TransientContext> ContextImpl::transientContext(nullptr);
+        IContext* ContextImpl::sharedContext = nullptr;
         void ContextImpl::initResource() {
             if (nbContexts == 0) {
                 sharedContext = new ContextImplType();
@@ -94,11 +94,20 @@ namespace odfaeg {
             }
             sharedContext->setActive(false);
         }
+        void ContextImpl::create(IContext* shared) {
+            //sharedContext->setActive(true);
+            ContextImplType::create(sharedContext);
+            //sharedContext->setActive(false);
+        }
         void ContextImpl::create(ContextSettings& settings, unsigned int width, unsigned int height, IContext* shared) {
+            //sharedContext->setActive(true);
             ContextImplType::create(settings, width, height, sharedContext);
+            //sharedContext->setActive(false);
         }
         void ContextImpl::create(sf::WindowHandle handle, IContext* shared) {
+            //sharedContext->setActive(true);
             ContextImplType::create(handle, sharedContext);
+            //sharedContext->setActive(false);
         }
         bool ContextImpl::setActive(bool active) {
             if (active) {
@@ -184,6 +193,42 @@ namespace odfaeg {
                     return true;
             }
             return false;
+        }
+        ////////////////////////////////////////////////////////////
+        void ContextImpl::acquireTransientContext()
+        {
+            // Protect from concurrent access
+            Lock lock(mutex);
+
+            // If this is the first TransientContextLock on this thread
+            // construct the state object
+            if (!transientContext)
+                transientContext = new TransientContext;
+
+            // Increase the reference count
+            transientContext->referenceCount++;
+        }
+
+
+        ////////////////////////////////////////////////////////////
+        void ContextImpl::releaseTransientContext()
+        {
+            // Protect from concurrent access
+            Lock lock(mutex);
+
+            // Make sure a matching acquireTransientContext() was called
+            assert(transientContext);
+
+            // Decrease the reference count
+            transientContext->referenceCount--;
+
+            // If this is the last TransientContextLock that is released
+            // destroy the state object
+            if (transientContext->referenceCount == 0)
+            {
+                delete transientContext;
+                transientContext = NULL;
+            }
         }
         ContextImpl::~ContextImpl() {
             nbContexts--;

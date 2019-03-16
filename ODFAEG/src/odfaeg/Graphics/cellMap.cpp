@@ -69,7 +69,9 @@ namespace odfaeg {
             }
             return nullptr;
         }
-
+        unsigned int CellMap::getNbEntitiesInside() {
+            return entityInside.size();
+        }
         bool CellMap::containsEntity (Entity *entity) {
             for (unsigned int i = 0; i < entityInside.size(); i++)
                 if (*entityInside[i] == *entity)
@@ -102,5 +104,4 @@ namespace odfaeg {
         }
     }
 }
-
 

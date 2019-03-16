@@ -10,8 +10,10 @@ namespace odfaeg {
             currentFrame = nullptr;
             previousFrame = nullptr;
             nextFrame = nullptr;
+            loop = false;
             interpLevels = 1;
             interpPerc = 0;
+            interpolatedFrame = std::make_unique<Mesh>(math::Vec3f(0, 0, 0), math::Vec3f(0, 0, 0), "E_MESH");
         }
         Anim::Anim (float fr, math::Vec3f position, math::Vec3f size, Entity *parent) : AnimatedEntity (position, size, size * 0.5f, "E_ANIMATION", parent) {
             this->fr = fr;
@@ -21,8 +23,10 @@ namespace odfaeg {
             currentFrame = nullptr;
             previousFrame = nullptr;
             nextFrame = nullptr;
+            loop = false;
             interpLevels = 1;
             interpPerc = 0;
+            interpolatedFrame = std::make_unique<Mesh>(position, size, "E_MESH");
         }
         bool Anim::isCurrentFrameChanged() {
             return currentFrameChanged;
@@ -31,11 +35,14 @@ namespace odfaeg {
             currentFrameChanged = b;
         }
         void Anim::addFrame (Entity *entity) {
-            if (getChildren().size() == 0)
+            entity->setParent(this);
+            if (getChildren().size() == 0) {
                 currentFrame = entity;
+                interpolatedFrame->setType(currentFrame->getType());
+                createFirstInterpolatedFrame(entity);
+            }
             else if (getChildren().size() == 1)
                 nextFrame = entity;
-            entity->setParent(this);
             addChild(entity);
         }
         void Anim::removeFrame (Entity *entity) {
@@ -51,6 +58,8 @@ namespace odfaeg {
                 nextFrame = getChildren()[(index + 1 >= getChildren().size()) ? 0 : index + 1];
                 currentFrameIndex = index;
                 currentFrameChanged = true;
+                interpolatedFrame->setType(currentFrame->getType());
+                changeInterpolatedFrame(currentFrame);
             }
         }
         Entity* Anim::getPreviousFrame() {
@@ -74,7 +83,6 @@ namespace odfaeg {
             }
         }
         void Anim::computeNextFrame () {
-            vas.clear();
             onFrameChanged();
         }
         void Anim::onFrameChanged() {
@@ -102,7 +110,47 @@ namespace odfaeg {
                     nextFrame = getChildren()[(currentFrameIndex + 1 >= getChildren().size()) ? 0 : currentFrameIndex+1];
                     interpPerc = 0;
                 }
+                interpolatedFrame->setType(currentFrame->getType());
+                interpolatedFrame->setPosition(currentFrame->getPosition());
+                interpolatedFrame->setSize(currentFrame->getSize());
                 interpolate(currentFrame, nextFrame);
+            }
+        }
+        void Anim::createFirstInterpolatedFrame (Entity* currentFrame) {
+            if (currentFrame->getChildren().size() > 0) {
+                for (unsigned int i = 0; i < currentFrame->getChildren().size(); i++) {
+                    createFirstInterpolatedFrame(currentFrame->getChildren()[i]);
+                }
+            }
+            if (currentFrame->isLeaf()) {
+                for (unsigned int i = 0; i < currentFrame->getFaces().size(); i++) {
+                    VertexArray va = currentFrame->getFaces()[i]->getVertexArray();
+                    Face* face = new Face(va,currentFrame->getFaces()[i]->getMaterial(), currentFrame->getTransform());
+                    interpolatedFrame->addFace(face);
+                }
+                interpolatedFrame->setPosition(currentFrame->getPosition());
+                interpolatedFrame->setSize(currentFrame->getSize());
+                interpolatedFrame->setParent(currentFrame->getParent());
+                //addChild(interpolatedFrame);
+                /*if (interpolatedFrame->getRootType() == "E_ANIMATION")
+                    std::cout<<"interpolated frame type : "<<interpolatedFrame->getType()<<std::endl;*/
+            }
+        }
+        void Anim::changeInterpolatedFrame(Entity* currentFrame) {
+            if (currentFrame->getChildren().size() > 0) {
+                for (unsigned int i = 0; i < currentFrame->getChildren().size(); i++) {
+                    changeInterpolatedFrame(currentFrame->getChildren()[i]);
+                }
+            }
+            if (currentFrame->getFaces().size() == interpolatedFrame->getFaces().size()) {
+                for (unsigned int i = 0; i < currentFrame->getFaces().size(); i++) {
+                    VertexArray va = currentFrame->getFaces()[i]->getVertexArray();
+                    interpolatedFrame->getFaces()[i]->setVertexArray(va);
+                    interpolatedFrame->getFaces()[i]->setMaterial(currentFrame->getFaces()[i]->getMaterial());
+                    interpolatedFrame->getFaces()[i]->setTransformMatrix(currentFrame->getFaces()[i]->getTransformMatrix());
+                }
+                interpolatedFrame->setPosition(currentFrame->getPosition());
+                interpolatedFrame->setSize(currentFrame->getSize());
             }
         }
         void Anim::interpolate(Entity* currentFrame, Entity* nextFrame) {
@@ -112,10 +160,11 @@ namespace odfaeg {
                          interpolate(currentFrame->getChildren()[i], nextFrame->getChildren()[i]);
                     }
                 }
-                if (currentFrame->getFaces().size() == nextFrame->getFaces().size()) {
-                    for (unsigned int i = 0; i < currentFrame->getFaces().size(); i++) {
-                        VertexArray cva = currentFrame->getFaces()[i]->getVertexArray();
-                        const VertexArray& nva = nextFrame->getFaces()[i]->getVertexArray();
+                if (currentFrame->getNbFaces() == nextFrame->getNbFaces()
+                    && currentFrame->getNbFaces() == interpolatedFrame->getNbFaces()) {
+                    for (unsigned int i = 0; i < currentFrame->getNbFaces(); i++) {
+                        VertexArray cva = currentFrame->getFace(i)->getVertexArray();
+                        const VertexArray& nva = nextFrame->getFace(i)->getVertexArray();
                         if (cva.getVertexCount() == nva.getVertexCount()) {
                             for (unsigned int j = 0; j < cva.getVertexCount(); j++) {
 
@@ -124,8 +173,10 @@ namespace odfaeg {
                                 cva[j].position.z = cva[j].position.z + (nva[j].position.z - cva[j].position.z) * (interpPerc / interpLevels);
 
                             }
+                            interpolatedFrame->getFace(i)->setVertexArray(cva);
+                            interpolatedFrame->getFace(i)->setMaterial(currentFrame->getFace(i)->getMaterial());
+                            interpolatedFrame->getFace(i)->setTransformMatrix(currentFrame->getFace(i)->getTransformMatrix());
                         }
-                        vas.push_back(cva);
                     }
                 }
             }
@@ -155,15 +206,13 @@ namespace odfaeg {
             return fr;
         }
         Entity* Anim::getCurrentFrame () const {
-              return currentFrame;
+              return interpolatedFrame.get();
         }
 
         void Anim::onDraw(RenderTarget &target, RenderStates states) {
-            for (unsigned int i = 0; i < vas.size(); i++)
-                target.draw(vas[i], states);
+             target.draw(*interpolatedFrame, states);
         }
         Anim::~Anim () {
-
 
         }
     }

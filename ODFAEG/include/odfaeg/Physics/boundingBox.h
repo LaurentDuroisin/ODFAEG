@@ -142,7 +142,7 @@ namespace odfaeg {
                 void setSize(int width, int height, int depth);
                 void move (math::Vec3f t);
                 void scale (math::Vec3f s);
-                const BoundingBox& operator= (const BoundingBox& other) {
+                /*const BoundingBox& operator= (const BoundingBox& other) {
                     x = other.x;
                     y = other.y;
                     z = other.z;
@@ -151,7 +151,7 @@ namespace odfaeg {
                     depth = other.depth;
                     points = other.points;
                     return *this;
-                }
+                }*/
                 template <typename Archive>
                 void vtserialize(Archive & ar) {
                     BoundingVolume::vtserialize(ar);

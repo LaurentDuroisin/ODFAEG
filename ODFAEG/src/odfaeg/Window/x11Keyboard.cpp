@@ -122,14 +122,17 @@ namespace odfaeg {
             ::Display* display = odfaeg::window::Display::openDisplay();
             // Convert to keycode
             KeyCode keycode = XKeysymToKeycode(display, keysym);
-            odfaeg::window::Display::closeDisplay(display);
             if (keycode != 0)
             {
                 // Get the whole X11Keyboard state
                 char keys[32];
                 XQueryKeymap(display, keys);
+                odfaeg::window::Display::closeDisplay(display);
                 // Check our keycode
                 return (keys[keycode / 8] & (1 << (keycode % 8))) != 0;
+            } else {
+                odfaeg::window::Display::closeDisplay(display);
+                return false;
             }
         }
     }

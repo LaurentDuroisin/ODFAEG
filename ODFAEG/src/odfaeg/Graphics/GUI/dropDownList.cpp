@@ -12,7 +12,7 @@ namespace odfaeg {
                     items.push_back(label);
                     nbItems = 1;
                     selectedItem = items[0];
-                    core::Action a(core::Action::EVENT_TYPE::MOUSE_BUTTON_HELD_DOWN, sf::Mouse::Left);
+                    core::Action a(core::Action::EVENT_TYPE::MOUSE_BUTTON_HELD_DOWN, window::IMouse::Left);
                     core::Command cmd (a, core::FastDelegate<bool>(&Label::isMouseInside, items[0]), core::FastDelegate<void>(&DropDownList::onItemSelected, this, items[0]));
                     label->getListener().connect(items[0]->getText(), cmd);
                     selectedItemPos = items[0]->getPosition();
@@ -26,7 +26,7 @@ namespace odfaeg {
                 shape.setPoint(1, sf::Vector3f(size.x - 50, 0, 0));
                 shape.setPoint(2, sf::Vector3f(size.x, 0, 0));
                 bp = physic::BoundingPolyhedron(math::Vec3f(position.x + size.x - 25, position.y + 50, 0), math::Vec3f(position.x + size.x - 50, position.y, 0), math::Vec3f(position.x + size.x, position.y, 0),true);
-                core::Action a(core::Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, sf::Mouse::Left);
+                core::Action a(core::Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, window::IMouse::Left);
                 core::Command cmd(a, core::FastDelegate<bool> (&DropDownList::isMouseOnTriangle, this), core::FastDelegate<void>(&DropDownList::onTriangleClicked, this));
                 getListener().connect("ITEMSELECTED"+t, cmd);
                 dropDown = valueChanged = false;
@@ -71,7 +71,7 @@ namespace odfaeg {
                 nbItems++;
                 selectedItem = items[0];
                 label->setEventContextActivated(false);
-                core::Action a(core::Action::EVENT_TYPE::MOUSE_BUTTON_HELD_DOWN, sf::Mouse::Left);
+                core::Action a(core::Action::EVENT_TYPE::MOUSE_BUTTON_HELD_DOWN, window::IMouse::Left);
                 core::Command cmd (a, core::FastDelegate<bool>(&Label::isMouseInside, items.back()), core::FastDelegate<void>(&DropDownList::onItemSelected, this, items.back()));
                 label->getListener().connect(items.back()->getText(), cmd);
             }
@@ -104,14 +104,15 @@ namespace odfaeg {
                 target.draw(shape, states);
 
             }
-            void DropDownList::onEventPushed(sf::Event event, RenderWindow& window) {
+            void DropDownList::onEventPushed(window::IEvent event, RenderWindow& window) {
                 if(&window == &getWindow())
                     getListener().pushEvent(event);
             }
-            void DropDownList::onUpdate(RenderWindow* window, sf::Event& event) {
+            void DropDownList::onUpdate(RenderWindow* window, window::IEvent& event) {
                 if (&getWindow() == window
-                    && event.type == sf::Event::MouseButtonPressed
-                    && event.mouseButton.button == sf::Mouse::Left) {
+                    && event.type == window::IEvent::MOUSE_BUTTON_EVENT
+                    && event.mouseButton.button == window::IEvent::BUTTON_EVENT_PRESSED
+                    && event.mouseButton.button == window::IMouse::Left) {
                         mousePos = math::Vec3f(event.mouseButton.x, event.mouseButton.y, 0);
                 }
                 for (unsigned int i = 0; i < items.size(); i++) {

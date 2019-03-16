@@ -5,7 +5,7 @@ using namespace sf;
 using namespace std;
 namespace odfaeg {
     namespace graphic {
-        ShadowRenderComponent::ShadowRenderComponent (RenderWindow& window, int layer, std::string expression,sf::ContextSettings settings) :
+        ShadowRenderComponent::ShadowRenderComponent (RenderWindow& window, int layer, std::string expression,window::ContextSettings settings) :
             HeavyComponent(window, math::Vec3f(window.getView().getPosition().x, window.getView().getPosition().y, layer),
                           math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0),
                           math::Vec3f(window.getView().getSize().x + window.getView().getSize().x * 0.5f, window.getView().getPosition().y + window.getView().getSize().y * 0.5f, layer)),
@@ -13,20 +13,16 @@ namespace odfaeg {
             expression(expression) {
                 update = false;
                 sf::Vector3i resolution ((int) window.getSize().x, (int) window.getSize().y, window.getView().getSize().z);
-                shadowMap = std::make_unique<RenderTexture>();
-                stencilBuffer = std::make_unique<RenderTexture>();
-                stencilBufferTile = std::make_unique<Tile>(&stencilBuffer->getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
-                shadowTile = std::make_unique<Tile>(&shadowMap->getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
+                shadowMap.create(resolution.x, resolution.y,settings);
+                settings.depthBits = 32;
+                stencilBuffer.create(resolution.x, resolution.y,settings);
+                stencilBufferTile = Sprite(stencilBuffer.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
+                shadowTile = Sprite(shadowMap.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
                 core::FastDelegate<bool> signal (&ShadowRenderComponent::needToUpdate, this);
                 core::FastDelegate<void> slot (&ShadowRenderComponent::drawNextFrame, this);
                 core::Command cmd(signal, slot);
                 getListener().connect("UPDATE", cmd);
                 if (Shader::isAvailable()) {
-                    shadowMap->create(resolution.x, resolution.y,settings);
-                    settings.depthBits = 32;
-                    stencilBuffer->create(resolution.x, resolution.y,settings);
-                    buildShadowMapShader = std::make_unique<Shader>();
-                    perPixShadowShader = std::make_unique<Shader>();
                     const std::string buildShadowMapVertexShader =
                         "#version 130 \n"
                         "out mat4 projMat;"
@@ -41,42 +37,9 @@ namespace odfaeg {
                         "uniform sampler2D texture;"
                         "uniform float haveTexture;"
                         "in mat4 projMat;"
-                        "mat4 inverse(mat4 m) {"
-                        "     float"
-                        "     a00 = m[0][0], a01 = m[0][1], a02 = m[0][2], a03 = m[0][3],"
-                        "     a10 = m[1][0], a11 = m[1][1], a12 = m[1][2], a13 = m[1][3],"
-                        "     a20 = m[2][0], a21 = m[2][1], a22 = m[2][2], a23 = m[2][3],"
-                        "     a30 = m[3][0], a31 = m[3][1], a32 = m[3][2], a33 = m[3][3],"
-                        "     b00 = a00 * a11 - a01 * a10,"
-                        "     b01 = a00 * a12 - a02 * a10,"
-                        "     b02 = a00 * a13 - a03 * a10,"
-                        "     b03 = a01 * a12 - a02 * a11,"
-                        "     b04 = a01 * a13 - a03 * a11,"
-                        "     b05 = a02 * a13 - a03 * a12,"
-                        "     b06 = a20 * a31 - a21 * a30,"
-                        "     b07 = a20 * a32 - a22 * a30,"
-                        "     b08 = a20 * a33 - a23 * a30,"
-                        "     b09 = a21 * a32 - a22 * a31,"
-                        "     b10 = a21 * a33 - a23 * a31,"
-                        "     b11 = a22 * a33 - a23 * a32,"
-                        "     det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;"
-                        "     return mat4("
-                        "                 a11 * b11 - a12 * b10 + a13 * b09,"
-                        "                 a02 * b10 - a01 * b11 - a03 * b09,"
-                        "                 a31 * b05 - a32 * b04 + a33 * b03,"
-                        "                 a22 * b04 - a21 * b05 - a23 * b03,"
-                        "                 a12 * b08 - a10 * b11 - a13 * b07,"
-                        "                 a00 * b11 - a02 * b08 + a03 * b07,"
-                        "                 a32 * b02 - a30 * b05 - a33 * b01,"
-                        "                 a20 * b05 - a22 * b02 + a23 * b01,"
-                        "                 a10 * b10 - a11 * b08 + a13 * b06,"
-                        "                 a01 * b08 - a00 * b10 - a03 * b06,"
-                        "                 a30 * b04 - a31 * b02 + a33 * b00,"
-                        "                 a21 * b02 - a20 * b04 - a23 * b00,"
-                        "                 a11 * b07 - a10 * b09 - a12 * b06,"
-                        "                 a00 * b09 - a01 * b07 + a02 * b06,"
-                        "                 a31 * b01 - a30 * b03 - a32 * b00,"
-                        "                 a20 * b03 - a21 * b01 + a22 * b00) / det;"
+                        "mat4 inverse(mat4 mat) {"
+                        "   mat4 inv;"
+                        "   return inv;"
                         "}"
                         "void main() {"
                         "   vec4 texel = texture2D(texture, gl_TexCoord[0].xy);"
@@ -107,42 +70,9 @@ namespace odfaeg {
                         "uniform float haveTexture;"
                         "in vec4 shadowCoords;"
                         "in mat4 projMat;"
-                        "mat4 inverse(mat4 m) {"
-                        "     float"
-                        "     a00 = m[0][0], a01 = m[0][1], a02 = m[0][2], a03 = m[0][3],"
-                        "     a10 = m[1][0], a11 = m[1][1], a12 = m[1][2], a13 = m[1][3],"
-                        "     a20 = m[2][0], a21 = m[2][1], a22 = m[2][2], a23 = m[2][3],"
-                        "     a30 = m[3][0], a31 = m[3][1], a32 = m[3][2], a33 = m[3][3],"
-                        "     b00 = a00 * a11 - a01 * a10,"
-                        "     b01 = a00 * a12 - a02 * a10,"
-                        "     b02 = a00 * a13 - a03 * a10,"
-                        "     b03 = a01 * a12 - a02 * a11,"
-                        "     b04 = a01 * a13 - a03 * a11,"
-                        "     b05 = a02 * a13 - a03 * a12,"
-                        "     b06 = a20 * a31 - a21 * a30,"
-                        "     b07 = a20 * a32 - a22 * a30,"
-                        "     b08 = a20 * a33 - a23 * a30,"
-                        "     b09 = a21 * a32 - a22 * a31,"
-                        "     b10 = a21 * a33 - a23 * a31,"
-                        "     b11 = a22 * a33 - a23 * a32,"
-                        "     det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;"
-                        "     return mat4("
-                        "                 a11 * b11 - a12 * b10 + a13 * b09,"
-                        "                 a02 * b10 - a01 * b11 - a03 * b09,"
-                        "                 a31 * b05 - a32 * b04 + a33 * b03,"
-                        "                 a22 * b04 - a21 * b05 - a23 * b03,"
-                        "                 a12 * b08 - a10 * b11 - a13 * b07,"
-                        "                 a00 * b11 - a02 * b08 + a03 * b07,"
-                        "                 a32 * b02 - a30 * b05 - a33 * b01,"
-                        "                 a20 * b05 - a22 * b02 + a23 * b01,"
-                        "                 a10 * b10 - a11 * b08 + a13 * b06,"
-                        "                 a01 * b08 - a00 * b10 - a03 * b06,"
-                        "                 a30 * b04 - a31 * b02 + a33 * b00,"
-                        "                 a21 * b02 - a20 * b04 - a23 * b00,"
-                        "                 a11 * b07 - a10 * b09 - a12 * b06,"
-                        "                 a00 * b09 - a01 * b07 + a02 * b06,"
-                        "                 a31 * b01 - a30 * b03 - a32 * b00,"
-                        "                 a20 * b03 - a21 * b01 + a22 * b00) / det;"
+                        "mat4 inverse(mat4 mat) {"
+                        "   mat4 inv;"
+                        "   return inv;"
                         "}"
                         "void main() {"
                         "   vec4 texel = texture2D(texture, gl_TexCoord[0].xy);"
@@ -159,15 +89,15 @@ namespace odfaeg {
                         "   vec4 visibility = colors[int(b)];"
                         "   gl_FragColor = visibility;"
                         "}";
-                    if (!buildShadowMapShader->loadFromMemory(buildShadowMapVertexShader, buildShadowMapFragmentShader)) {
+                    if (!buildShadowMapShader.loadFromMemory(buildShadowMapVertexShader, buildShadowMapFragmentShader)) {
                         throw core::Erreur(53, "Error, failed to load build shadow map shader", 3);
                     }
-                    if (!perPixShadowShader->loadFromMemory(perPixShadowVertexShader, perPixShadowFragmentShader)) {
+                    if (!perPixShadowShader.loadFromMemory(perPixShadowVertexShader, perPixShadowFragmentShader)) {
                         throw core::Erreur(54, "Error, failed to load per pix shadow map shader", 3);
                     }
-                    buildShadowMapShader->setParameter("texture", Shader::CurrentTexture);
-                    perPixShadowShader->setParameter("stencilBuffer", stencilBuffer->getTexture());
-                    perPixShadowShader->setParameter("texture", Shader::CurrentTexture);
+                    buildShadowMapShader.setParameter("texture", Shader::CurrentTexture);
+                    perPixShadowShader.setParameter("stencilBuffer", stencilBuffer.getTexture());
+                    perPixShadowShader.setParameter("texture", Shader::CurrentTexture);
                 } else {
                     throw core::Erreur(55, "Shader not supported!", 0);
                 }
@@ -179,81 +109,85 @@ namespace odfaeg {
                 math::Vec3f forward = view.getPosition() - lightView.getPosition();
                 math::Vec3f target = lightView.getPosition() + forward;
                 lightView.lookAt(target.x, target.y, target.z);
-                stencilBuffer->setView(lightView);
+                stencilBuffer.setView(lightView);
                 math::Vec3f v = lightView.getPosition() - view.getPosition();
                 RenderStates states;
-                states.shader = buildShadowMapShader.get();
+                states.shader = &buildShadowMapShader;
                 physic::BoundingBox viewArea = view.getViewVolume();
                 math::Vec3f position (viewArea.getPosition().x,viewArea.getPosition().y, view.getPosition().z);
                 math::Vec3f size (viewArea.getWidth(), viewArea.getHeight(), 0);
                 for (unsigned int i = 0; i < m_instances.size(); i++) {
-                    states.texture = m_instances[i].getMaterial().getTexture();
-                    if (m_instances[i].getMaterial().getTexture() != nullptr) {
-                        buildShadowMapShader->setParameter("haveTexture", 1);
-                    } else {
-                        buildShadowMapShader->setParameter("haveTexture", 0);
+                    if (m_instances[i].getAllVertices().getVertexCount() > 0) {
+                        states.texture = m_instances[i].getMaterial().getTexture();
+                        if (m_instances[i].getMaterial().getTexture() != nullptr) {
+                            buildShadowMapShader.setParameter("haveTexture", 1);
+                        } else {
+                            buildShadowMapShader.setParameter("haveTexture", 0);
+                        }
+                        stencilBuffer.draw(m_instances[i].getAllVertices(), states);
                     }
-                    stencilBuffer->draw(m_instances[i].getAllVertices(), states);
                 }
-                stencilBuffer->display();
-                stencilBufferTile->setPosition(position);
-                shadowMap->setView(view);
+                stencilBuffer.display();
+                stencilBufferTile.setPosition(position);
+                shadowMap.setView(view);
                 math::Matrix4f biasMatrix(0.5f, 0.0f, 0.0f, 0.0f,
                                           0.0f, 0.5f, 0.0f, 0.0f,
                                           0.0f, 0.0f, 0.5f, 0.0f,
                                           0.5f, 0.5f, 0.5f, 1.f);
                 math::Matrix4f depthBiasMatrix = biasMatrix * view.getViewMatrix().getMatrix() * view.getProjMatrix().getMatrix();
-                perPixShadowShader->setParameter("depthBiasMatrix", depthBiasMatrix.transpose());
-                states.shader = perPixShadowShader.get();
+                perPixShadowShader.setParameter("depthBiasMatrix", depthBiasMatrix.transpose());
+                states.shader = &perPixShadowShader;
                 for (unsigned int i = 0; i < m_shadow_instances.size(); i++) {
-                    states.texture = m_shadow_instances[i].getMaterial().getTexture();
-                    if (m_shadow_instances[i].getMaterial().getTexture() != nullptr) {
-                        perPixShadowShader->setParameter("haveTexture", 1);
-                    } else {
-                        perPixShadowShader->setParameter("haveTexture", 0);
-                    }
-                    /*for (unsigned int j = 0; j < m_instances[i].getVertexArrays().size(); j++) {
-                        states.transform = m_instances[i].getTransforms()[j];
-                        math::Vec3f shadowOrigin, shadowCenter, shadowScale(1.f, 1.f, 1.f), shadowRotationAxis;
-                        float shadowRotationAngle = 0;
-                        Entity* entity = m_instances[i].getVertexArrays()[j].getEntity()->getParent();
-                        if (entity->isModel()) {
-                            shadowCenter = static_cast<Model*>(entity)->getShadowCenter();
-                            shadowScale = static_cast<Model*>(entity)->getShadowScale();
-                            shadowRotationAxis = static_cast<Model*>(entity)->getShadowRotationAxis();
-                            shadowRotationAngle = static_cast<Model*>(entity)->getShadowRotationAngle();
-                            shadowOrigin = static_cast<Model*>(entity)->getShadowOrigin();
+                    if (m_shadow_instances[i].getAllVertices().getVertexCount() > 0) {
+                        states.texture = m_shadow_instances[i].getMaterial().getTexture();
+                        if (m_shadow_instances[i].getMaterial().getTexture() != nullptr) {
+                            perPixShadowShader.setParameter("haveTexture", 1.f);
+                        } else {
+                            perPixShadowShader.setParameter("haveTexture", 0.f);
                         }
-                        TransformMatrix tm;
-                        tm.setOrigin(entity->getPosition());
-                        tm.setScale(shadowScale);
-                        tm.setRotation(shadowRotationAxis, shadowRotationAngle);
-                        tm.setTranslation(entity->getPosition() + shadowCenter);
-                        tm.update();
-                        perPixShadowShader->setParameter("shadowProjMat", tm.getMatrix().transpose());
-                        shadowMap->draw(m_instances[i].getVertexArrays()[j], states);
-                    }*/
-                    shadowMap->draw(m_shadow_instances[i].getAllVertices(), states);
+                        /*for (unsigned int j = 0; j < m_instances[i].getVertexArrays().size(); j++) {
+                            states.transform = m_instances[i].getTransforms()[j];
+                            math::Vec3f shadowOrigin, shadowCenter, shadowScale(1.f, 1.f, 1.f), shadowRotationAxis;
+                            float shadowRotationAngle = 0;
+                            Entity* entity = m_instances[i].getVertexArrays()[j].getEntity()->getParent();
+                            if (entity->isModel()) {
+                                shadowCenter = static_cast<Model*>(entity)->getShadowCenter();
+                                shadowScale = static_cast<Model*>(entity)->getShadowScale();
+                                shadowRotationAxis = static_cast<Model*>(entity)->getShadowRotationAxis();
+                                shadowRotationAngle = static_cast<Model*>(entity)->getShadowRotationAngle();
+                                shadowOrigin = static_cast<Model*>(entity)->getShadowOrigin();
+                            }
+                            TransformMatrix tm;
+                            tm.setOrigin(entity->getPosition());
+                            tm.setScale(shadowScale);
+                            tm.setRotation(shadowRotationAxis, shadowRotationAngle);
+                            tm.setTranslation(entity->getPosition() + shadowCenter);
+                            tm.update();
+                            perPixShadowShader->setParameter("shadowProjMat", tm.getMatrix().transpose());
+                            shadowMap->draw(m_instances[i].getVertexArrays()[j], states);
+                        }*/
+                        shadowMap.draw(m_shadow_instances[i].getAllVertices(), states);
+                    }
                 }
                 /*RectangleShape rect(size * 2.f);
                 rect.setPosition(position - size * 0.5f);
                 rect.setFillColor(sf::Color(100, 100, 100, 128));
                 shadowMap->draw(rect);*/
-                shadowMap->display();
+                shadowMap.display();
             }
             std::vector<Entity*> ShadowRenderComponent::getEntities() {
                 return visibleEntities;
             }
             void ShadowRenderComponent::draw(RenderTarget& target, RenderStates states) {
-                shadowTile->setCenter(target.getView().getPosition());
+                shadowTile.setCenter(target.getView().getPosition());
                 states.blendMode = sf::BlendMultiply;
-                target.draw(*shadowTile, states);
+                target.draw(shadowTile, states);
             }
-            void ShadowRenderComponent::pushEvent(sf::Event event, RenderWindow& rw) {
-                if (event.type == sf::Event::Resized && &getWindow() == &rw && isAutoResized()) {
+            void ShadowRenderComponent::pushEvent(window::IEvent event, RenderWindow& rw) {
+                if (event.type == window::IEvent::WINDOW_EVENT && event.window.type == window::IEvent::WINDOW_EVENT_RESIZED && &getWindow() == &rw && isAutoResized()) {
                     recomputeSize();
                     getListener().pushEvent(event);
-                    getView().reset(physic::BoundingBox(getView().getViewport().getPosition().x, getView().getViewport().getPosition().y, getView().getViewport().getPosition().z, event.size.width, event.size.height, getView().getViewport().getDepth()));
+                    getView().reset(physic::BoundingBox(getView().getViewport().getPosition().x, getView().getViewport().getPosition().y, getView().getViewport().getPosition().z, event.window.data1, event.window.data2, getView().getViewport().getDepth()));
                 }
             }
             bool ShadowRenderComponent::needToUpdate() {
@@ -266,16 +200,16 @@ namespace odfaeg {
                 return getPosition().z;
             }
             const Texture& ShadowRenderComponent::getStencilBufferTexture() {
-                return stencilBuffer->getTexture();
+                return stencilBuffer.getTexture();
             }
             const Texture& ShadowRenderComponent::getShadowMapTexture() {
-                return shadowMap->getTexture();
+                return shadowMap.getTexture();
             }
-            Tile& ShadowRenderComponent::getFrameBufferTile () {
-                return *stencilBufferTile;
+            Sprite& ShadowRenderComponent::getFrameBufferTile () {
+                return stencilBufferTile;
             }
-            Tile& ShadowRenderComponent::getDepthBufferTile() {
-                return *shadowTile;
+            Sprite& ShadowRenderComponent::getDepthBufferTile() {
+                return shadowTile;
             }
             void ShadowRenderComponent::setExpression(std::string expression) {
                 update = true;
@@ -286,7 +220,7 @@ namespace odfaeg {
             }
             void ShadowRenderComponent::setView(View view) {
                 this->view = view;
-                shadowMap->setView(view);
+                shadowMap.setView(view);
             }
             bool ShadowRenderComponent::loadEntitiesOnComponent(std::vector<Entity*> vEntities)
             {
@@ -296,23 +230,24 @@ namespace odfaeg {
                 for (unsigned int i = 0; i < vEntities.size(); i++) {
                     if ( vEntities[i]->isLeaf()) {
                         Entity* entity = vEntities[i]->getParent();
-                        math::Vec3f shadowOrigin, shadowCenter, shadowScale(1.f, 1.f, 1.f), shadowRotationAxis;
+                        math::Vec3f shadowOrigin, shadowCenter, shadowScale(1.f, 1.f, 1.f), shadowRotationAxis, shadowTranslation;
                         float shadowRotationAngle = 0;
-                        if (entity->isModel()) {
+                        if (entity != nullptr && entity->isModel()) {
                             shadowCenter = static_cast<Model*>(entity)->getShadowCenter();
                             shadowScale = static_cast<Model*>(entity)->getShadowScale();
                             shadowRotationAxis = static_cast<Model*>(entity)->getShadowRotationAxis();
                             shadowRotationAngle = static_cast<Model*>(entity)->getShadowRotationAngle();
-                            shadowOrigin = static_cast<Model*>(entity)->getShadowOrigin();
+                            shadowOrigin = entity->getPosition();
+                            shadowTranslation = entity->getPosition() + shadowCenter;
                         }
                         TransformMatrix tm;
-                        tm.setOrigin(entity->getPosition());
+                        tm.setOrigin(shadowOrigin);
                         tm.setScale(shadowScale);
                         tm.setRotation(shadowRotationAxis, shadowRotationAngle);
-                        tm.setTranslation(entity->getPosition() + shadowCenter);
-                        for (unsigned int j = 0; j <  vEntities[i]->getFaces().size(); j++) {
-                             batcher.addFace( vEntities[i]->getFaces()[j]);
-                             shadowBatcher.addShadowFace(vEntities[i]->getFaces()[j], view.getViewMatrix(), tm);
+                        tm.setTranslation(shadowTranslation);
+                        for (unsigned int j = 0; j <  vEntities[i]->getNbFaces(); j++) {
+                             batcher.addFace( vEntities[i]->getFace(j));
+                             shadowBatcher.addShadowFace(vEntities[i]->getFace(j), view.getViewMatrix(), tm);
                         }
                     }
                 }
@@ -323,8 +258,8 @@ namespace odfaeg {
                 return true;
             }
             void ShadowRenderComponent::clear() {
-                 shadowMap->clear(sf::Color::White);
-                 stencilBuffer->clear(sf::Color::Transparent);
+                 shadowMap.clear(sf::Color::White);
+                 stencilBuffer.clear(sf::Color::Transparent);
             }
             void ShadowRenderComponent::changeVisibleEntities(Entity* toRemove, Entity* toAdd, EntityManager* em) {
                 bool removed;

@@ -29,6 +29,8 @@
 #include "../../../include/odfaeg/Graphics/renderTarget.h"
 #include "../../../include/odfaeg/Graphics/texture.h"
 #include "glCheck.h"
+#include <GL/glew.h>
+#include <SFML/OpenGL.hpp>
 #include <SFML/System/Err.hpp>
 #include <iostream>
 using namespace sf;
@@ -48,87 +50,111 @@ namespace odfaeg {
             ////////////////////////////////////////////////////////////
             RenderTextureImplFBO::~RenderTextureImplFBO()
             {
-                //ensureGlContext();
 
                 // Destroy the depth buffer
                 if (m_depthBuffer)
                 {
                     GLuint depthBuffer = static_cast<GLuint>(m_depthBuffer);
-                    glCheck(glDeleteRenderbuffersEXT(1, &depthBuffer));
+                    if (m_versionMajor >= 3 && m_versionMinor >= 3)
+                        glCheck(glDeleteRenderbuffers(1, &depthBuffer));
+                    else
+                        glCheck(glDeleteRenderbuffersEXT(1, &depthBuffer));
                 }
 
                 // Destroy the frame buffer
                 if (m_frameBuffer)
                 {
                     GLuint frameBuffer = static_cast<GLuint>(m_frameBuffer);
-                    glCheck(glDeleteFramebuffersEXT(1, &frameBuffer));
+                    if (m_versionMajor >= 3 && m_versionMinor >= 3)
+                        glCheck(glDeleteFramebuffers(1, &frameBuffer));
+                    else
+                        glCheck(glDeleteFramebuffersEXT(1, &frameBuffer));
                 }
-
-                // Delete the context
-                delete m_context;
             }
 
 
             ////////////////////////////////////////////////////////////
             bool RenderTextureImplFBO::isAvailable()
             {
-                //ensureGlContext();
                 // Make sure that GLEW is initialized
                 priv::ensureGlewInit();
+
                 return GLEW_EXT_framebuffer_object != 0;
             }
 
 
             ////////////////////////////////////////////////////////////
-            bool RenderTextureImplFBO::create(unsigned int width, unsigned int height, ContextSettings settings, unsigned int textureId)
+            bool RenderTextureImplFBO::create(unsigned int width, unsigned int height, window::ContextSettings settings, unsigned int textureId)
             {
-                // Create the context
-                m_context = new Context(settings, width, height);
                 // Create the framebuffer object
                 GLuint frameBuffer = 0;
-                glCheck(glGenFramebuffersEXT(1, &frameBuffer));
+                m_versionMajor = settings.versionMajor;
+                m_versionMinor = settings.versionMinor;
+                if (m_versionMajor >= 3 && m_versionMinor >= 3)
+                    glCheck(glGenFramebuffers(1, &frameBuffer));
+                else
+                    glCheck(glGenFramebuffersEXT(1, &frameBuffer));
                 m_frameBuffer = static_cast<unsigned int>(frameBuffer);
                 if (!m_frameBuffer)
                 {
-                    err() << "Impossible to create render texture (failed to create the frame buffer object)" << std::endl;
+                    std::cerr << "Impossible to create render texture (failed to create the frame buffer object)" << std::endl;
                     return false;
                 }
-                glCheck(glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_frameBuffer));
+                if (m_versionMajor >= 3 && m_versionMinor >= 3)
+                    glCheck(glBindFramebuffer(GL_FRAMEBUFFER, m_frameBuffer));
+                else
+                    glCheck(glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_frameBuffer));
                 // Create the depth buffer if requested
                 if (settings.depthBits > 0)
                 {
                     GLuint depth = 0;
-                    glCheck(glGenRenderbuffersEXT(1, &depth));
+                    if (m_versionMajor >= 3 && m_versionMinor >= 3)
+                        glCheck(glGenRenderbuffers(1, &depth));
+                    else
+                        glCheck(glGenRenderbuffersEXT(1, &depth));
                     m_depthBuffer = static_cast<unsigned int>(depth);
                     if (!m_depthBuffer)
                     {
-                        err() << "Impossible to create render texture (failed to create the attached depth buffer)" << std::endl;
+                        std::cerr << "Impossible to create render texture (failed to create the attached depth buffer)" << std::endl;
                         return false;
                     }
-                    glCheck(glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, m_depthBuffer));
-                    glCheck(glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT, width, height));
-                    glCheck(glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, m_depthBuffer));
+                    if (m_versionMajor >= 3 && m_versionMinor >= 3) {
+                        glCheck(glBindRenderbuffer(GL_RENDERBUFFER, m_depthBuffer));
+                        glCheck(glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height));
+                        glCheck(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depthBuffer));
+                    } else {
+                        glCheck(glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, m_depthBuffer));
+                        glCheck(glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT, width, height));
+                        glCheck(glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, m_depthBuffer));
+                    }
                 }
-                // Link the texture to the frame buffer
-                glCheck(glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, textureId, 0));
-                // A final check, just to be sure...
-                if (glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT) != GL_FRAMEBUFFER_COMPLETE_EXT)
-                {
-                    glCheck(glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0));
-                    err() << "Impossible to create render texture (failed to link the target texture to the frame buffer)" << std::endl;
-                    return false;
+                if (m_versionMajor >= 3 && m_versionMinor >= 3) {
+                    glCheck(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, textureId, 0));
+
+                } else {
+                    // Link the texture to the frame buffer
+                    glCheck(glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, textureId, 0));
                 }
+                if (m_versionMajor >= 3 && m_versionMinor >= 3) {
+                    // A final check, just to be sure.
+                    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+                    {
+                        glCheck(glBindFramebuffer(GL_FRAMEBUFFER, 0));
+                        std::cerr << "Impossible to create render texture (failed to link the target texture to the frame buffer)" << std::endl;
+                        return false;
+                    }
+                } else {
+                    // A final check, just to be sure...
+                    if (glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT) != GL_FRAMEBUFFER_COMPLETE_EXT)
+                    {
+                        glCheck(glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0));
+                        std::cerr << "Impossible to create render texture (failed to link the target texture to the frame buffer)" << std::endl;
+                        return false;
+                    }
+                }
+
                 return true;
             }
-
-
-            ////////////////////////////////////////////////////////////
-            bool RenderTextureImplFBO::activate(bool active)
-            {
-                return m_context->setActive(active);
-            }
-
-
             ////////////////////////////////////////////////////////////
             void RenderTextureImplFBO::updateTexture(unsigned int)
             {
@@ -139,4 +165,3 @@ namespace odfaeg {
     } // namespace priv
 
 } // namespace sf
-

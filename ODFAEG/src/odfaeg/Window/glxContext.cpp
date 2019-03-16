@@ -130,6 +130,19 @@ namespace odfaeg {
                 return XVisualInfo();
             }
         }
+        void GlxContext::create(IContext* sharedContext) {
+         // Save the creation settings
+            settings = ContextSettings();
+
+            // Open the connection with the X server
+            m_display = Display::openDisplay();
+
+            // Make sure that extensions are initialized
+            ensureExtensionsInit(m_display, DefaultScreen(m_display));
+
+            // Create the rendering surface (window or pbuffer if supported)
+            create(settings, 1, 1, sharedContext);
+        }
         void GlxContext::create(ContextSettings& settings, unsigned int width, unsigned int height, IContext* sharedContext) {
             GLXContext shared = (sharedContext != nullptr) ? static_cast<GlxContext*>(sharedContext)->ctx : nullptr;
             XVisualInfo vi = selectBestVisual(m_display, VideoMode::getDesktopMode().bitsPerPixel, settings);

@@ -38,6 +38,7 @@ namespace odfaeg {
                 * \return a pointer to the entity.
                 */
                 Entity* getEntityInside (unsigned int index);
+                unsigned int getNbEntitiesInside();
                 /**
                 * \fn std::vector<E*> getEntitiesInside ();
                 * \brief get the visible entities which are inside the cell.
@@ -132,7 +133,7 @@ namespace odfaeg {
                 std::vector<std::unique_ptr<Entity>> entityInside; /**> the entities which are inside the cell.*/
                 physic::BoundingPolyhedron* cellVolume; /**> the volume of the cell.*/
                 bool passable, stateChanged, traveled; /**> if the cell is passable, if the state of the cell have been changed and if the cell have been visited.*/
-                math::Vec2f coords; /**> the coordinates and the center of the cell.*/
+                math::Vec3f coords; /**> the coordinates and the center of the cell.*/
         };
     }
 }

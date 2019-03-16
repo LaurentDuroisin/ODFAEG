@@ -48,47 +48,47 @@ namespace odfaeg
             *  \param FastDelegate<void> the function to invoke throw the delegate when the command is triggered.
             */
             Command (Action action, FastDelegate<bool> trigger, FastDelegate<void> slot);
-            /**\fn containsEvent (sf::Event &event)
-            *  \brief check if the sf::Event is in the events stack of the command.
-            *  \param the sf::Event to check in.
-            *  \return true if the sf::Event is in the events stack, false otherwise.
+            /**\fn containsEvent (window::IEvent &event)
+            *  \brief check if the window::IEvent is in the events stack of the command.
+            *  \param the window::IEvent to check in.
+            *  \return true if the window::IEvent is in the events stack, false otherwise.
             */
             Command (const Command& other);
-            bool containsEvent (sf::Event &event);
+            bool containsEvent (window::IEvent &event);
             /** \fn bool isTriggered()
             *   \brief return true if the command is triggered.
             *   \return true if command is triggered, false otherwise.
             */
             bool isTriggered();
-            /** \fn bool containsBufferEvent(sf::Event& event)
-            *   \brief check if the sf::Event is stored in the event buffer of the action
-            *   \param the sf::Event to check with. (If there isn't an action linked to the command, it always return false)
+            /** \fn bool containsBufferEvent(window::IEvent& event)
+            *   \brief check if the window::IEvent is stored in the event buffer of the action
+            *   \param the window::IEvent to check with. (If there isn't an action linked to the command, it always return false)
             */
-            bool containsBufferEvent(sf::Event& event);
+            bool containsBufferEvent(window::IEvent& event);
             /** \fn void clearEventsStack ()
-            *   \brief clear all the sf::events in the events stack.
+            *   \brief clear all the window::IEvents in the events stack.
             */
             static void clearEventsStack ();
-            /** \fn void pushEvent (sf::Event& event)
-            *   \brief store all the incoming sf::events which are triggered.
-            *   \param the triggered sf::Event.
+            /** \fn void pushEvent (window::IEvent& event)
+            *   \brief store all the incoming window::IEvents which are triggered.
+            *   \param the triggered window::IEvent.
             */
-            static void pushEvent (sf::Event& event);
+            static void pushEvent (window::IEvent& event);
             /** \fn void getEvents()
             *   \brief return all sfml events which are generated since the last event loop.
             *   \return the sfml event which are generated since the last loop.
             */
-            static std::vector<sf::Event> getEvents();
+            static std::vector<window::IEvent> getEvents();
 
             /** \fn void operator()()
             *   \brief call the slot function linked to command.
             */
             void operator()();
             /**\fn
-            * \brief remove an sf::Event from the stack.
-            *  \param sf::Event event : the sfml event to remove from the stack.
+            * \brief remove an window::IEvent from the stack.
+            *  \param window::IEvent event : the sfml event to remove from the stack.
             */
-            static void removeEvent(sf::Event& event);
+            static void removeEvent(window::IEvent& event);
             template <typename... A>
             void setSigParams(A&&... args);
             template <typename... A>
@@ -103,14 +103,14 @@ namespace odfaeg
             */
             Action* getAction();
             Command& operator= (const Command& other);
-            static bool equalEvent (sf::Event event, sf::Event other);
+            static bool equalEvent (window::IEvent event, window::IEvent other);
             void setName(std::string name);
         private :
 
-            /** \fn bool equalEvent (sf::Event event, sf::Event other)
+            /** \fn bool equalEvent (window::IEvent event, window::IEvent other)
             *   \brief test if two events are equal.
-            *   \param sf::Event event : the event.
-            *   \param sf::Event other : the otherevent.
+            *   \param window::IEvent event : the event.
+            *   \param window::IEvent other : the otherevent.
             *   \return return true if the two events are equal.
             */
 
@@ -121,7 +121,7 @@ namespace odfaeg
             /** < the trigger mapped to the command.*/
             std::unique_ptr<FastDelegate<bool>> trigger;
             /** < the SFML events generated.*/
-            static std::vector<sf::Event> events;
+            static std::vector<window::IEvent> events;
             std::string name;
         };
     }

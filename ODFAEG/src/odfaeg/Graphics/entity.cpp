@@ -25,12 +25,19 @@ namespace odfaeg {
             shadowScale = math::Vec3f(1.f, 1.f, 1.f);
             shadowRotationAngle = 0;
             shadowRotationAxis = math::Vec3f::zAxis;
+            boneIndex = 0;
         }
         std::string Entity::getRootType() {
-            if (getParent() != nullptr) {
+            if (parent != nullptr) {
                 return parent->getRootType();
             }
             return getType();
+        }
+        int Entity::getRootTypeInt() {
+            if (parent != nullptr) {
+                return parent->getTypeInt();
+            }
+            return getTypeInt();
         }
         Entity* Entity::getRootEntity() {
             if (parent == nullptr)
@@ -176,6 +183,14 @@ namespace odfaeg {
             }
             return fcs;
         }
+        unsigned int Entity::getNbFaces() {
+            return faces.size();
+        }
+        Face* Entity::getFace(unsigned int n) {
+            if (n >= 0 && n < faces.size())
+                return faces[n].get();
+            return nullptr;
+        }
          void Entity::setShadowCenter(math::Vec3f shadowCenter) {
                 this->shadowCenter = shadowCenter;
                 for (unsigned int i = 0; i < children.size(); i++) {
@@ -215,6 +230,15 @@ namespace odfaeg {
             }
             math::Vec3f Entity::getShadowOrigin() {
                 return shadowOrigin;
+            }
+            int Entity::getNbEntityTypes () {
+                return nbEntitiesTypes;
+            }
+            void Entity::setBoneIndex(unsigned int boneIndex) {
+                this->boneIndex = boneIndex;
+            }
+            unsigned int Entity::getBoneIndex() {
+                return boneIndex;
             }
     }
 }

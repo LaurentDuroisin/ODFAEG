@@ -29,10 +29,6 @@
 // Headers
 ////////////////////////////////////////////////////////////
 #include "renderTextureImpl.h"
-#include <SFML/Window/GlResource.hpp>
-#include <SFML/Window/Context.hpp>
-
-
 namespace odfaeg
 {
     namespace graphic {
@@ -43,7 +39,7 @@ namespace odfaeg
             ///        using a in-memory context
             ///
             ////////////////////////////////////////////////////////////
-            class RenderTextureImplDefault : public RenderTextureImpl, sf::GlResource
+            class RenderTextureImplDefault : public RenderTextureImpl
             {
             public :
 
@@ -72,18 +68,7 @@ namespace odfaeg
                 /// \return True if creation has been successful
                 ///
                 ////////////////////////////////////////////////////////////
-                virtual bool create(unsigned int width, unsigned int height, sf::ContextSettings settings, unsigned int textureId);
-
-                ////////////////////////////////////////////////////////////
-                /// \brief Activate or deactivate the render texture for rendering
-                ///
-                /// \param active True to activate, false to deactivate
-                ///
-                /// \return True on success, false on failure
-                ///
-                ////////////////////////////////////////////////////////////
-                virtual bool activate(bool active);
-
+                virtual bool create(unsigned int width, unsigned int height, window::ContextSettings settings, unsigned int textureId);
                 ////////////////////////////////////////////////////////////
                 /// \brief Update the pixels of the target texture
                 ///
@@ -91,11 +76,9 @@ namespace odfaeg
                 ///
                 ////////////////////////////////////////////////////////////
                 virtual void updateTexture(unsigned textureId);
-
                 ////////////////////////////////////////////////////////////
                 // Member data
                 ////////////////////////////////////////////////////////////
-                sf::Context*     m_context; ///< P-Buffer based context
                 unsigned int m_width;   ///< Width of the P-Buffer
                 unsigned int m_height;  ///< Height of the P-Buffer
             };

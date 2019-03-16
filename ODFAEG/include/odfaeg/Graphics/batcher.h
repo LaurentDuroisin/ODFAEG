@@ -95,13 +95,19 @@ namespace odfaeg {
             sf::Color color; /**> the color of the material. */
             float specularIntensity, specularPower, refractionFactor;
             static float maxSpecularIntensity, maxSpecularPower;
+            static unsigned int nbMaterials;
+            unsigned int id;
             const Texture* bumpTexture;
+            static std::vector<Material*> materials;
+            static std::vector<Material*> sameMaterials;
             public :
             /**
             * \fn Material()
             * \brief constructor.
             */
             Material();
+            unsigned int getId();
+            static unsigned int getNbMaterials();
             /**
             * \fn int getNbTextures ()
             * \brief return the number of textures.
@@ -192,6 +198,9 @@ namespace odfaeg {
             const Texture* getBumpTexture();
             void setRefractionFactor(float refractionFactor);
             float getRefractionFactor();
+            void updateIds();
+            bool contains(Material material);
+            void countNbMaterials();
             template <typename Archive>
             void serialize(Archive & ar) {
                 ar(texInfos);
@@ -209,6 +218,7 @@ namespace odfaeg {
                 maxSpecularIntensity = (specularIntensity > maxSpecularIntensity) ? specularIntensity : maxSpecularIntensity;
                 maxSpecularPower = (specularPower > maxSpecularPower) ? specularPower : maxSpecularPower;
             }
+            ~Material();
         };
         /**
           * \file face.h
@@ -260,6 +270,8 @@ namespace odfaeg {
             * \return the material.
             */
             Material& getMaterial();
+            void setMaterial(Material material);
+            void setTransformMatrix(TransformMatrix& tm);
             /**
             * \fn VertexArray& getVertexArray()
             * \brief get the vertex array.
@@ -307,6 +319,7 @@ namespace odfaeg {
           */
         class ODFAEG_GRAPHICS_API Instance {
             public :
+            Instance();
             /**
             *   \fn Instance (Material& material, sf::PrimitiveType pType)
             *   \brief constructor.
@@ -319,7 +332,7 @@ namespace odfaeg {
             *  \brief add a vertex array to the instance.
             *
             */
-            void addVertexArray(VertexArray va, TransformMatrix tm);
+            void addVertexArray(VertexArray& va, TransformMatrix& tm);
             void addVertexShadowArray(VertexArray va, TransformMatrix tm, ViewMatrix viewMatrix, TransformMatrix shadowProjMatrix);
             void sortVertexArrays(View& view);
             /**
@@ -327,7 +340,7 @@ namespace odfaeg {
             * \brief get the vertex arrays of the instance.
             * \return the vertex arrays.
             */
-            std::vector<VertexArray> getVertexArrays();
+            std::vector<VertexArray*> getVertexArrays();
             /**
             * \fn void clear()
             * \brief clear all the vertex arrays of the instances.
@@ -338,7 +351,7 @@ namespace odfaeg {
             * \brief get the transformations of every vertex arrays of the instances.
             * \return the transforms.
             */
-            std::vector<TransformMatrix> getTransforms();
+            std::vector<TransformMatrix*> getTransforms();
             /** \fn Material& getMaterial()
             * \brief get the material of the instance.
             * \return the material.
@@ -350,6 +363,8 @@ namespace odfaeg {
             * \return the pirmitive type.
             */
             sf::PrimitiveType getPrimitiveType();
+            void setPrimitiveType (sf::PrimitiveType);
+            void setMaterial(Material& material);
             /**
             * \fn unsigned int getNumInstances()
             * \brief get the number of instances.
@@ -363,9 +378,9 @@ namespace odfaeg {
             VertexArray& getAllVertices();
             ~Instance();
         private:
-            Material& material; /**> the material of the instance.*/
-            std::vector<VertexArray> m_vertexArrays; /**> the vertex arrays of the instance.*/
-            std::vector<TransformMatrix> m_transforms; /**> the transformations of the instance.*/
+            Material* material; /**> the material of the instance.*/
+            std::vector<VertexArray*> m_vertexArrays; /**> the vertex arrays of the instance.*/
+            std::vector<TransformMatrix*> m_transforms; /**> the transformations of the instance.*/
             sf::PrimitiveType primType; /**>The primitive type of the instance.*/
             unsigned int numInstances; /**>The number of instances.*/
             VertexArray vertices;
@@ -419,6 +434,7 @@ namespace odfaeg {
             */
             void clear();
             unsigned int getNbLayers();
+            static const unsigned int nbPrimitiveTypes = 7;
         private :
             unsigned int numVertices; /**> the number of vertices.*/
             unsigned int numIndexes; /**> the number of indexes.*/

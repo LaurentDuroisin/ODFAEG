@@ -5,11 +5,12 @@
 #include <climits>
 #include "../../../include/odfaeg/Core/singleton.h"
 #include "../../../include/odfaeg/Graphics/tGround.h"
+#include "../../../include/odfaeg/Graphics/boneAnimation.hpp"
 namespace odfaeg {
     namespace graphic {
     using namespace std;
 
-        Map::Map (RenderComponentManager* frcm, std::string name, int cellWidth, int cellHeight) : EntityManager(name), frcm(frcm) {
+        Map::Map (RenderComponentManager* frcm, std::string name, int cellWidth, int cellHeight, int cellDepth) : EntityManager(name), frcm(frcm) {
             gridMap = new GridMap(cellWidth, cellHeight);
             updateComponents = false;
             id = 0;
@@ -31,7 +32,7 @@ namespace odfaeg {
                     backDepthBuffer = std::make_unique<RenderTexture>();
                     shadowMap->create(frcm->getWindow().getSize().x, frcm->getWindow().getSize().y,frcm->getWindow().getSettings());
                     lightMap->create(frcm->getWindow().getSize().x, frcm->getWindow().getSize().y,frcm->getWindow().getSettings());
-                    sf::ContextSettings settings = frcm->getWindow().getSettings();
+                    window::ContextSettings settings = frcm->getWindow().getSettings();
                     settings.depthBits = 32;
                     stencilBuffer->create(frcm->getWindow().getSize().x, frcm->getWindow().getSize().y,settings);
                     normalMap->create(frcm->getWindow().getSize().x, frcm->getWindow().getSize().y,frcm->getWindow().getSettings());
@@ -65,42 +66,9 @@ namespace odfaeg {
                     "uniform vec3 resolution;"
                     "uniform float haveTexture;"
                     "in mat4 projMat;"
-                    "mat4 inverse(mat4 m) {"
-                    "     float"
-                    "     a00 = m[0][0], a01 = m[0][1], a02 = m[0][2], a03 = m[0][3],"
-                    "     a10 = m[1][0], a11 = m[1][1], a12 = m[1][2], a13 = m[1][3],"
-                    "     a20 = m[2][0], a21 = m[2][1], a22 = m[2][2], a23 = m[2][3],"
-                    "     a30 = m[3][0], a31 = m[3][1], a32 = m[3][2], a33 = m[3][3],"
-                    "     b00 = a00 * a11 - a01 * a10,"
-                    "     b01 = a00 * a12 - a02 * a10,"
-                    "     b02 = a00 * a13 - a03 * a10,"
-                    "     b03 = a01 * a12 - a02 * a11,"
-                    "     b04 = a01 * a13 - a03 * a11,"
-                    "     b05 = a02 * a13 - a03 * a12,"
-                    "     b06 = a20 * a31 - a21 * a30,"
-                    "     b07 = a20 * a32 - a22 * a30,"
-                    "     b08 = a20 * a33 - a23 * a30,"
-                    "     b09 = a21 * a32 - a22 * a31,"
-                    "     b10 = a21 * a33 - a23 * a31,"
-                    "     b11 = a22 * a33 - a23 * a32,"
-                    "     det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;"
-                    "     return mat4("
-                    "                 a11 * b11 - a12 * b10 + a13 * b09,"
-                    "                 a02 * b10 - a01 * b11 - a03 * b09,"
-                    "                 a31 * b05 - a32 * b04 + a33 * b03,"
-                    "                 a22 * b04 - a21 * b05 - a23 * b03,"
-                    "                 a12 * b08 - a10 * b11 - a13 * b07,"
-                    "                 a00 * b11 - a02 * b08 + a03 * b07,"
-                    "                 a32 * b02 - a30 * b05 - a33 * b01,"
-                    "                 a20 * b05 - a22 * b02 + a23 * b01,"
-                    "                 a10 * b10 - a11 * b08 + a13 * b06,"
-                    "                 a01 * b08 - a00 * b10 - a03 * b06,"
-                    "                 a30 * b04 - a31 * b02 + a33 * b00,"
-                    "                 a21 * b02 - a20 * b04 - a23 * b00,"
-                    "                 a11 * b07 - a10 * b09 - a12 * b06,"
-                    "                 a00 * b09 - a01 * b07 + a02 * b06,"
-                    "                 a31 * b01 - a30 * b03 - a32 * b00,"
-                    "                 a20 * b03 - a21 * b01 + a22 * b00) / det;"
+                    "mat4 inverse(mat4 mat) {"
+                    "   mat4 inv;"
+                    "   return inv;"
                     "}"
                     "void main () {"
                         "vec2 position = ( gl_FragCoord.xy / resolution.xy );"
@@ -160,42 +128,9 @@ namespace odfaeg {
                      "uniform vec4 lightColor;"
                      "uniform vec4 lightPos;"
                      "in mat4 projMat;"
-                     "mat4 inverse(mat4 m) {"
-                     "     float"
-                     "     a00 = m[0][0], a01 = m[0][1], a02 = m[0][2], a03 = m[0][3],"
-                     "     a10 = m[1][0], a11 = m[1][1], a12 = m[1][2], a13 = m[1][3],"
-                     "     a20 = m[2][0], a21 = m[2][1], a22 = m[2][2], a23 = m[2][3],"
-                     "     a30 = m[3][0], a31 = m[3][1], a32 = m[3][2], a33 = m[3][3],"
-                     "     b00 = a00 * a11 - a01 * a10,"
-                     "     b01 = a00 * a12 - a02 * a10,"
-                     "     b02 = a00 * a13 - a03 * a10,"
-                     "     b03 = a01 * a12 - a02 * a11,"
-                     "     b04 = a01 * a13 - a03 * a11,"
-                     "     b05 = a02 * a13 - a03 * a12,"
-                     "     b06 = a20 * a31 - a21 * a30,"
-                     "     b07 = a20 * a32 - a22 * a30,"
-                     "     b08 = a20 * a33 - a23 * a30,"
-                     "     b09 = a21 * a32 - a22 * a31,"
-                     "     b10 = a21 * a33 - a23 * a31,"
-                     "     b11 = a22 * a33 - a23 * a32,"
-                     "     det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;"
-                     "     return mat4("
-                     "                 a11 * b11 - a12 * b10 + a13 * b09,"
-                     "                 a02 * b10 - a01 * b11 - a03 * b09,"
-                     "                 a31 * b05 - a32 * b04 + a33 * b03,"
-                     "                 a22 * b04 - a21 * b05 - a23 * b03,"
-                     "                 a12 * b08 - a10 * b11 - a13 * b07,"
-                     "                 a00 * b11 - a02 * b08 + a03 * b07,"
-                     "                 a32 * b02 - a30 * b05 - a33 * b01,"
-                     "                 a20 * b05 - a22 * b02 + a23 * b01,"
-                     "                 a10 * b10 - a11 * b08 + a13 * b06,"
-                     "                 a01 * b08 - a00 * b10 - a03 * b06,"
-                     "                 a30 * b04 - a31 * b02 + a33 * b00,"
-                     "                 a21 * b02 - a20 * b04 - a23 * b00,"
-                     "                 a11 * b07 - a10 * b09 - a12 * b06,"
-                     "                 a00 * b09 - a01 * b07 + a02 * b06,"
-                     "                 a31 * b01 - a30 * b03 - a32 * b00,"
-                     "                 a20 * b03 - a21 * b01 + a22 * b00) / det;"
+                     "mat4 inverse(mat4 mat) {"
+                     "   mat4 inv;"
+                     "   return inv;"
                      "}"
                      "void main () { "
                          "vec2 position = vec2 (gl_FragCoord.xy / resolution.xy);"
@@ -260,42 +195,9 @@ namespace odfaeg {
                     "uniform sampler2D texture;"
                     "uniform float haveTexture;"
                     "in mat4 projMat;"
-                    "mat4 inverse(mat4 m) {"
-                    "     float"
-                    "     a00 = m[0][0], a01 = m[0][1], a02 = m[0][2], a03 = m[0][3],"
-                    "     a10 = m[1][0], a11 = m[1][1], a12 = m[1][2], a13 = m[1][3],"
-                    "     a20 = m[2][0], a21 = m[2][1], a22 = m[2][2], a23 = m[2][3],"
-                    "     a30 = m[3][0], a31 = m[3][1], a32 = m[3][2], a33 = m[3][3],"
-                    "     b00 = a00 * a11 - a01 * a10,"
-                    "     b01 = a00 * a12 - a02 * a10,"
-                    "     b02 = a00 * a13 - a03 * a10,"
-                    "     b03 = a01 * a12 - a02 * a11,"
-                    "     b04 = a01 * a13 - a03 * a11,"
-                    "     b05 = a02 * a13 - a03 * a12,"
-                    "     b06 = a20 * a31 - a21 * a30,"
-                    "     b07 = a20 * a32 - a22 * a30,"
-                    "     b08 = a20 * a33 - a23 * a30,"
-                    "     b09 = a21 * a32 - a22 * a31,"
-                    "     b10 = a21 * a33 - a23 * a31,"
-                    "     b11 = a22 * a33 - a23 * a32,"
-                    "     det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;"
-                    "     return mat4("
-                    "                 a11 * b11 - a12 * b10 + a13 * b09,"
-                    "                 a02 * b10 - a01 * b11 - a03 * b09,"
-                    "                 a31 * b05 - a32 * b04 + a33 * b03,"
-                    "                 a22 * b04 - a21 * b05 - a23 * b03,"
-                    "                 a12 * b08 - a10 * b11 - a13 * b07,"
-                    "                 a00 * b11 - a02 * b08 + a03 * b07,"
-                    "                 a32 * b02 - a30 * b05 - a33 * b01,"
-                    "                 a20 * b05 - a22 * b02 + a23 * b01,"
-                    "                 a10 * b10 - a11 * b08 + a13 * b06,"
-                    "                 a01 * b08 - a00 * b10 - a03 * b06,"
-                    "                 a30 * b04 - a31 * b02 + a33 * b00,"
-                    "                 a21 * b02 - a20 * b04 - a23 * b00,"
-                    "                 a11 * b07 - a10 * b09 - a12 * b06,"
-                    "                 a00 * b09 - a01 * b07 + a02 * b06,"
-                    "                 a31 * b01 - a30 * b03 - a32 * b00,"
-                    "                 a20 * b03 - a21 * b01 + a22 * b00) / det;"
+                    "mat4 inverse(mat4 mat) {"
+                    "   mat4 inv;"
+                    "   return inv;"
                     "}"
                     "void main() {"
                     "   vec4 color = (haveTexture == 1) ? texture2D(texture, gl_TexCoord[0].xy) * gl_Color : gl_Color;"
@@ -333,42 +235,9 @@ namespace odfaeg {
                     "uniform float haveTexture;"
                     "in vec4 shadowCoords;"
                     "in mat4 projMat;"
-                    "mat4 inverse(mat4 m) {"
-                    "     float"
-                    "     a00 = m[0][0], a01 = m[0][1], a02 = m[0][2], a03 = m[0][3],"
-                    "     a10 = m[1][0], a11 = m[1][1], a12 = m[1][2], a13 = m[1][3],"
-                    "     a20 = m[2][0], a21 = m[2][1], a22 = m[2][2], a23 = m[2][3],"
-                    "     a30 = m[3][0], a31 = m[3][1], a32 = m[3][2], a33 = m[3][3],"
-                    "     b00 = a00 * a11 - a01 * a10,"
-                    "     b01 = a00 * a12 - a02 * a10,"
-                    "     b02 = a00 * a13 - a03 * a10,"
-                    "     b03 = a01 * a12 - a02 * a11,"
-                    "     b04 = a01 * a13 - a03 * a11,"
-                    "     b05 = a02 * a13 - a03 * a12,"
-                    "     b06 = a20 * a31 - a21 * a30,"
-                    "     b07 = a20 * a32 - a22 * a30,"
-                    "     b08 = a20 * a33 - a23 * a30,"
-                    "     b09 = a21 * a32 - a22 * a31,"
-                    "     b10 = a21 * a33 - a23 * a31,"
-                    "     b11 = a22 * a33 - a23 * a32,"
-                    "     det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;"
-                    "     return mat4("
-                    "                 a11 * b11 - a12 * b10 + a13 * b09,"
-                    "                 a02 * b10 - a01 * b11 - a03 * b09,"
-                    "                 a31 * b05 - a32 * b04 + a33 * b03,"
-                    "                 a22 * b04 - a21 * b05 - a23 * b03,"
-                    "                 a12 * b08 - a10 * b11 - a13 * b07,"
-                    "                 a00 * b11 - a02 * b08 + a03 * b07,"
-                    "                 a32 * b02 - a30 * b05 - a33 * b01,"
-                    "                 a20 * b05 - a22 * b02 + a23 * b01,"
-                    "                 a10 * b10 - a11 * b08 + a13 * b06,"
-                    "                 a01 * b08 - a00 * b10 - a03 * b06,"
-                    "                 a30 * b04 - a31 * b02 + a33 * b00,"
-                    "                 a21 * b02 - a20 * b04 - a23 * b00,"
-                    "                 a11 * b07 - a10 * b09 - a12 * b06,"
-                    "                 a00 * b09 - a01 * b07 + a02 * b06,"
-                    "                 a31 * b01 - a30 * b03 - a32 * b00,"
-                    "                 a20 * b03 - a21 * b01 + a22 * b00) / det;"
+                    "mat4 inverse(mat4 mat) {"
+                    "   mat4 inv;"
+                    "   return inv;"
                     "}"
                     "void main() {"
                     "   vec4 color = (haveTexture == 1) ? texture2D(texture, gl_TexCoord[0].xy) * gl_Color : gl_Color;"
@@ -415,42 +284,9 @@ namespace odfaeg {
                     "uniform sampler2D backDepthBuffer;"
                     "uniform float haveTexture;"
                     "in mat4 projMat;"
-                    "mat4 inverse(mat4 m) {"
-                    "     float"
-                    "     a00 = m[0][0], a01 = m[0][1], a02 = m[0][2], a03 = m[0][3],"
-                    "     a10 = m[1][0], a11 = m[1][1], a12 = m[1][2], a13 = m[1][3],"
-                    "     a20 = m[2][0], a21 = m[2][1], a22 = m[2][2], a23 = m[2][3],"
-                    "     a30 = m[3][0], a31 = m[3][1], a32 = m[3][2], a33 = m[3][3],"
-                    "     b00 = a00 * a11 - a01 * a10,"
-                    "     b01 = a00 * a12 - a02 * a10,"
-                    "     b02 = a00 * a13 - a03 * a10,"
-                    "     b03 = a01 * a12 - a02 * a11,"
-                    "     b04 = a01 * a13 - a03 * a11,"
-                    "     b05 = a02 * a13 - a03 * a12,"
-                    "     b06 = a20 * a31 - a21 * a30,"
-                    "     b07 = a20 * a32 - a22 * a30,"
-                    "     b08 = a20 * a33 - a23 * a30,"
-                    "     b09 = a21 * a32 - a22 * a31,"
-                    "     b10 = a21 * a33 - a23 * a31,"
-                    "     b11 = a22 * a33 - a23 * a32,"
-                    "     det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;"
-                    "     return mat4("
-                    "                 a11 * b11 - a12 * b10 + a13 * b09,"
-                    "                 a02 * b10 - a01 * b11 - a03 * b09,"
-                    "                 a31 * b05 - a32 * b04 + a33 * b03,"
-                    "                 a22 * b04 - a21 * b05 - a23 * b03,"
-                    "                 a12 * b08 - a10 * b11 - a13 * b07,"
-                    "                 a00 * b11 - a02 * b08 + a03 * b07,"
-                    "                 a32 * b02 - a30 * b05 - a33 * b01,"
-                    "                 a20 * b05 - a22 * b02 + a23 * b01,"
-                    "                 a10 * b10 - a11 * b08 + a13 * b06,"
-                    "                 a01 * b08 - a00 * b10 - a03 * b06,"
-                    "                 a30 * b04 - a31 * b02 + a33 * b00,"
-                    "                 a21 * b02 - a20 * b04 - a23 * b00,"
-                    "                 a11 * b07 - a10 * b09 - a12 * b06,"
-                    "                 a00 * b09 - a01 * b07 + a02 * b06,"
-                    "                 a31 * b01 - a30 * b03 - a32 * b00,"
-                    "                 a20 * b03 - a21 * b01 + a22 * b00) / det;"
+                    "mat4 inverse(mat4 mat) {"
+                    "   mat4 inv;"
+                    "   return inv;"
                     "}"
                     "void main() {"
                         "vec2 position = vec2 (gl_FragCoord.xy / resolution.xy);"
@@ -660,7 +496,27 @@ namespace odfaeg {
 
         }
         bool Map::addEntity(Entity *entity) {
-            std::vector<Entity*> tiles;
+            if (entity->isAnimated()) {
+                addEntity(static_cast<AnimatedEntity*>(entity)->getCurrentFrame());
+            } else {
+                std::vector<Entity*> children = entity->getChildren();
+                for (unsigned int i = 0; i < children.size(); i++) {
+                     addEntity(children[i]);
+                }
+            }
+            /*if (entity->getType() == "E_PONCTUAL_LIGHT") {
+                    std::cout<<"ponctual light"<<std::endl;
+                    sf:sleep(sf::seconds(1));
+            }*/
+            if (entity->isLeaf()) {
+                for (unsigned int j = 0; j < entity->getFaces().size(); j++) {
+                     if (entity->getFaces()[j]->getMaterial().getTexture() != nullptr) {
+                         increaseComptImg(entity->getFaces()[j]->getMaterial().getTexture());
+                     }
+                }
+                gridMap->addEntity(entity);
+            }
+            /*std::vector<Entity*> tiles;
             getChildren(entity, tiles, "*");
             if (tiles.size() != 0) {
                 for (unsigned int i = 0; i < tiles.size(); i++) {
@@ -677,28 +533,57 @@ namespace odfaeg {
                     }
                }
             }
-
-            return gridMap->addEntity(entity);
+            return gridMap->addEntity(entity);*/
         }
         bool Map::removeEntity (Entity *entity) {
-            std::vector<Entity*> tiles;
+            std::vector<Entity*> children = entity->getChildren();
+            for (unsigned int i = 0; i < children.size(); i++) {
+                if (entity->isAnimated()) {
+                    removeEntity(static_cast<AnimatedEntity*>(children[i])->getCurrentFrame());
+                } else {
+                    removeEntity(children[i]);
+                }
+            }
+            if (entity->isLeaf()) {
+                std::vector<Face*> faces = entity->getFaces();
+                for (unsigned int j = 0; j < faces.size(); j++) {
+                    decreaseComptImg(faces[j]->getMaterial().getTexture());
+                }
+                gridMap->removeEntity(entity);
+            }
+            /*std::vector<Entity*> tiles;
             getChildren(entity, tiles, "*");
             for (unsigned int i = 0; i < tiles.size(); i++) {
                for (unsigned int j = 0; j < tiles[i]->getFaces().size(); j++) {
                    decreaseComptImg(tiles[i]->getFaces()[j]->getMaterial().getTexture());
                }
             }
-            return gridMap->removeEntity(entity);
+            return gridMap->removeEntity(entity);*/
         }
         bool Map::deleteEntity (Entity *entity) {
-            std::vector<Entity*> tiles;
+            std::vector<Entity*> children = entity->getChildren();
+            for (unsigned int i = 0; i < children.size(); i++) {
+                if (entity->isAnimated()) {
+                    removeEntity(static_cast<AnimatedEntity*>(children[i])->getCurrentFrame());
+                } else {
+                    removeEntity(children[i]);
+                }
+            }
+            if (entity->isLeaf()) {
+                std::vector<Face*> faces = entity->getFaces();
+                for (unsigned int j = 0; j < faces.size(); j++) {
+                    decreaseComptImg(faces[j]->getMaterial().getTexture());
+                }
+                gridMap->deleteEntity(entity);
+            }
+            /*std::vector<Entity*> tiles;
             getChildren(entity, tiles, "*");
             for (unsigned int i = 0; i < tiles.size(); i++) {
                for (unsigned int j = 0; j < tiles[i]->getFaces().size(); j++) {
                    decreaseComptImg(tiles[i]->getFaces()[j]->getMaterial().getTexture());
                }
             }
-            return gridMap->deleteEntity(entity);
+            return gridMap->deleteEntity(entity);*/
         }
         math::Vec3f Map::getPosition() {
             return gridMap->getMins();
@@ -716,19 +601,28 @@ namespace odfaeg {
             return gridMap->deleteEntity(id);
         }
         void Map::rotateEntity(Entity *entity, int angle) {
-            gridMap->removeEntity(entity);
+            removeEntity(entity);
             entity->setRotation(angle);
-            gridMap->replaceEntity(entity);
+            addEntity(entity);
+            /*gridMap->removeEntity(entity);
+            entity->setRotation(angle);
+            gridMap->replaceEntity(entity);*/
         }
         void Map::scaleEntity(Entity *entity, float sx, float sy) {
-            gridMap->removeEntity(entity);
+            removeEntity(entity);
             entity->setScale(math::Vec3f(sx, sy, 0));
-            gridMap->replaceEntity(entity);
+            addEntity(entity);
+            /*gridMap->removeEntity(entity);
+            entity->setScale(math::Vec3f(sx, sy, 0));
+            gridMap->replaceEntity(entity);*/
         }
         void Map::moveEntity(Entity *entity, float dx, float dy, float dz) {
-            gridMap->removeEntity(entity);
+            removeEntity(entity);
             entity->move(math::Vec3f(dx, dy, dz));
-            gridMap->addEntity(entity);
+            addEntity(entity);
+            /*gridMap->removeEntity(entity);
+            entity->move(math::Vec3f(dx, dy, dz));
+            gridMap->addEntity(entity);*/
         }
         void Map::checkVisibleEntities() {
             for (unsigned int c = 0; c < frcm->getNbComponents() + 1; c++) {
@@ -740,6 +634,12 @@ namespace odfaeg {
                         view = frcm->getRenderComponent(c)->getView().getViewVolume();
                     visibleParentEntities.clear();
                     vEntitiesByType.clear();
+                    visibleEntities.clear();
+                    visibleEntities.resize(Entity::getNbEntityTypes());
+                    for (unsigned int i = 0; i < visibleEntities.size(); i++) {
+                        visibleEntities[i].resize(Entity::getNbEntities());
+                        std::fill(visibleEntities[i].begin(),visibleEntities[i].end() , nullptr);
+                    }
                     int x = view.getPosition().x;
                     int y = view.getPosition().y;
                     int z = view.getPosition().z;
@@ -754,15 +654,27 @@ namespace odfaeg {
                                 math::Vec3f point(i, j, 0);
                                 CellMap* cell = getGridCellAt(point);
                                 if (cell != nullptr) {
-                                    for (unsigned int n = 0; n < cell->getEntitiesInside().size(); n++) {
+                                    for (unsigned int n = 0; n < cell->getNbEntitiesInside(); n++) {
                                        Entity* entity = cell->getEntityInside(n);
-                                       if (!containsVisibleParentEntity(entity->getRootEntity())) {
+                                       /*if (entity->getType() == "E_PONCTUAL_LIGHT") {
+                                            std::cout<<"ponctual light"<<std::endl;
+                                            sf::sleep(sf::seconds(1.f));
+                                       }*/
+                                       //std::cout<<"entity : "<<entity->getPosition()<<entity->getSize()<<std::endl;
+                                       physic::BoundingBox& bounds = entity->getGlobalBounds();
+                                       /*if (entity->getRootType() == "E_PONCTUAL_LIGHT")
+                                            std::cout<<"add ponctual light"<<std::endl;*/
+                                       if (bx.intersects(bounds) && visibleEntities[entity->getRootTypeInt()][entity->getId()] != entity) {
+
+                                           visibleEntities[entity->getRootTypeInt()][entity->getId()] = entity;
+                                       }
+                                       /*if (!containsVisibleParentEntity(entity->getRootEntity())) {
                                             visibleParentEntities.push_back(entity->getRootEntity());
                                             insertVisibleEntity(entity, bx);
-                                        }
+                                        }*/
                                     }
-                                //}
-                            }
+                                }
+                            //}
                         }
                     }
                 }
@@ -782,8 +694,24 @@ namespace odfaeg {
             }
             return false;
         }
-        void Map::insertVisibleEntity(Entity *entity, physic::BoundingBox bx) {
-            if (entity->isAnimated()) {
+        void Map::insertVisibleEntity(Entity *entity, physic::BoundingBox& bx) {
+            if (!containsVisibleEntity(entity)) {
+                physic::BoundingBox& bx2  = entity->getGlobalBounds();
+                //std::cout<<"view volume : "<<bx2.getPosition()<<" "<<bx2.getWidth()<<" "<<bx2.getHeight()<<" "<<bx2.getDepth()<<std::endl;
+                if (bx.intersects(bx2)) {
+                    /*VEntitiesByType it = vEntitiesByType.find(entity->getRootType());
+                    std::cout<<"root type : "<<entity->getRootType()<<std::endl;
+                    if (it == vEntitiesByType.end()) {
+                        std::cout<<"add new root type : "<<entity->getRootType()<<std::endl;
+                        std::pair<std::string, std::vector<Entity*>> newEntitiesType(entity->getRootType(), std::vector<Entity*>());
+                        vEntitiesByType.insert(newEntitiesType);
+                        it = vEntitiesByType.find(entity->getRootType());
+                    }
+                    it->second.push_back(entity);*/
+                    visibleEntities[entity->getRootTypeInt()].push_back(entity);
+                }
+            }
+            /*if (entity->isAnimated()) {
                 if (!containsVisibleEntity(entity)) {
                     VEntitiesByType it = vEntitiesByType.find(entity->getType());
                     if (it == vEntitiesByType.end()) {
@@ -824,37 +752,40 @@ namespace odfaeg {
                         }
                     }
                 }
-            }
+            }*/
         }
         void Map::setBaseChangementMatrix (BaseChangementMatrix bm) {
             gridMap->setBaseChangementMatrix(bm);
         }
         void Map::insertAnimatedVisibleEntity (Entity *ae, std::vector<Entity*>& entities, View& view) {
-            if (ae->isAnimated()) {
-                insertAnimatedVisibleEntity(static_cast<AnimatedEntity*> (ae)->getCurrentFrame(), entities, view);
-            } else {
-                physic::BoundingBox bx (view.getViewVolume().getPosition().x,view.getViewVolume().getPosition().y,view.getViewVolume().getPosition().z,view.getViewVolume().getWidth(), view.getViewVolume().getHeight(), view.getViewVolume().getDepth());
-                vector<Entity*> children;
-                getChildren(ae, children, "*");
-                if (!containsVisibleEntity(ae)) {
-                    physic::BoundingBox bx2 = ae->getGlobalBounds();
-                    if (bx.intersects(bx2)) {
-
-                        entities.push_back(ae);
-                    }
-                }
-                for (unsigned int i = 0; i < children.size(); i++) {
-                    if (!containsVisibleEntity(children[i])) {
-                        physic::BoundingBox bx2 = children[i]->getGlobalBounds();
+            if (containsVisibleParentEntity(ae->getRootEntity())) {
+                if (ae->isAnimated()) {
+                    insertAnimatedVisibleEntity(static_cast<AnimatedEntity*> (ae)->getCurrentFrame(), entities, view);
+                } else {
+                    physic::BoundingBox bx (view.getViewVolume().getPosition().x,view.getViewVolume().getPosition().y,view.getViewVolume().getPosition().z,view.getViewVolume().getWidth(), view.getViewVolume().getHeight(), view.getViewVolume().getDepth());
+                    vector<Entity*> children;
+                    getChildren(ae, children, "*");
+                    if (!containsVisibleEntity(ae)) {
+                        std::cout<<"doesn't contains visible entity"<<std::endl;
+                        physic::BoundingBox bx2 = ae->getGlobalBounds();
                         if (bx.intersects(bx2)) {
-                            entities.push_back(children[i]);
+                            std::cout<<"add visible entity"<<std::endl;
+                            entities.push_back(ae);
+                        }
+                    }
+                    for (unsigned int i = 0; i < children.size(); i++) {
+                        if (!containsVisibleEntity(children[i])) {
+                            physic::BoundingBox bx2 = children[i]->getGlobalBounds();
+                            if (bx.intersects(bx2)) {
+                                entities.push_back(children[i]);
+                            }
                         }
                     }
                 }
             }
         }
         void Map::changeVisibleEntity(Entity* toRemove, Entity* toAdd) {
-            View view = frcm->getWindow().getView();
+            /*View view = frcm->getWindow().getView();
             physic::BoundingBox bx (view.getViewVolume().getPosition().x,view.getViewVolume().getPosition().y,view.getViewVolume().getPosition().z,view.getViewVolume().getWidth(), view.getViewVolume().getHeight(), view.getViewVolume().getDepth());
             VEntitiesByType it = vEntitiesByType.find(toRemove->getType());
             std::vector<Entity*>::iterator it2;
@@ -896,6 +827,11 @@ namespace odfaeg {
             for (unsigned int i = 0; i < frcm->getNbComponents(); i++) {
                 if (frcm->getRenderComponent(i) != nullptr) {
                     frcm->getRenderComponent(i)->changeVisibleEntities(toRemove, toAdd, this);
+                }
+            }*/
+            for (unsigned int i = 0; i < frcm->getNbComponents(); i++) {
+                if (frcm->getRenderComponent(i) != nullptr) {
+                    frcm->getRenderComponent(i)->loadEntitiesOnComponent(frcm->getRenderComponent(i)->getEntities());
                 }
             }
         }
@@ -970,15 +906,23 @@ namespace odfaeg {
                     type = type.substr(2, type.size() - 3);
                 vector<string> excl = core::split(type, "-");
                 for (unsigned int i = 0; i < allEntities.size(); i++) {
-                    Entity* entity = allEntities[i];
+                    Entity* entity = allEntities[i]->getRootEntity();
                     bool exclude = false;
                     for (unsigned int j = 0; j < excl.size(); j++) {
-                        if (entity->getType() == excl[i])
+                        if (entity->getRootType() == excl[i])
                             exclude = true;
                     }
                     if (!exclude) {
-                        entity->updateTransform();
-                        entities.push_back(entity);
+                        bool contains = false;
+                        for (unsigned int n = 0; n < entities.size() && !contains; n++) {
+                            if (entities[n] == entity) {
+                                contains = true;
+                            }
+                        }
+                        if (!contains) {
+                            entity->updateTransform();
+                            entities.push_back(entity);
+                        }
                     }
                 }
                 return entities;
@@ -986,12 +930,19 @@ namespace odfaeg {
             vector<string> types = core::split(type, "+");
             for (unsigned int i = 0; i < types.size(); i++) {
                 for (unsigned int j = 0; j < allEntities.size(); j++) {
-                    Entity* entity = allEntities[j];
+                    Entity* entity = allEntities[j]->getRootEntity();
                     if (entity->getType() == types[i]) {
-                        entity->updateTransform();
-                        entities.push_back(entity);
+                        bool contains = false;
+                        for (unsigned int n = 0; n < entities.size() && !contains; n++) {
+                            if (entities[n] == entity) {
+                                contains = true;
+                            }
+                        }
+                        if (!contains) {
+                            entity->updateTransform();
+                            entities.push_back(entity);
+                        }
                     }
-
                 }
             }
             return entities;
@@ -1000,30 +951,45 @@ namespace odfaeg {
         vector<Entity*> Map::getVisibleEntities (std::string type) {
             std::vector<Entity*> entities;
             if (type.size() > 0 && type.at(0) == '*') {
-                VEntitiesByType it;
                 if (type.find("-") != string::npos)
                     type = type.substr(2, type.size() - 2);
                 vector<string> excl = core::split(type, "-");
-                for (it = vEntitiesByType.begin(); it != vEntitiesByType.end(); it++) {
-                    bool exclude = false;
-                    for (unsigned int i = 0; i < excl.size(); i++) {
-                        if (it->first == excl[i])
-                            exclude = true;
-                    }
-                    if (!exclude) {
-                        for (unsigned int i = 0; i < it->second.size(); i++) {
-                            entities.push_back(it->second[i]);
+                for (unsigned int i = 0; i < visibleEntities.size(); i++) {
+                    for (unsigned int j = 0; j < visibleEntities[i].size(); j++) {
+                        if (visibleEntities[i][j] != nullptr) {
+                            bool exclude = false;
+                            for (unsigned int t = 0; t < excl.size(); t++) {
+                                if (visibleEntities[i][j]->getRootType() == excl[t])
+                                    exclude = true;
+                            }
+                            if (!exclude) {
+                                BoneAnimation* ba = dynamic_cast<BoneAnimation*>(visibleEntities[i][j]->getRootEntity());
+                                if (ba != nullptr) {
+                                    if (ba->getBoneIndex() == visibleEntities[i][j]->getBoneIndex()) {
+                                        entities.push_back(visibleEntities[i][j]);
+                                    }
+                                } else {
+                                    entities.push_back(visibleEntities[i][j]);
+                                }
+                            }
                         }
                     }
                 }
                 return entities;
             }
             vector<string> types = core::split(type, "+");
-            for (unsigned int i = 0; i < types.size(); i++) {
-                VEntitiesByType it = vEntitiesByType.find(types[i]);
-                if (it != vEntitiesByType.end()) {
-                    for (unsigned int n = 0; n < it->second.size(); n++) {
-                        entities.push_back(it->second[n]);
+            for (unsigned int t = 0; t < types.size(); t++) {
+                vector<Entity*> visibleEntitiesType = visibleEntities[Entity::getIntOfType(types[t])];
+                for (unsigned int i = 0; i < visibleEntitiesType.size(); i++) {
+                    if (visibleEntitiesType[i] != nullptr) {
+                        BoneAnimation* ba = dynamic_cast<BoneAnimation*>(visibleEntitiesType[i]->getRootEntity());
+                        if (ba != nullptr) {
+                            if (ba->getBoneIndex() == visibleEntitiesType[i]->getBoneIndex()) {
+                                entities.push_back(visibleEntitiesType[i]);
+                            }
+                        } else {
+                            entities.push_back(visibleEntitiesType[i]);
+                        }
                     }
                 }
             }
@@ -1042,11 +1008,21 @@ namespace odfaeg {
                     Entity* entity = allEntitiesInRect[i];
                     bool exclude = false;
                     for (unsigned int i = 0; i < excl.size(); i++) {
-                        if (entity->getType() == excl[i])
+                        if (entity->getRootType() == excl[i])
                             exclude = true;
                     }
                     if (!exclude) {
                         entities.push_back(entity);
+                    }
+                }
+                vector<string> types = core::split(type, "+");
+                for (unsigned int i = 0; i < types.size(); i++) {
+                    for (unsigned int j = 0; j < allEntitiesInRect.size(); j++) {
+                        Entity* entity = allEntitiesInRect[j];
+                        if (entity->getRootType() == types[i]) {
+                            entities.push_back(entity);
+                        }
+
                     }
                 }
                 return entities;
@@ -1055,29 +1031,26 @@ namespace odfaeg {
             for (unsigned int i = 0; i < types.size(); i++) {
                  for (unsigned int j = 0; j < allEntitiesInRect.size(); j++) {
                     Entity* entity = allEntitiesInRect[j];
-                    if (entity->getType() == types[i])
+                    if (entity->getRootType() == types[i])
                         entities.push_back(entity);
                 }
             }
             return entities;
         }
-
-        math::Vec2f Map::getCoordinatesAt(math::Vec2f p) {
-            return gridMap->getCoordinatesAt(p);
+        math::Vec3f Map::getCoordinatesAt(math::Vec3f p) {
+            math::Vec2f c(p.x, p.y);
+            return gridMap->getCoordinatesAt(c);
         }
-        CellMap* Map::getGridCellAt(math::Vec2f p) {
+        CellMap* Map::getGridCellAt(math::Vec3f p) {
             return gridMap->getGridCellAt(p);
         }
         vector<CellMap*> Map::getCasesInBox (physic::BoundingBox bx) {
             return gridMap->getCasesInBox(bx);
         }
         bool Map::containsVisibleEntity(Entity* entity) {
-            VEntitiesByType it;
-            it = vEntitiesByType.find(entity->getType());
-            if (it == vEntitiesByType.end())
-                return false;
-            for (unsigned int i = 0; i < it->second.size(); i++) {
-                if (it->second[i] == entity) {
+            std::vector<Entity*> visibleEntitiesType = visibleEntities[entity->getRootTypeInt()];
+            for (unsigned int i = 0; i < visibleEntitiesType.size(); i++) {
+                if (visibleEntitiesType[i] == entity) {
                     return true;
                 }
             }
@@ -1307,7 +1280,7 @@ namespace odfaeg {
                                     normalMap->setView(frcm->getRenderComponent(i)->getView());
                                     normalMap->clear(sf::Color::Transparent);
                                     if (dynamic_cast<OITRenderComponent*>(frcm->getRenderComponent(i)) != nullptr) {
-                                        Tile& heightMapTile = static_cast<OITRenderComponent*>(frcm->getRenderComponent(i))->getDepthBufferTile();
+                                        Sprite& heightMapTile = static_cast<OITRenderComponent*>(frcm->getRenderComponent(i))->getDepthBufferTile();
                                         heightMapTile.setCenter(frcm->getRenderComponent(i)->getView().getPosition());
                                         states.shader = buildNormalMapShader.get();
                                         states.blendMode = sf::BlendNone;

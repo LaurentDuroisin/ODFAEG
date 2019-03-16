@@ -10,7 +10,11 @@ namespace odfaeg {
                 Icon(RenderWindow& window, math::Vec3f position, math::Vec3f size, Sprite icon);
                 void clear() {}
                 void onDraw(RenderTarget& target, RenderStates states);
+                bool isMouseInside();
+                void onUpdate(RenderWindow* window, window::IEvent& event);
+                Sprite getSprite();
                 private :
+                math::Vec3f mousePos;
                 Sprite icon;
             };
         }

@@ -316,15 +316,12 @@ namespace odfaeg {
             ///
             ////////////////////////////////////////////////////////////
             void resetGLStates();
-
-
-            static void setMajorVersion(unsigned int version);
-            static void setMinorVersion(unsigned int version);
-            static unsigned int getMajorVersion();
-            static unsigned int getMinorVersion();
+            unsigned int getVersionMajor();
+            unsigned int getVersionMinor();
 
         protected :
-
+            void setVersionMajor(unsigned int version);
+            void setVersionMinor(unsigned int version);
             ////////////////////////////////////////////////////////////
             /// \brief Default constructor
             ///
@@ -415,6 +412,7 @@ namespace odfaeg {
             View        m_defaultView; ///< Default view
             View        m_view;  ///< Current view
             StatesCache m_cache;  ///< Render states cache
+            unsigned int m_vao, m_versionMajor, m_versionMinor;
         };
     }
 }

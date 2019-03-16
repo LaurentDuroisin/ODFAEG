@@ -2,8 +2,9 @@
 #include "../../../include/odfaeg/Window/contextImpl.hpp"
 namespace odfaeg {
     namespace window {
-        Context::Context() :
-        m_context(nullptr) {
+        Context::Context() {
+            m_context = ContextFactory::create();
+            m_context->create();
         }
         Context::Context(ContextSettings settings, unsigned int width, unsigned int height) {
             m_context = ContextFactory::create();
@@ -29,14 +30,14 @@ namespace odfaeg {
             m_context->create(handle);
             m_context->setActive(true);
         }
-        void Context::display() {
+        /*void Context::display() {
             if (m_context)
                 m_context->display();
         }
         void Context::setVerticalSyncEnabled(bool enabled) {
             if (m_context)
                 m_context->setVerticalSyncEnabled(enabled);
-        }
+        }*/
         bool Context::setActive(bool active) {
             return m_context && m_context->setActive(true);
         }

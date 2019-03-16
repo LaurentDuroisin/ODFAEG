@@ -87,11 +87,15 @@ namespace odfaeg {
             void setRotation (float angle, math::Vec3f axis = math::Vec3f(0, 0, 1)) {
                 m_rotation = angle;
                 tm.setRotation(axis, angle);
-                physic::BoundingBox bounds = getGlobalBounds();
-                m_size.x = bounds.getWidth();
-                m_size.y = bounds.getHeight();
-                m_size.z = bounds.getDepth();
-                m_position = bounds.getPosition();
+                recomputeBounds();
+                //physic::BoundingBox bounds = getGlobalBounds();
+                /*std::cout<<"get global bounds : "<<getGlobalBounds().getPosition()<<getGlobalBounds().getSize();
+                std::cout<<"global bounds : "<<globalBounds.getPosition()<<globalBounds.getSize();*/
+                /*if (getGlobalBounds().getPosition() != globalBounds.getPosition()
+                    || getGlobalBounds().getSize() != globalBounds.getSize())
+                    std::cout<<"different"<<std::endl;*/
+                m_size = globalBounds.getSize();
+                m_position = globalBounds.getPosition();
                 onRotate(angle);
             }
             /**
@@ -102,11 +106,15 @@ namespace odfaeg {
             void setScale(math::Vec3f scale) {
                 m_scale = scale;
                 tm.setScale(math::Vec3f(scale.x, scale.y, scale.z));
-                physic::BoundingBox bounds = getGlobalBounds();
-                m_size.x = bounds.getWidth();
-                m_size.y = bounds.getHeight();
-                m_size.z = bounds.getDepth();
-                m_position = bounds.getPosition();
+                recomputeBounds();
+                /*std::cout<<"get global bounds : "<<getGlobalBounds().getPosition()<<getGlobalBounds().getSize();
+                std::cout<<"global bounds : "<<globalBounds.getPosition()<<globalBounds.getSize();*/
+                /*if (getGlobalBounds().getPosition() != globalBounds.getPosition()
+                    || getGlobalBounds().getSize() != globalBounds.getSize())
+                    std::cout<<"different"<<std::endl;*/
+                //physic::BoundingBox bounds = getGlobalBounds();
+                m_size = globalBounds.getSize();
+                m_position = globalBounds.getPosition();
                 onScale(scale);
             }
             /**
@@ -134,7 +142,7 @@ namespace odfaeg {
                 m_center += t;
                 m_position += t;
                 tm.setTranslation(m_center);
-                getGlobalBounds();
+                recomputeBounds();
                 onMove(t);
             }
             /**
@@ -145,9 +153,9 @@ namespace odfaeg {
             void setOrigin(math::Vec3f origin) {
                m_origin = origin;
                tm.setOrigin(origin);
-               physic::BoundingBox bounds = getGlobalBounds();
-               m_position = bounds.getPosition();
-               m_center = bounds.getCenter();
+               recomputeBounds();
+               m_position = globalBounds.getPosition();
+               m_center = globalBounds.getCenter();
             }
             /**
             * \fn Vec3f getScale() const
@@ -188,38 +196,39 @@ namespace odfaeg {
             */
             void setSize (math::Vec3f size) {
                 math::Vec3f scale;
-                if (m_size.x == 0 || size.x == 0) {
+                if (m_size.x == 0 /*|| size.x == 0*/) {
                     scale.x = 1;
                     m_size.x = size.x;
-                    localBounds.setSize(m_size.x, localBounds.getHeight(), m_size.z);
+                    localBounds.setSize(m_size.x, localBounds.getHeight(), localBounds.getDepth());
                 }
                 else {
                     scale.x = size.x / m_size.x;
                 }
-                if (m_size.y == 0 || size.y == 0) {
+                if (m_size.y == 0 /*|| size.y == 0*/) {
                     scale.y = 1;
                     m_size.y = size.y;
-                    localBounds.setSize(localBounds.getWidth(), m_size.y, m_size.z);
+                    localBounds.setSize(localBounds.getWidth(), m_size.y, localBounds.getDepth());
                 }
                 else {
                     scale.y = size.y / m_size.y;
                 }
-                if (m_size.z == 0 || size.z == 0) {
+                if (m_size.z == 0 /*|| size.z == 0*/) {
                     scale.z = 1;
                     m_size.z = size.z;
-                    localBounds.setSize(m_size.x, m_size.y, localBounds.getDepth());
+                    localBounds.setSize(localBounds.getWidth(), localBounds.getHeight(), m_size.z);
                 } else {
                     scale.z = size.z / m_size.z;
                 }
-
                 setScale(scale);
             }
             /**
             * \fn BoundingBox getGlobalBounds()
             * \brief get the local bounding box of the transformable object (without its transformation)
             */
-            physic::BoundingBox getGlobalBounds() {
-                physic::BoundingBox globalBounds = localBounds.transform(getTransform());
+            void recomputeBounds() {
+                globalBounds = localBounds.transform(getTransform());
+            }
+            physic::BoundingBox& getGlobalBounds() {
                 return globalBounds;
             }
             /**
@@ -301,6 +310,7 @@ namespace odfaeg {
                 ar(m_scale);
                 ar(m_rotation);
                 ar(localBounds);
+                ar(globalBounds);
                 ar(tm);
             }
         protected :
@@ -317,6 +327,7 @@ namespace odfaeg {
                 m_rotation = 0;
                 tm.setOrigin(m_origin);
                 tm.setRotation(math::Vec3f::zAxis, 0);
+                globalBounds = localBounds.transform(getTransform());
             }
             /**
             * \fn Transformable(Vec3f position, Vec3f size, Vec3f origin)
@@ -336,6 +347,7 @@ namespace odfaeg {
                 tm.setOrigin(m_origin);
                 tm.setRotation(math::Vec3f::zAxis, 0);
                 tm.setTranslation(m_center);
+                globalBounds = localBounds.transform(getTransform());
             }
             /**
             * \fn virtual void onRotate(float angle)
@@ -364,7 +376,7 @@ namespace odfaeg {
              */
             math::Vec3f m_position, m_center, m_size, m_origin, m_scale;
             float m_rotation;
-            physic::BoundingBox localBounds;
+            physic::BoundingBox localBounds, globalBounds;
             TransformMatrix tm;
             std::string name;
         };

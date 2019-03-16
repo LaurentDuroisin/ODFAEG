@@ -104,11 +104,14 @@ set(SRC_GRAPHICS
 	${SRCROOT}/sdlRenderWindow.cpp	
 	${INCROOT}/world.h
 	${SRCROOT}/world.cpp
-	${INCROOT}/lightComponent.hpp
 	${INCROOT}/glExtensions.hpp
+	${SRCROOT}/glExtensions.cpp	
 	${INCROOT}/glLoader.hpp
 	${SRCROOT}/glLoader.cpp
-	${INCROOT}/animationUpdater.h)
+	${INCROOT}/mesh.hpp
+	${SRCROOT}/mesh.cpp
+	${INCROOT}/boneAnimation.hpp
+	${SRCROOT}/boneAnimation.cpp)
 source_group ("graphics" FILES ${SRC_GRAPHICS})
 	
 set(SRC_GRAPHICS_2D
@@ -128,7 +131,9 @@ source_group ("2d_graphics" FILES ${SRC_GRAPHICS_2D})
 
 set(SRC_GRAPHICS_3D	
 	${INCROOT}/3D/cube.h
-	${SRCROOT}/3D/cube.cpp)
+	${SRCROOT}/3D/cube.cpp
+	${INCROOT}/3D/model.hpp
+	${SRCROOT}/3D/model.cpp)
 	
 source_group("3d_graphics" FILES ${SRC_GRAPHICS_3D})
 set(SRC_GUI

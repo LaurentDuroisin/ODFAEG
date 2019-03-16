@@ -37,7 +37,7 @@ class ODFAEG_GRAPHICS_API Map : public EntityManager {
         *   \param cellHeight : the height of the cells.
         *   \param cellDepth : the depth of the cells.
         */
-        Map(RenderComponentManager* frcm, std::string name, int cellWidth, int cellHeight);
+        Map(RenderComponentManager* frcm, std::string name, int cellWidth, int cellHeight, int cellDepth);
         GridMap *gridMap; /**> The grid used to store the entities.*/
         /**
         * \fn int getId()
@@ -197,14 +197,14 @@ class ODFAEG_GRAPHICS_API Map : public EntityManager {
         * \param math::Vec3f point : the point.
         * \return the coordinates.
         */
-        math::Vec2f getCoordinatesAt(math::Vec2f p);
+        math::Vec3f getCoordinatesAt(math::Vec3f p);
         /**
         * \fn CellMap<Entity>* getGridCellAt(math::Vec3f p)
         * \brief get the cell at a given point.
         * \param math::Vec3f point : the point.
         * \return the cell.
         */
-        CellMap* getGridCellAt(math::Vec2f p);
+        CellMap* getGridCellAt(math::Vec3f p);
         /**
         * \fn std::vector<CellMap<Entity>>* getGridCellAt(math::Vec3f p)
         * \brief get the cells which are in the given box.
@@ -247,7 +247,7 @@ class ODFAEG_GRAPHICS_API Map : public EntityManager {
         * \brief insert a visible entity into the entity manager.
         * \param entity : the visible entity to insert.
         */
-        void insertVisibleEntity(Entity *entity, physic::BoundingBox bx);
+        void insertVisibleEntity(Entity *entity, physic::BoundingBox& bx);
         /**
         * \fn void removeVisibleEntity(Entity *entity);
         * \brief remove a visible entity from the entity manager.
@@ -340,6 +340,7 @@ class ODFAEG_GRAPHICS_API Map : public EntityManager {
         Map operator= (const Map &other); /**> A map is not affectable.*/
         std::map<const void*, int> compImages; /**> Store a pointer to a resource and how many times his resource is used on the map.*/
         std::map<std::string, std::vector<Entity*>> vEntitiesByType;
+        std::vector<std::vector<Entity*>> visibleEntities;
         typedef std::map <std::string, std::vector<Entity*>>::iterator VEntitiesByType; /**> A typedef to the iterator of the map which contains the visible entities.*/
         std::vector<Entity*> visibleParentEntities; /**> The parent entities of the visible entities.*/
         std::vector<Entity*> lights, shadows; /**> The lights and the shadows.*/

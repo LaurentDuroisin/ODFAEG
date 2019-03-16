@@ -1,6 +1,7 @@
 #ifndef ODFAEG_ANIM_2D_HPP
 #define ODFAEG_ANIM_2D_HPP
 #include "animatedEntity.h"
+#include "mesh.hpp"
 #include <SFML/System.hpp>
 /**
   *\namespace odfaeg
@@ -166,6 +167,7 @@ namespace odfaeg {
                     ar(running);
                     ar(loop);
                     ar(currentFrameChanged);
+                    ar(interpolatedFrame);
                 }
                 /**
                 *  \fn ~Anim()
@@ -174,6 +176,8 @@ namespace odfaeg {
                 virtual ~Anim();
             private :
                 void interpolate(Entity* currentFrame, Entity* nextFrame);
+                void createFirstInterpolatedFrame(Entity* currentFrame);
+                void changeInterpolatedFrame(Entity* currentFrame);
                 /** \fn recomputeSize()
                 *   \brief recompute the size of an animation.
                 */
@@ -182,8 +186,8 @@ namespace odfaeg {
                 sf::Clock clock; /**> the clock to measure times before frames.*/
                 float fr; /**> the framerate of the animations.*/
                 Entity *nextFrame, *currentFrame, *previousFrame; /**> previousCurrentEntity : the previous frame and the current frame of the entity*/
-                std::vector<VertexArray> vas;
                 bool running, loop, currentFrameChanged; /**> tells if the animation is currently playing in loop (or not) and if the current frame have just been changed.*/
+                std::unique_ptr<Entity> interpolatedFrame;
         };
     }
 }

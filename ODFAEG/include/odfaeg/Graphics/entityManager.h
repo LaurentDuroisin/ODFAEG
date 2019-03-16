@@ -137,7 +137,7 @@ namespace odfaeg {
             *   \brief virtual method to redefine to get a cell at the given position containing the entities.
             *   \
             */
-            virtual CellMap* getGridCellAt(math::Vec2f pos) = 0;
+            virtual CellMap* getGridCellAt(math::Vec3f pos) = 0;
             /**
             *   \fn std::vector<CellMap<Entity>*> getCasesMap()
             *   \brief virtual method to redefine to get all the cells containing the entities.

@@ -13,12 +13,12 @@ namespace odfaeg {
             core::Command cmd(signal, slot);
             getListener().connect("UPDATE", cmd);
         }
-        void ZSortingRenderComponent::pushEvent(sf::Event event, RenderWindow& rw) {
-            if (event.type == sf::Event::Resized && &getWindow() == &rw && isAutoResized()) {
+        void ZSortingRenderComponent::pushEvent(window::IEvent event, RenderWindow& rw) {
+            if (event.type == window::IEvent::WINDOW_EVENT && event.window.type == window::IEvent::WINDOW_EVENT_RESIZED && &getWindow() == &rw && isAutoResized()) {
                 std::cout<<"recompute size"<<std::endl;
                 recomputeSize();
                 getListener().pushEvent(event);
-                getView().reset(physic::BoundingBox(getView().getViewport().getPosition().x, getView().getViewport().getPosition().y, getView().getViewport().getPosition().z, event.size.width, event.size.height, getView().getViewport().getDepth()));
+                getView().reset(physic::BoundingBox(getView().getViewport().getPosition().x, getView().getViewport().getPosition().y, getView().getViewport().getPosition().z, event.window.data1, event.window.data2, getView().getViewport().getDepth()));
             }
         }
         bool ZSortingRenderComponent::needToUpdate() {
@@ -42,8 +42,8 @@ namespace odfaeg {
             batcher.clear();
             for (unsigned int i = 0; i < vEntities.size(); i++) {
                 if ( vEntities[i]->isLeaf()) {
-                    for (unsigned int j = 0; j <  vEntities[i]->getFaces().size(); j++) {
-                         batcher.addFace( vEntities[i]->getFaces()[j]);
+                    for (unsigned int j = 0; j <  vEntities[i]->getNbFaces(); j++) {
+                         batcher.addFace( vEntities[i]->getFace(j));
                     }
                 }
             }
@@ -84,9 +84,11 @@ namespace odfaeg {
         void ZSortingRenderComponent::draw(RenderTarget& target, RenderStates states) {
             states.blendMode = sf::BlendAlpha;
             for (unsigned int i = 0; i < m_instances.size(); i++) {
-                m_instances[i].sortVertexArrays(view);
-                states.texture = m_instances[i].getMaterial().getTexture();
-                target.draw(m_instances[i].getAllVertices(), states);
+                if (m_instances[i].getAllVertices().getVertexCount() > 0) {
+                    m_instances[i].sortVertexArrays(view);
+                    states.texture = m_instances[i].getMaterial().getTexture();
+                    target.draw(m_instances[i].getAllVertices(), states);
+                }
             }
         }
         View& ZSortingRenderComponent::getView() {

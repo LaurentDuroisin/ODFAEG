@@ -21,7 +21,7 @@ namespace odfaeg {
         class ODFAEG_GRAPHICS_API ZSortingRenderComponent : public HeavyComponent {
             public :
                 ZSortingRenderComponent (RenderWindow& window, int layer, std::string expression);
-                void pushEvent(sf::Event event, RenderWindow& rw);
+                void pushEvent(window::IEvent event, RenderWindow& rw);
                 bool needToUpdate();
                 void changeVisibleEntities(Entity* toRemove, Entity* toAdd, EntityManager* em);
                 std::string getExpression();

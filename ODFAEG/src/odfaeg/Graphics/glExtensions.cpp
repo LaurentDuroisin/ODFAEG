@@ -25,10 +25,16 @@
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include <SFML/Graphics/GLExtensions.hpp>
-#include <SFML/System/Err.hpp>
+#include "../../../include/odfaeg/Graphics/glExtensions.hpp"
+#include "../../../include/odfaeg/Window/context.hpp"
+#include <iostream>
+#if !defined(GL_MAJOR_VERSION)
+    #define GL_MAJOR_VERSION 0x821B
+#endif
 
-
+#if !defined(GL_MINOR_VERSION)
+    #define GL_MINOR_VERSION 0x821C
+#endif
 namespace odfaeg
 {
 namespace graphic {
@@ -73,8 +79,8 @@ void ensureExtensionsInit()
 
         if ((majorVersion < 1) || ((majorVersion == 1) && (minorVersion < 1)))
         {
-            err() << "sfml-graphics requires support for OpenGL 1.1 or greater" << std::endl;
-            err() << "Ensure that hardware acceleration is enabled if available" << std::endl;
+            std::cerr<< "sfml-graphics requires support for OpenGL 1.1 or greater" << std::endl;
+            std::cerr << "Ensure that hardware acceleration is enabled if available" << std::endl;
         }
     }
 #endif

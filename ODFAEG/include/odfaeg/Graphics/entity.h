@@ -89,6 +89,9 @@ namespace odfaeg {
                 *   \param get the type of the root entity of the scene graph.
                 */
                 std::string getRootType();
+                int getRootTypeInt();
+                unsigned int getNbFaces();
+                Face* getFace(unsigned int n);
                 //Init the map who is a correspondance between a type of an entity and the id of it's type.
                 /** \fn std::string std::map<int, std::string>
                 *   \param get the list of the id's and associated type's names.
@@ -299,6 +302,7 @@ namespace odfaeg {
                 *   \return std::vector<Face*> the faces of the entity.
                 */
                 std::vector<Face*> getFaces() const;
+                static int getNbEntityTypes();
                 /** \fn void vtserialize(Archive & ar)
                 *   \brief serialize the entity into an archive.
                 *   \param Archive : the archive onwhich to serialize the entities.
@@ -318,10 +322,12 @@ namespace odfaeg {
                     ar(shadowOrigin);
                     ar(shadowRotationAngle);
                     ar(shadowRotationAxis);
+                    ar(boneIndex);
                     if (ar.isInputArchive())
                         onLoad();
                     alreadySerialized = true;
                     ar(children);
+                    //std::cout<<"entity id : "<<getId()<<std::endl<<"Transform matrix : "<<getTransform().getMatrix()<<std::endl;
                 }
                 /** \fn void onLoad()
                 *   \brief load the entities.
@@ -334,7 +340,7 @@ namespace odfaeg {
                         types->insert(type);
                         nbEntitiesTypes++;
                     }
-                    nbEntities++;
+                    //nbEntities++;
                 }
                 Entity* getRoot() {
                     if (parent != nullptr)
@@ -365,6 +371,8 @@ namespace odfaeg {
                 math::Vec3f getShadowScale();
                 void setShadowOrigin(math::Vec3f origin);
                 math::Vec3f getShadowOrigin();
+                virtual void setBoneIndex (unsigned int boneIndex);
+                virtual unsigned int getBoneIndex();
             protected :
                 math::Vec3f shadowCenter, shadowScale, shadowRotationAxis, shadowOrigin; /**> The center of the shadow of the entity.*/
                 float shadowRotationAngle;
@@ -380,6 +388,7 @@ namespace odfaeg {
                 Entity(const Entity& entity) = delete; /**> an entity if not copiable.*/
                 Entity& operator=(const Entity& entity) = delete; /**> an entity is not affectable*/
                 bool alreadySerialized;
+                unsigned int boneIndex;
         };
     }
 }

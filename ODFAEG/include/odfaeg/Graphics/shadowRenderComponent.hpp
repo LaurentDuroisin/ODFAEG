@@ -2,7 +2,7 @@
 #define ODFAEG_SHADOW_RENDER_COMPONENT_HPP
 #include "renderWindow.h"
 #include "renderTexture.h"
-#include "tile.h"
+#include "sprite.h"
 #include "entityManager.h"
 #include "heavyComponent.h"
 #include "2D/ambientLight.h"
@@ -25,20 +25,20 @@ namespace odfaeg {
           */
         class ODFAEG_GRAPHICS_API ShadowRenderComponent : public HeavyComponent {
             public :
-                ShadowRenderComponent (RenderWindow& window, int layer, std::string expression,sf::ContextSettings settings = sf::ContextSettings(0, 0, 4, 3, 0));
+                ShadowRenderComponent (RenderWindow& window, int layer, std::string expression,window::ContextSettings settings = window::ContextSettings(0, 0, 4, 3, 0));
                 void drawNextFrame();
                 std::vector<Entity*> getEntities();
                 void draw(RenderTarget& target, RenderStates states);
                 void draw(Drawable& drawable, RenderStates states) {
                 }
-                void pushEvent(sf::Event event, RenderWindow& rw);
+                void pushEvent(window::IEvent event, RenderWindow& rw);
                 bool needToUpdate();
                 View& getView();
                 int getLayer();
                 const Texture& getStencilBufferTexture();
                 const Texture& getShadowMapTexture();
-                Tile& getFrameBufferTile ();
-                Tile& getDepthBufferTile();
+                Sprite& getFrameBufferTile ();
+                Sprite& getDepthBufferTile();
                 void setExpression(std::string expression);
                 std::string getExpression();
                 void setView(View view);
@@ -51,11 +51,11 @@ namespace odfaeg {
                 std::vector<Instance> m_instances; /**> Instances to draw. (Instanced rendering.) */
                 std::vector<Instance> m_shadow_instances;
                 std::vector<Entity*> visibleEntities; /**> Entities loaded*/
-                std::unique_ptr<RenderTexture> stencilBuffer; /**> the stencil buffer.*/
-                std::unique_ptr<RenderTexture> shadowMap; /**> the shadow map.*/
-                std::unique_ptr<Tile>  stencilBufferTile, shadowTile; /**> the stencil and shadow map buffer.*/
-                std::unique_ptr<Shader> buildShadowMapShader; /**> the shader to generate the stencil buffer.*/
-                std::unique_ptr<Shader>  perPixShadowShader; /**> the shader to generate the shadow map.*/
+                RenderTexture stencilBuffer; /**> the stencil buffer.*/
+                RenderTexture shadowMap; /**> the shadow map.*/
+                Sprite stencilBufferTile, shadowTile; /**> the stencil and shadow map buffer.*/
+                Shader buildShadowMapShader; /**> the shader to generate the stencil buffer.*/
+                Shader perPixShadowShader; /**> the shader to generate the shadow map.*/
                 View view; /**> the view of the component.*/
                 std::string expression;
                 bool update;

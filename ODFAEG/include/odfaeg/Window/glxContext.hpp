@@ -11,6 +11,7 @@ namespace odfaeg {
                 static GlFunctionPointer getFunction(const char* name);
                 static XVisualInfo selectBestVisual(::Display* display, unsigned int bitsPerPixel, const ContextSettings& settings);
                 virtual bool setActive(bool current);
+                virtual void create(IContext* sharedContext = nullptr);
                 virtual void create(::Window window, IContext* shared = nullptr);
                 virtual void create(ContextSettings& settings, unsigned int width, unsigned int height, IContext* shared = nullptr);
                 virtual const ContextSettings& getSettings() const;

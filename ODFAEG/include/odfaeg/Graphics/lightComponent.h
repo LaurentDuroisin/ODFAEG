@@ -27,6 +27,8 @@ namespace odfaeg {
             void recomputeSize() {
                 if (isAutoResized()) {
                     unsigned int sx, sy, npx, npy, nsx, nsy, psx, psy, ppx, ppy;
+                    /*sx = getSize().x;
+                    sy = getSize().y;*/
                     if (parent != nullptr) {
                         npx = parent->getPosition().x + parent->getSize().x * getRelPosition().x;
                         npy = parent->getPosition().y + parent->getSize().y * getRelPosition().y;
@@ -105,14 +107,12 @@ namespace odfaeg {
                 }
                 return chlds;
             }
-            void onUpdate(RenderWindow* rw, sf::Event& event) {
-                if (name == "HP POT")
-                    std::cout<<"on update"<<std::endl;
+            virtual void onUpdate(RenderWindow* rw, window::IEvent& event) {
                 for (unsigned int i = 0; i < children.size(); i++) {
                     children[i]->onUpdate(rw, event);
                 }
             }
-            virtual void pushEvent(sf::Event event, RenderWindow &rw) {
+            virtual void pushEvent(window::IEvent event, RenderWindow &rw) {
                 getListener().pushEvent(event);
                 onEventPushed(event, rw);
                 for (unsigned int i = 0; i < children.size(); i++) {
@@ -130,7 +130,7 @@ namespace odfaeg {
             virtual void removeAll() {
                 children.clear();
             }
-            virtual void onEventPushed(sf::Event event, RenderWindow& window) {
+            virtual void onEventPushed(window::IEvent event, RenderWindow& window) {
             }
             bool removeChild(LightComponent& child)
             {
