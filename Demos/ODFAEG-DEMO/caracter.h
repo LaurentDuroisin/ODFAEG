@@ -5,16 +5,17 @@
 #define CARACTER
 #include "odfaeg/Math/vec2f.h"
 #include "odfaeg/Graphics/anim.h"
+#include "odfaeg/Graphics/boneAnimation.hpp"
 #include "odfaeg/Graphics/tile.h"
 #include <string>
 #include <SFML/Graphics.hpp>
 namespace sorrok {
-    class Caracter : public odfaeg::graphic::AnimatedEntity {
+    class Caracter : public odfaeg::graphic::BoneAnimation {
     public :
         enum ANIMS {
             WALKING, ATTACKING = 8
         };
-        Caracter() : AnimatedEntity(odfaeg::math::Vec3f(0, 0, 0), odfaeg::math::Vec3f(0, 0, 0), odfaeg::math::Vec3f(0, 0, 0),"E_CARACTER") {
+        Caracter() : BoneAnimation(odfaeg::math::Vec3f(0, 0, 0), odfaeg::math::Vec3f(0, 0, 0),"E_CARACTER") {
             currentAnimIndex = 0;
         }
         Caracter (std::string type, std::string name, std::string currentMapName, std::string classs, int level);

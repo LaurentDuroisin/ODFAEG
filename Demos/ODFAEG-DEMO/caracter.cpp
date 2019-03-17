@@ -6,7 +6,7 @@ using namespace odfaeg::graphic;
 using namespace odfaeg::physic;
 using namespace odfaeg::math;
 namespace sorrok {
-    Caracter::Caracter (std::string type, std::string name, string currentMapName, string classs, int level) : AnimatedEntity (Vec3f(-25, -50, 0), Vec3f (50, 100, 0), Vec3f(25, 50, 0), type) {
+    Caracter::Caracter (std::string type, std::string name, string currentMapName, string classs, int level) : BoneAnimation (Vec3f(-25, -50, 0), Vec3f (50, 100, 0), type) {
         currentAnimIndex = 0;
         this->name = name;
         this->currentMapName = currentMapName;
@@ -83,6 +83,7 @@ namespace sorrok {
                 anims[baseAnimIndex + currentAnimIndex]->stop();
                 anims[baseAnimIndex + currentAnimIndex]->setCurrentFrame(0);
                 baseAnimIndex = ATTACKING;
+                BoneAnimation::setBoneIndex(baseAnimIndex + currentAnimIndex);
             } else {
                 anims[baseAnimIndex + currentAnimIndex]->stop();
                 anims[baseAnimIndex + currentAnimIndex]->setCurrentFrame(0);
@@ -156,6 +157,7 @@ namespace sorrok {
         this->dir = dir;
         if (moving)
             anims[baseAnimIndex + currentAnimIndex]->play(true);
+        BoneAnimation::setBoneIndex(baseAnimIndex + currentAnimIndex);
     }
     Vec2f Caracter::getDir () {
         return dir;
@@ -167,6 +169,7 @@ namespace sorrok {
             if (moving) {
                 baseAnimIndex = WALKING;
                 anims[baseAnimIndex + currentAnimIndex]->play(true);
+                BoneAnimation::setBoneIndex(baseAnimIndex + currentAnimIndex);
             } else {
                 anims[baseAnimIndex + currentAnimIndex]->stop();
                 anims[baseAnimIndex + currentAnimIndex]->setCurrentFrame(0);
@@ -208,7 +211,7 @@ namespace sorrok {
         target.draw(*getCurrentFrame(), states);
     }
     Entity* Caracter::getCurrentFrame() const {
-        return anims[baseAnimIndex + currentAnimIndex]->getCurrentFrame();
+        return anims[baseAnimIndex + currentAnimIndex];
     }
     sf::Clock& Caracter::getClkTransfertTime() {
         return clockTransfertTime;

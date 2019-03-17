@@ -1,7 +1,8 @@
 #include "../../../include/odfaeg/Window/contextFactory.hpp"
+#include "../../../include/odfaeg/config.hpp"
 #if defined(SFML)
 #include "../../../include/odfaeg/Window/sfmlContextImpl.hpp"
-typedef odfaeg::window::sfmContextImpl ContextType;
+typedef odfaeg::window::SFMLContextImpl ContextType;
 #elif defined(SDL)
 #include "../../../include/odfaeg/Window/sdlContextImpl.hpp"
 typedef odfaeg::window::sdlContextImpl ContextType;

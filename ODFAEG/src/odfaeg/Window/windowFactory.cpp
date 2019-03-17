@@ -1,7 +1,7 @@
 #include "../../../include/odfaeg/Window/windowFactory.hpp"
 #if defined(SFML)
 #include "../../../include/odfaeg/Window/sfmlWindowImpl.hpp"
-typedef odfaeg::window::sfmlWindowImpl WindowType;
+typedef odfaeg::window::SFMLWindowImpl WindowType;
 #elif defined(SDL)
 #include "../../../include/odfaeg/Window/sdlWindowImpl.hpp"
 typedef odfaeg::window::sdlWindowImpl WindowType;

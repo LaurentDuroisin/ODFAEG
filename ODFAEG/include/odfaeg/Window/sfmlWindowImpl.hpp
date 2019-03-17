@@ -7,15 +7,16 @@ namespace odfaeg {
     namespace window {
         class SFMLWindowImpl : public IWindow, public sf::Window {
         public :
+            SFMLWindowImpl();
             SFMLWindowImpl(sf::VideoMode mode, const sf::String& title, sf::Uint32 style, const ContextSettings& settings);
             void create (sf::VideoMode mode, const sf::String& title, sf::Uint32 style, const ContextSettings& settings);
-            void create (sf::WindowHandle handle, const ContextSettings& settings) = 0;
+            void create (sf::WindowHandle handle, const ContextSettings& settings);
             bool isOpen() const;
             bool pollEvent(IEvent& event);
             bool waitEvent(IEvent& event);
             void close();
             void setVisible(bool visible);
-            sf::Vector2i getPosition();
+            sf::Vector2i getPosition() const;
             void setPosition(const sf::Vector2i& position);
             sf::Vector2u getSize() const;
             void setSize(const sf::Vector2u& size);

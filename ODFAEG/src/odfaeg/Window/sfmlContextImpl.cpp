@@ -6,6 +6,8 @@ namespace odfaeg {
                 return context->setActive(active);
             return false;
         }
+        void SFMLContextImpl::create(IContext* sharedContext) {
+        }
         void SFMLContextImpl::create(sf::WindowHandle handle, IContext* sharedContext) {
 
         }

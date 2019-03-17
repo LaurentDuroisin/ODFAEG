@@ -94,6 +94,13 @@ namespace odfaeg {
                         if (entity->getId() == id) {
                             return entity;
                         }
+                        Entity* parent = entity->getParent();
+                        while (parent != nullptr) {
+                            if (parent->getId() == id) {
+                                return parent;
+                            }
+                            parent = parent->getParent();
+                        }
                     }
                 }
             }

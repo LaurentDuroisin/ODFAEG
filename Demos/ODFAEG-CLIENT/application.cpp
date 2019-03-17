@@ -20,20 +20,137 @@ namespace sorrok {
         Network::setCertifiateClientMess("SORROKCLIENT");
         isClientAuthentified = true;
     }
+    void MyAppli::onIconClicked(Icon* icon) {
+        std::cout<<"cliqued on icon"<<std::endl;
+        TextureManager<Item::Type> &tm2 = cache.resourceManager<Texture, Item::Type>("TextureManager2");
+        Item::Type itemType = tm2.getAliasByResource(const_cast<Texture*>(icon->getSprite().getTexture()))[0];
+        std::map<Item::Type, std::vector<Item>>& items = static_cast<Hero*>(hero)->getInventory();
+        std::map<Item::Type, std::vector<Item>>::iterator it = items.find(itemType);
+        Item item = it->second.back();
+        if (itemType == Item::HP_POTION) {
+            std::cout<<"item type = hp potion"<<std::endl;
+            it->second.pop_back();
+            Label* label;
+            bool found = false;
+            for (unsigned int i = 0; i < pInventory->getChildren().size() && !found; i+=2) {
+                Icon* icn = dynamic_cast<Icon*> (pInventory->getChildren()[i]);
+                label = dynamic_cast<Label*> (pInventory->getChildren()[i+1]);
+                if (icon == icn) {
+                    label->setText(conversionIntString(it->second.size()));
+                    found = true;
+                }
+            }
+            if (it->second.empty()) {
+                for (unsigned int i = 0; i < pInventory->getChildren().size(); i++) {
+                    if (pInventory->getChildren()[i] == icon) {
+                        pInventory->removeChild(*icon);
+                        pInventory->removeChild(*label);
+                    }
+                }
+                items.erase(it);
+            }
+            ItemAction* ia = new ItemAction();
+            FastDelegate<void> action(&ItemAction::useHpPotion, ia, static_cast<Hero*>(hero), item);
+            /*switch(static_cast<Hero*>(hero)->getJobType()) {
+                case Hero::Job::Novice : gameActions.push_back(std::make_pair(Variant<Hero::Novice, Hero::Warrior, Hero::Magician, Hero::Thief>(Hero::Novice()), std::make_pair(item, action))); break;
+                case Hero::Job::Warrior : gameActions.push_back(std::make_pair(Variant<Hero::Novice, Hero::Warrior, Hero::Magician, Hero::Thief>(Hero::Warrior()), std::make_pair(item, action))); break;
+                case Hero::Job::Magician : gameActions.push_back(std::make_pair(Variant<Hero::Novice, Hero::Warrior, Hero::Magician, Hero::Thief>(Hero::Magician()), std::make_pair(item, action))); break;
+                case Hero::Job::Thief : gameActions.push_back(std::make_pair(Variant<Hero::Novice, Hero::Warrior, Hero::Magician, Hero::Thief>(Hero::Thief()), std::make_pair(item, action))); break;
+            }*/
+            gameActions.push_back(std::make_pair(static_cast<Hero*>(hero)->getJobVariant(), std::make_pair(item, action)));
+            itemActions.push_back(ia);
+        }
+    }
+    void MyAppli::showInventory() {
+        wInventory->setVisible(true);
+        std::map<Item::Type, std::vector<Item>>& items = static_cast<Hero*>(hero)->getInventory();
+        TextureManager<Item::Type> &tm2 = cache.resourceManager<Texture, Item::Type>("TextureManager2");
+        FontManager<Fonts> &fm = cache.resourceManager<Font, Fonts>("FontManager");
+        const Font* font = fm.getResourceByAlias(Fonts::Serif);
+        unsigned int nbRows = 1 + items.size() / 10;
+        unsigned int rowIndex = 0, colIndex = 0;
+        Table table(nbRows, 10);
+        std::map<Item::Type, std::vector<Item>>::iterator it;
+        for(it = items.begin(); it != items.end(); it++) {
+            Sprite sprite (*tm2.getResourceByAlias(it->first),pItems->getPosition(),Vec3f(50, 50, 0), sf::IntRect(0, 0, 50, 50));
+            Icon* icon = new Icon(*wInventory,Vec3f(0, 0, 0),Vec3f(0, 0, 0),sprite);
+            Action a (Action::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
+            Command cmd(a, FastDelegate<bool>(&Icon::isMouseInside, icon), FastDelegate<void>(&MyAppli::onIconClicked, this, icon));
+            icon->getListener().connect("UseItem"+conversionIntString(it->first), cmd);
+            Label* label = new Label(*wInventory,Vec3f(0, 0, 0),Vec3f(0, 0 ,0),font,conversionUIntString(it->second.size()),10);
+            label->setBackgroundColor(sf::Color::Transparent);
+            table.addElement(icon, rowIndex, colIndex);
+            table.addElement(label, rowIndex, colIndex);
+            colIndex++;
+            if (colIndex == 10) {
+                rowIndex++;
+                colIndex = 0;
+            }
+            pInventory->addChild(icon);
+            pInventory->addChild(label);
+            icon->setParent(pInventory);
+            label->setParent(pInventory);
+        }
+    }
+    void MyAppli::dropItems(Label* label) {
+        std::cout<<"drop items"<<std::endl;
+        std::vector<Item>::iterator it;
+        for (it = selectedCristal.second.begin(); it != selectedCristal.second.end(); ) {
+            if (it->getName() == label->getText()) {
+                std::cout<<"add item to inventory"<<std::endl;
+                static_cast<Hero*>(hero)->addItem(*it);
+                it = selectedCristal.second.erase(it);
+            } else {
+                it++;
+            }
+        }
+        std::vector<Item> itemsToDisplay = selectedCristal.second;
+        pItems->removeAll();
+        if (itemsToDisplay.size() > 0) {
+            std::cout<<"there are some items close to the hero, display them : "<<std::endl;
+            FontManager<Fonts> &fm = cache.resourceManager<Font,Fonts>("FontManager");
+            Table table (itemsToDisplay.size(),2);
+            TextureManager<Item::Type> &tm2 = cache.resourceManager<Texture, Item::Type>("TextureManager2");
+            for (unsigned int i = 0; i < itemsToDisplay.size(); i++) {
+                Label* itemName = new Label(*wPickupItems, Vec3f(0, 0, 0), Vec3f(0, 0, 0), fm.getResourceByAlias(Fonts::Serif), itemsToDisplay[i].getName(),15);
+                Action a (Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
+                Command cmd (a, FastDelegate<bool>(&Label::isMouseInside, itemName), FastDelegate<void>(&MyAppli::dropItems, this, itemName));
+                itemName->getListener().connect("PICKUPITEM", cmd);
+                itemName->setParent(pItems);
+                table.addElement(itemName,i, 1);
+                Sprite sprite (*tm2.getResourceByAlias(Item::HP_POTION),pItems->getPosition(),Vec3f(50, 50, 0), sf::IntRect(0, 0, 50, 50));
+                Icon* icon = new Icon(*wPickupItems,Vec3f(0, 0, 0),Vec3f(0, 0, 0),sprite);
+                icon->setParent(pItems);
+                table.addElement(icon,i,0);
+                pItems->addChild(itemName);
+                pItems->addChild(icon);
+            }
+        } else {
+            std::vector<std::pair<Sprite*, std::vector<Item>>>::iterator it;
+            for (it = cristals.begin(); it != cristals.end();) {
+                if (it->first == selectedCristal.first) {
+                    delete it->first;
+                    it = cristals.erase(it);
+                } else {
+                    it++;
+                }
+            }
+        }
+    }
     void MyAppli::pickUpItems (IKeyboard::Key key) {
         if (key != IKeyboard::Key::Unknown && key == IKeyboard::Key::A) {
-            std::unordered_map<Sprite, std::vector<Item>, HashSprite>::iterator it, itf;
+            std::vector<std::pair<Sprite*, std::vector<Item>>>::iterator it, itf;
             std::vector<Item> itemsToDisplay;
             if (cristals.size() > 0) {
                 itf = cristals.begin();
-                float minDist = itf->first.getPosition().computeDist(hero->getPosition());
+                float minDist = itf->first->getPosition().computeDist(hero->getPosition());
                 if (minDist < 100) {
                     itemsToDisplay = itf->second;
                     selectedCristal = *itf;
                 }
                 itf++;
                 for (it = itf; it != cristals.end(); it++) {
-                    float dist = it->first.getPosition().computeDist(hero->getPosition());
+                    float dist = it->first->getPosition().computeDist(hero->getPosition());
                     if (dist < 100
                         && dist < minDist) {
                         itemsToDisplay = it->second;
@@ -41,26 +158,28 @@ namespace sorrok {
                         selectedCristal = *it;
                     }
                 }
-                pItems->setPosition(selectedCristal.first.getPosition());
+                wPickupItems->setPosition(sf::Vector2i(selectedCristal.first->getPosition().x, selectedCristal.first->getPosition().y));
             }
             if (itemsToDisplay.size() > 0) {
                 std::cout<<"there are some items close to the hero, display them : "<<std::endl;
                 FontManager<Fonts> &fm = cache.resourceManager<Font,Fonts>("FontManager");
-                TextureManager<> &tm = cache.resourceManager<Texture, std::string>("TextureManager");
-                pItems->removeAll();
+                TextureManager<Item::Type> &tm2 = cache.resourceManager<Texture, Item::Type>("TextureManager2");
                 Table table (itemsToDisplay.size(),2);
                 for (unsigned int i = 0; i < itemsToDisplay.size(); i++) {
-                    Label* itemName = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(0, 0, 0), fm.getResourceByAlias(Fonts::Serif), itemsToDisplay[i].getName(),15);
+                    Label* itemName = new Label(*wPickupItems, Vec3f(0, 0, 0), Vec3f(0, 0, 0), fm.getResourceByAlias(Fonts::Serif), itemsToDisplay[i].getName(),15);
+                    Action a (Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
+                    Command cmd (a, FastDelegate<bool>(&Label::isMouseInside, itemName), FastDelegate<void>(&MyAppli::dropItems, this, itemName));
+                    itemName->getListener().connect("PICKUPITEM", cmd);
                     itemName->setParent(pItems);
                     table.addElement(itemName,i, 1);
-                    Sprite sprite (*tm.getResourceByAlias("HPPOTION"),pItems->getPosition(),Vec3f(50, 50, 0), sf::IntRect(0, 0, 50, 50));
-                    Icon* icon = new Icon(getRenderWindow(),Vec3f(0, 0, 0),Vec3f(0, 0, 0),sprite);
+                    Sprite sprite (*tm2.getResourceByAlias(Item::HP_POTION),pItems->getPosition(),Vec3f(50, 50, 0), sf::IntRect(0, 0, 50, 50));
+                    Icon* icon = new Icon(*wPickupItems,Vec3f(0, 0, 0),Vec3f(0, 0, 0),sprite);
                     icon->setParent(pItems);
                     table.addElement(icon,i,0);
                     pItems->addChild(itemName);
                     pItems->addChild(icon);
                 }
-                pItems->setVisible(true);
+                wPickupItems->setVisible(true);
             }
         }
     }
@@ -162,11 +281,13 @@ namespace sorrok {
         tm.fromFileWithAlias("tilesets/flemmes2.png", "FIRE2");
         tm.fromFileWithAlias("tilesets/flemmes3.png", "FIRE3");
         tm.fromFileWithAlias("tilesets/cristal.png", "CRISTAL");
-        tm.fromFileWithAlias("tilesets/hppotion-icon.png", "HPPOTION");
+        TextureManager<Item::Type> tm2;
+        tm2.fromFileWithAlias("tilesets/hppotion-icon.png", Item::HP_POTION);
         FontManager<Fonts> fm;
         fm.fromFileWithAlias("fonts/FreeSerif.ttf", Serif);
         cache.addResourceManager(fm, "FontManager");
         cache.addResourceManager(tm, "TextureManager");
+        cache.addResourceManager(tm2, "TextureManager2");
         //shader.loadFromFile("Shaders/SimpleVertexShader.vertexshader", "Shaders/SimpleFragmentShader.fragmentshader");
     }
     void MyAppli::onInit () {
@@ -179,7 +300,7 @@ namespace sorrok {
         TextureManager<> &tm = cache.resourceManager<Texture, std::string>("TextureManager");
         Vec2f pos (getView().getPosition().x - getView().getSize().x * 0.5f, getView().getPosition().y - getView().getSize().y * 0.5f);
         BoundingBox bx (pos.x, pos.y, 0, getView().getSize().x, getView().getSize().y, 0);
-        theMap = new Map(&getRenderComponentManager(), "Map test", 100, 50);
+        theMap = new Map(&getRenderComponentManager(), "Map test", 100, 50, 0);
         BaseChangementMatrix bcm;
         bcm.set2DIsoMatrix();
         theMap->setBaseChangementMatrix(bcm);
@@ -239,11 +360,13 @@ namespace sorrok {
             } else if (entities[i]->getType() == "E_ANIMATION") {
                 Anim* anim = static_cast<Anim*> (entities[i]);
                 for (unsigned int j = 0; j < anim->getChildren().size(); j++) {
-                    std::string texId = entities[i]->getChildren()[j]->getChildren()[0]->getFaces()[0]->getMaterial().getTexId();
-                    sf::IntRect texRect = entities[i]->getChildren()[j]->getChildren()[0]->getFaces()[0]->getMaterial().getTexRect();
-                    entities[i]->getChildren()[j]->getChildren()[0]->getFaces()[0]->getMaterial().clearTextures();
-                    entities[i]->getChildren()[j]->getChildren()[0]->getFaces()[0]->getMaterial().addTexture(tm.getResourceByAlias(texId), texRect);
-                    entities[i]->getChildren()[j]->getChildren()[0]->getFaces()[0]->getMaterial().setTexId(texId);
+                    if (entities[i]->getChildren()[j]->getChildren().size() > 0) {
+                        std::string texId = entities[i]->getChildren()[j]->getChildren()[0]->getFaces()[0]->getMaterial().getTexId();
+                        sf::IntRect texRect = entities[i]->getChildren()[j]->getChildren()[0]->getFaces()[0]->getMaterial().getTexRect();
+                        entities[i]->getChildren()[j]->getChildren()[0]->getFaces()[0]->getMaterial().clearTextures();
+                        entities[i]->getChildren()[j]->getChildren()[0]->getFaces()[0]->getMaterial().addTexture(tm.getResourceByAlias(texId), texRect);
+                        entities[i]->getChildren()[j]->getChildren()[0]->getFaces()[0]->getMaterial().setTexId(texId);
+                    }
                 }
                 anim->play(true);
                 au->addAnim(anim);
@@ -258,6 +381,7 @@ namespace sorrok {
         ia.clear();
         iss.str(response);
         ia(hero);
+        std::cout<<"hero id : "<<hero->getId()<<std::endl;
         std::string path = "tilesets/vlad_sword.png";
         cache.resourceManager<Texture, std::string>("TextureManager").fromFileWithAlias(path, "VLADSWORD");
         const Texture *text = cache.resourceManager<Texture, std::string>("TextureManager").getResourceByPath(path);
@@ -279,6 +403,7 @@ namespace sorrok {
                 } else {
                     textRectX += textRectWidth;
                 }
+                animation->getCurrentFrame()->setBoneIndex(i);
                 animation->addFrame(frame);
             }
             hero->addAnimation(animation);
@@ -300,6 +425,7 @@ namespace sorrok {
                 }
                 animation->addFrame(frame);
             }
+            animation->getCurrentFrame()->setBoneIndex(i+8);
             hero->addAnimation(animation);
             au->addAnim(animation);
         }
@@ -320,6 +446,7 @@ namespace sorrok {
                 }
                 animation->addFrame(frame);
             }
+            animation->getCurrentFrame()->setBoneIndex(i+16);
             hero->addAnimation(animation);
             au->addAnim(animation);
         }
@@ -335,6 +462,7 @@ namespace sorrok {
         ia.clear();
         iss.str(response);
         ia(monster);
+        std::cout<<"monster id : "<<monster->getId()<<std::endl;
         path = "tilesets/ogro.png";
         //for (unsigned int n = 0; n < monsters.size(); n++) {
             tmpCenter = monster->getCenter();
@@ -359,6 +487,7 @@ namespace sorrok {
                     }
                     animation->addFrame(frame);
                 }
+                animation->getCurrentFrame()->setBoneIndex(i);
                 monster->addAnimation(animation);
                 au->addAnim(animation);
             }
@@ -379,6 +508,7 @@ namespace sorrok {
                     }
                     animation->addFrame(frame);
                 }
+                animation->getCurrentFrame()->setBoneIndex(i+8);
                 monster->addAnimation(animation);
                 au->addAnim(animation);
             }
@@ -400,6 +530,7 @@ namespace sorrok {
                     }
                     animation->addFrame(frame);
                 }
+                animation->getCurrentFrame()->setBoneIndex(i+16);
                 monster->addAnimation(animation);
                 au->addAnim(animation);
             }
@@ -413,9 +544,9 @@ namespace sorrok {
         World::addEntity(light1);
         World::addEntity(light2);
         ZSortingRenderComponent *frc1 = new ZSortingRenderComponent(getRenderWindow(),0, "E_BIGTILE");
-        ShadowRenderComponent *frc2 = new ShadowRenderComponent(getRenderWindow(),1, "E_WALL+E_DECOR");
-        OITRenderComponent* frc3 = new OITRenderComponent(getRenderWindow(),2,"E_WALL+E_DECOR");
-        LightRenderComponent* frc4 = new LightRenderComponent(getRenderWindow(),3,"E_WALL+E_DECOR+E_PONCTUAL_LIGHT");
+        ShadowRenderComponent *frc2 = new ShadowRenderComponent(getRenderWindow(),1, "E_WALL+E_DECOR+E_ANIMATION+E_HERO");
+        OITRenderComponent* frc3 = new OITRenderComponent(getRenderWindow(),2,"E_WALL+E_DECOR+E_ANIMATION+E_HERO");
+        LightRenderComponent* frc4 = new LightRenderComponent(getRenderWindow(),3,"E_WALL+E_DECOR+E_ANIMATION+E_PONCTUAL_LIGHT");
         /*View view = getView();
         frc1->setView(view);*/
         /*frc2->setView(view);
@@ -454,6 +585,9 @@ namespace sorrok {
         Action aPickUpItems (Action::EVENT_TYPE::KEY_PRESSED_ONCE, IKeyboard::Key::A);
         Command cmdPickUpItems(aPickUpItems,FastDelegate<void>(&MyAppli::pickUpItems, this, IKeyboard::Key::Unknown));
         getListener().connect("PickUpItems", cmdPickUpItems);
+        Action aShowInventory(Action::KEY_PRESSED_ONCE, IKeyboard::Key::I);
+        Command cmdShowInventory(aShowInventory, FastDelegate<void>(&MyAppli::showInventory, this));
+        getListener().connect("ShowInventory", cmdShowInventory);
         packet.clear();
         packet<<"GETCARPOS";
         hero->getClkTransfertTime().restart();
@@ -469,11 +603,19 @@ namespace sorrok {
         button->addActionListener(this);
         wResuHero->setVisible(false);
         wResuHero->setPosition(sf::Vector2i(500, 400));
+        wPickupItems = new RenderWindow(sf::VideoMode(100, 200), "PickupItems", sf::Style::Close, ContextSettings(0, 0, 4, 3, 0));
+        addWindow(wPickupItems);
+        wPickupItems->setVisible(false);
         World::update();
         addWindow(wResuHero);
-        pItems = new Panel(getRenderWindow(),Vec3f(0, 0, 0),Vec3f(100, 200, 0));
-        pItems->setVisible(false);
+        pItems = new Panel(*wPickupItems,Vec3f(0, 0, 0),Vec3f(100, 200, 0));
         getRenderComponentManager().addComponent(pItems);
+        wInventory = new RenderWindow(sf::VideoMode(500, 300), "Inventory", sf::Style::Close, ContextSettings(0, 0, 4, 3, 0));
+        addWindow(wInventory);
+        wInventory->setVisible(false);
+        pInventory = new Panel(*wInventory, Vec3f(0, 0, 0), Vec3f(500, 300, 0));
+        getRenderComponentManager().addComponent(pInventory);
+        sf::sleep(sf::seconds(0.5f));
         /*wIdentification = new RenderWindow(sf::VideoMode(400, 300), "Identification", sf::Style::Titlebar, sf::ContextSettings(24, 0, 4, 3, 0));
         View iView = wIdentification->getDefaultView();
         iView.setCenter(Vec3f(wIdentification->getSize().x * 0.5f, wIdentification->getSize().y * 0.5f, 0));
@@ -494,35 +636,58 @@ namespace sorrok {
         invButton->addActionListener(this);
         idButton->addActionListener(this);
         wIdentification->setVisible(false);*/
-        hpBar = new gui::ProgressBar(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(100, 10, 0));
+        hpBar = new gui::ProgressBar(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(100, 10, 0),*fm.getResourceByAlias(Fonts::Serif),15);
         hpBar->setMaximum(100);
         hpBar->setMinimum(0);
         hpBar->setValue(100);
-        xpBar = new gui::ProgressBar(getRenderWindow(), Vec3f(0, 590, 0), Vec3f(800, 10, 0));
+        xpBar = new gui::ProgressBar(getRenderWindow(), Vec3f(0, 590, 0), Vec3f(800, 10, 0),*fm.getResourceByAlias(Fonts::Serif),15);
         xpBar->setMaximum(1500);
         xpBar->setMinimum(0);
         xpBar->setValue(0);
+        fcHpBar = new gui::ProgressBar(getRenderWindow(), Vec3f(700, 0, 0), Vec3f(100, 10, 0),*fm.getResourceByAlias(Fonts::Serif),15);
+        fcHpBar->setMinimum(0);
+        fcHpBar->setMaximum(100);
+        fcHpBar->setValue(100);
+        fcHpBar->setVisible(false);
+        hero->setXpHpBar(xpBar, hpBar);
+        monster->setXpHpBar(nullptr, fcHpBar);
         getRenderComponentManager().addComponent(hpBar);
         getRenderComponentManager().addComponent(xpBar);
+        getRenderComponentManager().addComponent(fcHpBar);
         //setEventContextActivated(false);*/
     }
     void MyAppli::onRender(RenderComponentManager *cm) {
         // draw everything here...
         //if (isClientAuthentified) {
             World::drawOnComponents("E_BIGTILE", 0);
-            World::drawOnComponents("E_WALL+E_DECOR", 1);
-            World::drawOnComponents("E_WALL+E_DECOR", 2);
-            World::drawOnComponents("E_WALL+E_DECOR+E_PONCTUAL_LIGHT", 3);
+            World::drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_HERO", 1);
+            World::drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_HERO", 2);
+            World::drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_PONCTUAL_LIGHT", 3);
         /*} else {
             World::drawOnComponents("", 0);
             World::drawOnComponents("", 1);
         }*/
     }
     void MyAppli::onDisplay(RenderWindow* window) {
-        std::unordered_map<Sprite, std::vector<Item>, HashSprite>::iterator it;
-        for (it = cristals.begin(); it != cristals.end(); it++) {
-            Sprite sprite = it->first;
-            window->draw(sprite);
+        if (window == &getRenderWindow()) {
+            std::vector<std::pair<Sprite*, std::vector<Item>>>::iterator it;
+            for (it = cristals.begin(); it != cristals.end(); it++) {
+                Sprite sprite = *it->first;
+                window->draw(sprite);
+            }
+            std::vector<std::pair<std::pair<Caracter*, Text>, std::pair<sf::Time, sf::Time>>>::iterator it2;
+            for (it2 = tmpTexts.begin(); it2 != tmpTexts.end();) {
+                sf::Time elapsedTime = Application::getTimeClk().getElapsedTime() - it2->second.first;
+                it2->second.first = Application::getTimeClk().getElapsedTime();
+                it2->second.second -= elapsedTime;
+                if (it2->second.second <= sf::seconds(0)) {
+                    it2 = tmpTexts.erase(it2);
+                } else {
+                    it2->first.second.setPosition(Vec3f(it2->first.first->getPosition().x, it2->first.first->getPosition().y-10, 0));
+                    window->draw(it2->first.second);
+                    it2++;
+                }
+            }
         }
     }
     void MyAppli::onUpdate (RenderWindow* window, IEvent& event) {
@@ -530,6 +695,14 @@ namespace sorrok {
         if (event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_CLOSED && window == &getRenderWindow()) {
             Network::stopCli();
             stop();
+        }
+        if (event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_CLOSED && window == wPickupItems) {
+            pItems->removeAll();
+            wPickupItems->setVisible(false);
+        }
+        if (event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_CLOSED && window == wInventory) {
+            pInventory->removeAll();
+            wInventory->setVisible(false);
         }
         if (event.type == IEvent::KEYBOARD_EVENT && event.keyboard.type == IEvent::KEY_EVENT_PRESSED && window == &getRenderWindow()) {
             previousKey = actualKey;
@@ -625,6 +798,7 @@ namespace sorrok {
             getClock("RequestTime").restart();
         }
         if (Network::getResponse("NEWPOS", response)) {
+
             std::vector<std::string> infos = split(response, "*");
             int id = conversionStringInt(infos[0]);
             ping = conversionStringLong(infos[1]);
@@ -639,19 +813,18 @@ namespace sorrok {
             bool isAttacking = conversionStringInt(infos[8]);
             bool isAlive = conversionStringInt(infos[9]);
             int life = conversionStringInt(infos[10]);
-            //if (last_cli_time < caracter->getAttribute("isMoving").getValue<sf::Int64>()) {
+            if (last_cli_time > caracter->getAttribute("isMoving").getValue<sf::Int64>()) {
                 caracter->setMoving(isMoving);
-            //}
-            //if (last_cli_time < caracter->getAttribute("isInFightingMode").getValue<sf::Int64>()) {
+            }
+            if (last_cli_time > caracter->getAttribute("isInFightingMode").getValue<sf::Int64>()) {
                 caracter->setFightingMode(isInFightingMode);
-            //}
-            //if(last_cli_time < caracter->getAttribute("isAttacking").getValue<sf::Int64>()) {
+            }
+            if(last_cli_time > caracter->getAttribute("isAttacking").getValue<sf::Int64>()) {
                 caracter->setAttacking(isAttacking);
-            //}
-            //if (last_cli_time < caracter->getAttribute("isAlive").getValue<sf::Int64>()) {
-                caracter->setAlive(isAlive, hpBar, xpBar);
-            //}
-                caracter->setLife(life, hpBar);
+            }
+            if (last_cli_time > caracter->getAttribute("isAlive").getValue<sf::Int64>()) {
+                caracter->setAlive(isAlive);
+            }
             if (!caracter->isMoving() && static_cast<Hero*>(caracter)->isMovingFromKeyboard()) {
                 std::cout<<"stop caracter moving"<<std::endl;
                 static_cast<Hero*>(caracter)->setIsMovingFromKeyboard(false);
@@ -693,7 +866,7 @@ namespace sorrok {
            Caracter* caracter = static_cast<Caracter*>(World::getEntity(id));
            caracter->setAttacking(false);
            caracter->setFightingMode(false);
-           caracter->setAlive(false, hpBar, xpBar);
+           caracter->setAlive(false);
        }
        if (Network::getResponse("ENTERINFIGHTINGMODE", response)) {
             int id = conversionStringInt(response);
@@ -701,11 +874,19 @@ namespace sorrok {
             if (static_cast<Caracter*> (entity))
                 static_cast<Caracter*> (entity)->setFightingMode(true);
        }
-       if (Network::getResponse("SETATTACKING", response)) {
+       if (Network::getResponse("LEAVEINFIGHTINGMODE", response)) {
             int id = conversionStringInt(response);
             Entity* entity = World::getEntity(id);
             if (static_cast<Caracter*> (entity))
+                static_cast<Caracter*> (entity)->setFightingMode(false);
+       }
+       if (Network::getResponse("SETATTACKING", response)) {
+            int id = conversionStringInt(response);
+            Entity* entity = World::getEntity(id);
+            if (static_cast<Caracter*> (entity)) {
                 static_cast<Caracter*> (entity)->setAttacking(true);
+                static_cast<Caracter*> (entity)->restartAttackSpeed();
+            }
        }
        /*if (Network::getResponse("DMG", response)) {
             std::vector<std::string> infos = split(response, "*");
@@ -732,7 +913,8 @@ namespace sorrok {
             caracter->setMoving(false);
             caracter->setFightingMode(false);
             caracter->setAttacking(false);
-            caracter->setAlive(true, hpBar, xpBar);
+            caracter->setAlive(true);
+            caracter->restartRegenHP();
        }
        if (Network::getResponse("ATTACK", response)) {
             Caracter* monster = static_cast<Caracter*>(World::getEntity(conversionStringInt(response)));
@@ -755,10 +937,11 @@ namespace sorrok {
             std::vector<Item> items;
             ita(items);
             if (items.size() > 0) {
+                std::cout<<"items"<<std::endl;
                 cristals.clear();
                 TextureManager<> &tm = cache.resourceManager<Texture, std::string>("TextureManager");
-                Sprite cristal (*tm.getResourceByAlias("CRISTAL"),hero->getFocusedCaracter()->getPosition(),Vec3f(50, 100, 0),sf::IntRect(0, 0, 50, 100));
-                cristals.insert(std::make_pair(cristal, items));
+                Sprite* cristal = new Sprite(*tm.getResourceByAlias("CRISTAL"),hero->getFocusedCaracter()->getPosition(),Vec3f(50, 100, 0),sf::IntRect(0, 0, 50, 100));
+                cristals.push_back(std::make_pair(cristal, items));
             }
        }
        if (getClock("LoopTime").getElapsedTime().asMilliseconds() < 100)
@@ -855,6 +1038,7 @@ namespace sorrok {
                             caracter->setDamages(damages);
                             sf::Int64 time = Application::getTimeClk().getElapsedTime().asMicroseconds() - conversionStringLong(infos[nb+1]);
                             caracter->setDmgTransferTime(time);
+                            caracter->setLife(conversionStringInt(infos[nb+2]));
                         }
                     }
                     sf::Int64 time = caracter->getDmgTransferTime();
@@ -868,7 +1052,16 @@ namespace sorrok {
                         caracter->restartAttackSpeed();
                         int dmg = caracter->getDamages().back();
                         caracter->getDamages().pop_back();
-                        caracter->attackFocusedCaracter(dmg, hpBar);
+                        FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
+                        Text text;
+                        text.setFont(*fm.getResourceByAlias(Fonts::Serif));
+                        text.setString("-"+conversionIntString(dmg));
+                        text.setColor(sf::Color::Red);
+                        text.setCharacterSize(10);
+                        text.setPosition(Vec3f(caracter->getFocusedCaracter()->getPosition().x,caracter->getFocusedCaracter()->getPosition().y-10, 0));
+                        text.setSize(Vec3f(10, 10, 0));
+                        tmpTexts.push_back(std::make_pair(std::make_pair(caracter->getFocusedCaracter(), text), std::make_pair(Application::getTimeClk().getElapsedTime(), sf::seconds(0.5))));
+                        caracter->attackFocusedCaracter(dmg);
                         if (!caracter->getFocusedCaracter()->isAlive()) {
                             caracter->setAttacking(false);
                             caracter->setFightingMode(false);
@@ -878,12 +1071,12 @@ namespace sorrok {
                     if (caracter->isAttacking())
                         caracter->setAttacking(false);
                 }
-                if (!caracter->isInFightingMode() && !caracter->isMoving()) {
+                if (!caracter->isInFightingMode() && !caracter->isMoving() && !caracter->isAttacked()) {
                     //std::cout<<"rgn size : "<<caracter->getRegen().size()<<std::endl;
                     if (caracter->getRegen().empty()) {
                         //std::cout<<"wait for received regen"<<std::endl;
                         std::string response;
-                        //std::cout<<"regen received"<<std::endl;
+
                         if (Network::getResponse("RGN"+conversionIntString(caracter->getId()), response)) {
                             std::vector<int> regen;
                             std::vector<std::string> infos = split(response, "*");
@@ -894,24 +1087,40 @@ namespace sorrok {
                             caracter->setRegen(regen);
                             sf::Int64 time = Application::getTimeClk().getElapsedTime().asMicroseconds() - conversionStringLong(infos[nb+1]);
                             caracter->setRgnTransferTime(time);
+                            caracter->setLife(conversionStringInt(infos[nb+2]));
                         }
                     }
                     sf::Int64 time = caracter->getRgnTransferTime();
                     if (!caracter->getRegen().empty() && caracter->getTimeOfLastHpRegen().asSeconds() >= caracter->getRegenHpSpeed() - time / 1e+6) {
-                        if (time > 0) {
+                        while (time > 0) {
                             time -= caracter->getRegenHpSpeed() * 1e+6;
                             if (time < 0)
-                                    time = 0;
+                                time = 0;
                             caracter->setRgnTransferTime(time);
                         }
                         caracter->restartRegenHP();
                         int rgn = caracter->getRegen().back();
                         caracter->getRegen().pop_back();
+                        FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
+                        Text text;
+                        text.setFont(*fm.getResourceByAlias(Fonts::Serif));
+                        text.setString(conversionIntString(rgn));
+                        text.setColor(sf::Color::Green);
+                        text.setCharacterSize(10);
+                        text.setPosition(Vec3f(caracter->getPosition().x,caracter->getPosition().y-10, 0));
+                        text.setSize(Vec3f(10, 10, 0));
+                        tmpTexts.push_back(std::make_pair(std::make_pair(caracter, text), std::make_pair(Application::getTimeClk().getElapsedTime(), sf::seconds(0.5))));
                         if (caracter->getLife() + rgn >= caracter->getMaxLife()) {
-                            caracter->setLife(caracter->getMaxLife(), hpBar);
+                            if (caracter->getType() == "E_HERO")
+                                std::cout<<"set life : "<<std::endl;
+                            caracter->setLife(caracter->getMaxLife());
                         } else {
-                            caracter->setLife(caracter->getLife() + rgn, hpBar);
+                            if (caracter->getType() == "E_HERO")
+                                std::cout<<"set life : "<<std::endl;
+                            caracter->setLife(caracter->getLife() + rgn);
                         }
+                        if (caracter->getType() == "E_HERO")
+                            std::cout<<"get life : "<<caracter->getLife()<<std::endl;
                     }
                 }
             } else {
@@ -928,6 +1137,13 @@ namespace sorrok {
                     }
                 }
             }
+        }
+        while(!gameActions.empty()) {
+            std::cout<<"game action!"<<std::endl;
+            apply_nary_visitor(GameAction(), gameActions.back().first, gameActions.back().second.first, gameActions.back().second.second);
+            gameActions.pop_back();
+            delete itemActions.back();
+            itemActions.pop_back();
         }
     }
     void MyAppli::actionPerformed(gui::Button* item) {

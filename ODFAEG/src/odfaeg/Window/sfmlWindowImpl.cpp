@@ -3,6 +3,7 @@
 #include "../../../include/odfaeg/Window/sfmlMouse.hpp"
 namespace odfaeg {
     namespace window {
+        SFMLWindowImpl::SFMLWindowImpl() {}
         SFMLWindowImpl::SFMLWindowImpl(sf::VideoMode mode, const sf::String& title, sf::Uint32 style, const ContextSettings& settings) :
         sf::Window (mode, title, style, sf::ContextSettings(settings.depthBits, settings.stencilBits, settings.antiAliasingLevel, settings.versionMajor, settings.versionMinor)) {
 
@@ -132,7 +133,7 @@ namespace odfaeg {
         void SFMLWindowImpl::setVisible(bool visible) {
             sf::Window::setVisible(visible);
         }
-        sf::Vector2i SFMLWindowImpl::getPosition() {
+        sf::Vector2i SFMLWindowImpl::getPosition() const {
             return sf::Window::getPosition();
         }
         void SFMLWindowImpl::setPosition(const sf::Vector2i& position) {

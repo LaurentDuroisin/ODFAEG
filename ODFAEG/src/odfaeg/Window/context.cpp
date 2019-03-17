@@ -1,5 +1,8 @@
 #include "../../../include/odfaeg/Window/context.hpp"
 #include "../../../include/odfaeg/Window/contextImpl.hpp"
+#if defined (SFML)
+#include <SFML/Window/Context.hpp>
+#endif // defined
 namespace odfaeg {
     namespace window {
         Context::Context() {

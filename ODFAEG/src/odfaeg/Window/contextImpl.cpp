@@ -40,6 +40,7 @@ namespace odfaeg {
             }
         }
         ContextImpl::ContextImpl() {
+            std::cout<<"create odfaeg context"<<std::endl;
             if (nbContexts == 0) {
                 sharedContext = new ContextImplType();
                 ContextSettings settings;

@@ -8,6 +8,7 @@ namespace odfaeg {
         ////////////////////////////////////////////////////////////
         void WindowImpl::create(VideoMode mode, const String& title, Uint32 style, const ContextSettings& settings)
         {
+            std::cout<<"create odfaeg window"<<std::endl;
             // Recreate the WindowImpl implementation
             WindowImplType::create(mode, title, style, settings);
             m_context.create(getSystemHandle());

@@ -128,7 +128,7 @@ namespace sorrok {
         FontManager<> &fm = cache.resourceManager<odfaeg::graphic::Font, std::string>("FontManager");
         Vec2f pos (getView().getPosition().x - getView().getSize().x * 0.5f, getView().getPosition().y - getView().getSize().y * 0.5f);
         BoundingBox bx (pos.x, pos.y, 0, getView().getSize().x, getView().getSize().y, 0);
-        theMap = new Map(&getRenderComponentManager(), "Map test", 100, 50);
+        theMap = new Map(&getRenderComponentManager(), "Map test", 100, 50, 0);
         BaseChangementMatrix bm;
         bm.set2DIsoMatrix();
         theMap->setBaseChangementMatrix(bm);
@@ -177,7 +177,7 @@ namespace sorrok {
                     entities[i]->getChildren()[0]->getFaces()[0]->getMaterial().clearTextures();
                     entities[i]->getChildren()[0]->getFaces()[0]->getMaterial().addTexture(tm.getResourceByAlias(texId), texRect);
                     entities[i]->getChildren()[0]->getFaces()[0]->getMaterial().setTexId(texId);
-                    World::getGridCellAt(Vec3f(entities[i]->getCenter().x, entities[i]->getCenter().y, 0))->setPassable(false);
+                    World::getGridCellAt(Vec3f(entities[i]->getChildren()[0]->getCenter().x, entities[i]->getChildren()[0]->getCenter().y, 0))->setPassable(false);
                 } else if (entities[i]->getType() == "E_DECOR") {
                     std::string texId =  entities[i]->getChildren()[0]->getFaces()[0]->getMaterial().getTexId();
                     sf::IntRect texRect = entities[i]->getChildren()[0]->getFaces()[0]->getMaterial().getTexRect();
@@ -187,11 +187,13 @@ namespace sorrok {
                 } else if (entities[i]->getType() == "E_ANIMATION") {
                     Anim* anim = static_cast<Anim*> (entities[i]);
                     for (unsigned int j = 0; j < anim->getChildren().size(); j++) {
-                        std::string texId = entities[i]->getChildren()[j]->getChildren()[0]->getFaces()[0]->getMaterial().getTexId();
-                        sf::IntRect texRect = entities[i]->getChildren()[j]->getChildren()[0]->getFaces()[0]->getMaterial().getTexRect();
-                        entities[i]->getChildren()[j]->getChildren()[0]->getFaces()[0]->getMaterial().clearTextures();
-                        entities[i]->getChildren()[j]->getChildren()[0]->getFaces()[0]->getMaterial().addTexture(tm.getResourceByAlias(texId), texRect);
-                        entities[i]->getChildren()[j]->getChildren()[0]->getFaces()[0]->getMaterial().setTexId(texId);
+                        if (entities[i]->getChildren()[j]->getChildren().size() > 0) {
+                            std::string texId = entities[i]->getChildren()[j]->getChildren()[0]->getFaces()[0]->getMaterial().getTexId();
+                            sf::IntRect texRect = entities[i]->getChildren()[j]->getChildren()[0]->getFaces()[0]->getMaterial().getTexRect();
+                            entities[i]->getChildren()[j]->getChildren()[0]->getFaces()[0]->getMaterial().clearTextures();
+                            entities[i]->getChildren()[j]->getChildren()[0]->getFaces()[0]->getMaterial().addTexture(tm.getResourceByAlias(texId), texRect);
+                            entities[i]->getChildren()[j]->getChildren()[0]->getFaces()[0]->getMaterial().setTexId(texId);
+                        }
                     }
                     anim->play(true);
                     au->addAnim(anim);
@@ -262,9 +264,9 @@ namespace sorrok {
         View view = getView();
         //view.rotate(0, 0, 20);
         ZSortingRenderComponent *frc1 = new ZSortingRenderComponent(getRenderWindow(),0, "E_BIGTILE");
-        ShadowRenderComponent *frc2 = new ShadowRenderComponent(getRenderWindow(), 1, "E_WALL+E_DECOR+E_HERO", window::ContextSettings(0, 0, 4, 3, 0));
-        OITRenderComponent *frc3 = new OITRenderComponent(getRenderWindow(),2, "E_WALL+E_DECOR+E_HERO+E_PARTICLES", window::ContextSettings(0, 0, 4, 3, 0));
-        LightRenderComponent *frc4 = new LightRenderComponent(getRenderWindow(), 3, "E_WALL+E_DECOR+E_HERO+E_PONCTUAL_LIGHT",window::ContextSettings(0, 0, 4, 3, 0));
+        ShadowRenderComponent *frc2 = new ShadowRenderComponent(getRenderWindow(), 1, "E_WALL+E_DECOR+E_ANIMATION+E_HERO", window::ContextSettings(0, 0, 4, 3, 0));
+        OITRenderComponent *frc3 = new OITRenderComponent(getRenderWindow(),2, "E_WALL+E_DECOR+E_HERO+E_ANIMATION+E_PARTICLES", window::ContextSettings(0, 0, 4, 3, 0));
+        LightRenderComponent *frc4 = new LightRenderComponent(getRenderWindow(), 3, "E_WALL+E_DECOR+E_HERO+E_ANIMATION+E_PONCTUAL_LIGHT",window::ContextSettings(0, 0, 4, 3, 0));
         getRenderComponentManager().addComponent(frc1);
         getRenderComponentManager().addComponent(frc2);
         getRenderComponentManager().addComponent(frc3);
@@ -291,6 +293,7 @@ namespace sorrok {
                 }
                 animation->addFrame(frame);
             }
+            animation->getCurrentFrame()->setBoneIndex(i / 8);
             hero->addAnimation(animation);
             au->addAnim(animation);
         }
@@ -310,6 +313,7 @@ namespace sorrok {
                 }
                 animation->addFrame(frame);
             }
+            animation->getCurrentFrame()->setBoneIndex(i + 8);
             hero->addAnimation(animation);
             au->addAnim(animation);
         }
@@ -359,9 +363,9 @@ namespace sorrok {
         World::drawOnComponents("E_BIGTILE", 0);
         /*Entity* shadowMap = World::getShadowMap("E_WALL+E_DECOR+E_ANIMATION+E_hero", 2, 1);
         World::drawOnComponents(*shadowMap,0,sf::BlendMultiply);*/
-        World::drawOnComponents("E_WALL+E_DECOR+E_HERO", 1);
-        World::drawOnComponents("E_WALL+E_DECOR+E_HERO+E_PARTICLES", 2);
-        World::drawOnComponents("E_WALL+E_DECOR+E_HERO+E_PONCTUAL_LIGHT", 3);
+        World::drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_HERO", 1);
+        World::drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_HERO+E_PARTICLES", 2);
+        World::drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_HERO+E_PONCTUAL_LIGHT", 3);
         fpsCounter++;
         if (getClock("FPS").getElapsedTime() >= sf::seconds(1.f)) {
             std::cout<<"FPS : "<<fpsCounter<<std::endl;

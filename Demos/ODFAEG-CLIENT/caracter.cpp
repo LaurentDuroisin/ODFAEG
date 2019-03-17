@@ -8,7 +8,7 @@ using namespace odfaeg::graphic::gui;
 using namespace odfaeg::physic;
 using namespace odfaeg::math;
 namespace sorrok {
-    Caracter::Caracter (std::string type, std::string name, string currentMapName, string classs, int level) : AnimatedEntity (Vec3f(-25, -50, 0), Vec3f (50, 100, 0), Vec3f(25, 50, 0), type) {
+    Caracter::Caracter (std::string type, std::string name, string currentMapName, string classs, int level) : BoneAnimation (Vec3f(-25, -50, 0), Vec3f (50, 100, 0), type) {
         currentAnimIndex = 0;
         this->name = name;
         this->currentMapName = currentMapName;
@@ -25,6 +25,7 @@ namespace sorrok {
         attackMax = 10;
         fightingMode = attacking;
         alive = true;
+        attacked = false;
         regenHpSpeed = 1.f;
         regenHpAmountMin = 1;
         regenHpAmountMax = 2;
@@ -37,6 +38,10 @@ namespace sorrok {
         addAttribute("isInFightingMode", i);
         addAttribute("isAttacking", i);
         dmgTransferTime = rgnTransferTime = 0;
+    }
+    void Caracter::setXpHpBar(ProgressBar* xpBar, ProgressBar* hpBar) {
+        this->xpBar = xpBar;
+        this->hpBar = hpBar;
     }
     void Caracter::setDmgTransferTime(sf::Int64 time) {
         dmgTransferTime = time;
@@ -86,10 +91,11 @@ namespace sorrok {
     void Caracter::setRegenHpAmountMax(int regenHpAmount) {
         this->regenHpAmountMax = regenHpAmount;
     }
-    void Caracter::setLife(int life, gui::ProgressBar* hpBar) {
+    void Caracter::setLife(int life) {
         this->life = life;
-        if (getType() == "E_HERO")
+        if (hpBar != nullptr) {
             hpBar->setValue(life);
+        }
     }
     int Caracter::getLife() {
         return life;
@@ -114,7 +120,8 @@ namespace sorrok {
                 anims[baseAnimIndex + currentAnimIndex]->stop();
                 anims[baseAnimIndex + currentAnimIndex]->setCurrentFrame(0);
                 baseAnimIndex = ATTACKING;
-                World::update();
+                BoneAnimation::setBoneIndex(baseAnimIndex + currentAnimIndex);
+                //World::update();
             } else {
                 changeAttribute("isAttacking", Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
                 anims[baseAnimIndex + currentAnimIndex]->stop();
@@ -123,7 +130,7 @@ namespace sorrok {
             }
         }
     }
-    void Caracter::setAlive(bool b, ProgressBar* hpBar, ProgressBar* xpBar) {
+    void Caracter::setAlive(bool b) {
         if (alive == true && b == false) {
             if(getType() == "E_HERO") {
                 std::cout<<"hero death"<<std::endl;
@@ -133,6 +140,7 @@ namespace sorrok {
             anims[baseAnimIndex + currentAnimIndex]->setCurrentFrame(0);
             baseAnimIndex = TIPPING_OVER;
             anims[baseAnimIndex + currentAnimIndex]->play(false);
+            BoneAnimation::setBoneIndex(baseAnimIndex + currentAnimIndex);
             damages.clear();
             regen.clear();
             restartRespawn();
@@ -143,7 +151,10 @@ namespace sorrok {
             }
             changeAttribute("isAlive",Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
             baseAnimIndex = WALKING;
-            setLife(getMaxLife(), hpBar);
+            setLife(getMaxLife());
+            if(getType() == "E_HERO") {
+                std::cout<<"hero live"<<getLife()<<std::endl;
+            }
             World::update();
         }
         alive = b;
@@ -155,11 +166,23 @@ namespace sorrok {
         return attacking;
     }
     void Caracter::setFightingMode(bool b) {
-        if (fightingMode = true && b == false || fightingMode == false && b == true) {
-            changeAttribute("isInFightingMode",Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
-        }
         if (fightingMode == false && b == true) {
             regen.clear();
+            if (focusedCaracter)
+                focusedCaracter->attacked = b;
+            changeAttribute("isInFightingMode",Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
+        }
+        if (fightingMode == true && b == false) {
+            if (focusedCaracter)
+                focusedCaracter->attacked = b;
+            changeAttribute("isInFightingMode",Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
+            if (!moving && !attacked)
+            clockRegenHp.restart();
+            if (focusedCaracter) {
+                focusedCaracter->attacked = b;
+                if (!focusedCaracter->moving && !focusedCaracter->fightingMode && !focusedCaracter->attacked)
+                    focusedCaracter->clockRegenHp.restart();
+            }
         }
         this->fightingMode = b;
     }
@@ -220,7 +243,9 @@ namespace sorrok {
             anims[baseAnimIndex + currentAnimIndex]->play(true);
         else
             anims[baseAnimIndex + currentAnimIndex]->play(false);
-        World::update();
+        baseAnimIndex + currentAnimIndex;
+        BoneAnimation::setBoneIndex(baseAnimIndex+currentAnimIndex);
+        //World::update();
     }
     Vec2f Caracter::getDir () {
         return dir;
@@ -230,6 +255,8 @@ namespace sorrok {
         if (moving != b) {
             if (moving == true && b == false) {
                 regen.clear();
+                if (!fightingMode && !attacked)
+                    clockRegenHp.restart();
             }
             this->moving = b;
             if (moving) {
@@ -238,6 +265,9 @@ namespace sorrok {
                 anims[baseAnimIndex + currentAnimIndex]->setCurrentFrame(0);
                 baseAnimIndex = WALKING;
                 anims[baseAnimIndex + currentAnimIndex]->play(true);
+                baseAnimIndex + currentAnimIndex;
+                BoneAnimation::setBoneIndex(baseAnimIndex);
+                //World::update();
             } else {
                 changeAttribute("isMoving",Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
                 anims[baseAnimIndex + currentAnimIndex]->stop();
@@ -276,7 +306,7 @@ namespace sorrok {
     string Caracter::getClass () {
         return classs;
     }
-    void Caracter::onDraw(RenderTarget &target, RenderStates states) const {
+    void Caracter::onDraw(RenderTarget &target, RenderStates states) {
         target.draw(*getCurrentFrame(), states);
     }
     Entity* Caracter::getCurrentFrame() const {
@@ -291,11 +321,11 @@ namespace sorrok {
     Caracter* Caracter::getFocusedCaracter() {
         return focusedCaracter;
     }
-    void Caracter::attackFocusedCaracter(int attack, ProgressBar* hpBar) {
+    void Caracter::attackFocusedCaracter(int attack) {
         anims[baseAnimIndex + currentAnimIndex]->play(false);
-        focusedCaracter->setLife(focusedCaracter->getLife() - attack, hpBar);
+        focusedCaracter->setLife(focusedCaracter->getLife() - attack);
         if (focusedCaracter->getLife() <= 0 && focusedCaracter->isAlive()) {
-            focusedCaracter->setLife(0, hpBar);
+            focusedCaracter->setLife(0);
         }
     }
     sf::Time Caracter::getTimeBeforeLastRespawn() {
@@ -324,6 +354,9 @@ namespace sorrok {
     }
     void Caracter::restartRegenHP() {
         clockRegenHp.restart();
+    }
+    bool Caracter::isAttacked() {
+        return attacked;
     }
     Caracter::~Caracter() {
     }

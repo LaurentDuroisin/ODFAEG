@@ -14,7 +14,7 @@ namespace sorrok {
     }
     void MyAppli::onInit () {
         Network::startSrv(10'000, 10'001);
-        theMap = new Map(nullptr, "Map test", 100, 50);
+        theMap = new Map(nullptr, "Map test", 100, 50, 0);
         /*sql::Driver* driver = get_driver_instance();
         sql::Connection* con = driver->connect("localhost", "root","Kirokofu457$");*/
         //con->setSchema("SORROK");
@@ -37,7 +37,7 @@ namespace sorrok {
         walls[3]->getFaces()[0]->getMaterial().setTexId("WALLS");
         walls[4]->getFaces()[0]->getMaterial().setTexId("WALLS");
         walls[5]->getFaces()[0]->getMaterial().setTexId("WALLS");
-        std::ifstream ifs("FichierDeSerialisation");
+        /*std::ifstream ifs("FichierDeSerialisation");
         if(ifs) {
             ITextArchive ia(ifs);
             std::vector<Entity*> entities;
@@ -66,7 +66,7 @@ namespace sorrok {
                 }
             }
             ifs.close();
-        } else {
+        } else {*/
             BoundingBox mapZone(0, 0, 0, 1500, 1000, 0);
             World::generate_map(tiles, walls, Vec2f(100, 50), mapZone, false);
             w = new g2d::Wall(walls[3],&g2d::AmbientLight::getAmbientLight());
@@ -103,7 +103,7 @@ namespace sorrok {
             fire->addFrame(fire2);
             fire->addFrame(fire3);
             World::addEntity(fire);
-        }
+        //}
 
         //PonctualLight* light = new PonctualLight(Vec2f(50, 150),100,50,0,200,sf::Color(255,255,0),16,0);
         //World::addEntity(light);
@@ -122,15 +122,14 @@ namespace sorrok {
         BoundingPolyhedron monsterZone(pts[0], pts[2], pts[3], true);
         monsterZone.addTriangle(pts[2], pts[0], pts[3]);
         Monster* monster = new Monster("Ogro", "Orc","MapTest",1,monsterZone);
+        std::cout<<"monster id : "<<monster->getId()<<std::endl;
         Vec3f pos = monster->respawn();
         Item item("HP potion", Item::HP_POTION);
+        item.addAttribute(Item::POTION_AMOUNT, 50);
         monster->addLootableItem(item, 0.5);
         tmpPosition = pos;
         monster->setCenter(pos);
-        World::addEntity(monster);
-        /*driver = get_driver_instance();
-        con = driver->connect("tcp://127.0.0.1:3306", "root", "Kirokofu457$");
-        con->setSchema("SORROK");*/
+        World::addEntity(monster);        
         std::cout<<"server is ready!"<<std::endl;
     }
     void MyAppli::onExec () {
@@ -316,6 +315,7 @@ namespace sorrok {
                 int id = conversionStringInt(infos[1]);
                 Caracter* hero = static_cast<Caracter*>(World::getEntity(id));
                 hero->setAlive(true);
+                hero->restartRegenHP();
                 hero->setMoving(false);
                 hero->setIsMovingFromKeyboard(false);
                 hero->setAttacking(false);
@@ -324,7 +324,9 @@ namespace sorrok {
                 packet<<"ALIVE"+conversionIntString(hero->getId())+"*"+conversionFloatString(hero->getCenter().x)+"*"+conversionFloatString(hero->getCenter().y);
                 user->sendTcpPacket(packet);
             } else if (request == "CONNECT") {
+                std::cout<<"connect"<<std::endl;
                 caracter = new Hero(user, "Sorrok", "Nagi", "M", "Map test", "Brain", "Green", "White","Normal","Novice", 1);
+                std::cout<<"hero id : "<<caracter->getId()<<std::endl;
                 BoundingVolume* bb2 = new BoundingBox(caracter->getGlobalBounds().getPosition().x, caracter->getGlobalBounds().getPosition().y + caracter->getGlobalBounds().getSize().y * 0.4f, 0,
                 caracter->getGlobalBounds().getSize().x, caracter->getGlobalBounds().getSize().y * 0.25f, 0);
                 caracter->setCollisionVolume(bb2);
@@ -440,6 +442,7 @@ namespace sorrok {
                         }
                         if (!caracter->isAttacking()) {
                             caracter->setAttacking(true);
+                            caracter->restartAttackSpeed();
                             SymEncPacket packet;
                             packet<<"SETATTACKING"<<conversionIntString(caracter->getId());
                             Network::sendTcpPacket(packet);
@@ -473,7 +476,7 @@ namespace sorrok {
                             }
                             for (unsigned int i = 0; i < Network::getUsers().size(); i++) {
                                 std::string userResponse = response;
-                                userResponse+=conversionLongString(Network::getUsers()[i]->getClientTime());
+                                userResponse+=conversionLongString(Network::getUsers()[i]->getClientTime())+"*"+conversionIntString(caracter->getLife());
                                 SymEncPacket packet;
                                 packet<<userResponse;
                                 Network::getUsers()[i]->sendTcpPacket(packet);
@@ -502,7 +505,7 @@ namespace sorrok {
                         }
                     }
                 }
-                if (!caracter->isInFightingMode() && !caracter->isMoving()) {
+                if (!caracter->isInFightingMode() && !caracter->isMoving() && !caracter->isAttacked()) {
                     if (caracter->getRegen().empty()) {
                         std::vector<int> regen;
                         int nb = 10.f / caracter->getRegenHpSpeed();
@@ -515,7 +518,7 @@ namespace sorrok {
                         caracter->setRegen(regen);
                         for (unsigned int i = 0; i < Network::getUsers().size(); i++) {
                             std::string userResponse = response;
-                            userResponse+=conversionLongString(Network::getUsers()[i]->getClientTime());
+                            userResponse+=conversionLongString(Network::getUsers()[i]->getClientTime())+"*"+conversionIntString(caracter->getLife());
                             SymEncPacket packet;
                             packet<<userResponse;
                             Network::getUsers()[i]->sendTcpPacket(packet);
@@ -587,6 +590,9 @@ namespace sorrok {
                         SymEncPacket packet;
                         packet<<response;
                         users[i]->sendTcpPacket(packet);
+                        packet.clear();
+                        packet<<"LEAVEINFIGHTINGMODE"<<conversionIntString(monster->getId());
+                        users[i]->sendTcpPacket(packet);
                     }
                 }
             } else {
@@ -603,6 +609,7 @@ namespace sorrok {
                     monster->getClkLastMove().restart();
                     monster->restartRespawn();
                     monster->setAlive(true);
+                    monster->restartRegenHP();
                     monster->setFightingMode(false);
                     monster->setAttacking(false);
                     monster->setMoving(false);

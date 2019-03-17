@@ -18,6 +18,7 @@ int main (int argv, char* argc[]) {
     EXPORT_CLASS_GUID(EntityAnimation, Entity, Anim)
     EXPORT_CLASS_GUID(EntityHero, Entity, Hero)
     EXPORT_CLASS_GUID(EntityMonster, Entity, Monster)
+    EXPORT_CLASS_GUID(EntityMesh, Entity, Mesh)
     MyAppli app;
     return app.exec();
     bool running = false;

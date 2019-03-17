@@ -10,17 +10,19 @@
 #include "odfaeg/Graphics/world.h"
 #include <string>
 #include <SFML/Graphics.hpp>
+#include "odfaeg/Graphics/boneAnimation.hpp"
 namespace sorrok {
     class MyAppli;
-    class Caracter : public odfaeg::graphic::AnimatedEntity {
+    class Caracter : public odfaeg::graphic::BoneAnimation {
     public :
         enum ANIMS {
             WALKING, ATTACKING = 8, TIPPING_OVER = 16
         };
-        Caracter() : AnimatedEntity(odfaeg::math::Vec3f(0, 0, 0), odfaeg::math::Vec3f(0, 0, 0), odfaeg::math::Vec3f(0, 0, 0),"E_CARACTER") {
+        Caracter() : BoneAnimation(odfaeg::math::Vec3f(0, 0, 0), odfaeg::math::Vec3f(0, 0, 0),"E_CARACTER") {
             currentAnimIndex = 0;
         }
         Caracter (std::string type, std::string name, std::string currentMapName, std::string classs, int level);
+        void setXpHpBar(odfaeg::graphic::gui::ProgressBar* hpBar, odfaeg::graphic::gui::ProgressBar* xpBar);
         bool isMovable() const {
             return true;
         }
@@ -44,7 +46,7 @@ namespace sorrok {
         virtual bool isMonster() = 0;
         void setRange(int range);
         int getRange();
-        void setLife(int life, odfaeg::graphic::gui::ProgressBar* hpBar);
+        void setLife(int life);
         void setMaxLife(int life);
         int getLife ();
         int getMaxLife();
@@ -57,7 +59,7 @@ namespace sorrok {
         void setFightingMode(bool b);
         bool isInFightingMode();
         bool isAttacking ();
-        void setAlive(bool b, odfaeg::graphic::gui::ProgressBar* hpBar, odfaeg::graphic::gui::ProgressBar* xpBar);
+        void setAlive(bool b);
         bool isAlive();
         void setAttacking(bool b);
         void setCurrentXp(int xp);
@@ -65,7 +67,7 @@ namespace sorrok {
         void setLevel (int level);
         sf::Time getTimeOfLastAttack();
         sf::Time getTimeOfLastHpRegen();
-        void attackFocusedCaracter(int attack, odfaeg::graphic::gui::ProgressBar* hpBar);
+        void attackFocusedCaracter(int attack);
         void setFocusedCaracter(Caracter* caracter);
         Caracter* getFocusedCaracter();
         void up (int xp);
@@ -78,7 +80,7 @@ namespace sorrok {
         int getRegenHpAmountMax();
         void setRegenHpAmountMax(int regenHpAmount);
         Entity* getCurrentFrame() const;
-        void onDraw(odfaeg::graphic::RenderTarget&, odfaeg::graphic::RenderStates) const;
+        void onDraw(odfaeg::graphic::RenderTarget&, odfaeg::graphic::RenderStates);
         void onMove(odfaeg::math::Vec3f& t);
         virtual void setIsMovingFromKeyboard(bool b) {}
         virtual bool isMovingFromKeyboard() = 0;
@@ -115,6 +117,7 @@ namespace sorrok {
         std::vector<int>& getRegen();
         void restartRegenHP();
         virtual ~Caracter();
+        bool isAttacked();
         private :
         std::string name, currentMapName, classs;
         int level, attackMin, attackMax, sterk, range;
@@ -132,6 +135,8 @@ namespace sorrok {
         sf::Time timeBefLastRespawn;
         std::vector<int> damages, regen;
         sf::Int64 dmgTransferTime, rgnTransferTime;
+        odfaeg::graphic::gui::ProgressBar *hpBar, *xpBar;
+        bool attacked;
     };
 }
 #endif

@@ -26,17 +26,12 @@ namespace sorrok {
         attackMax = 10;
         fightingMode = attacking = attacked = agressif = false;
         alive = true;
+        attacked = false;
         regenHpSpeed = 1.f;
         regenHpAmountMin = 1;
         regenHpAmountMax = 5;
         focusedCaracter = nullptr;
         timeBefLastRespawn = sf::seconds(10.f);
-    }
-    void Caracter::setIsAttacked(bool attacked) {
-        if (this->attacked == true && attacked == false) {
-            damages.clear();
-        }
-        this->attacked = attacked;
     }
     void Caracter::setIsAgressif(bool agressif) {
         this->agressif = agressif;
@@ -127,6 +122,16 @@ namespace sorrok {
     void Caracter::setFightingMode(bool b) {
         if (fightingMode == false && b == true) {
             regen.clear();
+            if (focusedCaracter)
+                focusedCaracter->attacked = b;
+        }
+        if (fightingMode == true && b == false) {
+            if (!moving && !attacked)
+                clockRegenHp.restart();
+            if (focusedCaracter)
+                focusedCaracter->attacked = b;
+            if (!focusedCaracter->moving && !focusedCaracter->fightingMode && !focusedCaracter->attacked)
+                focusedCaracter->clockRegenHp.restart();
         }
         this->fightingMode = b;
     }
@@ -161,8 +166,11 @@ namespace sorrok {
         return dir;
     }
     void Caracter::setMoving (bool b) {
-        if (moving == true && b == false)
+        if (moving == true && b == false) {
             regen.clear();
+            if (!fightingMode && !attacked)
+                clockRegenHp.restart();
+        }
         this->moving = b;
     }
     bool Caracter::isMoving () {
@@ -203,7 +211,7 @@ namespace sorrok {
         target.draw(*getCurrentFrame(), states);
     }
     Entity* Caracter::getCurrentFrame() const {
-        return anims[currentAnimIndex]->getCurrentFrame();
+        return (anims.size() > currentAnimIndex) ? anims[currentAnimIndex] : nullptr;
     }
     void Caracter::setFocusedCaracter(Caracter* focusedCaracter) {
         this->focusedCaracter = focusedCaracter;
@@ -212,7 +220,6 @@ namespace sorrok {
         return focusedCaracter;
     }
     void Caracter::attackFocusedCaracter(int dmg) {
-        clockAtkSpeed.restart();
         focusedCaracter->setLife(focusedCaracter->getLife() - dmg);
         if (focusedCaracter->getLife() <= 0 && focusedCaracter->isAlive()) {
             std::cout<<focusedCaracter->getType()<<" is death"<<std::endl;

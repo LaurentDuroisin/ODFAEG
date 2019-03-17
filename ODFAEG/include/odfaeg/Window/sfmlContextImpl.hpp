@@ -6,6 +6,7 @@ namespace odfaeg {
     namespace window {
         class SFMLContextImpl : public IContext {
         public :
+            void create(IContext* sharedContext=nullptr);
             bool setActive(bool active);
             void create(sf::WindowHandle handle, IContext* sharedContext = nullptr);
             void create(ContextSettings& settings, unsigned int width, unsigned int height, IContext* sharedContext = nullptr);

@@ -39,13 +39,9 @@
 #include "item.hpp"
 #include <fstream>
 #include <unordered_map>
+#include "gameAction.hpp"
+#include "itemAction.hpp"
 namespace sorrok {
-    class HashSprite {
-        public:
-            std::size_t operator()(odfaeg::graphic::Sprite const& s) const {
-                return s.getPosition().x + s.getPosition().y + s.getPosition().z;
-            }
-    };
     class MyAppli : public odfaeg::core::Application,
                     public odfaeg::graphic::gui::ActionListener {
     private :
@@ -66,16 +62,16 @@ namespace sorrok {
         sf::Int64 ping;
         bool received = false;
         static const unsigned int PATH_ERROR_MARGIN = 5;
-        odfaeg::graphic::RenderWindow* wResuHero, *wIdentification;
+        odfaeg::graphic::RenderWindow* wResuHero, *wIdentification, *wPickupItems, *wInventory;
         odfaeg::graphic::gui::Label* label, *labPseudo, *labMdp;
         odfaeg::graphic::gui::TextArea* taPseudo;
         odfaeg::graphic::gui::PasswordField* taPassword;
         odfaeg::graphic::gui::Button* button, *idButton, *invButton;
-        odfaeg::graphic::gui::ProgressBar* hpBar, *xpBar;
-        odfaeg::graphic::gui::Panel* pItems;
+        odfaeg::graphic::gui::ProgressBar* hpBar, *xpBar, *fcHpBar;
+        odfaeg::graphic::gui::Panel* pItems, *pInventory;
         bool isClientAuthentified;
-        std::unordered_map<odfaeg::graphic::Sprite, std::vector<Item>, HashSprite> cristals;
-        std::pair<odfaeg::graphic::Sprite, std::vector<Item>> selectedCristal;
+        std::vector<std::pair<odfaeg::graphic::Sprite*, std::vector<Item>>> cristals;
+        std::pair<odfaeg::graphic::Sprite*, std::vector<Item>> selectedCristal;
     public :
         enum Fonts {
             Serif
@@ -94,6 +90,12 @@ namespace sorrok {
         void onUpdate (odfaeg::graphic::RenderWindow* window, odfaeg::window::IEvent& event);
         void onExec ();
         void actionPerformed(odfaeg::graphic::gui::Button* item);
+        void dropItems (odfaeg::graphic::gui::Label* label);
+        void showInventory();
+        void onIconClicked(odfaeg::graphic::gui::Icon* icon);
+        std::vector<std::pair<odfaeg::core::Variant<Hero::Novice, Hero::Warrior, Hero::Magician, Hero::Thief>, std::pair<odfaeg::core::Variant<Item>, odfaeg::core::FastDelegate<void>>>> gameActions;
+        std::vector<ItemAction*> itemActions;
+        std::vector<std::pair<std::pair<Caracter*, odfaeg::graphic::Text>, std::pair<sf::Time, sf::Time>>> tmpTexts;
     };
 }
 #endif // MY_APPLI

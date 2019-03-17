@@ -193,7 +193,7 @@ std::ostream& operator<< ( std::ostream& out, const BigInt& bi) {
 }
 int main(int argc, char* argv[])
 {
-    BigInt a("42");
+    /*BigInt a("42");
     BigInt b("6");
     std::cout<<"a : "<<a.getStr()<<std::endl<<"b : "<<b.getStr()<<std::endl;
     BigInt s = a + b;
@@ -204,16 +204,17 @@ int main(int argc, char* argv[])
     std::cout<<"a * b : "<<s.getStr()<<std::endl;
     s  = a / b;
     std::cout<<"a / b : "<<s.getStr()<<std::endl;
-    return 0;
-    /*EXPORT_CLASS_GUID(BoundingVolumeBoundingBox, BoundingVolume, BoundingBox)
+    return 0;*/
+    EXPORT_CLASS_GUID(BoundingVolumeBoundingBox, BoundingVolume, BoundingBox)
     EXPORT_CLASS_GUID(EntityTile, Entity, Tile)
     EXPORT_CLASS_GUID(EntityTile, Entity, BigTile)
     EXPORT_CLASS_GUID(EntityWall, Entity, g2d::Wall)
     EXPORT_CLASS_GUID(EntityDecor, Entity, g2d::Decor)
     EXPORT_CLASS_GUID(EntityAnimation, Entity, Anim)
     EXPORT_CLASS_GUID(EntityHero, Entity, Hero)
+    EXPORT_CLASS_GUID(EntityMesh, Entity, Mesh)
     MyAppli app(sf::VideoMode(800, 600), "Test odfaeg");
-    return app.exec();*/
+    return app.exec();
 
 }
 

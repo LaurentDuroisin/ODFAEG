@@ -497,7 +497,11 @@ namespace odfaeg {
         }
         bool Map::addEntity(Entity *entity) {
             if (entity->isAnimated()) {
-                addEntity(static_cast<AnimatedEntity*>(entity)->getCurrentFrame());
+                if (static_cast<AnimatedEntity*>(entity)->getCurrentFrame() != nullptr) {
+                    addEntity(static_cast<AnimatedEntity*>(entity)->getCurrentFrame());
+                } else {
+                    gridMap->addEntity(entity);
+                }
             } else {
                 std::vector<Entity*> children = entity->getChildren();
                 for (unsigned int i = 0; i < children.size(); i++) {
@@ -915,13 +919,13 @@ namespace odfaeg {
                     if (!exclude) {
                         bool contains = false;
                         for (unsigned int n = 0; n < entities.size() && !contains; n++) {
-                            if (entities[n] == entity) {
+                            if (entities[n]->getRootEntity() == entity->getRootEntity()) {
                                 contains = true;
                             }
                         }
                         if (!contains) {
-                            entity->updateTransform();
-                            entities.push_back(entity);
+                            entity->getRootEntity()->updateTransform();
+                            entities.push_back(entity->getRootEntity());
                         }
                     }
                 }
@@ -931,16 +935,16 @@ namespace odfaeg {
             for (unsigned int i = 0; i < types.size(); i++) {
                 for (unsigned int j = 0; j < allEntities.size(); j++) {
                     Entity* entity = allEntities[j]->getRootEntity();
-                    if (entity->getType() == types[i]) {
+                    if (entity->getRootType() == types[i]) {
                         bool contains = false;
                         for (unsigned int n = 0; n < entities.size() && !contains; n++) {
-                            if (entities[n] == entity) {
+                            if (entities[n]->getRootEntity() == entity->getRootEntity()) {
                                 contains = true;
                             }
                         }
                         if (!contains) {
-                            entity->updateTransform();
-                            entities.push_back(entity);
+                            entity->getRootEntity()->updateTransform();
+                            entities.push_back(entity->getRootEntity());
                         }
                     }
                 }

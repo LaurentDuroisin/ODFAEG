@@ -250,7 +250,7 @@ namespace odfaeg {
         {
             //SFMl already handle it so just calling the SFML function.
             #if defined (SFML)
-                m_window->setFrametimeLimit(limit)
+                m_window->setFramerateLimit(limit);
             #else
                 if (limit > 0)
                     m_frameTimeLimit = seconds(1.f / limit);
@@ -312,7 +312,7 @@ namespace odfaeg {
             //SFMl already handle it so just calling the SFML function.
             #if defined(SFML)
                 // Display the backbuffer on screen
-                if (m_window.setActive())
+                if (m_window->setActive())
                     m_window->display();
             #else
                  // Display the backbuffer on screen
