@@ -10,9 +10,10 @@ namespace odfaeg {
             public :
             LightComponent(RenderWindow& window, math::Vec3f position, math::Vec3f size, math::Vec3f origin, unsigned int priority = 0, LightComponent* parent = nullptr) :
                 Component (window, position, size, origin, priority), parent(parent) {
-
             }
             void setName(std::string name) {
+                if (name == "PINVENTORY")
+                    Transformable::setName(name);
                 this->name = name;
             }
             std::string getName() {

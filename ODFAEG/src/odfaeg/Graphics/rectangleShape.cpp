@@ -37,7 +37,7 @@ namespace odfaeg
         ////////////////////////////////////////////////////////////
         RectangleShape::RectangleShape(const math::Vec3f& size)
         {
-            setSize(size);
+            //setSize(size);
             m_size = size;
             update();
         }
@@ -46,8 +46,8 @@ namespace odfaeg
         ////////////////////////////////////////////////////////////
         void RectangleShape::onScale(math::Vec3f& scale)
         {
-           m_size = getSize();
-           update();
+           /*m_size = getSize();
+           update();*/
         }
 
         ////////////////////////////////////////////////////////////

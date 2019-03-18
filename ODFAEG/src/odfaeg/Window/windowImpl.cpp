@@ -11,14 +11,14 @@ namespace odfaeg {
             std::cout<<"create odfaeg window"<<std::endl;
             // Recreate the WindowImpl implementation
             WindowImplType::create(mode, title, style, settings);
-            m_context.create(getSystemHandle());
+            m_context.create(getSystemHandle(), settings);
         }
         ////////////////////////////////////////////////////////////
         void WindowImpl::create(WindowHandle handle, const ContextSettings& settings)
         {
             // Recreate the WindowImpl implementation
             WindowImplType::create(handle, settings);
-            m_context.create(handle);
+            m_context.create(handle, settings);
         }
         ////////////////////////////////////////////////////////////
         void WindowImpl::close()

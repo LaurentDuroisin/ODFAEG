@@ -75,6 +75,9 @@ namespace odfaeg {
         ////////////////////////////////////////////////////////////
         XVisualInfo GlxContext::selectBestVisual(::Display* display, unsigned int bitsPerPixel, const ContextSettings& settings)
         {
+            // Make sure that extensions are initialized
+            ensureExtensionsInit(display, DefaultScreen(display));
+
             // Retrieve all the visuals
             int count;
             XVisualInfo* visuals = XGetVisualInfo(display, 0, NULL, &count);
@@ -99,9 +102,27 @@ namespace odfaeg {
                     glXGetConfig(display, &visuals[i], GLX_ALPHA_SIZE,   &alpha);
                     glXGetConfig(display, &visuals[i], GLX_DEPTH_SIZE,   &depth);
                     glXGetConfig(display, &visuals[i], GLX_STENCIL_SIZE, &stencil);
-                    glXGetConfig(display, &visuals[i], GLX_SAMPLE_BUFFERS_ARB, &multiSampling);
-                    glXGetConfig(display, &visuals[i], GLX_SAMPLES_ARB,        &samples);
-                    glXGetConfig(display, &visuals[i], GLX_FRAMEBUFFER_SRGB_CAPABLE_ARB, &sRgb);
+
+                    if (sfglx_ext_ARB_multisample == sfglx_LOAD_SUCCEEDED)
+                    {
+                        glXGetConfig(display, &visuals[i], GLX_SAMPLE_BUFFERS_ARB, &multiSampling);
+                        glXGetConfig(display, &visuals[i], GLX_SAMPLES_ARB,        &samples);
+                    }
+                    else
+                    {
+                        multiSampling = 0;
+                        samples = 0;
+                    }
+
+                    if ((sfglx_ext_EXT_framebuffer_sRGB == sfglx_LOAD_SUCCEEDED) || (sfglx_ext_ARB_framebuffer_sRGB == sfglx_LOAD_SUCCEEDED))
+                    {
+                        glXGetConfig(display, &visuals[i], GLX_FRAMEBUFFER_SRGB_CAPABLE_ARB, &sRgb);
+                    }
+                    else
+                    {
+                        sRgb = 0;
+                    }
+
                     // TODO: Replace this with proper acceleration detection
                     bool accelerated = true;
 
@@ -125,27 +146,24 @@ namespace odfaeg {
             else
             {
                 // Should never happen...
-                std::cerr << "No GLX visual found. You should check your graphics driver" << std::endl;
+                err() << "No GLX visual found. You should check your graphics driver" << std::endl;
 
                 return XVisualInfo();
             }
         }
         void GlxContext::create(IContext* sharedContext) {
          // Save the creation settings
-            settings = ContextSettings();
+            m_settings = ContextSettings();
 
             // Open the connection with the X server
             m_display = Display::openDisplay();
-
-            // Make sure that extensions are initialized
-            ensureExtensionsInit(m_display, DefaultScreen(m_display));
-
             // Create the rendering surface (window or pbuffer if supported)
-            create(settings, 1, 1, sharedContext);
+            create(m_settings, 1, 1, sharedContext);
         }
         void GlxContext::create(ContextSettings& settings, unsigned int width, unsigned int height, IContext* sharedContext) {
             GLXContext shared = (sharedContext != nullptr) ? static_cast<GlxContext*>(sharedContext)->ctx : nullptr;
             XVisualInfo vi = selectBestVisual(m_display, VideoMode::getDesktopMode().bitsPerPixel, settings);
+            updateSettingsFromVisualInfo(&vi);
             int versionMajor=0, versionMinor=0, depthBits=0, stencilBits=0, antiAliasingLevel=0;
             // Get a GLXFBConfig that matches the visual
             GLXFBConfig* bestFbc = nullptr;
@@ -154,7 +172,7 @@ namespace odfaeg {
             // deemed suitable in selectBestVisual()
             int nbConfigs = 0;
             GLXFBConfig* configs = glXChooseFBConfig(m_display, DefaultScreen(m_display), NULL, &nbConfigs);
-            int bestVersionMajor = 0, bestVersionMinor = 0, bestDepthBits = 0, bestStencilBits = 0, bestAntiAliasingLevel = 0;
+            int bestDepthBits = 0, bestStencilBits = 0, bestAntiAliasingLevel = 0;
             for (int i = 0; configs && (i < nbConfigs); ++i)
             {
                 XVisualInfo* visual = glXGetVisualFromFBConfig(m_display, configs[i]);
@@ -168,31 +186,21 @@ namespace odfaeg {
                     XFree(visual);
                     break;
                 }
-                glXGetConfig(m_display,&vi,GLX_CONTEXT_MAJOR_VERSION_ARB, &versionMajor);
-                glXGetConfig(m_display,&vi,GLX_CONTEXT_MINOR_VERSION_ARB, &versionMinor);
-                glXGetConfig(m_display,&vi,GLX_DEPTH_SIZE, &depthBits);
+                /*glXGetConfig(m_display,&vi,GLX_DEPTH_SIZE, &depthBits);
                 glXGetConfig(m_display,&vi,GLX_STENCIL_SIZE, &stencilBits);
                 glXGetConfig(m_display,&vi,GLX_SAMPLES, &antiAliasingLevel);
-                if (versionMajor > bestVersionMajor) {
-                    bestVersionMajor = versionMajor;
-                    this->settings.versionMajor = versionMajor;
-                }
-                if (versionMinor > bestVersionMinor) {
-                    bestVersionMinor = versionMinor;
-                    this->settings.versionMinor = versionMinor;
-                }
                 if (depthBits > bestDepthBits) {
                     bestDepthBits = depthBits;
-                    this->settings.depthBits = depthBits;
+                    m_settings.depthBits = depthBits;
                 }
                 if (stencilBits > bestStencilBits) {
                     bestStencilBits = stencilBits;
-                    this->settings.stencilBits = stencilBits;
+                    m_settings.stencilBits = stencilBits;
                 }
                 if (antiAliasingLevel > bestAntiAliasingLevel) {
                     bestAntiAliasingLevel = antiAliasingLevel;
-                    this->settings.antiAliasingLevel = antiAliasingLevel;
-                }
+                    m_settings.antiAliasingLevel = antiAliasingLevel;
+                }*/
                 XFree(visual);
             }
             m_window = DefaultRootWindow(m_display);
@@ -226,6 +234,7 @@ namespace odfaeg {
                 int context_attribs[] = {
                         GLX_CONTEXT_MAJOR_VERSION_ARB, (int) settings.versionMajor,
                         GLX_CONTEXT_MINOR_VERSION_ARB, (int) settings.versionMinor,
+                        GLX_CONTEXT_PROFILE_MASK_ARB, GLX_CONTEXT_CORE_PROFILE_BIT_ARB,
                         None
                 };
                 ctx = glXCreateContextAttribsARB(m_display, *bestFbc, shared, True, context_attribs);
@@ -277,7 +286,7 @@ namespace odfaeg {
                 }
             }
         }
-        void GlxContext::create(::Window win, IContext* sharedContext) {
+        void GlxContext::create(::Window win, const ContextSettings& settings, IContext* sharedContext) {
             GLXContext shared = (sharedContext != nullptr) ? static_cast<GlxContext*>(sharedContext)->ctx : nullptr;
             m_window = win;
             m_windowLess = false;
@@ -295,7 +304,8 @@ namespace odfaeg {
             tpl.visualid = XVisualIDFromVisual(windowAttributes.visual);
             int nbVisuals = 0;
             XVisualInfo* vi = XGetVisualInfo(m_display, VisualIDMask | VisualScreenMask, &tpl, &nbVisuals);
-            int versionMajor = 0, versionMinor = 0,  depthBits=0, stencilBits=0, antiAliasingLevel=0;
+            updateSettingsFromVisualInfo(vi);
+            int depthBits=0, stencilBits=0, antiAliasingLevel=0;
             // Get a GLXFBConfig that matches the visual
             GLXFBConfig* bestFbc = nullptr;
 
@@ -304,7 +314,7 @@ namespace odfaeg {
             // deemed suitable in selectBestVisual()
             int nbConfigs = 0;
             GLXFBConfig* configs = glXChooseFBConfig(m_display, DefaultScreen(m_display), NULL, &nbConfigs);
-            int bestVersionMajor = 0, bestVersionMinor = 0, bestDepthBits = 0, bestStencilBits = 0, bestAntiAliasingLevel=0;
+            int bestDepthBits = 0, bestStencilBits = 0, bestAntiAliasingLevel=0;
             for (int i = 0; configs && (i < nbConfigs); ++i)
             {
                 XVisualInfo* visual = glXGetVisualFromFBConfig(m_display, configs[i]);
@@ -318,31 +328,21 @@ namespace odfaeg {
                     XFree(visual);
                     break;
                 }
-                glXGetConfig(m_display,vi,GLX_CONTEXT_MAJOR_VERSION_ARB, &versionMajor);
-                glXGetConfig(m_display,vi,GLX_CONTEXT_MINOR_VERSION_ARB, &versionMinor);
-                glXGetConfig(m_display,vi,GLX_DEPTH_SIZE, &depthBits);
+                /*glXGetConfig(m_display,vi,GLX_DEPTH_SIZE, &depthBits);
                 glXGetConfig(m_display,vi,GLX_STENCIL_SIZE, &stencilBits);
                 glXGetConfig(m_display,vi,GLX_SAMPLES, &antiAliasingLevel);
-                if (versionMajor > bestVersionMajor) {
-                    bestVersionMajor = versionMajor;
-                    settings.versionMajor = versionMajor;
-                }
-                if (versionMinor > bestVersionMinor) {
-                    bestVersionMinor = versionMinor;
-                    settings.versionMinor = versionMinor;
-                }
                 if (depthBits > bestDepthBits) {
                     bestDepthBits = depthBits;
-                    settings.depthBits = depthBits;
+                    m_settings.depthBits = depthBits;
                 }
                 if (stencilBits > bestStencilBits) {
                     bestStencilBits = stencilBits;
-                    settings.stencilBits = stencilBits;
+                    m_settings.stencilBits = stencilBits;
                 }
                 if (antiAliasingLevel > bestAntiAliasingLevel) {
                     bestAntiAliasingLevel = antiAliasingLevel;
-                    settings.antiAliasingLevel = antiAliasingLevel;
-                }
+                    m_settings.antiAliasingLevel = antiAliasingLevel;
+                }*/
                 XFree(visual);
             }
             // Get the default screen's GLX extension list
@@ -377,7 +377,7 @@ namespace odfaeg {
                 {
                     GLX_CONTEXT_MAJOR_VERSION_ARB, (int) settings.versionMajor,
                     GLX_CONTEXT_MINOR_VERSION_ARB, (int) settings.versionMinor,
-                    //GLX_CONTEXT_FLAGS_ARB        , GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
+                    GLX_CONTEXT_PROFILE_MASK_ARB, GLX_CONTEXT_CORE_PROFILE_BIT_ARB,
                     None
                 };
                 ctx = glXCreateContextAttribsARB(m_display, *bestFbc, shared,
@@ -459,7 +459,40 @@ namespace odfaeg {
             return result;
         }
         const ContextSettings& GlxContext::getSettings() const {
-            return settings;
+            return m_settings;
+        }
+        ////////////////////////////////////////////////////////////
+        void GlxContext::updateSettingsFromVisualInfo(XVisualInfo* visualInfo)
+        {
+            // Update the creation settings from the chosen format
+            int depth, stencil, multiSampling, samples, sRgb;
+            glXGetConfig(m_display, visualInfo, GLX_DEPTH_SIZE,   &depth);
+            glXGetConfig(m_display, visualInfo, GLX_STENCIL_SIZE, &stencil);
+
+            if (sfglx_ext_ARB_multisample == sfglx_LOAD_SUCCEEDED)
+            {
+                glXGetConfig(m_display, visualInfo, GLX_SAMPLE_BUFFERS_ARB, &multiSampling);
+                glXGetConfig(m_display, visualInfo, GLX_SAMPLES_ARB,        &samples);
+            }
+            else
+            {
+                multiSampling = 0;
+                samples = 0;
+            }
+
+            if ((sfglx_ext_EXT_framebuffer_sRGB == sfglx_LOAD_SUCCEEDED) || (sfglx_ext_ARB_framebuffer_sRGB == sfglx_LOAD_SUCCEEDED))
+            {
+                glXGetConfig(m_display, visualInfo, GLX_FRAMEBUFFER_SRGB_CAPABLE_ARB, &sRgb);
+            }
+            else
+            {
+                sRgb = 0;
+            }
+
+            m_settings.depthBits         = static_cast<unsigned int>(depth);
+            m_settings.stencilBits       = static_cast<unsigned int>(stencil);
+            m_settings.antiAliasingLevel = multiSampling ? samples : 0;
+            m_settings.sRgbCapable       = (sRgb == True);
         }
         void GlxContext::display() {
             if (pbuf)
@@ -467,8 +500,39 @@ namespace odfaeg {
             else if (m_window)
                 glXSwapBuffers(m_display, m_window);
         }
-        void GlxContext::setVerticalSyncEnabled(bool enable) {
-            //For later.
+        void GlxContext::setVerticalSyncEnabled(bool enabled) {
+             int result = 0;
+
+            // Prioritize the EXT variant and fall back to MESA or SGI if needed
+            // We use the direct pointer to the MESA entry point instead of the alias
+            // because glx.h declares the entry point as an external function
+            // which would require us to link in an additional library
+            if (sfglx_ext_EXT_swap_control == sfglx_LOAD_SUCCEEDED)
+            {
+                glXSwapIntervalEXT(m_display, pbuf ? pbuf : m_window, enabled ? 1 : 0);
+            }
+            else if (sfglx_ext_MESA_swap_control == sfglx_LOAD_SUCCEEDED)
+            {
+                result = sf_ptrc_glXSwapIntervalMESA(enabled ? 1 : 0);
+            }
+            else if (sfglx_ext_SGI_swap_control == sfglx_LOAD_SUCCEEDED)
+            {
+                result = glXSwapIntervalSGI(enabled ? 1 : 0);
+            }
+            else
+            {
+                static bool warned = false;
+
+                if (!warned)
+                {
+                    err() << "Setting vertical sync not supported" << std::endl;
+
+                    warned = true;
+                }
+            }
+
+            if (result != 0)
+                err() << "Setting vertical sync failed" << std::endl;
         }
         GlxContext::~GlxContext() {
             if (pbuf)

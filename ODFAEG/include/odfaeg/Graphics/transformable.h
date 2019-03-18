@@ -26,10 +26,10 @@ namespace odfaeg {
             * \brief get the bounding box of the transformable object.
             * \return the bounding box of the global object.
             */
-            void setName (std::string name) {
+            virtual void setName (std::string name) {
                 this->name = name;
             }
-            std::string getName() {
+            virtual std::string getName() {
                 return name;
             }
             physic::BoundingBox getLocalBounds() const {
@@ -153,9 +153,8 @@ namespace odfaeg {
             void setOrigin(math::Vec3f origin) {
                m_origin = origin;
                tm.setOrigin(origin);
-               recomputeBounds();
-               m_position = globalBounds.getPosition();
-               m_center = globalBounds.getCenter();
+               m_center = m_position + m_origin;
+               tm.setTranslation(m_center);
             }
             /**
             * \fn Vec3f getScale() const
@@ -202,7 +201,7 @@ namespace odfaeg {
                     localBounds.setSize(m_size.x, localBounds.getHeight(), localBounds.getDepth());
                 }
                 else {
-                    scale.x = size.x / m_size.x;
+                    scale.x = size.x / localBounds.getWidth();
                 }
                 if (m_size.y == 0 /*|| size.y == 0*/) {
                     scale.y = 1;
@@ -210,14 +209,14 @@ namespace odfaeg {
                     localBounds.setSize(localBounds.getWidth(), m_size.y, localBounds.getDepth());
                 }
                 else {
-                    scale.y = size.y / m_size.y;
+                    scale.y = size.y / localBounds.getHeight();
                 }
                 if (m_size.z == 0 /*|| size.z == 0*/) {
                     scale.z = 1;
                     m_size.z = size.z;
                     localBounds.setSize(localBounds.getWidth(), localBounds.getHeight(), m_size.z);
                 } else {
-                    scale.z = size.z / m_size.z;
+                    scale.z = size.z / localBounds.getDepth();
                 }
                 setScale(scale);
             }

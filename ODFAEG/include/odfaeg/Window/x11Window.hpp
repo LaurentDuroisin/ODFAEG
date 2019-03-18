@@ -89,18 +89,6 @@ namespace odfaeg {
             ////////////////////////////////////////////////////////////
             virtual bool hasFocus() const;
             virtual void destroy();
-            virtual void setFramerateLimit(unsigned int limit) {
-            }
-            virtual void display () {
-            }
-            virtual const ContextSettings& getSettings() const {
-            }
-            virtual bool setActive(bool active) {
-            }
-            virtual void setVerticalSyncEnabled(bool enabled) {
-            }
-            virtual void setJoystickThreshold(float threshold) {
-            }
             virtual ~X11Window();
         protected :
             void processEvents();

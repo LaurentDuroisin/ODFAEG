@@ -1,4 +1,5 @@
 #include "../../../include/odfaeg/Window/contextImpl.hpp"
+#include "../../../include/odfaeg/Window/windowImpl.hpp"
 #include <SFML/System/Mutex.hpp>
 #include <SFML/System/Lock.hpp>
 #include <iostream>
@@ -22,6 +23,25 @@ namespace odfaeg {
         sf::ThreadLocalPtr<ContextImpl> ContextImpl::current_ContextImpl(nullptr);
         sf::ThreadLocalPtr<ContextImpl::TransientContext> ContextImpl::transientContext(nullptr);
         IContext* ContextImpl::sharedContext = nullptr;
+        // Helper to parse OpenGL version strings
+        bool ContextImpl::parseVersionString(const char* version, const char* prefix, unsigned int &major, unsigned int &minor)
+        {
+            std::size_t prefixLength = std::strlen(prefix);
+
+            if ((std::strlen(version) >= (prefixLength + 3)) &&
+                (std::strncmp(version, prefix, prefixLength) == 0) &&
+                std::isdigit(version[prefixLength]) &&
+                (version[prefixLength + 1] == '.') &&
+                std::isdigit(version[prefixLength + 2]))
+            {
+                major = version[prefixLength] - '0';
+                minor = version[prefixLength + 2] - '0';
+
+                return true;
+            }
+
+            return false;
+        }
         void ContextImpl::initResource() {
             if (nbContexts == 0) {
                 sharedContext = new ContextImplType();
@@ -97,17 +117,22 @@ namespace odfaeg {
         }
         void ContextImpl::create(IContext* shared) {
             //sharedContext->setActive(true);
-            ContextImplType::create(sharedContext);
+            ContextImplType::create(shared);
+            initialize(ContextSettings());
             //sharedContext->setActive(false);
         }
         void ContextImpl::create(ContextSettings& settings, unsigned int width, unsigned int height, IContext* shared) {
             //sharedContext->setActive(true);
             ContextImplType::create(settings, width, height, sharedContext);
+            initialize(settings);
+            checkSettings(settings);
             //sharedContext->setActive(false);
         }
-        void ContextImpl::create(sf::WindowHandle handle, IContext* shared) {
+        void ContextImpl::create(sf::WindowHandle handle,const ContextSettings& settings, IContext* shared) {
             //sharedContext->setActive(true);
-            ContextImplType::create(handle, sharedContext);
+            ContextImplType::create(handle, settings, sharedContext);
+            initialize(settings);
+            checkSettings(settings);
             //sharedContext->setActive(false);
         }
         bool ContextImpl::setActive(bool active) {
@@ -138,13 +163,13 @@ namespace odfaeg {
             }
         }
         const ContextSettings& ContextImpl::getSettings() const {
-            return ContextImplType::getSettings();
+            return m_settings;
         }
         void ContextImpl::display() {
             ContextImplType::display();
         }
         void ContextImpl::setVerticalSyncEnabled (bool enabled) {
-            //For later;
+            ContextImplType::setVerticalSyncEnabled(enabled);
         }
         ////////////////////////////////////////////////////////////
         int ContextImpl::evaluateFormat(unsigned int bitsPerPixel, const ContextSettings& settings, int colorBits, int depthBits, int stencilBits, int antialiasing, bool accelerated, bool sRgb)
@@ -229,6 +254,192 @@ namespace odfaeg {
             {
                 delete transientContext;
                 transientContext = NULL;
+            }
+        }
+        ////////////////////////////////////////////////////////////
+        void ContextImpl::initialize(const ContextSettings& requestedSettings)
+        {
+            // Activate the context
+            setActive(true);
+
+            // Retrieve the context version number
+            int majorVersion = 0;
+            int minorVersion = 0;
+
+            // Try the new way first
+            glGetIntegerv(GL_MAJOR_VERSION, &majorVersion);
+            glGetIntegerv(GL_MINOR_VERSION, &minorVersion);
+
+            if (glGetError() != GL_INVALID_ENUM)
+            {
+                m_settings.versionMajor = static_cast<unsigned int>(majorVersion);
+                m_settings.versionMinor = static_cast<unsigned int>(minorVersion);
+            }
+            else
+            {
+                // Try the old way
+
+                // If we can't get the version number, assume 1.1
+                m_settings.versionMajor = 1;
+                m_settings.versionMinor = 1;
+
+                const char* version = reinterpret_cast<const char*>(glGetString(GL_VERSION));
+                if (version)
+                {
+                    // OpenGL ES Common Lite profile: The beginning of the returned string is "OpenGL ES-CL major.minor"
+                    // OpenGL ES Common profile:      The beginning of the returned string is "OpenGL ES-CM major.minor"
+                    // OpenGL ES Full profile:        The beginning of the returned string is "OpenGL ES major.minor"
+                    // Desktop OpenGL:                The beginning of the returned string is "major.minor"
+
+                    if (!parseVersionString(version, "OpenGL ES-CL ", m_settings.versionMajor, m_settings.versionMinor) &&
+                        !parseVersionString(version, "OpenGL ES-CM ", m_settings.versionMajor, m_settings.versionMinor) &&
+                        !parseVersionString(version, "OpenGL ES ",    m_settings.versionMajor, m_settings.versionMinor) &&
+                        !parseVersionString(version, "",              m_settings.versionMajor, m_settings.versionMinor))
+                    {
+                        err() << "Unable to parse OpenGL version string: \"" << version << "\", defaulting to 1.1" << std::endl;
+                    }
+                }
+                else
+                {
+                    err() << "Unable to retrieve OpenGL version string, defaulting to 1.1" << std::endl;
+                }
+            }
+
+            // 3.0 contexts only deprecate features, but do not remove them yet
+            // 3.1 contexts remove features if ARB_compatibility is not present
+            // 3.2+ contexts remove features only if a core profile is requested
+
+            // If the context was created with wglCreateContext, it is guaranteed to be compatibility.
+            // If a 3.0 context was created with wglCreateContextAttribsARB, it is guaranteed to be compatibility.
+            // If a 3.1 context was created with wglCreateContextAttribsARB, the compatibility flag
+            // is set only if ARB_compatibility is present
+            // If a 3.2+ context was created with wglCreateContextAttribsARB, the compatibility flag
+            // would have been set correctly already depending on whether ARB_create_context_profile is supported.
+
+            // If the user requests a 3.0 context, it will be a compatibility context regardless of the requested profile.
+            // If the user requests a 3.1 context and its creation was successful, the specification
+            // states that it will not be a compatibility profile context regardless of the requested
+            // profile unless ARB_compatibility is present.
+
+            m_settings.attributeFlags = ContextSettings::Default;
+
+            if (m_settings.versionMajor >= 3)
+            {
+                // Retrieve the context flags
+                int flags = 0;
+                glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
+
+                if (flags & GL_CONTEXT_FLAG_DEBUG_BIT)
+                    m_settings.attributeFlags |= ContextSettings::Debug;
+
+                if ((m_settings.versionMajor  == 3) && (m_settings.versionMajor  == 1))
+                {
+                    m_settings.attributeFlags |= ContextSettings::Core;
+
+                    glGetStringiFuncType glGetStringiFunc = reinterpret_cast<glGetStringiFuncType>(getFunction("glGetStringi"));
+
+                    if (glGetStringiFunc)
+                    {
+                        int numExtensions = 0;
+                        glGetIntegerv(GL_NUM_EXTENSIONS, &numExtensions);
+
+                        for (unsigned int i = 0; i < static_cast<unsigned int>(numExtensions); ++i)
+                        {
+                            const char* extensionString = reinterpret_cast<const char*>(glGetStringiFunc(GL_EXTENSIONS, i));
+
+                            if (std::strstr(extensionString, "GL_ARB_compatibility"))
+                            {
+                                m_settings.attributeFlags &= ~static_cast<Uint32>(ContextSettings::Core);
+                                break;
+                            }
+                        }
+                    }
+                }
+                else if ((m_settings.versionMajor > 3) || (m_settings.versionMinor >= 2))
+                {
+                    // Retrieve the context profile
+                    int profile = 0;
+                    glGetIntegerv(GL_CONTEXT_PROFILE_MASK, &profile);
+
+                    if (profile & GL_CONTEXT_CORE_PROFILE_BIT)
+                        m_settings.attributeFlags |= ContextSettings::Core;
+                }
+            }
+
+            // Enable anti-aliasing if requested by the user and supported
+            if ((requestedSettings.antiAliasingLevel > 0) && (m_settings.antiAliasingLevel > 0))
+            {
+                glEnable(GL_MULTISAMPLE);
+            }
+            else
+            {
+                m_settings.antiAliasingLevel = 0;
+            }
+
+            // Enable sRGB if requested by the user and supported
+            if (requestedSettings.sRgbCapable && m_settings.sRgbCapable)
+            {
+                glEnable(GL_FRAMEBUFFER_SRGB);
+
+                // Check to see if the enable was successful
+                if (glIsEnabled(GL_FRAMEBUFFER_SRGB) == GL_FALSE)
+                {
+                    err() << "Warning: Failed to enable GL_FRAMEBUFFER_SRGB" << std::endl;
+                    m_settings.sRgbCapable = false;
+                }
+            }
+            else
+            {
+                m_settings.sRgbCapable = false;
+            }
+        }
+        ///////////////////////////////////////////////////////////
+        void ContextImpl::checkSettings(const ContextSettings& requestedSettings)
+        {
+            // Perform checks to inform the user if they are getting a context they might not have expected
+
+            // Detect any known non-accelerated implementations and warn
+            const char* vendorName = reinterpret_cast<const char*>(glGetString(GL_VENDOR));
+            const char* rendererName = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
+
+            if (vendorName && rendererName)
+            {
+                if ((std::strcmp(vendorName, "Microsoft Corporation") == 0) && (std::strcmp(rendererName, "GDI Generic") == 0))
+                {
+                    err() << "Warning: Detected \"Microsoft Corporation GDI Generic\" OpenGL implementation" << std::endl
+                          << "The current OpenGL implementation is not hardware-accelerated" << std::endl;
+                }
+            }
+
+            int version = m_settings.versionMajor * 10 + m_settings.versionMinor;
+            int requestedVersion = requestedSettings.versionMajor * 10 + requestedSettings.versionMinor;
+
+            if ((m_settings.attributeFlags    != requestedSettings.attributeFlags)    ||
+                (version                      <  requestedVersion)                    ||
+                (m_settings.stencilBits       <  requestedSettings.stencilBits)       ||
+                (m_settings.antiAliasingLevel <  requestedSettings.antiAliasingLevel) ||
+                (m_settings.depthBits         <  requestedSettings.depthBits)         ||
+                (!m_settings.sRgbCapable      && requestedSettings.sRgbCapable))
+            {
+                err() << "Warning: The created OpenGL context does not fully meet the settings that were requested" << std::endl;
+                err() << "Requested: version = " << requestedSettings.versionMajor << "." << requestedSettings.versionMinor
+                      << " ; depth bits = " << requestedSettings.depthBits
+                      << " ; stencil bits = " << requestedSettings.stencilBits
+                      << " ; AA level = " << requestedSettings.antiAliasingLevel
+                      << std::boolalpha
+                      << " ; core = " << ((requestedSettings.attributeFlags & ContextSettings::Core) != 0)
+                      << " ; debug = " << ((requestedSettings.attributeFlags & ContextSettings::Debug) != 0)
+                      << " ; sRGB = " << requestedSettings.sRgbCapable
+                      << std::noboolalpha << std::endl;
+                err() << "Created: version = " << m_settings.versionMajor << "." << m_settings.versionMinor
+                      << " ; depth bits = " << m_settings.depthBits
+                      << " ; stencil bits = " << m_settings.stencilBits
+                      << " ; AA level = " << m_settings.antiAliasingLevel
+                      << std::boolalpha
+                      << " ; core = " << ((m_settings.attributeFlags & ContextSettings::Core) != 0)
+                      << " ; debug = " << ((m_settings.attributeFlags & ContextSettings::Debug) != 0)
+                      << " ; sRGB = " << m_settings.sRgbCapable
+                      << std::noboolalpha << std::endl;
             }
         }
         ContextImpl::~ContextImpl() {

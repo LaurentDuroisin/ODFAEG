@@ -14,9 +14,9 @@ namespace odfaeg {
             m_context->create(settings, width, height);
             m_context->setActive(true);
         }
-        Context::Context(sf::WindowHandle handle) {
+        Context::Context(sf::WindowHandle handle, ContextSettings settings) {
             m_context = ContextFactory::create();
-            m_context->create(handle);
+            m_context->create(handle, settings);
             m_context->setActive(true);
         }
         void Context::create(ContextSettings settings, unsigned int width, unsigned int height) {
@@ -26,11 +26,11 @@ namespace odfaeg {
             m_context->create(settings, width, height);
             m_context->setActive(true);
         }
-        void Context::create(sf::WindowHandle handle) {
+        void Context::create(sf::WindowHandle handle, ContextSettings settings) {
             if (!m_context)
                 delete m_context;
             m_context = ContextFactory::create();
-            m_context->create(handle);
+            m_context->create(handle, settings);
             m_context->setActive(true);
         }
         /*void Context::display() {

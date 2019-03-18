@@ -111,7 +111,9 @@ set(SRC_GRAPHICS
 	${INCROOT}/mesh.hpp
 	${SRCROOT}/mesh.cpp
 	${INCROOT}/boneAnimation.hpp
-	${SRCROOT}/boneAnimation.cpp)
+	${SRCROOT}/boneAnimation.cpp
+	${INCROOT}/lightComponent.h
+	${INCROOT}/heavyComponent.h)
 source_group ("graphics" FILES ${SRC_GRAPHICS})
 	
 set(SRC_GRAPHICS_2D

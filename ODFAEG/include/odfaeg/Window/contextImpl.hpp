@@ -22,7 +22,7 @@ namespace odfaeg {
                 static int evaluateFormat(unsigned int bitsPerPixel, const ContextSettings& settings, int colorBits, int depthBits, int stencilBits, int antialiasing, bool accelerated, bool sRgb);
                 static bool isExtensionAvalaible(const char* name);
                 void create(IContext* shared);
-                void create(sf::WindowHandle handle, IContext* shared = nullptr);
+                void create(sf::WindowHandle handle, const ContextSettings& settings, IContext* shared = nullptr);
                 void create(ContextSettings& settings, unsigned int width, unsigned int height, IContext* shared = nullptr);
                 bool setActive(bool active);
                 const ContextSettings& getSettings() const;
@@ -30,8 +30,11 @@ namespace odfaeg {
                 void setVerticalSyncEnabled(bool enabled);
                 static void acquireTransientContext();
                 static void releaseTransientContext();
+                void checkSettings(const ContextSettings& settings);
                 ~ContextImpl();
             private :
+                bool parseVersionString(const char* version, const char* prefix, unsigned int &major, unsigned int &minor);
+                void initialize(const ContextSettings& requestedSettings);
                 // OpenGL resources counter
                 static unsigned int resourceCount;
                 static std::vector<std::string> extensions;

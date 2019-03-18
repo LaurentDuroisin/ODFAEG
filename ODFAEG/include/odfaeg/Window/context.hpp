@@ -8,9 +8,9 @@ namespace odfaeg {
             public :
                 Context();
                 Context(ContextSettings settings, unsigned int width, unsigned int height);
-                Context(sf::WindowHandle handle);
+                Context(sf::WindowHandle window, ContextSettings settings);
                 void create (ContextSettings settings, unsigned int width, unsigned int height);
-                void create (sf::WindowHandle handle);
+                void create (sf::WindowHandle window, ContextSettings settings);
                 /*void display();
                 void setVerticalSyncEnabled(bool enabled);*/
                 bool setActive(bool active);

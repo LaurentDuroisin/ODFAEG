@@ -112,7 +112,7 @@ namespace odfaeg {
             /// \param limit Framerate limit, in frames per seconds (use 0 to disable limit)
             ///
             ////////////////////////////////////////////////////////////
-            virtual void setFramerateLimit(unsigned int limit) = 0;
+            virtual void setFramerateLimit(unsigned int limit) {}
 
             ////////////////////////////////////////////////////////////
             /// \brief Change the joystick threshold
@@ -125,7 +125,7 @@ namespace odfaeg {
             /// \param threshold New threshold, in the range [0, 100]
             ///
             ////////////////////////////////////////////////////////////
-            virtual void setJoystickThreshold(float threshold) = 0;
+            virtual void setJoystickThreshold(float threshold) {}
 
             ////////////////////////////////////////////////////////////
             /// \brief Activate or deactivate the window as the current target
@@ -185,10 +185,10 @@ namespace odfaeg {
             ////////////////////////////////////////////////////////////
             virtual sf::WindowHandle getSystemHandle() const = 0;
             virtual void destroy() = 0;
-            virtual bool setActive(bool active=true) = 0;
-            virtual void setVerticalSyncEnabled(bool enabled) = 0;
-            virtual void display() = 0;
-            virtual const ContextSettings& getSettings() const = 0;
+            virtual bool setActive(bool active=true) {}
+            virtual void setVerticalSyncEnabled(bool enabled) {}
+            virtual void display() {}
+            virtual const ContextSettings& getSettings() const {}
         };
     }
 }

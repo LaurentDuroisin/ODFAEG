@@ -373,7 +373,7 @@ namespace odfaeg
             m_bounds.top = minY;
             m_bounds.width = maxX - minX;
             m_bounds.height = maxY - minY;
-            const_cast<Text*>(this)->setSize(math::Vec3f(m_bounds.width, m_bounds.height, 0));
+            //const_cast<Text*>(this)->setSize(math::Vec3f(m_bounds.width, m_bounds.height, 0));
         }
     }
 
