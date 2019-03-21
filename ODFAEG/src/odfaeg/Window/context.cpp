@@ -8,6 +8,7 @@ namespace odfaeg {
         Context::Context() {
             m_context = ContextFactory::create();
             m_context->create();
+            m_context->setActive(true);
         }
         Context::Context(ContextSettings settings, unsigned int width, unsigned int height) {
             m_context = ContextFactory::create();

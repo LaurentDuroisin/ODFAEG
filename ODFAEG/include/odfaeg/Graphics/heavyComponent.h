@@ -21,6 +21,9 @@ namespace odfaeg {
                 setPosition(math::Vec3f(npx, npy, getPosition().z));
                 setAutoResized(false);
             }
+            virtual void loadShaders() {}
+            virtual void updateTransformMatrices() {}
+            virtual void updateSceneVertices() {}
             virtual bool loadEntitiesOnComponent(std::vector<Entity*> entity) = 0;
             virtual std::vector<Entity*> getEntities() = 0;
             virtual std::string getExpression() = 0;

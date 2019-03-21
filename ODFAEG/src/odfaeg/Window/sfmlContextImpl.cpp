@@ -8,10 +8,10 @@ namespace odfaeg {
         }
         void SFMLContextImpl::create(IContext* sharedContext) {
         }
-        void SFMLContextImpl::create(sf::WindowHandle handle, IContext* sharedContext) {
+        void SFMLContextImpl::create(sf::WindowHandle handle, const ContextSettings& settings, IContext* sharedContext) {
 
         }
-        void SFMLContextImpl::create(ContextSettings& settings, unsigned int width, unsigned int height, IContext* sharedContext) {
+        void SFMLContextImpl::create(const ContextSettings& settings, unsigned int width, unsigned int height, IContext* sharedContext) {
             context = new sf::Context(sf::ContextSettings(settings.depthBits, settings.stencilBits, settings.antiAliasingLevel, settings.versionMajor, settings.versionMinor), width, height);
         }
         const ContextSettings& SFMLContextImpl::getSettings() const {
@@ -25,7 +25,9 @@ namespace odfaeg {
         void SFMLContextImpl::display() {
 
         }
-        void setVerticalSyncEnabled(bool enabled) {
+        void SFMLContextImpl::initialize(const ContextSettings& settings) {
+        }
+        void SFMLContextImpl::setVerticalSyncEnabled(bool enabled) {
 
         }
     }

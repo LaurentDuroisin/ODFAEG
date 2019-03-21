@@ -20,7 +20,8 @@ namespace odfaeg {
           */
         class ODFAEG_GRAPHICS_API ZSortingRenderComponent : public HeavyComponent {
             public :
-                ZSortingRenderComponent (RenderWindow& window, int layer, std::string expression);
+                ZSortingRenderComponent (RenderWindow& window, int layer, std::string expression, EntityManager& scene);
+                void loadShaders();
                 void pushEvent(window::IEvent event, RenderWindow& rw);
                 bool needToUpdate();
                 void changeVisibleEntities(Entity* toRemove, Entity* toAdd, EntityManager* em);
@@ -40,6 +41,8 @@ namespace odfaeg {
                 void draw(Drawable& drawable, RenderStates states) {
                 }
                 void updateParticleSystems();
+                void updateTransformMatrices();
+                void updateSceneVertices();
             private :
                 Batcher batcher;
                 View view;
@@ -47,6 +50,8 @@ namespace odfaeg {
                 std::vector<Entity*> visibleEntities;
                 std::string expression;
                 bool update;
+                EntityManager& scene;
+                Shader instancedRenderingShader;
         };
     }
 }

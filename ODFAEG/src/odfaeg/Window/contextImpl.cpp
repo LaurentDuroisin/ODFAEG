@@ -13,16 +13,57 @@
     typedef const GLubyte* (*glGetStringiFuncType)(GLenum, GLuint);
 
 #endif
+#if !defined(GL_MULTISAMPLE)
+    #define GL_MULTISAMPLE 0x809D
+#endif
+
+#if !defined(GL_MAJOR_VERSION)
+    #define GL_MAJOR_VERSION 0x821B
+#endif
+
+#if !defined(GL_MINOR_VERSION)
+    #define GL_MINOR_VERSION 0x821C
+#endif
+
+#if !defined(GL_NUM_EXTENSIONS)
+    #define GL_NUM_EXTENSIONS 0x821D
+#endif
+
+#if !defined(GL_CONTEXT_FLAGS)
+    #define GL_CONTEXT_FLAGS 0x821E
+#endif
+
+#if !defined(GL_FRAMEBUFFER_SRGB)
+    #define GL_FRAMEBUFFER_SRGB 0x8DB9
+#endif
+
+#if !defined(GL_CONTEXT_FLAG_DEBUG_BIT)
+    #define GL_CONTEXT_FLAG_DEBUG_BIT 0x00000002
+#endif
+
+#if !defined(GL_CONTEXT_PROFILE_MASK)
+    #define GL_CONTEXT_PROFILE_MASK 0x9126
+#endif
+
+#if !defined(GL_CONTEXT_CORE_PROFILE_BIT)
+    #define GL_CONTEXT_CORE_PROFILE_BIT 0x00000001
+#endif
+
+#if !defined(GL_CONTEXT_COMPATIBILITY_PROFILE_BIT)
+    #define GL_CONTEXT_COMPATIBILITY_PROFILE_BIT 0x00000002
+#endif
 using namespace sf;
 namespace odfaeg {
     namespace window {
         std::vector<std::string> ContextImpl::extensions = std::vector<std::string>();
         unsigned int ContextImpl::nbContexts = 0;
         unsigned int ContextImpl::resourceCount = 0;
+        sf::Uint64 ContextImpl::id = 1;
         sf::Mutex ContextImpl::mutex;
         sf::ThreadLocalPtr<ContextImpl> ContextImpl::current_ContextImpl(nullptr);
         sf::ThreadLocalPtr<ContextImpl::TransientContext> ContextImpl::transientContext(nullptr);
         IContext* ContextImpl::sharedContext = nullptr;
+        std::set<std::pair<ContextDestroyCallback, void*>> ContextImpl::contextDestroyCallbacks = std::set<std::pair<ContextDestroyCallback, void*>>();
         // Helper to parse OpenGL version strings
         bool ContextImpl::parseVersionString(const char* version, const char* prefix, unsigned int &major, unsigned int &minor)
         {
@@ -43,24 +84,8 @@ namespace odfaeg {
             return false;
         }
         void ContextImpl::initResource() {
-            if (nbContexts == 0) {
-                sharedContext = new ContextImplType();
-                ContextSettings settings;
-                sharedContext->create(settings, 1, 1);
-                sharedContext->setActive(true);
-                nbContexts++;
-            }
-            sharedContext->setActive(false);
-        }
-        void ContextImpl::cleanupResource() {
-            nbContexts--;
-            if (nbContexts == 0) {
-                sharedContext->setActive(false);
-                delete sharedContext;
-            }
-        }
-        ContextImpl::ContextImpl() {
-            std::cout<<"create odfaeg context"<<std::endl;
+            // Protect from concurrent access
+            sf::Lock lock(mutex);
             if (nbContexts == 0) {
                 sharedContext = new ContextImplType();
                 ContextSettings settings;
@@ -111,29 +136,94 @@ namespace odfaeg {
                         }
                     }
                 }
-                nbContexts++;
+                sharedContext->setActive(false);
             }
-            sharedContext->setActive(false);
+            nbContexts++;
+        }
+        void ContextImpl::cleanupResource() {
+            nbContexts--;
+            if (nbContexts == 0) {
+                sharedContext->setActive(false);
+                delete sharedContext;
+            }
+        }
+        ContextImpl::ContextImpl() : m_id(id++) {
+            /*if (nbContexts == 0) {
+                std::cout<<"create the shared context"<<std::endl;
+                sharedContext = new ContextImplType();
+                ContextSettings settings;
+                sharedContext->create(settings, 1, 1);
+                sharedContext->setActive(true);
+                // Load our extensions vector
+                extensions.clear();
+
+                // Check whether a >= 3.0 context is available
+                int majorVersion = 0;
+                glGetIntegerv(GL_MAJOR_VERSION, &majorVersion);
+
+                if (glGetError() == GL_INVALID_ENUM)
+                {
+                    // Try to load the < 3.0 way
+                    const char* extensionString = reinterpret_cast<const char*>(glGetString(GL_EXTENSIONS));
+
+                    do
+                    {
+                        const char* extension = extensionString;
+
+                        while(*extensionString && (*extensionString != ' '))
+                            extensionString++;
+
+                        extensions.push_back(std::string(extension, extensionString));
+                    }
+                    while (*extensionString++);
+                }
+                else
+                {
+                    // Try to load the >= 3.0 way
+                    glGetStringiFuncType glGetStringiFunc = NULL;
+                    glGetStringiFunc = reinterpret_cast<glGetStringiFuncType>(getFunction("glGetStringi"));
+
+                    if (glGetStringiFunc)
+                    {
+                        int numExtensions = 0;
+                        glGetIntegerv(GL_NUM_EXTENSIONS, &numExtensions);
+
+                        if (numExtensions)
+                        {
+                            for (unsigned int i = 0; i < static_cast<unsigned int>(numExtensions); ++i)
+                            {
+                                const char* extensionString = reinterpret_cast<const char*>(glGetStringiFunc(GL_EXTENSIONS, i));
+
+                                extensions.push_back(extensionString);
+                            }
+                        }
+                    }
+                }
+                sharedContext->setActive(false);
+            }
+            nbContexts++;*/
+
         }
         void ContextImpl::create(IContext* shared) {
-            //sharedContext->setActive(true);
-            ContextImplType::create(shared);
+            sharedContext->setActive(true);
+            ContextImplType::create((shared == nullptr) ? sharedContext : shared);
+            sharedContext->setActive(false);
             initialize(ContextSettings());
-            //sharedContext->setActive(false);
         }
-        void ContextImpl::create(ContextSettings& settings, unsigned int width, unsigned int height, IContext* shared) {
-            //sharedContext->setActive(true);
-            ContextImplType::create(settings, width, height, sharedContext);
+        void ContextImpl::create(const ContextSettings& settings, unsigned int width, unsigned int height, IContext* shared) {
+            sharedContext->setActive(true);
+            ContextImplType::create(settings, width, height, (shared == nullptr) ? sharedContext : shared);
+            sharedContext->setActive(false);
             initialize(settings);
             checkSettings(settings);
-            //sharedContext->setActive(false);
         }
         void ContextImpl::create(sf::WindowHandle handle,const ContextSettings& settings, IContext* shared) {
-            //sharedContext->setActive(true);
-            ContextImplType::create(handle, settings, sharedContext);
+            sharedContext->setActive(true);
+            ContextImplType::create(handle, settings, (shared == nullptr) ? sharedContext : shared);
+            sharedContext->setActive(false);
             initialize(settings);
             checkSettings(settings);
-            //sharedContext->setActive(false);
+
         }
         bool ContextImpl::setActive(bool active) {
             if (active) {
@@ -257,6 +347,38 @@ namespace odfaeg {
             }
         }
         ////////////////////////////////////////////////////////////
+        Uint64 ContextImpl::getActiveContextId()
+        {
+            return current_ContextImpl ? current_ContextImpl->m_id : 0;
+        }
+
+        ////////////////////////////////////////////////////////////
+        void ContextImpl::registerContextDestroyCallback(ContextDestroyCallback callback, void* arg)
+        {
+            contextDestroyCallbacks.insert(std::make_pair(callback, arg));
+        }
+        ////////////////////////////////////////////////////////////
+        void ContextImpl::cleanupUnsharedResources()
+        {
+            // Save the current context so we can restore it later
+            ContextImpl* contextToRestore = current_ContextImpl;
+
+            // If this context is already active there is no need to save it
+            if (contextToRestore == this)
+                contextToRestore = NULL;
+
+            // Make this context active so resources can be freed
+            setActive(true);
+
+            // Call the registered destruction callbacks
+            for (ContextDestroyCallbacks::iterator iter = contextDestroyCallbacks.begin(); iter != contextDestroyCallbacks.end(); ++iter)
+                iter->first(iter->second);
+
+            // Make the originally active context active again
+            if (contextToRestore)
+                contextToRestore->setActive(true);
+        }
+        ////////////////////////////////////////////////////////////
         void ContextImpl::initialize(const ContextSettings& requestedSettings)
         {
             // Activate the context
@@ -269,7 +391,6 @@ namespace odfaeg {
             // Try the new way first
             glGetIntegerv(GL_MAJOR_VERSION, &majorVersion);
             glGetIntegerv(GL_MINOR_VERSION, &minorVersion);
-
             if (glGetError() != GL_INVALID_ENUM)
             {
                 m_settings.versionMajor = static_cast<unsigned int>(majorVersion);
@@ -410,7 +531,6 @@ namespace odfaeg {
                           << "The current OpenGL implementation is not hardware-accelerated" << std::endl;
                 }
             }
-
             int version = m_settings.versionMajor * 10 + m_settings.versionMinor;
             int requestedVersion = requestedSettings.versionMajor * 10 + requestedSettings.versionMinor;
 
@@ -443,11 +563,12 @@ namespace odfaeg {
             }
         }
         ContextImpl::~ContextImpl() {
-            nbContexts--;
+            cleanupUnsharedResources();
+            /*nbContexts--;
             if (nbContexts == 0) {
                 sharedContext->setActive(false);
                 delete sharedContext;
-            }
+            }*/
         }
     }
 }

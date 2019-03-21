@@ -61,6 +61,8 @@ set(SRC_GRAPHICS
 	${SRCROOT}/vertex.cpp
 	${INCROOT}/vertexArray.h
 	${SRCROOT}/vertexArray.cpp
+	${INCROOT}/vertexBuffer.hpp
+	${SRCROOT}/vertexBuffer.cpp
 	${INCROOT}/view.h
 	${SRCROOT}/view.cpp
 	${INCROOT}/component.h
@@ -113,7 +115,8 @@ set(SRC_GRAPHICS
 	${INCROOT}/boneAnimation.hpp
 	${SRCROOT}/boneAnimation.cpp
 	${INCROOT}/lightComponent.h
-	${INCROOT}/heavyComponent.h)
+	${INCROOT}/heavyComponent.h
+	${INCROOT}/entityManager.h)
 source_group ("graphics" FILES ${SRC_GRAPHICS})
 	
 set(SRC_GRAPHICS_2D

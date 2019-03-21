@@ -1,5 +1,5 @@
 #include "../../../include/odfaeg/Graphics/renderTarget.h"
-#include "../../../include/odfaeg/Graphics/glExtensions.hpp"
+//#include "../../../include/odfaeg/Graphics/glExtensions.hpp"
 #include <GL/glew.h>
 #include <SFML/OpenGL.hpp>
 #include "glCheck.h"
@@ -33,8 +33,8 @@ namespace
         switch (blendEquation)
         {
             default:
-            case sf::BlendMode::Add:             return GLEXT_GL_FUNC_ADD;
-            case sf::BlendMode::Subtract:        return GLEXT_GL_FUNC_SUBTRACT;
+            case sf::BlendMode::Add:             return GL_FUNC_ADD;
+            case sf::BlendMode::Subtract:        return GL_FUNC_SUBTRACT;
         }
     }
 }
@@ -146,7 +146,6 @@ namespace odfaeg {
         void RenderTarget::draw(const Vertex* vertices, unsigned int vertexCount,
                                 PrimitiveType type, RenderStates states)
         {
-
             // Nothing to draw?
             if (!vertices || (vertexCount == 0))
                 return;
@@ -262,7 +261,9 @@ namespace odfaeg {
                                                    GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_QUADS};
                 GLenum mode = modes[type];
                 // Draw the primitives
+                //glCheck(glBindFramebuffer(GL_FRAMEBUFFER, m_framebufferId));
                 glCheck(glDrawArrays(mode, 0, vertexCount));
+                //glCheck(glBindFramebuffer(GL_FRAMEBUFFER, 0));
                 if (m_versionMajor >= 3 && m_versionMinor >= 3) {
                     /*glCheck(glDisableVertexAttribArray(0));
                     glCheck(glDisableVertexAttribArray(1));
@@ -280,8 +281,75 @@ namespace odfaeg {
                 m_cache.useVertexCache = useVertexCache;
             }
         }
+        void RenderTarget::drawVertexBuffer(VertexBuffer& vertexBuffer, RenderStates states) {
+            if (vertexBuffer.getVertexCount() == 0) {
+                return;
+            }
 
+            if (activate(true))
+            {
 
+                // First set the persistent OpenGL states if it's the very first call
+                if (!m_cache.glStatesSet)
+                    resetGLStates();
+                // Apply the view
+                if (m_cache.viewChanged || m_view.viewUpdated)
+                    applyCurrentView();
+                // Apply the blend mode
+                if (states.blendMode != m_cache.lastBlendMode)
+                    applyBlendMode(states.blendMode);
+                TransformMatrix tm = states.transform;
+                applyTransform(tm);
+                // Apply the texture
+                sf::Uint64 textureId = states.texture ? states.texture->m_cacheId : 0;
+                /*if (textureId > 0)
+                     std::cout<<"texture id : "<<textureId<<" "<<states.texture->m_texture<<std::endl;*/
+                if (textureId != m_cache.lastTextureId)
+                    applyTexture(states.texture);
+
+                // Apply the shader
+                if (states.shader)
+                    applyShader(states.shader);
+                if (m_cache.lastVboBuffer != &vertexBuffer) {
+                    glCheck(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.vboVertexBuffer));
+                    glCheck(glEnableClientState(GL_COLOR_ARRAY));
+                    glCheck(glEnableClientState(GL_TEXTURE_COORD_ARRAY));
+                    glCheck(glEnableClientState(GL_VERTEX_ARRAY));
+                    glCheck(glVertexPointer(3, GL_FLOAT, sizeof(Vertex), (GLvoid*) 0 ));
+                    glCheck(glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(Vertex), (GLvoid*) 12));
+                    glCheck(glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex),(GLvoid*) 16));
+                    glCheck(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.vboNormalBuffer));
+                    glCheck(glEnableClientState(GL_NORMAL_ARRAY));
+                    glCheck(glNormalPointer(GL_FLOAT,sizeof(sf::Vector3f),(GLvoid*) 0));
+                    glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                    m_cache.lastVboBuffer = &vertexBuffer;
+                } else {
+                    glCheck(glEnableClientState(GL_COLOR_ARRAY));
+                    glCheck(glEnableClientState(GL_TEXTURE_COORD_ARRAY));
+                    glCheck(glEnableClientState(GL_VERTEX_ARRAY));
+                    glCheck(glEnableClientState(GL_NORMAL_ARRAY));
+                }
+                // Find the OpenGL primitive type
+                static const GLenum modes[] = {GL_POINTS, GL_LINES, GL_LINE_STRIP, GL_TRIANGLES,
+                                                   GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_QUADS};
+                GLenum mode = modes[vertexBuffer.getPrimitiveType()];
+                if (vertexBuffer.m_indexes.size() > 0) {
+                    glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vertexBuffer.vboIndexBuffer));
+                    glCheck(glDrawElements(mode, vertexBuffer.m_indexes.size(), GL_UNSIGNED_INT, (GLvoid*) 0));
+                    glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+                } else {
+                    //std::cout<<"draw arrays"<<std::endl;
+                    //glCheck(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.vboVertexBuffer));
+                    glCheck(glDrawArrays(mode, 0, vertexBuffer.getVertexCount()));
+                    //glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                }
+                glCheck(glDisableClientState(GL_COLOR_ARRAY));
+                glCheck(glDisableClientState(GL_TEXTURE_COORD_ARRAY));
+                glCheck(glDisableClientState(GL_VERTEX_ARRAY));
+                glCheck(glDisableClientState(GL_NORMAL_ARRAY));
+            }
+
+        }
         ////////////////////////////////////////////////////////////
         void RenderTarget::pushGLStates()
         {
@@ -334,7 +402,6 @@ namespace odfaeg {
                           << std::endl;        }
 
                 #endif
-                priv::ensureExtensionsInit();
                 glCheck(glDisable(GL_CULL_FACE));
                 glCheck(glDisable(GL_LIGHTING));
                 glCheck(glEnable(GL_DEPTH_TEST));
@@ -364,8 +431,9 @@ namespace odfaeg {
 
 
         ////////////////////////////////////////////////////////////
-        void RenderTarget::initialize()
+        void RenderTarget::initialize(unsigned int framebufferId)
         {
+            m_framebufferId = framebufferId;
             if (m_versionMajor >= 3 && m_versionMinor >= 3) {
                 /*GLuint vaoID;
                 glCheck(glGenVertexArrays(1, &vaoID));
@@ -379,6 +447,7 @@ namespace odfaeg {
 
             // Set GL states only on first draw, so that we don't pollute user's states
             m_cache.glStatesSet = false;
+            m_cache.lastVboBuffer = nullptr;
         }
 
 
@@ -403,38 +472,37 @@ namespace odfaeg {
         ////////////////////////////////////////////////////////////
         void RenderTarget::applyBlendMode(const BlendMode& mode)
         {
+            //priv::ensureExtensionsInit();
             // Apply the blend mode, falling back to the non-separate versions if necessary
-            if (GLEXT_blend_func_separate)
+            /*if (GLEXT_blend_func_separate)
             {
                 glCheck(GLEXT_glBlendFuncSeparate(
                     factorToGlConstant(mode.colorSrcFactor), factorToGlConstant(mode.colorDstFactor),
                     factorToGlConstant(mode.alphaSrcFactor), factorToGlConstant(mode.alphaDstFactor)));
             }
             else
-            {
+            {*/
                 glCheck(glBlendFunc(
                     factorToGlConstant(mode.colorSrcFactor),
                     factorToGlConstant(mode.colorDstFactor)));
-            }
+            //}
 
-            if (GLEXT_blend_equation_separate)
+            /*if (GLEXT_blend_equation_separate)
             {
                 glCheck(GLEXT_glBlendEquationSeparate(
                     equationToGlConstant(mode.colorEquation),
                     equationToGlConstant(mode.alphaEquation)));
             }
             else
-            {
-                glCheck(GLEXT_glBlendEquation(equationToGlConstant(mode.colorEquation)));
-            }
+            {*/
+                //glCheck(glBlendEquation(equationToGlConstant(mode.colorEquation)));
+            //}
             m_cache.lastBlendMode = mode;
         }
         ////////////////////////////////////////////////////////////
         void RenderTarget::applyTexture(const Texture* texture)
         {
-
             Texture::bind(texture, Texture::Pixels);
-
             m_cache.lastTextureId = texture ? texture->m_cacheId : 0;
 
         }

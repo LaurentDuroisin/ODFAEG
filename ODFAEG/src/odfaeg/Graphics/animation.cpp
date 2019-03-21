@@ -82,10 +82,10 @@ namespace odfaeg {
                 running = false;
             }
         }
-        void Anim::computeNextFrame () {
-            onFrameChanged();
+        void Anim::computeNextFrame (EntityManager* scene) {
+            onFrameChanged(scene);
         }
-        void Anim::onFrameChanged() {
+        void Anim::onFrameChanged(EntityManager* scene) {
             if (getChildren().size() != 0) {
                 for (unsigned int i = 0; i < getChildren().size(); i++) {
                     getChildren()[i]->onFrameChanged();
@@ -113,7 +113,7 @@ namespace odfaeg {
                 interpolatedFrame->setType(currentFrame->getType());
                 interpolatedFrame->setPosition(currentFrame->getPosition());
                 interpolatedFrame->setSize(currentFrame->getSize());
-                interpolate(currentFrame, nextFrame);
+                interpolate(currentFrame, nextFrame, scene);
             }
         }
         void Anim::createFirstInterpolatedFrame (Entity* currentFrame) {
@@ -153,11 +153,11 @@ namespace odfaeg {
                 interpolatedFrame->setSize(currentFrame->getSize());
             }
         }
-        void Anim::interpolate(Entity* currentFrame, Entity* nextFrame) {
-            if (currentFrame->getChildren().size() == nextFrame->getChildren().size()) {
-                if (currentFrame->getChildren().size() != 0 && nextFrame->getChildren().size() != 0) {
-                    for (unsigned int i = 0; i < currentFrame->getChildren().size(); i++) {
-                         interpolate(currentFrame->getChildren()[i], nextFrame->getChildren()[i]);
+        void Anim::interpolate(Entity* currentFrame, Entity* nextFrame, EntityManager* scene) {
+            if (currentFrame->getNbChildren() == nextFrame->getNbChildren()) {
+                if (currentFrame->getNbChildren() != 0 && nextFrame->getNbChildren() != 0) {
+                    for (unsigned int i = 0; i < currentFrame->getNbChildren(); i++) {
+                         interpolate(currentFrame->getChild(i), nextFrame->getChild(i), scene);
                     }
                 }
                 if (currentFrame->getNbFaces() == nextFrame->getNbFaces()
@@ -176,6 +176,8 @@ namespace odfaeg {
                             interpolatedFrame->getFace(i)->setVertexArray(cva);
                             interpolatedFrame->getFace(i)->setMaterial(currentFrame->getFace(i)->getMaterial());
                             interpolatedFrame->getFace(i)->setTransformMatrix(currentFrame->getFace(i)->getTransformMatrix());
+                            if (scene != nullptr)
+                                scene->updateVertices(cva);
                         }
                     }
                 }

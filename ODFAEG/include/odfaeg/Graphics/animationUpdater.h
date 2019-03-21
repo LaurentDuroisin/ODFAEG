@@ -22,7 +22,10 @@ namespace odfaeg {
         */
         class ODFAEG_CORE_API AnimUpdater : public core::Timer {
         public :
-            AnimUpdater() : Timer() {}
+            AnimUpdater(EntityManager* scene=nullptr) : Timer(), scene(scene) {}
+            void setScene(EntityManager* scene) {
+                this->scene = scene;
+            }
             /**
             * \fn void addAnim(g2d::Anim *anim)
             * \brief add a 2D animation to the updater.
@@ -39,8 +42,8 @@ namespace odfaeg {
                 for (unsigned int i = 0; i < anims.size(); i++) {
                     if (anims[i]->isRunning() &&
                         anims[i]->getElapsedTime().asSeconds() > anims[i]->getFrameRate()) {
-                        anims[i]->computeNextFrame();
-                        if (anims[i]->isCurrentFrameChanged() && graphic::World::containsVisibleParentEntity(anims[i]->getRootEntity())) {
+                        anims[i]->computeNextFrame(scene);
+                        if (anims[i]->isCurrentFrameChanged() /*&& graphic::World::containsVisibleParentEntity(anims[i]->getRootEntity())*/) {
                             graphic::World::changeVisibleEntity(anims[i]->getPreviousFrame(), anims[i]->getCurrentFrame());
                         }
                         anims[i]->setCurrentFrameChanged(false);
@@ -51,6 +54,7 @@ namespace odfaeg {
         private :
             /** < the animations of the updater. */
             std::vector<Anim*> anims;
+            EntityManager* scene;
         };
     }
 }

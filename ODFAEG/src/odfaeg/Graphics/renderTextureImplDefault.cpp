@@ -69,8 +69,10 @@ namespace odfaeg {
                 glCheck(glBindTexture(GL_TEXTURE_2D, textureId));
                 glCheck(glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, m_width, m_height));
             }
+            unsigned int RenderTextureImplDefault::getFramebufferId() {
+                return 0;
+            }
         }
-
     } // namespace priv
 
 } // namespace sf

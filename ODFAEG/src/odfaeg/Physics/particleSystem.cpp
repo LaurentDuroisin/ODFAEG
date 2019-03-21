@@ -62,7 +62,7 @@ namespace odfaeg
         // ---------------------------------------------------------------------------------------------------------------------------
 
 
-        ParticleSystem::ParticleSystem(math::Vec3f position, math::Vec3f size)
+        ParticleSystem::ParticleSystem(math::Vec3f position, math::Vec3f size, graphic::EntityManager* scene)
         : graphic::Entity(position, size, size*0.5f, "E_PARTICLES"), mParticles()
         , mAffectors()
         , mEmitters()
@@ -71,13 +71,16 @@ namespace odfaeg
         , mVertices(sf::Quads)
         , mNeedsVertexUpdate(true)
         , mQuads()
-        , mNeedsQuadUpdate(true)
+        , mNeedsQuadUpdate(true),
+          scene(scene)
         {
             graphic::Material material;
             graphic::Face* face = new graphic::Face(mVertices, material, getTransform());
             addFace(face);
         }
-
+        void ParticleSystem::setScene(graphic::EntityManager* scene) {
+            this->scene = scene;
+        }
         void ParticleSystem::setTexture(const graphic::Texture& texture)
         {
             mTexture = &texture;
@@ -247,6 +250,8 @@ namespace odfaeg
         void ParticleSystem::computeVertices() const
         {
             // Clear vertex array (keeps memory allocated)
+            if (scene != nullptr)
+                scene->removeVertices(mVertices);
             mVertices.clear();
             mVertices.setEntity(const_cast<ParticleSystem*>(this));
             // Fill vertex array
@@ -275,6 +280,8 @@ namespace odfaeg
                 getFaces()[0]->setVertexArray(mVertices);
                 tm.reset3D();
             }
+            if (scene != nullptr)
+                scene->addVertices(mVertices, const_cast<ParticleSystem*>(this)->getTransform().getTransformId());
         }
 
         void ParticleSystem::computeQuads() const

@@ -2,6 +2,7 @@
 #define ODFAEG_RENDER_TARGET_HPP
 #include "view.h"
 #include "vertex.h"
+#include "vertexBuffer.hpp"
 #include "transformMatrix.h"
 #include "renderStates.h"
 #include <SFML/Graphics/PrimitiveType.hpp>
@@ -241,7 +242,7 @@ namespace odfaeg {
             ////////////////////////////////////////////////////////////
             void draw(const Vertex* vertices, unsigned int vertexCount, sf::PrimitiveType type,
                       RenderStates states = RenderStates::Default);
-
+            void drawVertexBuffer(VertexBuffer& vertexBuffer, RenderStates states = RenderStates::Default);
                        ////////////////////////////////////////////////////////////
             /// \brief Return the size of the rendering region of the target
             ///
@@ -335,7 +336,7 @@ namespace odfaeg {
             /// target is created and ready for drawing.
             ///
             ////////////////////////////////////////////////////////////
-            void initialize ();
+            void initialize (unsigned int framebufferId);
         private :
 
 
@@ -404,6 +405,7 @@ namespace odfaeg {
                 sf::Uint64    lastTextureId; ///< Cached texture
                 bool      useVertexCache; ///< Did we previously use the vertex cache?
                 Vertex vertexCache[VertexCacheSize]; ///< Pre-transformed vertices cache
+                VertexBuffer* lastVboBuffer;
             };
 
              ////////////////////////////////////////////////////////////
@@ -412,7 +414,7 @@ namespace odfaeg {
             View        m_defaultView; ///< Default view
             View        m_view;  ///< Current view
             StatesCache m_cache;  ///< Render states cache
-            unsigned int m_vao, m_versionMajor, m_versionMinor;
+            unsigned int m_vao, m_versionMajor, m_versionMinor, m_framebufferId;
         };
     }
 }

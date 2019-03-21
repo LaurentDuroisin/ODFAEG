@@ -332,7 +332,7 @@ namespace odfaeg {
             *  \brief add a vertex array to the instance.
             *
             */
-            void addVertexArray(VertexArray& va, TransformMatrix& tm);
+            void addVertexArray(VertexArray& va, TransformMatrix& tm, unsigned int nbIndexes = 0);
             void addVertexShadowArray(VertexArray va, TransformMatrix tm, ViewMatrix viewMatrix, TransformMatrix shadowProjMatrix);
             void sortVertexArrays(View& view);
             /**
@@ -341,6 +341,8 @@ namespace odfaeg {
             * \return the vertex arrays.
             */
             std::vector<VertexArray*> getVertexArrays();
+            std::vector<unsigned int> getAllIndexes();
+            std::vector<std::vector<unsigned int>> getIndexes();
             /**
             * \fn void clear()
             * \brief clear all the vertex arrays of the instances.
@@ -384,6 +386,8 @@ namespace odfaeg {
             sf::PrimitiveType primType; /**>The primitive type of the instance.*/
             unsigned int numInstances; /**>The number of instances.*/
             VertexArray vertices;
+            std::vector<unsigned int> allIndexes;
+            std::vector<std::vector<unsigned int>> m_indexes;
         };
         /**
           * \file face.h
@@ -408,7 +412,7 @@ namespace odfaeg {
             * \brief add a face to the facegroup.
             * \param face : the face to add.
             */
-            void addFace(Face* face);
+            void addFace(Face* face, unsigned int nbIndexes = 0);
             void addShadowFace(Face* face, ViewMatrix viewMatrix, TransformMatrix shadowProjMatrix);
             /**
             * \fn std::vector<Instance*> getInstances()

@@ -41,6 +41,7 @@
 #include "../Graphics/drawable.h"
 #include "../Graphics/vertexArray.h"
 #include "../Graphics/entity.h"
+#include "../Graphics/entityManager.h"
 #include "../Math/vec4.h"
 
 #include <vector>
@@ -99,7 +100,7 @@ namespace odfaeg
         public:
         /// @brief Default constructor
         /// @details Requires a call to setTexture() and possibly addTextureRect() before the particle system can be used.
-        ParticleSystem(math::Vec3f position, math::Vec3f size);
+        ParticleSystem(math::Vec3f position, math::Vec3f size, graphic::EntityManager* scene = nullptr);
 
         /// @brief Swaps the contents of two instances in constant time.
         ///
@@ -191,6 +192,7 @@ namespace odfaeg
         void	computeQuads() const;
         void	computeQuad(Quad& quad, const sf::IntRect& textureRect) const;
         void removeEmitter (std::function<void(EmissionInterface&, sf::Time)>& em);
+        void setScene(graphic::EntityManager* scene);
         bool operator== (Entity& other) {
             if (dynamic_cast<ParticleSystem*> (&other) != nullptr) {
                 ParticleSystem& ps = static_cast<ParticleSystem&> (other);
@@ -225,6 +227,7 @@ namespace odfaeg
         EmitterContainer	mEmitters;
         const graphic::Texture*	mTexture;
         std::vector<sf::IntRect>	mTextureRects;
+        graphic::EntityManager* scene;
         mutable graphic::VertexArray	mVertices;
         mutable bool	mNeedsVertexUpdate;
         mutable std::vector<Quad>	mQuads;

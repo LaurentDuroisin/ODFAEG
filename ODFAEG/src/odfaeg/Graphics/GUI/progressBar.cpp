@@ -30,13 +30,9 @@ namespace odfaeg {
             }
             void ProgressBar::setValue(int value) {
                 int sizeX = getSize().x / (maxi - mini) * value;
-                if (LightComponent::getName() == "HPBAR")
-                    std::cout<<"size :  "<<getSize().x<<" maxi : "<<maxi<<" mini : "<<mini<<" value : "<<value<<" size X : "<<sizeX<<std::endl;
                 bar.setSize(math::Vec3f(sizeX, bar.getSize().y, bar.getSize().z));
                 this->value = value;
                 text.setString(core::conversionIntString(value)+"/"+core::conversionIntString(maxi));
-                if (LightComponent::getName() == "HPBAR")
-                    bar.setName("HPBAR");
             }
             int ProgressBar::getValue() {
                 return value;

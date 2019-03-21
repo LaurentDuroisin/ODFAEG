@@ -70,6 +70,7 @@ namespace odfaeg {
                     else
                         glCheck(glDeleteFramebuffersEXT(1, &frameBuffer));
                 }
+                //delete m_context;
             }
 
 
@@ -86,6 +87,9 @@ namespace odfaeg {
             ////////////////////////////////////////////////////////////
             bool RenderTextureImplFBO::create(unsigned int width, unsigned int height, window::ContextSettings settings, unsigned int textureId)
             {
+                //window::GLResource::TransientContextLock transientLock();
+
+                //m_context = new window::Context(m_settings, m_width, m_height);
                 // Create the framebuffer object
                 GLuint frameBuffer = 0;
                 m_versionMajor = settings.versionMajor;
@@ -155,10 +159,18 @@ namespace odfaeg {
 
                 return true;
             }
+            //bool RenderTextureImplFBO::activate(bool active) {
+                /*if (!m_context)
+                    m_context = new window::Context(m_settings, m_width, m_height);*/
+                //return m_context->setActive(active);
+            //}
             ////////////////////////////////////////////////////////////
             void RenderTextureImplFBO::updateTexture(unsigned int)
             {
                 glFlush();
+            }
+            unsigned int RenderTextureImplFBO::getFramebufferId () {
+                return m_frameBuffer;
             }
         }
 

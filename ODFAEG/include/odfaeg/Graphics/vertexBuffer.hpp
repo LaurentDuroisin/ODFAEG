@@ -1,19 +1,19 @@
 
-#ifndef ODFAEG_VERTEXARRAY_HPP
-#define ODFAEG_VERTEXARRAY_HPP
+#ifndef ODFAEG_VERTEXBUFFER_HPP
+#define ODFAEG_VERTEXBUFFER_HPP
 
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-
 #include "vertex.h"
 #include <SFML/Graphics/PrimitiveType.hpp>
 #include <SFML/Graphics/Rect.hpp>
 #include "drawable.h"
 #include <vector>
-#include <SFML/Window/Context.hpp>
+#include "../../../include/odfaeg/Window/iGlResource.hpp"
 #include "../Physics/boundingBox.h"
 #include "vbo.h"
+#include "vertexArray.h"
 /**
   *\namespace odfaeg
   * the namespace of the Opensource Development Framework Adapted for Every Games.
@@ -25,7 +25,7 @@ namespace odfaeg {
         /// \brief Define a set of one or more 2D primitives
         ///
         ////////////////////////////////////////////////////////////
-        class ODFAEG_GRAPHICS_API VertexArray : public Drawable
+        class ODFAEG_GRAPHICS_API VertexBuffer : public Drawable, public window::IGLResource
         {
            public :
 
@@ -35,15 +35,18 @@ namespace odfaeg {
             /// Creates an empty vertex array.
             ///
             ////////////////////////////////////////////////////////////
-            VertexArray();
-            VertexArray(const VertexArray& va);
-            VertexArray(const VertexArray&& va);
-            VertexArray& operator= (const VertexArray& va);
-            VertexArray& operator= (const VertexArray&& va);
-            void computeNormals();
+            VertexBuffer();
+            VertexBuffer(const VertexBuffer& va);
+            VertexBuffer(const VertexBuffer&& va);
+            VertexBuffer& operator= (const VertexBuffer& va);
+            VertexBuffer& operator= (const VertexBuffer&& va);
+            void addTransformId(unsigned int transformId, unsigned int vertexId);
             void addInstancedRenderingInfos(unsigned int numIndexes, unsigned int baseVertex, unsigned int baseIndice);
-            void addIndex(unsigned int* index);
-            std::vector<unsigned int*> getIndexes();
+            void addIndex(unsigned int index);
+            void addIndex(VertexArray& va, unsigned int index);
+            void update(VertexArray va);
+            void remove(VertexArray va);
+            std::vector<unsigned int> getIndexes();
             ////////////////////////////////////////////////////////////
             /// \brief Construct the vertex array with a type and an initial number of vertices
             ///
@@ -51,7 +54,7 @@ namespace odfaeg {
             /// \param vertexCount Initial number of vertices in the array
             ///
             ////////////////////////////////////////////////////////////
-            explicit VertexArray(sf::PrimitiveType type, unsigned int vertexCount = 0, Entity* entity = nullptr);
+            explicit VertexBuffer(sf::PrimitiveType type, unsigned int vertexCount = 0, Entity* entity = nullptr);
             Entity* getEntity();
             void setEntity(Entity* entity);
             ////////////////////////////////////////////////////////////
@@ -154,7 +157,7 @@ namespace odfaeg {
             ////////////////////////////////////////////////////////////
             sf::PrimitiveType getPrimitiveType() const;
             physic::BoundingBox getBounds();
-            bool operator== (const VertexArray &other) const;
+            bool operator== (const VertexBuffer &other) const;
             void updateVBOBuffer();
             void transform(TransformMatrix tm);
             template <typename Archive>
@@ -167,14 +170,11 @@ namespace odfaeg {
                     onLoad();
             }
             void onLoad() {
-                computeNormals();
                 updateVBOBuffer();
             }
             bool isLoop();
-            ~VertexArray();
-        private :
-
-            ////////////////////////////////////////////////////////////
+            void resetIndexes(std::vector<unsigned int> indexes);
+             ////////////////////////////////////////////////////////////
             /// \brief Draw the vertex array to a render target
             ///
             /// \param target Render target to draw to
@@ -182,6 +182,10 @@ namespace odfaeg {
             ///
             ////////////////////////////////////////////////////////////
             void draw(RenderTarget& target, RenderStates states);
+            ~VertexBuffer();
+        private :
+
+
 
             ////////////////////////////////////////////////////////////
             // Member data
@@ -190,13 +194,14 @@ namespace odfaeg {
             std::vector<math::Vec3f> m_locals;
             std::vector<Vertex> m_vertices;      ///< Vertices contained in the array
             sf::PrimitiveType       m_primitiveType; ///< Type of primitives to draw
-            unsigned int vboVertexBuffer,vboNormalBuffer, vboIndexBuffer, oldVerticesSize;
-            bool needToUpdateVBOBuffer;
+            unsigned int oldVerticesSize, oldIndexesSize;
+            bool needToUpdateVertexBuffer, needToUpdateIndexBuffer;
             public :
+            unsigned int vboVertexBuffer,vboNormalBuffer, vboIndexBuffer;
             std::vector<unsigned int> m_numIndexes;
             std::vector<unsigned int> m_baseVertices;
             std::vector<unsigned int> m_baseIndexes;
-            std::vector<unsigned int*> m_indexes;
+            std::vector<unsigned int> m_indexes;
             std::vector<float> m_vPosX, m_vPosY, m_vPosZ, m_vPosW;
             std::vector<unsigned char> m_vcRed, m_vcBlue, m_vcGreen, m_vcAlpha;
             std::vector<unsigned int> m_ctX, m_ctY;
@@ -234,3 +239,4 @@ namespace odfaeg {
 /// \see sf::Vertex
 ///
 ////////////////////////////////////////////////////////////
+

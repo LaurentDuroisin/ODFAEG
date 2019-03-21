@@ -13,7 +13,7 @@ namespace odfaeg {
                     expression(expression) {
                     update = false;
                     sf::Vector3i resolution ((int) window.getSize().x, (int) window.getSize().y, window.getView().getSize().z);
-                    settings.depthBits = 32;
+                    settings.depthBits = 24;
                     depthBuffer.create(resolution.x, resolution.y,settings);
                     specularTexture.create(resolution.x, resolution.y,settings);
                     bumpTexture.create(resolution.x, resolution.y,settings);
@@ -43,15 +43,6 @@ namespace odfaeg {
                             "gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;"
                             "gl_FrontColor = gl_Color;"
                             "projMat = gl_ProjectionMatrix;"
-                        "}";
-                        const std::string depthGenVertexShader =
-                        "#version 130 \n"
-                        "out mat4 projMat;"
-                        "void main() {"
-                        "   gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;"
-                        "   gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;"
-                        "   gl_FrontColor = gl_Color;"
-                        "   projMat = gl_ProjectionMatrix;"
                         "}";
                         const std::string  buildNormalMapVertexShader =
                         "#version 130 \n"
@@ -122,7 +113,7 @@ namespace odfaeg {
                             "vec4 colors[2];"
                             "colors[1] = texel * gl_Color;"
                             "colors[0] = gl_Color;"
-                            "bool b = (haveTexture == 1);"
+                            "bool b = (haveTexture > 0.9);"
                             "float current_alpha = colors[int(b)].a;"
                             "float z = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
                             "gl_FragColor = vec4(0, 0, z, current_alpha);"
@@ -178,7 +169,7 @@ namespace odfaeg {
                             "vec4 colors[2];"
                             "colors[1] = texel * gl_Color;"
                             "colors[0] = gl_Color;"
-                            "bool b = (haveTexture == 1);"
+                            "bool b = (haveTexture > 0.9);"
                             "vec4 color = colors[int(b)];"
                             "float z = (gl_FragCoord.w != 1.f) ? (inverse(projMat) * vec4(0, 0, 0, gl_FragCoord.w)).w : gl_FragCoord.z;"
                             "float intensity = (maxM != 0.f) ? m / maxM : 0.f;"
@@ -194,7 +185,7 @@ namespace odfaeg {
                              "vec4 colors[2];"
                              "colors[1] = texel * gl_Color;"
                              "colors[0] = gl_Color;"
-                             "bool b = (haveTexture == 1);"
+                             "bool b = (haveTexture > 0.9);"
                              "vec4 color = colors[int(b)];"
                              "gl_FragColor = color;"
                          "}";
@@ -295,7 +286,7 @@ namespace odfaeg {
                                  "gl_FragColor = lightMapColor;"
                              "}"
                         "}";
-                        if (!depthBufferGenerator.loadFromMemory(depthGenVertexShader, depthGenFragShader))
+                        if (!depthBufferGenerator.loadFromMemory(vertexShader, depthGenFragShader))
                             throw core::Erreur(50, "Failed to load depth buffer generator shader", 0);
                         if (!normalMapGenerator.loadFromMemory(buildNormalMapVertexShader, buildNormalMapFragmentShader))
                             throw core::Erreur(51, "Failed to load normal generator shader", 0);
@@ -314,7 +305,7 @@ namespace odfaeg {
                         lightMapGenerator.setParameter("resolution", resolution.x, resolution.y, resolution.z);
                         lightMapGenerator.setParameter("normalMap", normalMap.getTexture());
                         lightMapGenerator.setParameter("specularTexture",specularTexture.getTexture());
-                        lightMapGenerator.setParameter("bumpTexture",bumpTexture.getTexture());
+                        lightMapGenerator.setParameter("bumpMap",bumpTexture.getTexture());
                         lightMapGenerator.setParameter("lightMap",lightMap.getTexture());
                     } else {
                         throw core::Erreur(55, "Shader not supported!", 0);
@@ -344,8 +335,8 @@ namespace odfaeg {
             return expression;
         }
         void LightRenderComponent::clear() {
-             normalMap.clear(sf::Color::Transparent);
              depthBuffer.clear(sf::Color::Transparent);
+             normalMap.clear(sf::Color::Transparent);
              specularTexture.clear(sf::Color::Transparent);
              bumpTexture.clear(sf::Color::Transparent);
              sf::Color ambientColor = g2d::AmbientLight::getAmbientLight().getColor();
@@ -447,16 +438,16 @@ namespace odfaeg {
                     states.texture = m_instances[i].getMaterial().getTexture();
                     states.shader = &depthBufferGenerator;
                     depthBuffer.draw(m_instances[i].getAllVertices(), states);
-                    states.shader = &specularTextureGenerator;
+                    /*states.shader = &specularTextureGenerator;
                     specularTexture.draw(m_instances[i].getAllVertices(), states);
                     states.shader = &bumpTextureGenerator;
                     states.texture = m_instances[i].getMaterial().getBumpTexture();
-                    bumpTexture.draw(m_instances[i].getAllVertices(), states);
+                    bumpTexture.draw(m_instances[i].getAllVertices(), states);*/
                 }
             }
             states.shader = &normalMapGenerator;
-            depthBuffer.display();
             depthBufferTile.setCenter(view.getPosition());
+            depthBuffer.display();
             normalMap.draw(depthBufferTile, states);
             states.shader = &lightMapGenerator;
             states.blendMode = sf::BlendAdd;

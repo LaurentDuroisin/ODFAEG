@@ -88,7 +88,7 @@ namespace odfaeg {
             /// \return True if creation has been successful
             ///
             ////////////////////////////////////////////////////////////
-            bool create(unsigned int width, unsigned int height, window::ContextSettings = window::ContextSettings());
+            bool create(unsigned int width, unsigned int height, window::ContextSettings = window::ContextSettings(), bool useSeparateContext = true);
             ////////////////////////////////////////////////////////////
             /// \brief Enable or disable texture smoothing
             ///
@@ -197,7 +197,7 @@ namespace odfaeg {
             ////////////////////////////////////////////////////////////
             priv::RenderTextureImpl* m_impl;    ///< Platform/hardware specific implementation
             Texture                  m_texture; ///< Target texture to draw on
-            window::Context          m_context; ///< Need to use a separating opengl context otherwise it doesn't work because opengl resource are messed up.
+            window::Context*         m_context; ///< Need to use a separating opengl context otherwise it doesn't work because opengl resource are messed up.
         };
     }
 
@@ -271,4 +271,3 @@ namespace odfaeg {
 /// \see sf::RenderTarget, sf::RenderWindow, sf::View, sf::Texture
 ///
 ////////////////////////////////////////////////////////////
-

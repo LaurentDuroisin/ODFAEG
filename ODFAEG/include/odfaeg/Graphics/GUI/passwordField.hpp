@@ -1,5 +1,5 @@
 #ifndef ODFAEG_PASSWORD_FIELD
-#define ODFAEG_PASSWORD_FIELD-
+#define ODFAEG_PASSWORD_FIELD
 #include "../lightComponent.h"
 #include "../renderWindow.h"
 #include "../rectangleShape.h"

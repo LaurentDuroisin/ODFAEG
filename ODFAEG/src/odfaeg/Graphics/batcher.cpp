@@ -146,11 +146,11 @@ namespace odfaeg {
                 return color == material.color;
             }
             bool Material::operator== (const Material& material) {
-                return useSameTextures(material) /*&& hasSameColor(material)
+                return useSameTextures(material) && hasSameColor(material)
                        && specularIntensity == material.specularIntensity
                        && specularPower == material.specularPower
                        && bumpTexture == material.bumpTexture
-                       && refractionFactor == material.refractionFactor*/;
+                       && refractionFactor == material.refractionFactor;
             }
             bool Material::operator!= (Material& material) {
                 return !useSameTextures(material) || !hasSameColor(material);
@@ -240,14 +240,20 @@ namespace odfaeg {
             void Instance::setMaterial (Material& mat) {
                 material = &mat;
             }
-            void Instance::addVertexArray(VertexArray& va, TransformMatrix& tm) {
-
+            void Instance::addVertexArray(VertexArray& va, TransformMatrix& tm, unsigned int nbIndexes) {
                 m_transforms.push_back(&tm);
                 m_vertexArrays.push_back(&va);
+                m_indexes.push_back(std::vector<unsigned int>());
                 for (unsigned int i = 0; i < va.getVertexCount(); i++) {
                     math::Vec3f t = tm.transform(math::Vec3f(va[i].position.x, va[i].position.y, va[i].position.z));
                     Vertex v (sf::Vector3f(t.x, t.y, t.z), va[i].color, va[i].texCoords);
                     vertices.append(v);
+                    //std::cout<<"nb indexes : "<<nbIndexes<<std::endl;
+                    if (i < va.m_indexes.size() && *va.m_indexes[i] < nbIndexes) {
+                        //std::cout<<"add index to batcher : "<<*va.m_indexes[i]<<std::endl;
+                        m_indexes.back().push_back(*va.m_indexes[i]);
+                        allIndexes.push_back(*va.m_indexes[i]);
+                    }
                 }
             }
             void Instance::addVertexShadowArray (VertexArray va, TransformMatrix tm, ViewMatrix viewMatrix, TransformMatrix shadowProjMatrix) {
@@ -263,8 +269,11 @@ namespace odfaeg {
             }
             void Instance::sortVertexArrays(View& view) {
                 vertices.clear();
+                allIndexes.clear();
+                m_indexes.clear();
                 std::multimap<float, VertexArray*> sortedVA;
                 std::multimap<float, TransformMatrix*> sortedTM;
+                std::multimap<float, unsigned int> sortedIndexes;
                 for (unsigned int i = 0; i < m_vertexArrays.size(); i++) {
                     odfaeg::math::Vec3f center;
                     for (unsigned int j = 0; j < m_vertexArrays[i]->getVertexCount(); j++) {
@@ -284,10 +293,15 @@ namespace odfaeg {
                     TransformMatrix* tm = it2->second;
                     m_vertexArrays.push_back(va);
                     m_transforms.push_back(tm);
+                    m_indexes.push_back(std::vector<unsigned int>());
                     for (unsigned int i = 0; i < va->getVertexCount(); i++) {
                         math::Vec3f t = tm->transform(math::Vec3f((*va)[i].position.x, (*va)[i].position.y, (*va)[i].position.z));
                         Vertex v (sf::Vector3f(t.x, t.y, t.z), (*va)[i].color, (*va)[i].texCoords);
                         vertices.append(v);
+                        if (i < va->m_indexes.size()) {
+                            m_indexes.back().push_back(*va->m_indexes[i]);
+                            allIndexes.push_back(*va->m_indexes[i]);
+                        }
                     }
                 }
             }
@@ -296,6 +310,12 @@ namespace odfaeg {
             }
             std::vector<VertexArray*> Instance::getVertexArrays() {
                 return m_vertexArrays;
+            }
+            std::vector<unsigned int> Instance::getAllIndexes() {
+                return allIndexes;
+            }
+            std::vector<std::vector<unsigned int>> Instance::getIndexes() {
+                return m_indexes;
             }
             void Instance::clear() {
                 m_transforms.clear();
@@ -323,11 +343,11 @@ namespace odfaeg {
                 numIndexes = 0;
                 nbLayers = 0;
             }
-            void Batcher::addFace(Face* face) {
+            void Batcher::addFace(Face* face, unsigned int nbIndexes) {
                 Instance& instance = instances[face->getVertexArray().getPrimitiveType() * Material::getNbMaterials() + face->getMaterial().getId()];
                 instance.setPrimitiveType(face->getVertexArray().getPrimitiveType());
                 instance.setMaterial(face->getMaterial());
-                instance.addVertexArray(face->getVertexArray(),face->getTransformMatrix());
+                instance.addVertexArray(face->getVertexArray(),face->getTransformMatrix(), nbIndexes);
                 /*bool added = false;
                 for (unsigned int i = 0; i < instances.size() && !added; i++) {
                     if (instances[i].getMaterial() == face->getMaterial()

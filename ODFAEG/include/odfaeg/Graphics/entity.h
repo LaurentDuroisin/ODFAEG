@@ -186,6 +186,7 @@ namespace odfaeg {
                 *   \return the number of children of the entity.
                 */
                 unsigned int getNbChildren ();
+                Entity* getChild(unsigned int n);
                 //Determine if the entity is animated.
                 /** \fn  bool isAnimated ();
                 *   \brief virtual method to redefine if an entity is animated.

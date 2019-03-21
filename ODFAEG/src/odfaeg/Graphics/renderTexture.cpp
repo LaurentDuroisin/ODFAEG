@@ -36,7 +36,8 @@ namespace odfaeg
         using namespace sf;
         ////////////////////////////////////////////////////////////
         RenderTexture::RenderTexture() :
-        m_impl(NULL)
+        m_impl(NULL),
+        m_context(NULL)
         {
 
         }
@@ -46,16 +47,20 @@ namespace odfaeg
         RenderTexture::~RenderTexture()
         {
             //delete m_context;
-            delete m_impl;
+            if (m_impl)
+                delete m_impl;
+            if (m_context)
+                delete m_context;
         }
 
 
         ////////////////////////////////////////////////////////////
-        bool RenderTexture::create(unsigned int width, unsigned int height, window::ContextSettings settings)
+        bool RenderTexture::create(unsigned int width, unsigned int height, window::ContextSettings settings, bool useSeparateContext)
         {
-            m_context.create(settings, width, height);
-            RenderTarget::setVersionMajor(m_context.getSettings().versionMajor);
-            RenderTarget::setVersionMinor(m_context.getSettings().versionMinor);
+            if (useSeparateContext)
+                m_context = new window::Context(settings, width, height);
+            /*RenderTarget::setVersionMajor(m_context->getSettings().versionMajor);
+            RenderTarget::setVersionMinor(m_context->getSettings().versionMinor);*/
             // Create the texture
             if(!m_texture.create(width, height))
             {
@@ -80,10 +85,10 @@ namespace odfaeg
             }
 
             // Initialize the render texture
-            if (!m_impl->create(width, height, m_context.getSettings(), m_texture.m_texture))
+            if (!m_impl->create(width, height, (m_context) ? m_context->getSettings() : settings, m_texture.m_texture))
                 return false;
             // We can now initialize the render target part
-            RenderTarget::initialize();
+            RenderTarget::initialize(m_impl->getFramebufferId());
             return true;
         }
 
@@ -119,7 +124,7 @@ namespace odfaeg
         ////////////////////////////////////////////////////////////
         bool RenderTexture::setActive(bool active)
         {
-            return m_impl && m_context.setActive(active);
+            return m_impl && m_context && m_context->setActive(active);
         }
 
 
@@ -148,7 +153,8 @@ namespace odfaeg
             return m_texture;
         }
         const window::ContextSettings& RenderTexture::getSettings() const {
-            return m_context.getSettings();
+              ContextSettings empty(0, 0, 0, 0, 0);
+              if(m_context) return m_context->getSettings();
         }
         bool RenderTexture::activate(bool active) {
             return setActive(active);

@@ -80,7 +80,7 @@ namespace odfaeg {
             RenderTarget::setVersionMajor(getSettings().versionMajor);
             RenderTarget::setVersionMinor(getSettings().versionMinor);
             // Just initialize the render target part
-            RenderTarget::initialize();
+            RenderTarget::initialize(0);
         }
 
 

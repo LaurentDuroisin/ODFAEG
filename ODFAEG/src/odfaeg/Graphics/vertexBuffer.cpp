@@ -1,6 +1,6 @@
 #include "GL/glew.h"
 #include <SFML/OpenGL.hpp>
-#include "../../../include/odfaeg/Graphics/vertexArray.h"
+#include "../../../include/odfaeg/Graphics/vertexBuffer.hpp"
 #include "../../../include/odfaeg/Graphics/renderTarget.h"
 #include "glCheck.h"
 #include <string.h>
@@ -8,7 +8,7 @@ namespace odfaeg {
     namespace graphic {
         using namespace sf;
         ////////////////////////////////////////////////////////////
-        VertexArray::VertexArray() :
+        VertexBuffer::VertexBuffer() :
         m_vertices     (),
         m_primitiveType(Points),
         m_entity(nullptr)
@@ -16,11 +16,14 @@ namespace odfaeg {
             vboVertexBuffer = 0;
             vboNormalBuffer = 0;
             vboIndexBuffer = 0;
-            needToUpdateVBOBuffer = false;
+            needToUpdateVertexBuffer = false;
+            needToUpdateIndexBuffer = false;
             nbVerticesPerFace = 4;
             loop = true;
+            oldVerticesSize = 0;
+            oldIndexesSize = 0;
         }
-        VertexArray::VertexArray(const VertexArray& va) {
+        VertexBuffer::VertexBuffer(const VertexBuffer& va) {
             vboVertexBuffer = 0;
             vboNormalBuffer = 0;
             vboIndexBuffer = 0;
@@ -30,6 +33,7 @@ namespace odfaeg {
             m_vertices = va.m_vertices;
             m_primitiveType = va.m_primitiveType;
             oldVerticesSize = va.oldVerticesSize;
+            oldIndexesSize = va.oldIndexesSize;
             m_numIndexes = va.m_numIndexes;
             m_baseIndexes = va.m_baseIndexes;
             m_baseVertices = va.m_baseVertices;
@@ -46,9 +50,10 @@ namespace odfaeg {
             m_ctX = va.m_ctX;
             m_ctY = va.m_ctY;
             nbVerticesPerFace = va.nbVerticesPerFace;
-            needToUpdateVBOBuffer = true;
+            needToUpdateVertexBuffer = true;
+            needToUpdateIndexBuffer = true;
         }
-        VertexArray::VertexArray(const VertexArray&& va) {
+        VertexBuffer::VertexBuffer(const VertexBuffer&& va) {
             vboVertexBuffer = 0;
             vboNormalBuffer = 0;
             vboIndexBuffer = 0;
@@ -58,6 +63,7 @@ namespace odfaeg {
             m_vertices = va.m_vertices;
             m_primitiveType = va.m_primitiveType;
             oldVerticesSize = va.oldVerticesSize;
+            oldIndexesSize = va.oldIndexesSize;
             m_numIndexes = va.m_numIndexes;
             m_baseIndexes = va.m_baseIndexes;
             m_baseVertices = va.m_baseVertices;
@@ -74,9 +80,10 @@ namespace odfaeg {
             m_ctX = va.m_ctX;
             m_ctY = va.m_ctY;
             nbVerticesPerFace = va.nbVerticesPerFace;
-            needToUpdateVBOBuffer = true;
+            needToUpdateVertexBuffer = true;
+            needToUpdateIndexBuffer = true;
         }
-        VertexArray& VertexArray::operator= (const VertexArray& va) {
+        VertexBuffer& VertexBuffer::operator= (const VertexBuffer& va) {
             vboVertexBuffer = 0;
             vboNormalBuffer = 0;
             vboIndexBuffer = 0;
@@ -86,6 +93,7 @@ namespace odfaeg {
             m_vertices = va.m_vertices;
             m_primitiveType = va.m_primitiveType;
             oldVerticesSize = va.oldVerticesSize;
+            oldIndexesSize = va.oldIndexesSize;
             m_numIndexes = va.m_numIndexes;
             m_baseIndexes = va.m_baseIndexes;
             m_baseVertices = va.m_baseVertices;
@@ -102,10 +110,11 @@ namespace odfaeg {
             m_ctX = va.m_ctX;
             m_ctY = va.m_ctY;
             nbVerticesPerFace = va.nbVerticesPerFace;
-            needToUpdateVBOBuffer = true;
+            needToUpdateVertexBuffer = true;
+            needToUpdateIndexBuffer = true;
             return *this;
         }
-        VertexArray& VertexArray::operator= (const VertexArray&& va) {
+        VertexBuffer& VertexBuffer::operator= (const VertexBuffer&& va) {
             vboVertexBuffer = 0;
             vboNormalBuffer = 0;
             vboIndexBuffer = 0;
@@ -115,6 +124,7 @@ namespace odfaeg {
             m_vertices = va.m_vertices;
             m_primitiveType = va.m_primitiveType;
             oldVerticesSize = va.oldVerticesSize;
+            oldIndexesSize = va.oldIndexesSize;
             m_numIndexes = va.m_numIndexes;
             m_baseIndexes = va.m_baseIndexes;
             m_baseVertices = va.m_baseVertices;
@@ -131,14 +141,14 @@ namespace odfaeg {
             m_ctX = va.m_ctX;
             m_ctY = va.m_ctY;
             nbVerticesPerFace = va.nbVerticesPerFace;
-            needToUpdateVBOBuffer = true;
+            needToUpdateVertexBuffer = true;
+            needToUpdateIndexBuffer = true;
             return *this;
         }
-        bool VertexArray::isLoop() {
+        bool VertexBuffer::isLoop() {
             return loop;
         }
-        void VertexArray::transform(TransformMatrix tm) {
-            //std::cout<<"transform"<<std::endl;
+        void VertexBuffer::transform(TransformMatrix tm) {
             for (unsigned int i = 0; i < m_vertices.size(); i++) {
                 if (m_locals.size() < m_vertices.size())
                     m_locals.push_back(math::Vec3f(m_vertices[i].position.x, m_vertices[i].position.y,m_vertices[i].position.z));
@@ -146,12 +156,11 @@ namespace odfaeg {
                 m_vertices[i].position.x = t.x;
                 m_vertices[i].position.y = t.y;
                 m_vertices[i].position.z = t.z;
-                //std::cout<<"vertex pos : "<<m_vertices[i].position.x<<" "<<m_vertices[i].position.y<<" "<<m_vertices[i].position.z<<std::endl;
             }
-            needToUpdateVBOBuffer = true;
+            needToUpdateVertexBuffer = true;
         }
         ////////////////////////////////////////////////////////////
-        VertexArray::VertexArray(PrimitiveType type, unsigned int vertexCount, Entity* entity) :
+        VertexBuffer::VertexBuffer(PrimitiveType type, unsigned int vertexCount, Entity* entity) :
         m_vertices     (vertexCount),
         m_primitiveType(type),
         m_entity(entity)
@@ -159,113 +168,127 @@ namespace odfaeg {
             vboVertexBuffer = 0;
             vboNormalBuffer = 0;
             vboIndexBuffer = 0;
-            needToUpdateVBOBuffer = true;
+            oldVerticesSize = 0;
+            oldIndexesSize = 0;
+            needToUpdateVertexBuffer = true;
+            needToUpdateIndexBuffer = true;
             loop = true;
             nbVerticesPerFace = 4;
         }
-        void VertexArray::setEntity(Entity* entity) {
+        void VertexBuffer::setEntity(Entity* entity) {
             m_entity = entity;
         }
-        Entity* VertexArray::getEntity() {
+        Entity* VertexBuffer::getEntity() {
             return m_entity;
         }
-        void VertexArray::addInstancedRenderingInfos(unsigned int numIndexes, unsigned int baseVertex, unsigned int baseIndex) {
+        void VertexBuffer::addInstancedRenderingInfos(unsigned int numIndexes, unsigned int baseVertex, unsigned int baseIndex) {
             m_numIndexes.push_back(numIndexes);
             m_baseVertices.push_back(baseVertex);
             m_baseIndexes.push_back(baseIndex);
         }
-        void VertexArray::addIndex(unsigned int* index) {
+        void VertexBuffer::addIndex(unsigned int index) {
             m_indexes.push_back(index);
-            //std::cout<<"va index : "<<index<<"size : "<<m_indexes.size()<<std::endl;
-            if (!needToUpdateVBOBuffer)
-                needToUpdateVBOBuffer = true;
+            //std::cout<<"vb index : "<<index<<"size : "<<m_indexes.size()<<std::endl;
+            if (!needToUpdateIndexBuffer)
+                needToUpdateIndexBuffer = true;
         }
-        std::vector<unsigned int> VertexArray::getBaseIndexes() {
-            return m_baseIndexes;
+        void VertexBuffer::addIndex(VertexArray& va, unsigned int index) {
+            m_indexes.push_back(index);
+            va.addIndex(&m_indexes.back());
+            if (!needToUpdateIndexBuffer)
+                needToUpdateIndexBuffer = true;
         }
-        std::vector<unsigned int*> VertexArray::getIndexes() {
-            return m_indexes;
+        void VertexBuffer::update(VertexArray va) {
+            for (unsigned int i = 0; i < va.getVertexCount(); i++) {
+                m_vertices[*va.m_indexes[i]] = va[i];
+            }
+            if (!needToUpdateIndexBuffer)
+                needToUpdateVertexBuffer = true;
         }
-        void VertexArray::computeNormals() {
-            int size = 0;
-            if (m_primitiveType == sf::PrimitiveType::Quads)
-                size = m_vertices.size() / 4;
-            else
-                size = m_vertices.size() / 3;
-            for (int i = 0; i < size; i++) {
-                if (m_primitiveType == sf::PrimitiveType::Quads) {
-                    Vector3f v1 = m_vertices[i*4+1].position - m_vertices[i*4].position;
-                    Vector3f v2 = m_vertices[i*4+2].position - m_vertices[i*4+1].position;
-                    math::Vec3f v1f (v1.x, v1.y, v1.z);
-                    math::Vec3f v2f (v2.x, v2.y, v2.z);
-                    math::Vec3f n = v1f.cross(v2f).normalize();
-                    m_normals.push_back(Vector3f(n.x, n.y, n.z));
-                } else if (m_primitiveType == sf::PrimitiveType::Triangles) {
-                    Vector3f v1 = m_vertices[i*3+1].position - m_vertices[i*3].position;
-                    Vector3f v2 = m_vertices[i*3+2].position - m_vertices[i*3+1].position;
-                    math::Vec3f v1f (v1.x, v1.y, v1.z);
-                    math::Vec3f v2f (v2.x, v2.y, v2.z);
-                    math::Vec3f n = v1f.cross(v2f).normalize();
-                    m_normals.push_back(Vector3f(n.x, n.y, n.z));
-                } else if (m_primitiveType == sf::PrimitiveType::TrianglesStrip) {
-                    Vector3f v1 = m_vertices[i*1+1].position - m_vertices[i*1].position;
-                    Vector3f v2 = m_vertices[i*1+2].position - m_vertices[i*1+1].position;
-                    math::Vec3f v1f (v1.x, v1.y, v1.z);
-                    math::Vec3f v2f (v2.x, v2.y, v2.z);
-                    math::Vec3f n = v1f.cross(v2f).normalize();
-                    m_normals.push_back(Vector3f(n.x, n.y, n.z));
-                } else if (m_primitiveType == sf::PrimitiveType::TrianglesFan) {
-                    Vector3f v1 = m_vertices[i+1].position - m_vertices[0].position;
-                    Vector3f v2 = m_vertices[i+2].position - m_vertices[1].position;
-                    math::Vec3f v1f (v1.x, v1.y, v1.z);
-                    math::Vec3f v2f (v2.x, v2.y, v2.z);
-                    math::Vec3f n = v1f.cross(v2f).normalize();
-                    m_normals.push_back(Vector3f(n.x, n.y, n.z));
+        void VertexBuffer::remove(VertexArray va) {
+            for (unsigned int i = 0; i < va.getVertexCount(); i++) {
+                unsigned int first = *va.m_indexes[0];
+                std::vector<Vertex>::iterator itv;
+                std::vector<sf::Vector3f>::iterator itn;
+                std::vector<unsigned int>::iterator iti;
+                for (iti = m_indexes.begin(); iti != m_indexes.end();) {
+                    if (*iti == *va.m_indexes[i]) {
+                        for (itn = m_normals.begin(); itn != m_normals.end();) {
+                            if (*iti == m_indexes[i]) {
+                                itn = m_normals.erase(itn);
+                            } else {
+                                itn++;
+                            }
+                        }
+                        for (itv = m_vertices.begin(); itv != m_vertices.end();) {
+                            if (*iti == m_indexes[i]) {
+                                itv = m_vertices.erase(itv);
+                            } else {
+                                itv++;
+                            }
+                        }
+                        iti = m_indexes.erase(iti);
+                    } else {
+                        iti++;
+                    }
                 }
+                for (unsigned int i = 0; i < m_indexes.size(); i++) {
+                    if (m_indexes[i] > first) {
+                        m_indexes[i] -= va.getVertexCount();
+                    }
+                }
+                if(!needToUpdateVertexBuffer)
+                    needToUpdateVertexBuffer  = true;
+                if(!needToUpdateIndexBuffer)
+                    needToUpdateIndexBuffer  = true;
             }
         }
+        std::vector<unsigned int> VertexBuffer::getBaseIndexes() {
+            return m_baseIndexes;
+        }
+        std::vector<unsigned int> VertexBuffer::getIndexes() {
+            return m_indexes;
+        }
         ///////////////////////////////////////////////////////////
-        unsigned int VertexArray::getVertexCount() const
+        unsigned int VertexBuffer::getVertexCount() const
         {
             return static_cast<unsigned int>(m_vertices.size());
         }
 
 
         ////////////////////////////////////////////////////////////
-        Vertex& VertexArray::operator [](unsigned int index)
+        Vertex& VertexBuffer::operator [](unsigned int index)
         {
-            //std::cout<<"vertex position : "<<m_vertices[index].position.x<<" "<<m_vertices[index].position.y<<std::endl;
             return m_vertices[index];
         }
 
 
         ////////////////////////////////////////////////////////////
-        const Vertex& VertexArray::operator [](unsigned int index) const
+        const Vertex& VertexBuffer::operator [](unsigned int index) const
         {
-            //std::cout<<"vertex position : "<<m_vertices[index].position.x<<" "<<m_vertices[index].position.y<<std::endl;
             return m_vertices[index];
         }
 
 
         ////////////////////////////////////////////////////////////
-        void VertexArray::clear()
+        void VertexBuffer::clear()
         {
             m_vertices.clear();
             m_indexes.clear();
             m_normals.clear();
             m_locals.clear();
         }
-
-
+        void VertexBuffer::resetIndexes(std::vector<unsigned int> indexes) {
+            m_indexes = indexes;
+            needToUpdateIndexBuffer = true;
+        }
         ////////////////////////////////////////////////////////////
-        void VertexArray::resize(unsigned int vertexCount)
+        void VertexBuffer::resize(unsigned int vertexCount)
         {
             m_vertices.resize(vertexCount);
         }
-
-
         ////////////////////////////////////////////////////////////
-        void VertexArray::append(const Vertex& vertex)
+        void VertexBuffer::append(const Vertex& vertex)
         {
             /*bool contains = false;
             for (unsigned int i = 0; i < m_vertices.size(); i++) {
@@ -273,6 +296,7 @@ namespace odfaeg {
                     contains = true;
             }*/
             //if (!contains)  {
+                //std::cout<<"position : "<<vertex.position.x<<" "<<vertex.position.y<<" "<<vertex.position.z<<std::endl;
                 m_vertices.push_back(vertex);
                 /*m_vPosX.push_back(vertex.position.x);
                 m_vPosY.push_back(vertex.position.y);
@@ -285,29 +309,29 @@ namespace odfaeg {
                 m_ctX.push_back(vertex.texCoords.x);
                 m_ctY.push_back(vertex.texCoords.y);
                 m_locals.push_back(math::Vec3f(vertex.position.x, vertex.position.y, vertex.position.z));*/
-                if (!needToUpdateVBOBuffer)
-                    needToUpdateVBOBuffer = true;            //
+                if (!needToUpdateVertexBuffer)
+                    needToUpdateVertexBuffer = true;            //
         }
-        math::Vec3f VertexArray::getLocal(unsigned int index) const {
+        math::Vec3f VertexBuffer::getLocal(unsigned int index) const {
             return m_locals[index];
         }
-        void VertexArray::setLocal(unsigned int index, math::Vec3f v) {
+        void VertexBuffer::setLocal(unsigned int index, math::Vec3f v) {
             m_locals[index] = v;
         }
         ////////////////////////////////////////////////////////////
-        void VertexArray::setPrimitiveType(PrimitiveType type)
+        void VertexBuffer::setPrimitiveType(PrimitiveType type)
         {
             m_primitiveType = type;
         }
 
 
         ////////////////////////////////////////////////////////////
-        PrimitiveType VertexArray::getPrimitiveType() const
+        PrimitiveType VertexBuffer::getPrimitiveType() const
         {
             return m_primitiveType;
         }
 
-        bool VertexArray::operator== (const VertexArray &other) const {
+        bool VertexBuffer::operator== (const VertexBuffer &other) const {
             if (getVertexCount() != other.getVertexCount())
                 return false;
             if (m_primitiveType != other.m_primitiveType)
@@ -317,23 +341,29 @@ namespace odfaeg {
                     return false;
             return true;
         }
+        void VertexBuffer::addTransformId(unsigned int id, unsigned int vertexId) {
+            m_normals.push_back(sf::Vector3f(id, vertexId, 0));
+        }
         ////////////////////////////////////////////////////////////
-        void VertexArray::draw(RenderTarget& target, RenderStates states)
+        void VertexBuffer::draw(RenderTarget& target, RenderStates states)
         {
             if (!m_vertices.empty()) {
 
-                /*if (GLEW_ARB_vertex_buffer_object) {
-                    if (needToUpdateVBOBuffer) {
+                if (GLEW_ARB_vertex_buffer_object) {
+                    if (needToUpdateVertexBuffer) {
                         if (vboVertexBuffer == 0) {
+                            //std::cout<<"create vbo vertex buffer"<<std::endl;
                             GLuint vbo;
                             glCheck(glGenBuffers(1, &vbo));
                             vboVertexBuffer = static_cast<unsigned int>(vbo);
                         }
                         if (oldVerticesSize != m_vertices.size()) {
+                            //std::cout<<"size changed : update vbo vertex buffer"<<std::endl;
                             glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboVertexBuffer));
                             glCheck(glBufferData(GL_ARRAY_BUFFER, m_vertices.size() * sizeof(Vertex), &m_vertices[0], GL_STREAM_DRAW));
                             glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
                         } else {
+                            //std::cout<<"update vbo vertex buffer"<<std::endl;
                             GLvoid *pos_vbo = nullptr;
                             glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboVertexBuffer));
                             pos_vbo = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
@@ -344,18 +374,65 @@ namespace odfaeg {
                             }
                             glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
                         }
-                        needToUpdateVBOBuffer = false;
+                        if (vboNormalBuffer == 0) {
+                            //std::cout<<"create vbo normal buffer"<<std::endl;
+                            GLuint vbo;
+                            glCheck(glGenBuffers(1, &vbo));
+                            vboNormalBuffer = static_cast<unsigned int>(vbo);
+                        }
+                        if (oldVerticesSize != m_vertices.size()) {
+                            //std::cout<<"size changed : update vbo normal buffer"<<std::endl;
+                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboNormalBuffer));
+                            glCheck(glBufferData(GL_ARRAY_BUFFER, m_normals.size() * sizeof(math::Vec3f), &m_normals[0], GL_STREAM_DRAW));
+                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                        } else {
+                            //std::cout<<"update vbo normal buffer"<<std::endl;
+                            GLvoid *pos_vbo = nullptr;
+                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboNormalBuffer));
+                            pos_vbo = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+                            if (pos_vbo != nullptr) {
+                                memcpy(pos_vbo,&m_normals[0],  m_normals.size() * sizeof(math::Vec3f));
+                                glCheck(glUnmapBuffer(GL_ARRAY_BUFFER));
+                                pos_vbo = nullptr;
+                            }
+                            glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                        }
+                        needToUpdateVertexBuffer = false;
                     }
-                    states.vboVertexID = vboVertexBuffer;
-                    target.draw(&m_vertices[0], m_vertices.size(), m_primitiveType, states);
-                } else {*/
-                    target.draw(&m_vertices[0], m_vertices.size(), m_primitiveType, states);
-                //}
+                    if (needToUpdateIndexBuffer) {
+                        if (vboIndexBuffer == 0) {
+                            //std::cout<<"create index vbo buffer"<<std::endl;
+                            GLuint vbo;
+                            glCheck(glGenBuffers(1, &vbo));
+                            vboIndexBuffer = static_cast<unsigned int>(vbo);
+                        }
+                        if (oldIndexesSize != m_indexes.size()) {
+                            //std::cout<<"size changed : update index vbo buffer"<<std::endl;
+                            glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboIndexBuffer));
+                            glCheck(glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indexes.size() * sizeof(unsigned int), &m_indexes[0], GL_STREAM_DRAW));
+                            glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+                        } else {
+                            //std::cout<<"update index vbo buffer"<<std::endl;
+                            GLvoid *pos_vbo = nullptr;
+                            glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboVertexBuffer));
+                            glCheck(pos_vbo = glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY));
+                            if (pos_vbo != nullptr) {
+                                memcpy(pos_vbo,&m_indexes[0],  m_indexes.size() * sizeof(unsigned int));
+                                glCheck(glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER));
+                                pos_vbo = nullptr;
+                            }
+                            glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+                        }
+                        needToUpdateIndexBuffer = false;
+                    }
+                    target.drawVertexBuffer(*this, states);
+                }
                 oldVerticesSize = m_vertices.size();
+                oldIndexesSize = m_indexes.size();
             }
         }
         ////////////////////////////////////////////////////////////
-        physic::BoundingBox VertexArray::getBounds()
+        physic::BoundingBox VertexBuffer::getBounds()
         {
             if (!m_vertices.empty())
             {
@@ -399,10 +476,10 @@ namespace odfaeg {
                 return physic::BoundingBox();
             }
         }
-        void VertexArray::updateVBOBuffer() {
-            needToUpdateVBOBuffer = true;
+        void VertexBuffer::updateVBOBuffer() {
+            needToUpdateVertexBuffer = true;
         }
-        void VertexArray::remove (unsigned int index) {
+        void VertexBuffer::remove (unsigned int index) {
             std::vector<Vertex>::iterator it = m_vertices.begin();
             for (unsigned int i = 0; i < m_vertices.size(); i++) {
                 if (i == index) {
@@ -410,9 +487,9 @@ namespace odfaeg {
                 } else {
                     it++;
                 }
-                std::vector<unsigned int*>::iterator it2 = m_indexes.begin();
+                std::vector<unsigned int>::iterator it2 = m_indexes.begin();
                 for (unsigned int j = 0; j < m_indexes.size(); j++) {
-                    if (i == *m_indexes[j]) {
+                    if (i == m_indexes[j]) {
                         it2 = m_indexes.erase(it2);
                     } else {
                         it2++;
@@ -420,7 +497,7 @@ namespace odfaeg {
                 }
             }
         }
-        VertexArray::~VertexArray() {
+        VertexBuffer::~VertexBuffer() {
             if (VBO::isAvailable() && vboVertexBuffer != 0) {
                 GLuint vbo = static_cast<GLuint>(vboVertexBuffer);
                 glCheck(glDeleteBuffers(1, &vbo));
@@ -436,5 +513,6 @@ namespace odfaeg {
         }
     }
 } // namespace sf3
+
 
 

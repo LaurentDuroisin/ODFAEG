@@ -37,7 +37,7 @@ namespace odfaeg
         ////////////////////////////////////////////////////////////
         RectangleShape::RectangleShape(const math::Vec3f& size)
         {
-            //setSize(size);
+            setSize(size);
             m_size = size;
             update();
         }

@@ -15,8 +15,7 @@ namespace odfaeg {
                 Core    = 1 << 0, ///< Core attribute
                 Debug   = 1 << 2  ///< Debug attribute
             };
-            ContextSettings();
-            ContextSettings (unsigned int depthBits, unsigned int stencilBits, unsigned int antiAliasingLevelunsigned, unsigned int versionMajor, unsigned int versionMinor, unsigned int attribute = Default, bool sRgbCapable=false);
+            explicit ContextSettings(unsigned int depth = 0 , unsigned int stencil = 0, unsigned int antiAliasing = 0, unsigned int major = 1, unsigned int minor = 1, unsigned int attributes = Default, bool sRgb = false);
             unsigned int versionMajor, versionMinor, depthBits, stencilBits, antiAliasingLevel;
             bool sRgbCapable;
             sf::Uint32       attributeFlags;

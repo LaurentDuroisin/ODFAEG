@@ -18,6 +18,7 @@ namespace odfaeg {
                 type = *it;
             }
             id = nbEntities;
+            getTransform().setEntityId(id);
             nbEntities++;
             alreadySerialized = false;
             collisionVolume = nullptr;
@@ -91,6 +92,11 @@ namespace odfaeg {
         std::string Entity::getTypeOfInt (int type) {
             std::map<int, std::string>::iterator it = types->find(type);
             return it->second;
+        }
+        Entity* Entity::getChild(unsigned int n) {
+            if (n >= 0 && n < children.size())
+                return children[n].get();
+            return nullptr;
         }
         void Entity::addChild (Entity* child) {
             std::vector<math::Vec3f> vecs;

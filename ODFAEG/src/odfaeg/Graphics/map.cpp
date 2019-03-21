@@ -33,7 +33,7 @@ namespace odfaeg {
                     shadowMap->create(frcm->getWindow().getSize().x, frcm->getWindow().getSize().y,frcm->getWindow().getSettings());
                     lightMap->create(frcm->getWindow().getSize().x, frcm->getWindow().getSize().y,frcm->getWindow().getSettings());
                     window::ContextSettings settings = frcm->getWindow().getSettings();
-                    settings.depthBits = 32;
+                    settings.depthBits = 24;
                     stencilBuffer->create(frcm->getWindow().getSize().x, frcm->getWindow().getSize().y,settings);
                     normalMap->create(frcm->getWindow().getSize().x, frcm->getWindow().getSize().y,frcm->getWindow().getSettings());
                     refractionMap->create(frcm->getWindow().getSize().x, frcm->getWindow().getSize().y,frcm->getWindow().getSettings());
@@ -496,6 +496,7 @@ namespace odfaeg {
 
         }
         bool Map::addEntity(Entity *entity) {
+            EntityManager::addEntity(entity);
             if (entity->isAnimated()) {
                 if (static_cast<AnimatedEntity*>(entity)->getCurrentFrame() != nullptr) {
                     addEntity(static_cast<AnimatedEntity*>(entity)->getCurrentFrame());
@@ -519,6 +520,11 @@ namespace odfaeg {
                      }
                 }
                 gridMap->addEntity(entity);
+                for (unsigned int c = 0; c < frcm->getNbComponents(); c++) {
+                    if(frcm->getRenderComponent(c) != nullptr) {
+                        frcm->getRenderComponent(c)->loadShaders();
+                    }
+                }
             }
             /*std::vector<Entity*> tiles;
             getChildren(entity, tiles, "*");
@@ -624,6 +630,11 @@ namespace odfaeg {
             removeEntity(entity);
             entity->move(math::Vec3f(dx, dy, dz));
             addEntity(entity);
+            for (unsigned int i = 0; i < frcm->getNbComponents(); i++) {
+                if (frcm->getRenderComponent(i) != nullptr) {
+                    frcm->getRenderComponent(i)->updateTransformMatrices();
+                }
+            }
             /*gridMap->removeEntity(entity);
             entity->move(math::Vec3f(dx, dy, dz));
             gridMap->addEntity(entity);*/
@@ -641,8 +652,7 @@ namespace odfaeg {
                     visibleEntities.clear();
                     visibleEntities.resize(Entity::getNbEntityTypes());
                     for (unsigned int i = 0; i < visibleEntities.size(); i++) {
-                        visibleEntities[i].resize(Entity::getNbEntities());
-                        std::fill(visibleEntities[i].begin(),visibleEntities[i].end() , nullptr);
+                        visibleEntities[i].resize(Entity::getNbEntities(), nullptr);
                     }
                     int x = view.getPosition().x;
                     int y = view.getPosition().y;
@@ -983,16 +993,19 @@ namespace odfaeg {
             }
             vector<string> types = core::split(type, "+");
             for (unsigned int t = 0; t < types.size(); t++) {
-                vector<Entity*> visibleEntitiesType = visibleEntities[Entity::getIntOfType(types[t])];
-                for (unsigned int i = 0; i < visibleEntitiesType.size(); i++) {
-                    if (visibleEntitiesType[i] != nullptr) {
-                        BoneAnimation* ba = dynamic_cast<BoneAnimation*>(visibleEntitiesType[i]->getRootEntity());
-                        if (ba != nullptr) {
-                            if (ba->getBoneIndex() == visibleEntitiesType[i]->getBoneIndex()) {
+                unsigned int type = Entity::getIntOfType(types[t]);
+                if (type < visibleEntities.size()) {
+                    vector<Entity*> visibleEntitiesType = visibleEntities[type];
+                    for (unsigned int i = 0; i < visibleEntitiesType.size(); i++) {
+                        if (visibleEntitiesType[i] != nullptr) {
+                            BoneAnimation* ba = dynamic_cast<BoneAnimation*>(visibleEntitiesType[i]->getRootEntity());
+                            if (ba != nullptr) {
+                                if (ba->getBoneIndex() == visibleEntitiesType[i]->getBoneIndex()) {
+                                    entities.push_back(visibleEntitiesType[i]);
+                                }
+                            } else {
                                 entities.push_back(visibleEntitiesType[i]);
                             }
-                        } else {
-                            entities.push_back(visibleEntitiesType[i]);
                         }
                     }
                 }

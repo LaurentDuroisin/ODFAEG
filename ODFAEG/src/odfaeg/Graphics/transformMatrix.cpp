@@ -13,6 +13,18 @@ namespace odfaeg {
             needToUpdate3D = false;
             inverseNeedToUpdate3D = false;
         }
+        void TransformMatrix::setTransformId(unsigned int id) {
+            this->id = id;
+        }
+        unsigned int TransformMatrix::getTransformId() {
+            return id;
+        }
+        void TransformMatrix::setEntityId(unsigned int id) {
+            entityId = id;
+        }
+        unsigned int TransformMatrix::getEntityId() {
+            return entityId;
+        }
         void TransformMatrix::setOrigin(math::Vec3f vec3) {
             o3d = vec3;
         }

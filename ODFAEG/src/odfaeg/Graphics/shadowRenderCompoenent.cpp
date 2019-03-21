@@ -14,7 +14,7 @@ namespace odfaeg {
                 update = false;
                 sf::Vector3i resolution ((int) window.getSize().x, (int) window.getSize().y, window.getView().getSize().z);
                 shadowMap.create(resolution.x, resolution.y,settings);
-                settings.depthBits = 32;
+                settings.depthBits = 24;
                 stencilBuffer.create(resolution.x, resolution.y,settings);
                 stencilBufferTile = Sprite(stencilBuffer.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
                 shadowTile = Sprite(shadowMap.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));

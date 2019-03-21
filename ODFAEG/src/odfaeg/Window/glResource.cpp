@@ -4,22 +4,27 @@
 namespace odfaeg {
     namespace window {
         GLResource::GLResource() {
-            //ContextImpl::initResource();
+            ContextImpl::initResource();
         }
         GLResource::~GLResource() {
-            //ContextImpl::cleanupResource();
+            ContextImpl::cleanupResource();
+        }
+        ////////////////////////////////////////////////////////////
+        void GLResource::registerContextDestroyCallback(ContextDestroyCallback callback, void* arg)
+        {
+            ContextImpl::registerContextDestroyCallback(callback, arg);
         }
         ////////////////////////////////////////////////////////////
         GLResource::TransientContextLock::TransientContextLock()
         {
-            //ContextImpl::acquireTransientContext();
+            ContextImpl::acquireTransientContext();
         }
 
 
         ////////////////////////////////////////////////////////////
         GLResource::TransientContextLock::~TransientContextLock()
         {
-            //ContextImpl::releaseTransientContext();
+            ContextImpl::releaseTransientContext();
         }
     }
 }

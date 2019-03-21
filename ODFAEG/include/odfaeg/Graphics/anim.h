@@ -1,6 +1,7 @@
 #ifndef ODFAEG_ANIM_2D_HPP
 #define ODFAEG_ANIM_2D_HPP
 #include "animatedEntity.h"
+#include "entityManager.h"
 #include "mesh.hpp"
 #include <SFML/System.hpp>
 /**
@@ -94,7 +95,7 @@ namespace odfaeg {
                 /** \fn nextImage()
                 *   \brief set the next frame of the animation.
                 */
-                void computeNextFrame();
+                void computeNextFrame(EntityManager* scene=nullptr);
                 /** \fn isRunning()
                 *   \return true if the animation is currently playing.
                 */
@@ -125,7 +126,7 @@ namespace odfaeg {
                 *   \param RenderStates states : the states to render the frame with. (blendMode, shaders, etc...)
                 */
                 void onDraw (RenderTarget &target, RenderStates states);
-                void onFrameChanged();
+                void onFrameChanged(EntityManager* scene);
                 /** \fn bool operator==(Entity& other)
                 *   \brief compare two animations.
                 *   \param Entity& other : the other entity.
@@ -175,7 +176,7 @@ namespace odfaeg {
                 */
                 virtual ~Anim();
             private :
-                void interpolate(Entity* currentFrame, Entity* nextFrame);
+                void interpolate(Entity* currentFrame, Entity* nextFrame, EntityManager* scene);
                 void createFirstInterpolatedFrame(Entity* currentFrame);
                 void changeInterpolatedFrame(Entity* currentFrame);
                 /** \fn recomputeSize()

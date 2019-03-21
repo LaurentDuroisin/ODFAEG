@@ -195,23 +195,27 @@ namespace odfaeg {
             */
             void setSize (math::Vec3f size) {
                 math::Vec3f scale;
-                if (m_size.x == 0 /*|| size.x == 0*/) {
+                if (m_size.x == 0 && size.x == 0) {
+                    scale.x = 0;
+                } else if (m_size.x == 0) {
                     scale.x = 1;
                     m_size.x = size.x;
                     localBounds.setSize(m_size.x, localBounds.getHeight(), localBounds.getDepth());
-                }
-                else {
+                } else {
                     scale.x = size.x / localBounds.getWidth();
                 }
-                if (m_size.y == 0 /*|| size.y == 0*/) {
+                if (m_size.y == 0 && size.y == 0) {
+                    scale.y = 0;
+                } else if (m_size.y == 0) {
                     scale.y = 1;
                     m_size.y = size.y;
                     localBounds.setSize(localBounds.getWidth(), m_size.y, localBounds.getDepth());
-                }
-                else {
+                } else {
                     scale.y = size.y / localBounds.getHeight();
                 }
-                if (m_size.z == 0 /*|| size.z == 0*/) {
+                if (m_size.z == 0 && size.z == 0) {
+                    scale.z = 0;
+                } else if (m_size.z == 0) {
                     scale.z = 1;
                     m_size.z = size.z;
                     localBounds.setSize(localBounds.getWidth(), localBounds.getHeight(), m_size.z);

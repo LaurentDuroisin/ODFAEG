@@ -65,7 +65,8 @@ namespace odfaeg {
 
         Entity* CellMap::getEntityInside (unsigned int index) {
             if (index >= 0 && index < entityInside.size()) {
-                return entityInside[index].get();
+                Entity* entity = entityInside[index].get();
+                return entity;
             }
             return nullptr;
         }

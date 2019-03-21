@@ -264,9 +264,6 @@ namespace odfaeg {
             void initialize();
             bool filterEvent(const IEvent& event);
             IWindow* m_window;
-            sf::Clock m_clock;
-            sf::Vector2u m_size;
-            sf::Time m_frameTimeLimit;
         };
     }
 }

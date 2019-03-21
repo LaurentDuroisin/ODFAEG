@@ -54,6 +54,7 @@ namespace odfaeg
                 ///
                 ////////////////////////////////////////////////////////////
                 ~RenderTextureImplDefault();
+                virtual unsigned int getFramebufferId();
 
             private :
 

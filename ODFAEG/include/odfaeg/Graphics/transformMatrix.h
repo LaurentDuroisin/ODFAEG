@@ -39,7 +39,13 @@ namespace odfaeg
             math::Vec3f r3dAxis; /**< the 3D rotation axis (the rotations'll be done around this axis)*/
             bool needToUpdate3D; /** < determine if the 3D transformation matrix have to be updated before the drawing*/
             bool inverseNeedToUpdate3D; /** < determine if the 3D transformation matrix have to be updated before the drawing*/
+            unsigned int id;
+            unsigned int entityId;
         public :
+            void setTransformId(unsigned int id);
+            unsigned int getTransformId();
+            void setEntityId(unsigned int id);
+            unsigned int getEntityId();
             /**
             * \fn TransformMatrix ()
             * \brief Default constructor : set the identity transformation's matrix.

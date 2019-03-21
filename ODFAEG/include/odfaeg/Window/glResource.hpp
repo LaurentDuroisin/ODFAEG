@@ -3,10 +3,12 @@
 #include <SFML/System/NonCopyable.hpp>
 namespace odfaeg {
     namespace window {
+        typedef void(*ContextDestroyCallback)(void*);
         class GLResource {
-            protected :
+            public :
             GLResource();
             ~GLResource();
+             static void registerContextDestroyCallback(ContextDestroyCallback callback, void* arg);
             ////////////////////////////////////////////////////////////
             /// \brief RAII helper class to temporarily lock an available context for use
             ///

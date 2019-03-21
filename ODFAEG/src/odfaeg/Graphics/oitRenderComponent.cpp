@@ -13,7 +13,7 @@ namespace odfaeg {
             expression(expression) {
             update = false;
             sf::Vector3i resolution ((int) window.getSize().x, (int) window.getSize().y, window.getView().getSize().z);
-            settings.depthBits = 32;
+            settings.depthBits = 24;
             depthBuffer.create(resolution.x, resolution.y,settings);
             frontBuffer.create(resolution.x, resolution.y,settings);
             opaquePixels.create(resolution.x, resolution.y, settings);

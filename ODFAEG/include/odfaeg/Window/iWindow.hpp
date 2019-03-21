@@ -16,6 +16,7 @@ namespace odfaeg {
             virtual bool isOpen() const = 0;
             virtual bool pollEvent(IEvent& event) = 0;
             virtual bool waitEvent(IEvent& event) = 0;
+            virtual bool filterEvent(IEvent& event) {}
             virtual void close() = 0;
             virtual void setVisible(bool visible) = 0;
             virtual sf::Vector2i getPosition() const = 0;

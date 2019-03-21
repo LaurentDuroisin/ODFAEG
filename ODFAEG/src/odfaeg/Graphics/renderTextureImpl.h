@@ -68,6 +68,7 @@ namespace odfaeg
                 ///
                 ////////////////////////////////////////////////////////////
                 virtual void updateTexture(unsigned int textureId) = 0;
+                virtual unsigned int getFramebufferId() = 0;
             };
         }
 

@@ -68,7 +68,7 @@ namespace odfaeg {
                 glCheck(glBindVertexArray(vertexArrayId));
             }*/
             // Just initialize the render target part
-            RenderTarget::initialize();
+            RenderTarget::initialize(0);
         }
         SDLRenderWindow::~SDLRenderWindow() {
             SDL_GL_DeleteContext(context);

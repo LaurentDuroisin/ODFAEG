@@ -11,6 +11,8 @@ typedef odfaeg::window::GlxContext ContextImplType;
 #include <string>
 #include "../../../include/odfaeg/Window/context.hpp"
 #include <SFML/System/Lock.hpp>
+#include "glResource.hpp"
+#include <set>
 namespace odfaeg {
     namespace window {
         class ContextImpl : public ContextImplType {
@@ -23,11 +25,14 @@ namespace odfaeg {
                 static bool isExtensionAvalaible(const char* name);
                 void create(IContext* shared);
                 void create(sf::WindowHandle handle, const ContextSettings& settings, IContext* shared = nullptr);
-                void create(ContextSettings& settings, unsigned int width, unsigned int height, IContext* shared = nullptr);
+                void create(const ContextSettings& settings, unsigned int width, unsigned int height, IContext* shared = nullptr);
                 bool setActive(bool active);
                 const ContextSettings& getSettings() const;
                 void display();
+                sf::Uint64 getActiveContextId();
+                void cleanupUnsharedResources();
                 void setVerticalSyncEnabled(bool enabled);
+                static void registerContextDestroyCallback(ContextDestroyCallback contextDestoyCallback, void* arg);
                 static void acquireTransientContext();
                 static void releaseTransientContext();
                 void checkSettings(const ContextSettings& settings);
@@ -92,6 +97,10 @@ namespace odfaeg {
                     bool         useSharedContext;
                 };
                 static sf::ThreadLocalPtr<TransientContext> transientContext;
+                typedef std::set<std::pair<ContextDestroyCallback, void*> > ContextDestroyCallbacks;
+                static ContextDestroyCallbacks contextDestroyCallbacks;
+                static sf::Uint64 id;
+                const sf::Uint64 m_id; ///< Unique number that identifies the context
         };
     }
 }

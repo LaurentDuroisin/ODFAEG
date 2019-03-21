@@ -36,6 +36,7 @@ namespace odfaeg {
             const ContextSettings& getSettings() const;
             bool  waitEvent(IEvent& event);
             bool  pollEvent(IEvent& event);
+            bool  filterEvent(const IEvent& event);
             sf::Vector2i getPosition() const;
             void setPosition(const sf::Vector2i& position);
             sf::Vector2u getSize() const;
@@ -250,11 +251,10 @@ namespace odfaeg {
             ~WindowImpl ();
             private :
                 void initialize();
-                bool filterEvent(const IEvent& event);
-                IWindow* m_window;
                 ContextImpl m_context;
                 sf::Clock m_clock;
                 sf::Time m_frameTimeLimit;
+                sf::Vector2u m_size;
         };
     }
 }

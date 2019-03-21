@@ -8,9 +8,10 @@ namespace odfaeg {
         public :
             void create(IContext* sharedContext=nullptr);
             bool setActive(bool active);
-            void create(sf::WindowHandle handle, IContext* sharedContext = nullptr);
-            void create(ContextSettings& settings, unsigned int width, unsigned int height, IContext* sharedContext = nullptr);
+            void create(sf::WindowHandle handle, const ContextSettings& settings, IContext* sharedContext = nullptr);
+            void create(const ContextSettings& settings, unsigned int width, unsigned int height, IContext* sharedContext = nullptr);
             const ContextSettings& getSettings() const;
+            void initialize(const ContextSettings& settings);
             void display();
             void setVerticalSyncEnabled(bool enabled);
         private :
