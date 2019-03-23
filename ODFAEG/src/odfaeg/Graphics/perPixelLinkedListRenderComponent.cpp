@@ -14,8 +14,8 @@ namespace odfaeg {
             quad(math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0)) {
             GLuint maxNodes = 20 * window.getView().getSize().x * window.getView().getSize().y;
             GLint nodeSize = 5 * sizeof(GLfloat) + sizeof(GLuint);
-            frameBuffer.create(window.getView().getSize().x, window.getView().getSize().y, settings);
-            frameBufferSprite = Sprite(frameBuffer.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), sf::IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
+            /*frameBuffer.create(window.getView().getSize().x, window.getView().getSize().y, settings);
+            frameBufferSprite = Sprite(frameBuffer.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), sf::IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));*/
             glCheck(glGenTextures(1, &headPtrTex));
             glCheck(glBindTexture(GL_TEXTURE_2D, headPtrTex));
             glCheck(glTexStorage2D(GL_TEXTURE_2D, 1, GL_R32UI, window.getView().getSize().x, window.getView().getSize().y));
@@ -76,7 +76,7 @@ namespace odfaeg {
                         nodes[nodeIdx].depth = gl_FragCoord.z;
                         nodes[nodeIdx].next = prevHead;
                    }
-                   /*NodeType frags[MAX_FRAGMENTS];
+                   NodeType frags[MAX_FRAGMENTS];
 
                    int count = 0;
 
@@ -123,14 +123,14 @@ namespace odfaeg {
                        }
                        step *= 2;
                    }
-                   vec4 color = vec4(0.5, 0.5, 0.5, 1.0);
+                   vec4 color = vec4(0, 0, 0, 0);
                    for( int i = 0; i < count; i++ )
                    {
                      color = mix( color, frags[i].color, frags[i].color.a);
                    }
 
                    // Output the final color
-                   return color;*/
+                   /*return color;*/
                    return vec4(0, 0, 0, 0);
 
                }
@@ -144,24 +144,48 @@ namespace odfaeg {
                         n = frags[count].next;
                         count++;
                    }
-                   for (int i = 0; i < count-1; i++) {
-                        for (int j = i+1; j < count; j++) {
-                            if (frags[i].depth > frags[j].depth) {
-                                NodeType tmp = frags[i];
-                                frags[i] = frags[j];
-                                frags[j] = tmp;
-                            }
-                        }
+                    //merge sort
+                   int i, j1, j2, k;
+                   int a, b, c;
+                   int step = 1;
+                   NodeType leftArray[MAX_FRAGMENTS/2]; //for merge sort
+
+                   while (step <= count)
+                   {
+                       i = 0;
+                       while (i < count - step)
+                       {
+                           ////////////////////////////////////////////////////////////////////////
+                           //merge(step, i, i + step, min(i + step + step, count));
+                           a = i;
+                           b = i + step;
+                           c = (i + step + step) >= count ? count : (i + step + step);
+
+                           for (k = 0; k < step; k++)
+                               leftArray[k] = frags[a + k];
+
+                           j1 = 0;
+                           j2 = 0;
+                           for (k = a; k < c; k++)
+                           {
+                               if (b + j1 >= c || (j2 < step && leftArray[j2].depth > frags[b + j1].depth))
+                                   frags[k] = leftArray[j2++];
+                               else
+                                   frags[k] = frags[b + j1++];
+                           }
+                           ////////////////////////////////////////////////////////////////////////
+                           i += 2 * step;
+                       }
+                       step *= 2;
                    }
-                   // Traverse the array, and combine the colors using the alpha
-                  // channel.
-                  vec4 color = vec4 (0, 0, 0, 0);
-                  for (int i = 0; i < count; i++) {
-                    color.rgb = frags[i].color.rgb * frags[i].color.a + color.rgb * (1 - frags[i].color.a);
-                    color.a = frags[i].color.a + color.a * (1 - frags[i].color.a);
-                  }
-                  // Output the final color
-                  return color;
+                   vec4 color = vec4(0, 0, 0, 0);
+                   for( int i = 0; i < count; i++ )
+                   {
+                     color = mix( color, frags[i].color, frags[i].color.a);
+                   }
+
+                   // Output the final color
+                   return color;
                }
                void main() {
                    gl_FragColor = RenderPass();
@@ -301,8 +325,32 @@ namespace odfaeg {
             pass2();
         }
         void PerPixelLinkedListRenderComponent::draw(RenderTarget& target, RenderStates states) {
-            frameBufferSprite.setCenter(view.getPosition());
-            target.draw(frameBufferSprite, states);
+             Shader::bind(&perPixelLinkedList);
+            glCheck(glUniformSubroutinesuiv( GL_FRAGMENT_SHADER, 1, &pass1Index));
+
+            states.blendMode = sf::BlendNone;
+            states.shader=&perPixelLinkedList;
+            for (unsigned int i = 0; i < m_instances.size(); i++) {
+                if (m_instances[i].getAllVertices().getVertexCount() > 0) {
+                    if (m_instances[i].getMaterial().getTexture() == nullptr) {
+                        perPixelLinkedList.setParameter("haveTexture", 0.f);
+                    } else {
+                        perPixelLinkedList.setParameter("haveTexture", 1.f);
+                    }
+                    currentStates.texture=m_instances[i].getMaterial().getTexture();
+                    target.draw(m_instances[i].getAllVertices(), currentStates);
+                }
+            }
+            glCheck(glFinish());
+            glCheck(glMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT ));
+            Shader::bind(&perPixelLinkedList);
+            glCheck(glUniformSubroutinesuiv( GL_FRAGMENT_SHADER, 1, &pass2Index));
+            states.blendMode = sf::BlendAlpha;
+            states.shader=&perPixelLinkedList;
+            quad.setCenter(view.getPosition());
+            target.draw(quad, currentStates);
+            glCheck(glFinish());
+            sf::sleep(sf::seconds(5.f));
         }
         int  PerPixelLinkedListRenderComponent::getLayer() {
             return getPosition().z;
