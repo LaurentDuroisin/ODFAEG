@@ -51,7 +51,7 @@ namespace odfaeg {
         int Anim::getCurrentFrameIndex () {
             return currentFrameIndex;
         }
-        void Anim::setCurrentFrame (int index) {
+        void Anim::setCurrentFrame (int index, EntityManager* scene) {
             if (getChildren().size() >= 2) {
                 previousFrame = getChildren()[(index -1 < 0) ? 0 : index - 1];
                 currentFrame = getChildren()[index];
@@ -59,7 +59,7 @@ namespace odfaeg {
                 currentFrameIndex = index;
                 currentFrameChanged = true;
                 interpolatedFrame->setType(currentFrame->getType());
-                changeInterpolatedFrame(currentFrame);
+                changeInterpolatedFrame(currentFrame, scene);
             }
         }
         Entity* Anim::getPreviousFrame() {
@@ -136,16 +136,22 @@ namespace odfaeg {
                     std::cout<<"interpolated frame type : "<<interpolatedFrame->getType()<<std::endl;*/
             }
         }
-        void Anim::changeInterpolatedFrame(Entity* currentFrame) {
+        void Anim::changeInterpolatedFrame(Entity* currentFrame, EntityManager* scene) {
             if (currentFrame->getChildren().size() > 0) {
                 for (unsigned int i = 0; i < currentFrame->getChildren().size(); i++) {
-                    changeInterpolatedFrame(currentFrame->getChildren()[i]);
+                    changeInterpolatedFrame(currentFrame->getChildren()[i], scene);
                 }
             }
             if (currentFrame->getFaces().size() == interpolatedFrame->getFaces().size()) {
                 for (unsigned int i = 0; i < currentFrame->getFaces().size(); i++) {
+                    VertexArray& iva = interpolatedFrame->getFace(i)->getVertexArray();
                     VertexArray va = currentFrame->getFaces()[i]->getVertexArray();
-                    interpolatedFrame->getFaces()[i]->setVertexArray(va);
+                    for (unsigned int n = 0; n < va.getVertexCount(); n++) {
+                        iva[n] = va[n];
+                    }
+                    if(scene != nullptr) {
+                        scene->updateVertices(iva);
+                    }
                     interpolatedFrame->getFaces()[i]->setMaterial(currentFrame->getFaces()[i]->getMaterial());
                     interpolatedFrame->getFaces()[i]->setTransformMatrix(currentFrame->getFaces()[i]->getTransformMatrix());
                 }
@@ -163,21 +169,21 @@ namespace odfaeg {
                 if (currentFrame->getNbFaces() == nextFrame->getNbFaces()
                     && currentFrame->getNbFaces() == interpolatedFrame->getNbFaces()) {
                     for (unsigned int i = 0; i < currentFrame->getNbFaces(); i++) {
-                        VertexArray cva = currentFrame->getFace(i)->getVertexArray();
+                        const VertexArray& cva = currentFrame->getFace(i)->getVertexArray();
+                        VertexArray& iva = interpolatedFrame->getFace(i)->getVertexArray();
                         const VertexArray& nva = nextFrame->getFace(i)->getVertexArray();
                         if (cva.getVertexCount() == nva.getVertexCount()) {
                             for (unsigned int j = 0; j < cva.getVertexCount(); j++) {
 
-                                cva[j].position.x = cva[j].position.x + (nva[j].position.x - cva[j].position.x) * (interpPerc / interpLevels);
-                                cva[j].position.y = cva[j].position.y + (nva[j].position.y - cva[j].position.y) * (interpPerc / interpLevels);
-                                cva[j].position.z = cva[j].position.z + (nva[j].position.z - cva[j].position.z) * (interpPerc / interpLevels);
+                                iva[j].position.x = cva[j].position.x + (nva[j].position.x - cva[j].position.x) * (interpPerc / interpLevels);
+                                iva[j].position.y = cva[j].position.y + (nva[j].position.y - cva[j].position.y) * (interpPerc / interpLevels);
+                                iva[j].position.z = cva[j].position.z + (nva[j].position.z - cva[j].position.z) * (interpPerc / interpLevels);
 
                             }
-                            interpolatedFrame->getFace(i)->setVertexArray(cva);
                             interpolatedFrame->getFace(i)->setMaterial(currentFrame->getFace(i)->getMaterial());
                             interpolatedFrame->getFace(i)->setTransformMatrix(currentFrame->getFace(i)->getTransformMatrix());
                             if (scene != nullptr)
-                                scene->updateVertices(cva);
+                                scene->updateVertices(iva);
                         }
                     }
                 }

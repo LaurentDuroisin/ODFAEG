@@ -192,36 +192,30 @@ namespace odfaeg {
             if (!needToUpdateIndexBuffer)
                 needToUpdateIndexBuffer = true;
         }
-        void VertexBuffer::addIndex(VertexArray& va, unsigned int index) {
-            m_indexes.push_back(index);
-            va.addIndex(&m_indexes.back());
-            if (!needToUpdateIndexBuffer)
-                needToUpdateIndexBuffer = true;
-        }
-        void VertexBuffer::update(VertexArray va) {
+        void VertexBuffer::update(VertexArray& va) {
             for (unsigned int i = 0; i < va.getVertexCount(); i++) {
-                m_vertices[*va.m_indexes[i]] = va[i];
+                m_vertices[va.m_indexes[i]] = va[i];
             }
             if (!needToUpdateIndexBuffer)
                 needToUpdateVertexBuffer = true;
         }
-        void VertexBuffer::remove(VertexArray va) {
+        void VertexBuffer::remove(VertexArray& va) {
             for (unsigned int i = 0; i < va.getVertexCount(); i++) {
-                unsigned int first = *va.m_indexes[0];
+                unsigned int first = va.m_indexes[0];
                 std::vector<Vertex>::iterator itv;
                 std::vector<sf::Vector3f>::iterator itn;
                 std::vector<unsigned int>::iterator iti;
                 for (iti = m_indexes.begin(); iti != m_indexes.end();) {
-                    if (*iti == *va.m_indexes[i]) {
+                    if (*iti == va.m_indexes[i]) {
                         for (itn = m_normals.begin(); itn != m_normals.end();) {
-                            if (*iti == m_indexes[i]) {
+                            if (*iti == m_normals[i].y) {
                                 itn = m_normals.erase(itn);
                             } else {
                                 itn++;
                             }
                         }
                         for (itv = m_vertices.begin(); itv != m_vertices.end();) {
-                            if (*iti == m_indexes[i]) {
+                            if (*iti == va.m_indexes[i]) {
                                 itv = m_vertices.erase(itv);
                             } else {
                                 itv++;

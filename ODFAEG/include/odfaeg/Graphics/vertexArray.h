@@ -42,8 +42,8 @@ namespace odfaeg {
             VertexArray& operator= (const VertexArray&& va);
             void computeNormals();
             void addInstancedRenderingInfos(unsigned int numIndexes, unsigned int baseVertex, unsigned int baseIndice);
-            void addIndex(unsigned int* index);
-            std::vector<unsigned int*> getIndexes();
+            void addIndex(unsigned int index);
+            std::vector<unsigned int> getIndexes();
             ////////////////////////////////////////////////////////////
             /// \brief Construct the vertex array with a type and an initial number of vertices
             ///
@@ -196,7 +196,7 @@ namespace odfaeg {
             std::vector<unsigned int> m_numIndexes;
             std::vector<unsigned int> m_baseVertices;
             std::vector<unsigned int> m_baseIndexes;
-            std::vector<unsigned int*> m_indexes;
+            std::vector<unsigned int> m_indexes;
             std::vector<float> m_vPosX, m_vPosY, m_vPosZ, m_vPosW;
             std::vector<unsigned char> m_vcRed, m_vcBlue, m_vcGreen, m_vcAlpha;
             std::vector<unsigned int> m_ctX, m_ctY;

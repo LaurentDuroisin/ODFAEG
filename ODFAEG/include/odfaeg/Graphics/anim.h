@@ -104,7 +104,7 @@ namespace odfaeg {
                 *   \brief change the index of the current frame of the animation.
                 *   \param the current index of the animation.
                 */
-                void setCurrentFrame(int index);
+                void setCurrentFrame(int index, EntityManager* scene=nullptr);
                 /** \fn getCurrentTileIndex()
                 *   \brief get the index of the current frame.
                 *   \return the index of the current frame.
@@ -178,7 +178,7 @@ namespace odfaeg {
             private :
                 void interpolate(Entity* currentFrame, Entity* nextFrame, EntityManager* scene);
                 void createFirstInterpolatedFrame(Entity* currentFrame);
-                void changeInterpolatedFrame(Entity* currentFrame);
+                void changeInterpolatedFrame(Entity* currentFrame, EntityManager* scene);
                 /** \fn recomputeSize()
                 *   \brief recompute the size of an animation.
                 */

@@ -240,20 +240,20 @@ namespace odfaeg {
             void Instance::setMaterial (Material& mat) {
                 material = &mat;
             }
-            void Instance::addVertexArray(VertexArray& va, TransformMatrix& tm, unsigned int nbIndexes) {
+            void Instance::addVertexArray(VertexArray& va, TransformMatrix& tm) {
                 m_transforms.push_back(&tm);
                 m_vertexArrays.push_back(&va);
-                m_indexes.push_back(std::vector<unsigned int>());
+                //m_indexes.push_back(std::vector<unsigned int>());
                 for (unsigned int i = 0; i < va.getVertexCount(); i++) {
                     math::Vec3f t = tm.transform(math::Vec3f(va[i].position.x, va[i].position.y, va[i].position.z));
                     Vertex v (sf::Vector3f(t.x, t.y, t.z), va[i].color, va[i].texCoords);
                     vertices.append(v);
                     //std::cout<<"nb indexes : "<<nbIndexes<<std::endl;
-                    if (i < va.m_indexes.size() && *va.m_indexes[i] < nbIndexes) {
-                        //std::cout<<"add index to batcher : "<<*va.m_indexes[i]<<std::endl;
-                        m_indexes.back().push_back(*va.m_indexes[i]);
-                        allIndexes.push_back(*va.m_indexes[i]);
-                    }
+                    //if (i < va.m_indexes.size() /*&& *va.m_indexes[i] < nbIndexes*/) {
+                        //std::cout<<"add index to batcher"<<va.m_indexes[i]<<std::endl;
+                        /*m_indexes.back().push_back(va.m_indexes[i]);
+                        allIndexes.push_back(va.m_indexes[i]);*/
+                    //}
                 }
             }
             void Instance::addVertexShadowArray (VertexArray va, TransformMatrix tm, ViewMatrix viewMatrix, TransformMatrix shadowProjMatrix) {
@@ -298,10 +298,10 @@ namespace odfaeg {
                         math::Vec3f t = tm->transform(math::Vec3f((*va)[i].position.x, (*va)[i].position.y, (*va)[i].position.z));
                         Vertex v (sf::Vector3f(t.x, t.y, t.z), (*va)[i].color, (*va)[i].texCoords);
                         vertices.append(v);
-                        if (i < va->m_indexes.size()) {
-                            m_indexes.back().push_back(*va->m_indexes[i]);
-                            allIndexes.push_back(*va->m_indexes[i]);
-                        }
+                        /*if (i < va->m_indexes.size()) {
+                            m_indexes.back().push_back(va->m_indexes[i]);
+                            allIndexes.push_back(va->m_indexes[i]);
+                        }*/
                     }
                 }
             }
@@ -343,11 +343,11 @@ namespace odfaeg {
                 numIndexes = 0;
                 nbLayers = 0;
             }
-            void Batcher::addFace(Face* face, unsigned int nbIndexes) {
+            void Batcher::addFace(Face* face) {
                 Instance& instance = instances[face->getVertexArray().getPrimitiveType() * Material::getNbMaterials() + face->getMaterial().getId()];
                 instance.setPrimitiveType(face->getVertexArray().getPrimitiveType());
                 instance.setMaterial(face->getMaterial());
-                instance.addVertexArray(face->getVertexArray(),face->getTransformMatrix(), nbIndexes);
+                instance.addVertexArray(face->getVertexArray(),face->getTransformMatrix());
                 /*bool added = false;
                 for (unsigned int i = 0; i < instances.size() && !added; i++) {
                     if (instances[i].getMaterial() == face->getMaterial()

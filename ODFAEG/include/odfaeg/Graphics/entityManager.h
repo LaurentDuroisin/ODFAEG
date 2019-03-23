@@ -81,32 +81,47 @@ namespace odfaeg {
             * \brief virtual function to redefine to add an entity into the manager.
             * \param Entity* entity : the entity to add.
             */
-            void addVertices(VertexArray va, unsigned int transformId) {
+            void addVertices(VertexArray& va, unsigned int transformId) {
                 for (unsigned int j = 0; j < va.getVertexCount(); j++) {
                     sceneVertices.append(va[j]);
-                    sceneVertices.addIndex(va, nbSceneVertices);
+                    sceneVertices.addIndex(nbSceneVertices);
+                    va.addIndex(nbSceneVertices);
                     sceneVertices.addTransformId(transformId, nbSceneVertices);
                     nbSceneVertices++;
+                    //std::cout<<"add indexes"<<std::endl;
                 }
+                allVertices.push_back(&va);
+                //std::cout<<"indexes : "<<allVertices.back()->m_indexes.size()<<std::endl;
             }
-            void updateVertices(VertexArray va) {
+            void updateVertices(VertexArray& va) {
                 sceneVertices.update(va);
             }
-            void removeVertices(VertexArray va) {
-                sceneVertices.remove(va);
+            void removeVertices(VertexArray& va) {
+                if (va.getVertexCount() > 0)  {
+                    unsigned int first = va.m_indexes[0];
+                    for (unsigned int i = 0; i < allVertices.size(); i++) {
+                        for (unsigned int j = 0; j < allVertices[i]->getVertexCount(); j++) {
+                            if (j < allVertices[i]->m_indexes.size() && allVertices[i]->m_indexes[j] > first) {
+                                allVertices[i]->m_indexes[j] -= va.getVertexCount();
+                            }
+                        }
+                    }
+                    sceneVertices.remove(va);
+                }
                 nbSceneVertices -= va.getVertexCount();
             }
             virtual bool addEntity(Entity *entity) {
                 transformMatrices.push_back(&entity->getTransform());
                 for (unsigned int i = 0; i < entity->getNbFaces(); i++) {
-                    VertexArray& va =  entity->getFace(i)->getVertexArray();
-                    //va.transform(entity->getTransform());
-                    for (unsigned int j = 0; j < va.getVertexCount(); j++) {
-                        sceneVertices.append(va[j]);
-                        sceneVertices.addIndex(va, nbSceneVertices);
-                        sceneVertices.addTransformId(nbTransforms, nbSceneVertices);
-                        nbSceneVertices++;
-                    }
+                    //entity->getFace(i)->getVertexArray().transform(entity->getTransform());
+                    addVertices(entity->getFace(i)->getVertexArray(), nbTransforms);
+                    /*if (entity->getRootType() == "E_BIGTILE") {
+                        for(unsigned int j = 0; j < entity->getNbFaces(); j++) {
+                            for (unsigned int k = 0; k < entity->getFace(j)->getVertexArray().getVertexCount(); k++) {
+                                std::cout<<"index : "<<entity->entity->getFace(j)->getVertexArray().m_index[k]<<std::endl;
+                            }
+                        }
+                    }*/
                 }
                 /*std::cout<<"type : "<<entity->getType()<<std::endl;
                 for (unsigned int i = 0; i < entity->getNbFaces(); i++) {
@@ -200,6 +215,7 @@ namespace odfaeg {
             private :
             std::string name;
             VertexBuffer sceneVertices;
+            std::vector<VertexArray*> allVertices;
             std::vector<TransformMatrix*> transformMatrices;
             unsigned int nbSceneVertices, nbTransforms;
         };

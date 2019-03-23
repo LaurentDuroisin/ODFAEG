@@ -225,7 +225,32 @@ namespace odfaeg {
             // Compile the shader program
             return compile(&vertexShader[0], &fragmentShader[0]);
         }
+        ////////////////////////////////////////////////////////////
+        void Shader::setParameter(const std::string& name, unsigned int x)
+        {
+            if (m_shaderProgram)
+            {
+                if (shading_language_version_major >= 3 && shading_language_version_minor >= 3) {
+                    glCheck(glUseProgram(m_shaderProgram));
+                    GLint location = glGetUniformLocation(m_shaderProgram, name.c_str());
+                    if (location != -1) {
+                        glCheck(glUniform1ui(location, x));
+                    }
+                } else {
+                    // Enable program
+                    GLhandleARB program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
+                    glCheck(glUseProgramObjectARB(m_shaderProgram));
 
+                    // Get parameter location and assign it new values
+                    GLint location = getParamLocation(name);
+                    if (location != -1)
+                        glCheck(glUniform1ui(location, x));
+
+                    // Disable program
+                    glCheck(glUseProgramObjectARB(program));
+                }
+            }
+        }
         ////////////////////////////////////////////////////////////
         void Shader::setParameter(const std::string& name, float x)
         {
@@ -538,12 +563,9 @@ namespace odfaeg {
 
             // Make sure that GLEW is initialized
             priv::ensureGlewInit();
-            if (shading_language_version_major >= 3 && shading_language_version_minor >= 3)
-                return true;
-            return GLEW_ARB_shading_language_100 &&
-                   GLEW_ARB_shader_objects       &&
-                   GLEW_ARB_vertex_shader        &&
-                   GLEW_ARB_fragment_shader;
+            /*if (shading_language_version_major >= 3 && shading_language_version_minor >= 3)
+                return true;*/
+            return true;
         }
 
 
@@ -798,6 +820,9 @@ namespace odfaeg {
 
                 return location;
             }
+        }
+        unsigned int Shader::getHandle() {
+            return m_shaderProgram;
         }
         unsigned int Shader::getVersionMajor() {
             //ensureGlContext();

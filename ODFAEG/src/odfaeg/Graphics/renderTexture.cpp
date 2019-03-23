@@ -55,14 +55,15 @@ namespace odfaeg
 
 
         ////////////////////////////////////////////////////////////
-        bool RenderTexture::create(unsigned int width, unsigned int height, window::ContextSettings settings, bool useSeparateContext)
+        bool RenderTexture::create(unsigned int width, unsigned int height, window::ContextSettings settings, unsigned int precision, unsigned int format, unsigned int type, bool useSeparateContext)
         {
+
             if (useSeparateContext)
                 m_context = new window::Context(settings, width, height);
-            /*RenderTarget::setVersionMajor(m_context->getSettings().versionMajor);
-            RenderTarget::setVersionMinor(m_context->getSettings().versionMinor);*/
+            RenderTarget::setVersionMajor(m_context->getSettings().versionMajor);
+            RenderTarget::setVersionMinor(m_context->getSettings().versionMinor);
             // Create the texture
-            if(!m_texture.create(width, height))
+            if(!m_texture.create(width, height, precision, format, type))
             {
                 std::cerr<< "Impossible to create render texture (failed to create the target texture)" << std::endl;
                 return false;
@@ -158,6 +159,10 @@ namespace odfaeg
         }
         bool RenderTexture::activate(bool active) {
             return setActive(active);
+        }
+        void RenderTexture::bind() {
+            if (m_impl)
+                m_impl->bind();
         }
     }
 }

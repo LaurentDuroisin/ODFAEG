@@ -238,6 +238,7 @@ namespace odfaeg {
             ///
             void bindAttribute(int location, const std::string& name);
             void setParameter(const std::string& name);
+            void setParameter(const std::string& name, unsigned int x);
             ////////////////////////////////////////////////////////////
             /// \brief Change a float parameter of the shader
             ///
@@ -512,6 +513,7 @@ namespace odfaeg {
             static bool isAvailable();
             unsigned int getVersionMajor();
             unsigned int getVersionMinor();
+            unsigned int getHandle();
         private :
 
             ////////////////////////////////////////////////////////////

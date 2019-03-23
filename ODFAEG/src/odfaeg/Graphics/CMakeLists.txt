@@ -116,7 +116,12 @@ set(SRC_GRAPHICS
 	${SRCROOT}/boneAnimation.cpp
 	${INCROOT}/lightComponent.h
 	${INCROOT}/heavyComponent.h
-	${INCROOT}/entityManager.h)
+	${INCROOT}/entityManager.h
+	${INCROOT}/depthPeelingRenderComponent.hpp
+	${SRCROOT}/depthPeelingRendercomponent.cpp
+	${INCROOT}/perPixelLinkedListRenderComponent.hpp
+	${SRCROOT}/perPixelLinkedListRenderComponent.cpp
+	)
 source_group ("graphics" FILES ${SRC_GRAPHICS})
 	
 set(SRC_GRAPHICS_2D

@@ -88,7 +88,7 @@ namespace odfaeg {
             /// \return True if creation has been successful
             ///
             ////////////////////////////////////////////////////////////
-            bool create(unsigned int width, unsigned int height, window::ContextSettings = window::ContextSettings(), bool useSeparateContext = true);
+            bool create(unsigned int width, unsigned int height, window::ContextSettings = window::ContextSettings(),  unsigned int precision = 0x8058,unsigned int format = 0x1908, unsigned int type = 0x1401, bool useSeparateContext = true);
             ////////////////////////////////////////////////////////////
             /// \brief Enable or disable texture smoothing
             ///
@@ -190,6 +190,7 @@ namespace odfaeg {
             ////////////////////////////////////////////////////////////
             const Texture& getTexture() const;
             const window::ContextSettings& getSettings() const;
+            void bind();
         private :
             bool activate(bool active);
             ////////////////////////////////////////////////////////////

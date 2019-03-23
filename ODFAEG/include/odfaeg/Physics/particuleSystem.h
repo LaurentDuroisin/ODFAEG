@@ -170,6 +170,7 @@ namespace odfaeg
         void	clearParticles();
 
         void update();
+        void setScene(graphic::EntityManager* scene);
         // ---------------------------------------------------------------------------------------------------------------------------
         // Private member functions
         private:
@@ -192,7 +193,6 @@ namespace odfaeg
         void	computeQuads() const;
         void	computeQuad(Quad& quad, const sf::IntRect& textureRect) const;
         void removeEmitter (std::function<void(EmissionInterface&, sf::Time)>& em);
-        void setScene(graphic::EntityManager* scene);
         bool operator== (Entity& other) {
             if (dynamic_cast<ParticleSystem*> (&other) != nullptr) {
                 ParticleSystem& ps = static_cast<ParticleSystem&> (other);

@@ -95,10 +95,12 @@ namespace odfaeg {
                 glCheck(glDeleteTextures(1, &texture));
             }
         }
-
+        void Texture::bindToImage(unsigned int unit, int level, bool layered, int layer, unsigned int access, unsigned int format) {
+            glCheck(glBindImageTexture(unit, m_texture, level, layered, layer, access, format));
+        }
 
         ////////////////////////////////////////////////////////////
-        bool Texture::create(unsigned int width, unsigned int height)
+        bool Texture::create(unsigned int width, unsigned int height, GLenum precision, GLenum format, GLenum type)
         {
             // Check if texture parameters are valid before creating it
             if ((width == 0) || (height == 0))
@@ -142,12 +144,15 @@ namespace odfaeg {
 
             // Initialize the texture
             glCheck(glBindTexture(GL_TEXTURE_2D, m_texture));
-            glCheck(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_actualSize.x, m_actualSize.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL));
+            glCheck(glTexImage2D(GL_TEXTURE_2D, 0, precision, m_actualSize.x, m_actualSize.y, 0, format, type, NULL));
             glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, m_isRepeated ? GL_REPEAT : GL_CLAMP_TO_EDGE));
             glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_isRepeated ? GL_REPEAT : GL_CLAMP_TO_EDGE));
             glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_isSmooth ? GL_LINEAR : GL_NEAREST));
             glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_isSmooth ? GL_LINEAR : GL_NEAREST));
             m_cacheId = getUniqueId();
+            m_type = type;
+            m_format = format;
+            m_precision = precision;
             return true;
         }
 
@@ -551,6 +556,11 @@ namespace odfaeg {
 
                 return powerOfTwo;
             }
+        }
+        void Texture::clear() {
+            glCheck(glBindTexture(GL_TEXTURE_2D, m_texture));
+            glCheck(glTexSubImage2D(GL_TEXTURE_2D, m_precision, 0, 0, m_size.x, m_size.y, m_format,
+            m_type, NULL));
         }
         void Texture::onSave(std::vector<sf::Uint8>& vPixels) {
             glCheck(glBindTexture(GL_TEXTURE_2D, m_texture));

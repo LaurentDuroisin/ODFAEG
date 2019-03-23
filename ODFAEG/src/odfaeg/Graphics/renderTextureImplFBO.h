@@ -63,6 +63,7 @@ namespace odfaeg {
                 static bool isAvailable();
 
             private :
+                virtual void bind();
                 ////////////////////////////////////////////////////////////
                 /// \brief Create the render texture implementation
                 ///

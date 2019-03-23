@@ -64,7 +64,7 @@ namespace odfaeg {
         RenderTarget::~RenderTarget()
         {
             if (m_versionMajor >= 3 && m_versionMinor >= 3 && m_vao) {
-                //glCheck(glDeleteVertexArrays(1, &m_vao));
+                glCheck(glDeleteVertexArrays(1, &m_vao));
             }
         }
 
@@ -434,11 +434,12 @@ namespace odfaeg {
         void RenderTarget::initialize(unsigned int framebufferId)
         {
             m_framebufferId = framebufferId;
+            //std::cout<<"version : "<<m_versionMajor<<"."<<m_versionMinor<<std::endl;
             if (m_versionMajor >= 3 && m_versionMinor >= 3) {
-                /*GLuint vaoID;
+                GLuint vaoID;
                 glCheck(glGenVertexArrays(1, &vaoID));
                 m_vao = static_cast<unsigned int>(vaoID);
-                glCheck(glBindVertexArray(m_vao));*/
+                glCheck(glBindVertexArray(m_vao));
             }
             // Setup the default and current views
             m_defaultView = View (static_cast<float>(getSize().x), static_cast<float>(getSize().y), -static_cast<float>(getSize().y) - 100, static_cast<float>(getSize().y)+100);

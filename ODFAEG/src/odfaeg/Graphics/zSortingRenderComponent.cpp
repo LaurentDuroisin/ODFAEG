@@ -18,7 +18,7 @@ namespace odfaeg {
             scene.getSceneVertices().updateVBOBuffer();
         }
         void ZSortingRenderComponent::loadShaders() {
-            std::string vertexShader =
+            /*std::string vertexShader =
             "#version 130\n"
             "uniform mat4 transforms["+core::conversionUIntString(scene.getTransforms().size())+"];"
             "out float instanceId;"
@@ -44,11 +44,11 @@ namespace odfaeg {
                 throw core::Erreur(50, "Failed to load instanced rendering shader", 0);
             }
             //instancedRenderingShader.setParameter("texture", Shader::CurrentTexture);
-            instancedRenderingShader.setParameter("transforms", scene.getTransforms());
+            instancedRenderingShader.setParameter("transforms", scene.getTransforms());*/
         }
         void ZSortingRenderComponent::updateTransformMatrices () {
-            std::cout<<"update transform matrices"<<std::endl;
-            instancedRenderingShader.setParameter("transforms", scene.getTransforms());
+            /*std::cout<<"update transform matrices"<<std::endl;
+            instancedRenderingShader.setParameter("transforms", scene.getTransforms());*/
         }
         void ZSortingRenderComponent::pushEvent(window::IEvent event, RenderWindow& rw) {
             if (event.type == window::IEvent::WINDOW_EVENT && event.window.type == window::IEvent::WINDOW_EVENT_RESIZED && &getWindow() == &rw && isAutoResized()) {
@@ -80,11 +80,7 @@ namespace odfaeg {
             for (unsigned int i = 0; i < vEntities.size(); i++) {
                 if ( vEntities[i]->isLeaf()) {
                     for (unsigned int j = 0; j <  vEntities[i]->getNbFaces(); j++) {
-                         VertexArray& va = vEntities[i]->getFace(j)->getVertexArray();
-                         /*for (unsigned int n = 0; n < va.getVertexCount(); n++) {
-                            std::cout<<"index : "<<*va.m_indexes[n]<<std::endl;
-                         }*/
-                         batcher.addFace( vEntities[i]->getFace(j), scene.getSceneVertices().m_indexes.size());
+                         batcher.addFace( vEntities[i]->getFace(j));
                     }
                 }
             }
@@ -126,7 +122,7 @@ namespace odfaeg {
             states.blendMode = sf::BlendAlpha;
             for (unsigned int i = 0; i < m_instances.size(); i++) {
                 if (m_instances[i].getAllVertices().getVertexCount() > 0) {
-                    m_instances[i].sortVertexArrays(view);
+                    //m_instances[i].sortVertexArrays(view);
                     states.texture = m_instances[i].getMaterial().getTexture();
                     //states.shader = &instancedRenderingShader;
                     /*for (unsigned int j = 0; j < m_instances[i].getAllIndexes().size(); j++)
@@ -136,11 +132,11 @@ namespace odfaeg {
                     } else {
                         instancedRenderingShader.setParameter("haveTexture", 1);
                     }*/
-                    scene.getSceneVertices().setPrimitiveType(m_instances[i].getPrimitiveType());
+                    /*scene.getSceneVertices().setPrimitiveType(m_instances[i].getPrimitiveType());
                     if (update) {
                         scene.getSceneVertices().resetIndexes(m_instances[i].getAllIndexes());
                        // update = false;
-                    }
+                    }*/
                     target.draw(m_instances[i].getAllVertices(), states);
                 }
             }

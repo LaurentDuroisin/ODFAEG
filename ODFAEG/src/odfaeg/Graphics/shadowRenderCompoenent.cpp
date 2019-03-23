@@ -120,9 +120,9 @@ namespace odfaeg {
                     if (m_instances[i].getAllVertices().getVertexCount() > 0) {
                         states.texture = m_instances[i].getMaterial().getTexture();
                         if (m_instances[i].getMaterial().getTexture() != nullptr) {
-                            buildShadowMapShader.setParameter("haveTexture", 1);
+                            buildShadowMapShader.setParameter("haveTexture", 1.f);
                         } else {
-                            buildShadowMapShader.setParameter("haveTexture", 0);
+                            buildShadowMapShader.setParameter("haveTexture", 0.f);
                         }
                         stencilBuffer.draw(m_instances[i].getAllVertices(), states);
                     }

@@ -1149,9 +1149,9 @@ namespace odfaeg {
                                 view.lookAt(target.x, target.y, target.z);*/
                                 if (entities[k]->getFaces().size() > 0) {
                                     if (entities[k]->getFaces()[0]->getMaterial().getTexture() != nullptr) {
-                                        buildShadowMapShader->setParameter("haveTexture", 1);
+                                        buildShadowMapShader->setParameter("haveTexture", 1.f);
                                     } else {
-                                        buildShadowMapShader->setParameter("haveTexture", 0);
+                                        buildShadowMapShader->setParameter("haveTexture", 0.f);
                                     }
                                     math::Vec3f shadowOrigin, shadowCenter, shadowScale(1.f, 1.f, 1.f), shadowRotationAxis;
                                     float shadowRotationAngle = 0;
@@ -1210,22 +1210,22 @@ namespace odfaeg {
                                     find = true;
                             if (find) {
                                 //std::cout<<"don't set"<<std::endl;
-                                perPixShadowShader->setParameter("set", 1);
-                                perPixShadowShader2->setParameter("set", 1);
+                                perPixShadowShader->setParameter("set", 1.f);
+                                perPixShadowShader2->setParameter("set", 1.f);
                             } else {
                                 //std::cout<<"set"<<std::endl;
-                                perPixShadowShader->setParameter("set", 0);
-                                perPixShadowShader2->setParameter("set", 1);
+                                perPixShadowShader->setParameter("set", 0.f);
+                                perPixShadowShader2->setParameter("set", 1.f);
                             }
                             for (unsigned int p = 0; p < 2; p++) {
                                 for (unsigned int k = 0; k < entities.size(); k++) {
                                     if (entities[k]->getFaces().size() > 0) {
                                         if (entities[k]->getFaces()[0]->getMaterial().getTexture() != nullptr) {
-                                            perPixShadowShader->setParameter("haveTexture", 1);
-                                            perPixShadowShader2->setParameter("haveTexture", 1);
+                                            perPixShadowShader->setParameter("haveTexture", 1.f);
+                                            perPixShadowShader2->setParameter("haveTexture", 1.f);
                                         } else {
-                                            perPixShadowShader->setParameter("haveTexture", 0);
-                                            perPixShadowShader2->setParameter("haveTexture", 0);
+                                            perPixShadowShader->setParameter("haveTexture", 0.f);
+                                            perPixShadowShader2->setParameter("haveTexture", 0.f);
                                         }
                                         if (p == 0) {
                                             math::Vec3f shadowCenter, shadowScale(1.f, 1.f, 1.f), shadowRotationAxis;
@@ -1365,11 +1365,11 @@ namespace odfaeg {
                                         for (unsigned int k = 0; k < entities.size(); k++) {
                                             if (entities[k]->getFaces().size() > 0) {
                                                 if (entities[k]->getFaces()[0]->getMaterial().getTexture() != nullptr) {
-                                                    perPixShadowShader->setParameter("haveTexture", 1);
-                                                    depthBufferGenShader->setParameter("haveTexture", 1);
+                                                    perPixShadowShader->setParameter("haveTexture", 1.f);
+                                                    depthBufferGenShader->setParameter("haveTexture", 1.f);
                                                 } else {
-                                                    perPixShadowShader->setParameter("haveTexture", 0);
-                                                    depthBufferGenShader->setParameter("haveTexture", 0);
+                                                    perPixShadowShader->setParameter("haveTexture", 0.f);
+                                                    depthBufferGenShader->setParameter("haveTexture", 0.f);
                                                 }
                                             }
                                             states.shader = buildRefractionMapShader.get();

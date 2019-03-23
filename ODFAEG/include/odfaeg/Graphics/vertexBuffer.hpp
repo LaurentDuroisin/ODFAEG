@@ -43,9 +43,8 @@ namespace odfaeg {
             void addTransformId(unsigned int transformId, unsigned int vertexId);
             void addInstancedRenderingInfos(unsigned int numIndexes, unsigned int baseVertex, unsigned int baseIndice);
             void addIndex(unsigned int index);
-            void addIndex(VertexArray& va, unsigned int index);
-            void update(VertexArray va);
-            void remove(VertexArray va);
+            void update(VertexArray& va);
+            void remove(VertexArray& va);
             std::vector<unsigned int> getIndexes();
             ////////////////////////////////////////////////////////////
             /// \brief Construct the vertex array with a type and an initial number of vertices

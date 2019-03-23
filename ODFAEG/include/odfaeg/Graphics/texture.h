@@ -28,7 +28,6 @@
 
 #ifndef ODFAEG_TEXTURE_HPP
 #define ODFAEG_TEXTURE_HPP
-
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
@@ -79,7 +78,7 @@ namespace odfaeg
             ///
             ////////////////////////////////////////////////////////////
             Texture();
-
+            void bindToImage(unsigned int unit, int level, bool layered, int layer, unsigned int access, unsigned int format);
             ////////////////////////////////////////////////////////////
             /// \brief Copy constructor
             ///
@@ -105,8 +104,8 @@ namespace odfaeg
             /// \return True if creation was successful
             ///
             ////////////////////////////////////////////////////////////
-            bool create(unsigned int width, unsigned int height);
-
+            bool create(unsigned int width, unsigned int height, unsigned int precision = 0x8058, unsigned int format = 0x1908, unsigned int type = 0x1401);
+            void clear();
             ////////////////////////////////////////////////////////////
             /// \brief Load the texture from a file on disk
             ///
@@ -529,7 +528,7 @@ namespace odfaeg
             sf::IntRect  m_area;
             sf::Vector2u m_size;          ///< Public texture size
             sf::Vector2u m_actualSize;    ///< Actual texture size (can be greater than public size because of padding)
-            unsigned int m_texture;       ///< Internal texture identifier
+            unsigned int m_texture, m_precision, m_format, m_type;       ///< Internal texture identifier
             bool         m_isSmooth;      ///< Status of the smooth filter
             bool         m_isRepeated;    ///< Is the texture in repeat mode?
             mutable bool m_pixelsFlipped; ///< To work around the inconsistency in Y orientation

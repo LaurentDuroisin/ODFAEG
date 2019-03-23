@@ -55,8 +55,8 @@ namespace odfaeg
                 ////////////////////////////////////////////////////////////
                 ~RenderTextureImplDefault();
                 virtual unsigned int getFramebufferId();
-
             private :
+                virtual void bind();
 
                 ////////////////////////////////////////////////////////////
                 /// \brief Create the render texture implementation

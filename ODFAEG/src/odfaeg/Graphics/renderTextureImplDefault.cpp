@@ -72,6 +72,8 @@ namespace odfaeg {
             unsigned int RenderTextureImplDefault::getFramebufferId() {
                 return 0;
             }
+            void RenderTextureImplDefault::bind() {
+            }
         }
     } // namespace priv
 

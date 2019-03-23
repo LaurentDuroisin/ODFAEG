@@ -1,8 +1,10 @@
 #include "../../../include/odfaeg/Graphics/oitRenderComponent.h"
 #include "glCheck.h"
 #include <memory.h>
+#include <SFML/OpenGL.hpp>
 using namespace sf;
 using namespace std;
+/*Doesn't work!*/
 namespace odfaeg {
     namespace graphic {
         OITRenderComponent::OITRenderComponent (RenderWindow& window, int layer, std::string expression, window::ContextSettings settings) :
@@ -19,7 +21,7 @@ namespace odfaeg {
             opaquePixels.create(resolution.x, resolution.y, settings);
             settings.depthBits = 0;
             semiTransparentPixels.create(resolution.x, resolution.y, settings);
-            weightedBlendedOITPass1.create(resolution.x, resolution.y, settings);
+            weightedBlendedOITPass1.create(resolution.x, resolution.y, settings, GL_RGBA32F, GL_RGBA, GL_FLOAT);
             weightedBlendedOITPass2.create(resolution.x, resolution.y, settings);
             frameBuffer.create(resolution.x, resolution.y,settings);
             bumpTexture.create(resolution.x, resolution.y,settings);
@@ -530,7 +532,7 @@ namespace odfaeg {
                    "    colors[0] = vec4(0, 0, 0, 0);"
                    "    colors[1] = /*color;*/ vec4(accum.rgb / max(accum.a, 1e-5), reveal); /*vec4(vec3(1, 1, 1) * color.a * color.rgb * color.a, 1);*/"
                    "    b = (color.a != 1 && z >= max_z);"
-                   "    gl_FragColor = vec4(accum.rgb / max(accum.a, 1e-5), reveal);"
+                   "    /*gl_FragColor = vec4(accum.rgb / max(accum.a, 1e-5), reveal);*/"
                    "    gl_FragColor = colors[int(b)];"
                    "}";
                 if (!depthBufferGenerator.loadFromMemory(vertexShader, depthGenFragShader))
@@ -731,10 +733,11 @@ namespace odfaeg {
                      opaquePixels.draw(m_instances[i].getAllVertices(), currentStates);
                      currentStates.blendMode = sf::BlendMode(sf::BlendMode::Factor::One, sf::BlendMode::Factor::One,sf::BlendMode::Equation::Add);
                      currentStates.shader = &generateWeightedBlendedOITPass1;
-                     //weightedBlendedOITPass1.draw(m_instances[i].getAllVertices(), currentStates);
+                     weightedBlendedOITPass1.draw(m_instances[i].getAllVertices(), currentStates);
                      currentStates.blendMode = sf::BlendMode(sf::BlendMode::Factor::Zero, sf::BlendMode::Factor::OneMinusSrcAlpha,sf::BlendMode::Equation::Add);
                      currentStates.shader = &generateWeightedBlendedOITPass2;
-                     //weightedBlendedOITPass2.draw(m_instances[i].getAllVertices(), currentStates);
+                     //currentStates.blendMode = sf::BlendAlpha;
+                     weightedBlendedOITPass2.draw(m_instances[i].getAllVertices(), currentStates);
                 }
             }
             for (unsigned int i = 0; i < m_instances.size(); i++) {
@@ -746,6 +749,7 @@ namespace odfaeg {
                      }
                      sf::BlendMode blendMode(sf::BlendMode::Factor::OneMinusSrcAlpha, sf::BlendMode::Factor::SrcAlpha,sf::BlendMode::Equation::Add);
                      currentStates.shader = &filterOpaquePixels;
+                     currentStates.texture=m_instances[i].getMaterial().getTexture();
                      currentStates.blendMode = blendMode;
                      semiTransparentPixels.draw(m_instances[i].getAllVertices(), currentStates);
                 }
@@ -760,7 +764,8 @@ namespace odfaeg {
             opaquePixelsTile.setCenter(getWindow().getView().getPosition());
             semiTransparentsPixelsTile.setCenter(getWindow().getView().getPosition());
             frameBuffer.draw(opaquePixelsTile, currentStates);
-            frameBuffer.draw(semiTransparentsPixelsTile, currentStates);
+            /*Doesn't work.*/
+            //frameBuffer.draw(semiTransparentsPixelsTile, currentStates);
             depthBuffer.display();
             frameBuffer.display();
             bumpTexture.display();

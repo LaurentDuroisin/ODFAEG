@@ -172,6 +172,9 @@ namespace odfaeg {
             unsigned int RenderTextureImplFBO::getFramebufferId () {
                 return m_frameBuffer;
             }
+            void RenderTextureImplFBO::bind() {
+                glCheck(glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_frameBuffer));
+            }
         }
 
     } // namespace priv

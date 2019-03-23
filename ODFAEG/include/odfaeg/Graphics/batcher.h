@@ -332,7 +332,7 @@ namespace odfaeg {
             *  \brief add a vertex array to the instance.
             *
             */
-            void addVertexArray(VertexArray& va, TransformMatrix& tm, unsigned int nbIndexes = 0);
+            void addVertexArray(VertexArray& va, TransformMatrix& tm);
             void addVertexShadowArray(VertexArray va, TransformMatrix tm, ViewMatrix viewMatrix, TransformMatrix shadowProjMatrix);
             void sortVertexArrays(View& view);
             /**
@@ -412,7 +412,7 @@ namespace odfaeg {
             * \brief add a face to the facegroup.
             * \param face : the face to add.
             */
-            void addFace(Face* face, unsigned int nbIndexes = 0);
+            void addFace(Face* face);
             void addShadowFace(Face* face, ViewMatrix viewMatrix, TransformMatrix shadowProjMatrix);
             /**
             * \fn std::vector<Instance*> getInstances()
