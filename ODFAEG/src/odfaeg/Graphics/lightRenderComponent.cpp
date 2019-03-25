@@ -1,3 +1,4 @@
+#include <GL/glew.h>
 #include "../../../include/odfaeg/Graphics/lightRenderComponent.hpp"
 #include "glCheck.h"
 #include <memory.h>

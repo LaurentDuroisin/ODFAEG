@@ -88,7 +88,7 @@ namespace odfaeg {
             std::vector<std::unique_ptr<Face>> additionalFaces;
             std::vector<Entity*> visibleEntities; /**> Entities loaded*/
             RenderTexture frameBuffer; /**> the frame buffer.*/
-            Shader perPixelLinkedList;
+            Shader perPixelLinkedList, perPixelLinkedListP2;
             RenderStates currentStates; /**> the current render states.*/
             View view; /**> the view of the component.*/
             std::string expression;

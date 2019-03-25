@@ -528,6 +528,7 @@ namespace odfaeg {
             }
         }
         void X11Window::create (VideoMode mode, const String& title, Uint32 style, const ContextSettings& settings) {
+
             m_screen = DefaultScreen(m_display);
             XVisualInfo vi = GlxContext::selectBestVisual(m_display, mode.bitsPerPixel, settings);
             XSetWindowAttributes swa;

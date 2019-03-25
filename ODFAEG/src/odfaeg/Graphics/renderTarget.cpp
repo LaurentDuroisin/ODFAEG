@@ -185,6 +185,10 @@ namespace odfaeg {
                     TransformMatrix tm = states.transform;
                     applyTransform(tm);
                 }
+                if (states.shader) {
+                    //std::cout<<"apply shader : "<<states.shader<<std::endl;
+                    applyShader(states.shader);
+                }
                 // Apply the blend mode
                 if (states.blendMode != m_cache.lastBlendMode)
                     applyBlendMode(states.blendMode);
@@ -196,8 +200,7 @@ namespace odfaeg {
                     applyTexture(states.texture);
 
                 // Apply the shader
-                if (states.shader)
-                    applyShader(states.shader);
+
 
                 // If we pre-transform the vertices, we must use our internal vertex cache
                 if (useVertexCache /*&& !GL_ARB_vertex_buffer_object*/)
@@ -277,6 +280,8 @@ namespace odfaeg {
                 // Unbind the shader, if any
                 if (states.shader)
                     applyShader(nullptr);
+                /*if (states.texture)
+                    applyTexture(nullptr);*/
                 // Update the cache
                 m_cache.useVertexCache = useVertexCache;
             }
@@ -311,23 +316,42 @@ namespace odfaeg {
                 if (states.shader)
                     applyShader(states.shader);
                 if (m_cache.lastVboBuffer != &vertexBuffer) {
-                    glCheck(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.vboVertexBuffer));
-                    glCheck(glEnableClientState(GL_COLOR_ARRAY));
-                    glCheck(glEnableClientState(GL_TEXTURE_COORD_ARRAY));
-                    glCheck(glEnableClientState(GL_VERTEX_ARRAY));
-                    glCheck(glVertexPointer(3, GL_FLOAT, sizeof(Vertex), (GLvoid*) 0 ));
-                    glCheck(glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(Vertex), (GLvoid*) 12));
-                    glCheck(glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex),(GLvoid*) 16));
-                    glCheck(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.vboNormalBuffer));
-                    glCheck(glEnableClientState(GL_NORMAL_ARRAY));
-                    glCheck(glNormalPointer(GL_FLOAT,sizeof(sf::Vector3f),(GLvoid*) 0));
-                    glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                    if (m_versionMajor >= 3 && m_versionMinor >= 3) {
+                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.vboVertexBuffer));
+                        glCheck(glEnableVertexAttribArray(0));
+                        glCheck(glEnableVertexAttribArray(1));
+                        glCheck(glEnableVertexAttribArray(2));
+                        glCheck(glVertexAttribPointer(0, 3,GL_FLOAT,GL_FALSE,sizeof(Vertex), (GLvoid*) 0));
+                        glCheck(glVertexAttribPointer(1, 4,GL_UNSIGNED_BYTE,GL_TRUE,sizeof(Vertex),(GLvoid*) 12));
+                        glCheck(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) 16));
+                        glCheck(glDisableVertexAttribArray(0));
+                        glCheck(glDisableVertexAttribArray(1));
+                        glCheck(glDisableVertexAttribArray(2));
+                    } else {
+                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.vboVertexBuffer));
+                        glCheck(glEnableClientState(GL_COLOR_ARRAY));
+                        glCheck(glEnableClientState(GL_TEXTURE_COORD_ARRAY));
+                        glCheck(glEnableClientState(GL_VERTEX_ARRAY));
+                        glCheck(glVertexPointer(3, GL_FLOAT, sizeof(Vertex), (GLvoid*) 0 ));
+                        glCheck(glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(Vertex), (GLvoid*) 12));
+                        glCheck(glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex),(GLvoid*) 16));
+                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.vboNormalBuffer));
+                        glCheck(glEnableClientState(GL_NORMAL_ARRAY));
+                        glCheck(glNormalPointer(GL_FLOAT,sizeof(sf::Vector3f),(GLvoid*) 0));
+                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                    }
                     m_cache.lastVboBuffer = &vertexBuffer;
                 } else {
-                    glCheck(glEnableClientState(GL_COLOR_ARRAY));
-                    glCheck(glEnableClientState(GL_TEXTURE_COORD_ARRAY));
-                    glCheck(glEnableClientState(GL_VERTEX_ARRAY));
-                    glCheck(glEnableClientState(GL_NORMAL_ARRAY));
+                    if (m_versionMajor >= 3 && m_versionMinor >= 3) {
+                        glCheck(glEnableVertexAttribArray(0));
+                        glCheck(glEnableVertexAttribArray(1));
+                        glCheck(glEnableVertexAttribArray(2));
+                    } else {
+                        glCheck(glEnableClientState(GL_COLOR_ARRAY));
+                        glCheck(glEnableClientState(GL_TEXTURE_COORD_ARRAY));
+                        glCheck(glEnableClientState(GL_VERTEX_ARRAY));
+                        glCheck(glEnableClientState(GL_NORMAL_ARRAY));
+                    }
                 }
                 // Find the OpenGL primitive type
                 static const GLenum modes[] = {GL_POINTS, GL_LINES, GL_LINE_STRIP, GL_TRIANGLES,
@@ -343,10 +367,16 @@ namespace odfaeg {
                     glCheck(glDrawArrays(mode, 0, vertexBuffer.getVertexCount()));
                     //glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
                 }
-                glCheck(glDisableClientState(GL_COLOR_ARRAY));
-                glCheck(glDisableClientState(GL_TEXTURE_COORD_ARRAY));
-                glCheck(glDisableClientState(GL_VERTEX_ARRAY));
-                glCheck(glDisableClientState(GL_NORMAL_ARRAY));
+                if (m_versionMajor >= 3 && m_versionMinor >= 3) {
+                    glCheck(glDisableVertexAttribArray(0));
+                    glCheck(glDisableVertexAttribArray(1));
+                    glCheck(glDisableVertexAttribArray(2));
+                } else {
+                    glCheck(glDisableClientState(GL_COLOR_ARRAY));
+                    glCheck(glDisableClientState(GL_TEXTURE_COORD_ARRAY));
+                    glCheck(glDisableClientState(GL_VERTEX_ARRAY));
+                    glCheck(glDisableClientState(GL_NORMAL_ARRAY));
+                }
             }
 
         }

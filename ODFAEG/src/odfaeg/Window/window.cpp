@@ -22,7 +22,9 @@ namespace odfaeg {
         }////////////////////////////////////////////////////////////
         void Window::create(VideoMode mode, const String& title, Uint32 style, const ContextSettings& settings)
         {
+
             m_window = WindowFactory::create();
+            std::cout<<"create window"<<std::endl;
             m_window->create(mode, title, style, settings);
             // Perform common initializations
             initialize();

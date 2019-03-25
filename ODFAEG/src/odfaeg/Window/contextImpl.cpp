@@ -218,12 +218,13 @@ namespace odfaeg {
             checkSettings(settings);
         }
         void ContextImpl::create(sf::WindowHandle handle,const ContextSettings& settings, IContext* shared) {
+            std::cout<<"create context impl"<<std::endl;
             sharedContext->setActive(true);
             ContextImplType::create(handle, settings, (shared == nullptr) ? sharedContext : shared);
             sharedContext->setActive(false);
             initialize(settings);
-            checkSettings(settings);
-
+            //checkSettings(settings);*/
+            std::cout<<"context impl created"<<std::endl;
         }
         bool ContextImpl::setActive(bool active) {
             if (active) {
@@ -387,6 +388,9 @@ namespace odfaeg {
             // Retrieve the context version number
             int majorVersion = 0;
             int minorVersion = 0;
+           /* m_settings.versionMajor = 3;
+            m_settings.versionMinor = 3;
+            m_settings.attributeFlags = ContextSettings::Default;*/
 
             // Try the new way first
             glGetIntegerv(GL_MAJOR_VERSION, &majorVersion);
