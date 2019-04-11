@@ -78,8 +78,6 @@ namespace odfaeg {
             View& getView();
             ~PerPixelLinkedListRenderComponent();
             private :
-            void pass1();
-            void pass2();
             RectangleShape quad;
             std::vector<std::pair<std::reference_wrapper<Drawable>, RenderStates>> drawables;
             Batcher batcher; /**> A group of faces using the same materials and primitive type.*/
@@ -93,7 +91,7 @@ namespace odfaeg {
             View view; /**> the view of the component.*/
             std::string expression;
             bool update;
-            unsigned int atomicBuffer, linkedListBuffer, clearBuf, pass1Index, pass2Index, headPtrTex;
+            unsigned int atomicBuffer, linkedListBuffer, clearBuf, clearBuf2, clearBuf3, pass1Index, pass2Index, headPtrTex, colorTex, depthTex;
             Sprite frameBufferSprite;
         };
     }

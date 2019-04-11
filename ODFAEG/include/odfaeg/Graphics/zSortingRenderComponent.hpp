@@ -51,7 +51,7 @@ namespace odfaeg {
                 std::string expression;
                 bool update;
                 EntityManager& scene;
-                Shader instancedRenderingShader;
+                Shader instancedRenderingShader, shader;
         };
     }
 }

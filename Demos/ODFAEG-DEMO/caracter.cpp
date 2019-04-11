@@ -77,7 +77,7 @@ namespace sorrok {
         return attackSpeed;
     }
     void Caracter::setAttacking(bool b) {
-        if (attacking != b) {
+        /*if (attacking != b) {
             this->attacking = b;
             if (attacking) {
                 anims[baseAnimIndex + currentAnimIndex]->stop();
@@ -88,7 +88,7 @@ namespace sorrok {
                 anims[baseAnimIndex + currentAnimIndex]->stop();
                 anims[baseAnimIndex + currentAnimIndex]->setCurrentFrame(0);
             }
-        }
+        }*/
     }
     void Caracter::setAlive(bool b) {
         alive = b;
@@ -155,8 +155,9 @@ namespace sorrok {
         else
             currentAnimIndex = 1;
         this->dir = dir;
-        if (moving)
+        if (moving) {
             anims[baseAnimIndex + currentAnimIndex]->play(true);
+        }
         BoneAnimation::setBoneIndex(baseAnimIndex + currentAnimIndex);
     }
     Vec2f Caracter::getDir () {
@@ -167,6 +168,7 @@ namespace sorrok {
         if (moving != b) {
             this->moving = b;
             if (moving) {
+                std::cout<<"play"<<std::endl;
                 baseAnimIndex = WALKING;
                 anims[baseAnimIndex + currentAnimIndex]->play(true);
                 BoneAnimation::setBoneIndex(baseAnimIndex + currentAnimIndex);

@@ -17,7 +17,7 @@ namespace odfaeg {
             version = 1;
             this->name = name;
             diagSize = math::Math::sqrt(math::Math::power(cellWidth, 2) + math::Math::power(cellHeight, 2));
-            sf::Vector3i resolution;
+            /*sf::Vector3i resolution;
             if (frcm != nullptr) {
                 View view = frcm->getWindow().getView();
                 physic::BoundingBox viewArea = view.getViewVolume();
@@ -354,7 +354,7 @@ namespace odfaeg {
                 } else {
                     throw core::Erreur(55, "Shader not supported!", 0);
                 }
-            }
+            }*/
         }
         void Map::generate_map(std::vector<Tile*> tGround, std::vector<Tile*> walls, math::Vec2f tileSize, physic::BoundingBox &rect, bool terrain3D) {
 
@@ -1096,6 +1096,7 @@ namespace odfaeg {
         void Map::drawOnComponents(std::string expression, int layer, sf::BlendMode blendMode) {
             HeavyComponent* frc = frcm->getRenderComponent(layer);
             if (frc != nullptr) {
+                std::cout<<"component layer : "<<frc->getPriority()<<std::endl;
                 frc->setExpression(expression);
             }
         }

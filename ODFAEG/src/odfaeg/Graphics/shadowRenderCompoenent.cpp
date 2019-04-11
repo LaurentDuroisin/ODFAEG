@@ -145,34 +145,10 @@ namespace odfaeg {
                         } else {
                             perPixShadowShader.setParameter("haveTexture", 0.f);
                         }
-                        /*for (unsigned int j = 0; j < m_instances[i].getVertexArrays().size(); j++) {
-                            states.transform = m_instances[i].getTransforms()[j];
-                            math::Vec3f shadowOrigin, shadowCenter, shadowScale(1.f, 1.f, 1.f), shadowRotationAxis;
-                            float shadowRotationAngle = 0;
-                            Entity* entity = m_instances[i].getVertexArrays()[j].getEntity()->getParent();
-                            if (entity->isModel()) {
-                                shadowCenter = static_cast<Model*>(entity)->getShadowCenter();
-                                shadowScale = static_cast<Model*>(entity)->getShadowScale();
-                                shadowRotationAxis = static_cast<Model*>(entity)->getShadowRotationAxis();
-                                shadowRotationAngle = static_cast<Model*>(entity)->getShadowRotationAngle();
-                                shadowOrigin = static_cast<Model*>(entity)->getShadowOrigin();
-                            }
-                            TransformMatrix tm;
-                            tm.setOrigin(entity->getPosition());
-                            tm.setScale(shadowScale);
-                            tm.setRotation(shadowRotationAxis, shadowRotationAngle);
-                            tm.setTranslation(entity->getPosition() + shadowCenter);
-                            tm.update();
-                            perPixShadowShader->setParameter("shadowProjMat", tm.getMatrix().transpose());
-                            shadowMap->draw(m_instances[i].getVertexArrays()[j], states);
-                        }*/
+
                         shadowMap.draw(m_shadow_instances[i].getAllVertices(), states);
                     }
                 }
-                /*RectangleShape rect(size * 2.f);
-                rect.setPosition(position - size * 0.5f);
-                rect.setFillColor(sf::Color(100, 100, 100, 128));
-                shadowMap->draw(rect);*/
                 shadowMap.display();
             }
             std::vector<Entity*> ShadowRenderComponent::getEntities() {

@@ -765,7 +765,7 @@ namespace odfaeg {
             semiTransparentsPixelsTile.setCenter(getWindow().getView().getPosition());
             frameBuffer.draw(opaquePixelsTile, currentStates);
             /*Doesn't work.*/
-            //frameBuffer.draw(semiTransparentsPixelsTile, currentStates);
+            frameBuffer.draw(semiTransparentsPixelsTile, currentStates);
             depthBuffer.display();
             frameBuffer.display();
             bumpTexture.display();

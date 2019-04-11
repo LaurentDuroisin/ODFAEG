@@ -32,6 +32,7 @@
 #include "odfaeg/Audio/player.h"
 #include "odfaeg/Graphics/GUI/textArea.hpp"
 #include "odfaeg/Graphics/GUI/optionPane.hpp"
+#include "odfaeg/Graphics/perPixelLinkedListRenderComponent.hpp"
 #include <fstream>
 namespace sorrok {
     class MyAppli : public odfaeg::core::Application/*, public odfaeg::graphic::gui::FocusListener*/ {

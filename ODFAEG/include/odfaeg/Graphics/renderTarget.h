@@ -63,6 +63,7 @@ namespace odfaeg {
             ///
             ////////////////////////////////////////////////////////////
             void clear(const sf::Color& color = sf::Color(0, 0, 0, 255));
+            void clearDepth();
 
              ////////////////////////////////////////////////////////////
             /// \brief Get the viewport of a view, applied to this render target
@@ -319,6 +320,7 @@ namespace odfaeg {
             void resetGLStates();
             unsigned int getVersionMajor();
             unsigned int getVersionMinor();
+            void setAlphaTestEnable(bool enabled);
 
         protected :
             void setVersionMajor(unsigned int version);
@@ -415,6 +417,7 @@ namespace odfaeg {
             View        m_view;  ///< Current view
             StatesCache m_cache;  ///< Render states cache
             unsigned int m_vao, m_versionMajor, m_versionMinor, m_framebufferId;
+            bool enableAlphaTest;
         };
     }
 }

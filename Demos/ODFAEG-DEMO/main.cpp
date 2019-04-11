@@ -191,6 +191,58 @@ std::ostream& operator<< ( std::ostream& out, const BigInt& bi) {
     }
     return out;
 }
+class TestAppli : public Application {
+    public :
+    TestAppli(sf::VideoMode mode, std::string title) : Application(mode, title, sf::Style::Default, ContextSettings(24, 0, 8, 3, 0)) {
+    }
+    void onLoad() {
+        TextureManager<> tm;
+        tm.fromFileWithAlias("tilesets/herbe.png", "GRASS");
+        tm.fromFileWithAlias("tilesets/murs.png", "WALLS");
+        cache.addResourceManager(tm, "TextureManager");
+    }
+    void onInit() {
+        TextureManager<> &tm = cache.resourceManager<Texture, std::string>("TextureManager");
+        Map* theMap = new Map(&getRenderComponentManager(), "Map test", 100, 50, 0);
+        BaseChangementMatrix bm;
+        bm.set2DIsoMatrix();
+        theMap->setBaseChangementMatrix(bm);
+        World::addEntityManager(theMap);
+        World::setCurrentEntityManager("Map test");
+        EntitiesUpdater* eu = new EntitiesUpdater();
+        World::addWorker(eu);
+        std::vector<Tile*> tiles;
+        std::vector<Tile*> walls;
+        tiles.push_back(new Tile(tm.getResourceByAlias("GRASS"), Vec3f(0, 0, 0), Vec3f(120, 60, 0),sf::IntRect(0, 0, 100, 50)));
+        walls.push_back(new Tile(tm.getResourceByAlias("WALLS"), Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 0, 100, 100)));
+        walls.push_back(new Tile(tm.getResourceByAlias("WALLS"), Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 100, 100, 100)));
+        walls.push_back(new Tile(tm.getResourceByAlias("WALLS"), Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 200, 100, 100)));
+        walls.push_back(new Tile(tm.getResourceByAlias("WALLS"), Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 300, 100, 100)));
+        walls.push_back(new Tile(tm.getResourceByAlias("WALLS"), Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 400, 100, 100)));
+        walls.push_back(new Tile(tm.getResourceByAlias("WALLS"), Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 500, 100, 100)));
+        BoundingBox mapZone(0, 0, 0, 1500, 1000, 0);
+        World::generate_map(tiles, walls, Vec2f(100, 50), mapZone, false);
+        PerPixelLinkedListRenderComponent *frc = new PerPixelLinkedListRenderComponent(getRenderWindow(),2, "E_BIGTILE", ContextSettings(0, 0, 4, 3, 0));
+        getRenderComponentManager().addComponent(frc);
+        World::update();
+    }
+    void onRender(RenderComponentManager *rcm) {
+        // draw everything here...
+        World::drawOnComponents("E_BIGTILE", 0);
+    }
+    void onDisplay(RenderWindow* window) {
+    }
+    void onUpdate (RenderWindow* window, IEvent& event) {
+        // check all the window's events that were triggered since the last iteration of the loop
+        if (window == &getRenderWindow() && event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_CLOSED) {
+            stop();
+        }
+    }
+    void onExec() {
+    }
+    private :
+    ResourceCache<> cache;
+};
 int main(int argc, char* argv[])
 {
     /*BigInt a("42");
@@ -205,7 +257,7 @@ int main(int argc, char* argv[])
     s  = a / b;
     std::cout<<"a / b : "<<s.getStr()<<std::endl;
     return 0;*/
-    EXPORT_CLASS_GUID(BoundingVolumeBoundingBox, BoundingVolume, BoundingBox)
+    /*EXPORT_CLASS_GUID(BoundingVolumeBoundingBox, BoundingVolume, BoundingBox)
     EXPORT_CLASS_GUID(EntityTile, Entity, Tile)
     EXPORT_CLASS_GUID(EntityTile, Entity, BigTile)
     EXPORT_CLASS_GUID(EntityWall, Entity, g2d::Wall)
@@ -215,7 +267,27 @@ int main(int argc, char* argv[])
     EXPORT_CLASS_GUID(EntityMesh, Entity, Mesh)
     MyAppli app(sf::VideoMode(800, 600), "Test odfaeg");
     return app.exec();
-
+    TestAppli appli(sf::VideoMode(800, 600), "Test appli");
+    return appli.exec();*/
+    RenderWindow window(sf::VideoMode(800, 600), "Test per pixel linked list", sf::Style::Default, ContextSettings(24, 0, 8, 3, 0));
+    Tile tile1(nullptr, Vec3f(0, 0, 0), Vec3f(100, 50, 0), sf::IntRect(0, 0, 100, 50), sf::Color(255, 0, 0, 50));
+    Tile tile2(nullptr, Vec3f(50, 0, 10), Vec3f(100, 50, 0), sf::IntRect(0, 0, 100, 50), sf::Color(0, 255, 0, 75));
+    Tile tile3(nullptr, Vec3f(25, 25, 20), Vec3f(100, 50, 0), sf::IntRect(0, 0, 100, 50), sf::Color(0, 0, 255, 100));
+    std::vector<Entity*> entities = {&tile1, &tile2, &tile3};
+    PerPixelLinkedListRenderComponent ppll(window, 0, "E_TILE", ContextSettings(0, 0, 8, 3, 0));
+    ppll.loadEntitiesOnComponent(entities);
+    while (window.isOpen()) {
+        IEvent event;
+        while (window.pollEvent(event)) {
+            if (event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_CLOSED)
+                window.close();
+        }
+        window.clear();
+        ppll.clear();
+        window.draw(ppll);
+        window.display();
+    }
+    return 0;
 }
 
 

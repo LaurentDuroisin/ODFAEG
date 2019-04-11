@@ -13,6 +13,27 @@ namespace odfaeg {
             core::FastDelegate<void> slot (&ZSortingRenderComponent::drawNextFrame, this);
             core::Command cmd(signal, slot);
             getListener().connect("UPDATE", cmd);
+            /*const std::string vertexShader =
+            R"(#version 140
+            #extension GL_ARB_bindless_texture : require
+            #extension GL_EXT_texture_array : require
+            void main () {
+                gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+                gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;
+                gl_FrontColor = gl_Color;
+            })";
+            const std::string fragmentShader =
+            R"(#version 140
+            uniform TBloc {
+                layout(bindless_sampler) uniform sampler2DArray t;
+                float textureIndex;
+            } T;
+            void main () {
+                gl_FragColor = texture2DArray(T.t, vec3(v_texCoord.xy, T.textureIndex));
+            })";
+            if (!shader.loadFromMemory(vertexShader, fragmentShader)) {
+                throw core::Erreur(54, "Failed to load bindless texture shader");
+            }*/
         }
         void ZSortingRenderComponent::updateSceneVertices() {
             scene.getSceneVertices().updateVBOBuffer();

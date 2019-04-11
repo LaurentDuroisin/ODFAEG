@@ -95,7 +95,7 @@ namespace odfaeg {
             unsigned int getNbComponents();
             void updateComponents();
         protected :
-            std::multimap<int, Component*, std::greater<int>> components; /**> the components.*/
+            std::multimap<int, Component*, std::less<int>> components; /**> the components.*/
             std::vector<RenderWindow*> windows; /**> the window.*/
         };
     }

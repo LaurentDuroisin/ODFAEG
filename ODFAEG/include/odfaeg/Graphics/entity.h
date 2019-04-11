@@ -15,6 +15,7 @@
   */
 namespace odfaeg {
     namespace graphic {
+        class EntityManager;
         /**
           * \file entity.h
           * \class Entity
@@ -135,7 +136,7 @@ namespace odfaeg {
                 *   \param RenderStates states : the states used to render the entities.
                 */
                 virtual void onDraw(RenderTarget &target, RenderStates states) {}
-                virtual void onFrameChanged() {}
+                virtual void onFrameChanged(EntityManager* scene) {}
                 /** \fn void onMove (math::Vec3f& t)
                 *   \brief virtual method which can be redefined if we need to do something when the entity is moving.
                 *   \param math::Vec3f t : the translation of the entity.

@@ -8,7 +8,7 @@ namespace odfaeg {
         class HeavyComponent : public Component {
             public :
             HeavyComponent(RenderWindow& window, math::Vec3f position, math::Vec3f size, math::Vec3f origin) :
-                Component(window, position, size, origin) {}
+                Component(window, position, size, origin, position.z) {}
             void recomputeSize() {
                 float sx, sy, npx, npy, nsx, nsy;
                 sx = getSize().x;

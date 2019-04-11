@@ -47,6 +47,7 @@ namespace odfaeg {
         {
             m_cache.glStatesSet = false;
             m_vao = m_versionMajor = m_versionMinor = 0;
+            enableAlphaTest = true;
         }
         void RenderTarget::setVersionMajor (unsigned int versionMajor) {
             m_versionMajor = versionMajor;
@@ -80,8 +81,9 @@ namespace odfaeg {
             }
         }
 
-
-        ////////////////////////////////////////////////////////////
+        void RenderTarget::clearDepth() {
+            glCheck(glClear(GL_DEPTH_BUFFER_BIT));
+        }        ////////////////////////////////////////////////////////////
         void RenderTarget::setView(View view)
         {
             m_view = view;
@@ -414,8 +416,9 @@ namespace odfaeg {
                 glCheck(glPopAttrib());
             }
         }
-
-
+        void RenderTarget::setAlphaTestEnable(bool enabled) {
+            enableAlphaTest = enabled;
+        }
         ////////////////////////////////////////////////////////////
         void RenderTarget::resetGLStates()
         {
@@ -435,10 +438,15 @@ namespace odfaeg {
                 glCheck(glDisable(GL_CULL_FACE));
                 glCheck(glDisable(GL_LIGHTING));
                 glCheck(glEnable(GL_DEPTH_TEST));
-                glCheck(glEnable(GL_ALPHA_TEST));
+                if (enableAlphaTest) {
+                    glCheck(glEnable(GL_ALPHA_TEST));
+                } else {
+                    glCheck(glDisable(GL_ALPHA_TEST));
+                }
                 glCheck(glAlphaFunc(GL_GREATER, 0.f));
                 glCheck(glDepthFunc(GL_GREATER));
                 glCheck(glEnable(GL_TEXTURE_2D));
+                glCheck(glEnable(GL_TEXTURE_3D));
                 glCheck(glEnable(GL_BLEND));
                 glCheck(glClearDepth(0));
                 glCheck(glDepthMask(GL_TRUE));

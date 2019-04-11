@@ -88,7 +88,7 @@ namespace odfaeg {
         void Anim::onFrameChanged(EntityManager* scene) {
             if (getChildren().size() != 0) {
                 for (unsigned int i = 0; i < getChildren().size(); i++) {
-                    getChildren()[i]->onFrameChanged();
+                    getChildren()[i]->onFrameChanged(scene);
                 }
             }
             if (getChildren().size() >= 2) {
@@ -174,11 +174,11 @@ namespace odfaeg {
                         const VertexArray& nva = nextFrame->getFace(i)->getVertexArray();
                         if (cva.getVertexCount() == nva.getVertexCount()) {
                             for (unsigned int j = 0; j < cva.getVertexCount(); j++) {
-
                                 iva[j].position.x = cva[j].position.x + (nva[j].position.x - cva[j].position.x) * (interpPerc / interpLevels);
                                 iva[j].position.y = cva[j].position.y + (nva[j].position.y - cva[j].position.y) * (interpPerc / interpLevels);
                                 iva[j].position.z = cva[j].position.z + (nva[j].position.z - cva[j].position.z) * (interpPerc / interpLevels);
-
+                                iva[j].color = cva[j].color;
+                                iva[j].texCoords = cva[j].texCoords;
                             }
                             interpolatedFrame->getFace(i)->setMaterial(currentFrame->getFace(i)->getMaterial());
                             interpolatedFrame->getFace(i)->setTransformMatrix(currentFrame->getFace(i)->getTransformMatrix());

@@ -1,9 +1,9 @@
 #ifndef ODFAEG_LIGHT_COMPONENT
 #define ODFAEG_LIGHT_COMPONENT
 #include "component.h"
-#include "../../../extlibs/headers/GL/glew.h"
+#include <GL/glew.h>
 #include <SFML/OpenGL.hpp>
-#include "../../../src/odfaeg/Graphics/glCheck.h"
+#include "glCheck.h"
 namespace odfaeg {
     namespace graphic {
         class LightComponent : public Component {

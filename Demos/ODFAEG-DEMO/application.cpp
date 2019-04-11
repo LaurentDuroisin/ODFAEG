@@ -9,7 +9,7 @@ using namespace odfaeg::physic;
 using namespace odfaeg::core;
 using namespace odfaeg::audio;
 namespace sorrok {
-    MyAppli::MyAppli(sf::VideoMode wm, std::string title) : Application (wm, title, sf::Style::Default, ContextSettings(0, 0, 4, 3, 0)) {
+    MyAppli::MyAppli(sf::VideoMode wm, std::string title) : Application (wm, title, sf::Style::Default, ContextSettings(24, 0, 8, 3, 0)) {
         running = false;
         actualKey = IKeyboard::Key::Unknown;
         previousKey = IKeyboard::Key::Unknown;
@@ -154,7 +154,7 @@ namespace sorrok {
         walls[4]->getFaces()[0]->getMaterial().setTexId("WALLS");
         walls[5]->getFaces()[0]->getMaterial().setTexId("WALLS");
         std::ifstream ifs("FichierDeSerialisation");
-        if(ifs) {
+        /*if(ifs) {
             ITextArchive ia(ifs);
             std::vector<Entity*> entities;
             ia(entities);
@@ -200,7 +200,7 @@ namespace sorrok {
                 }
             }
             ifs.close();
-        } else {
+        } else {*/
             BoundingBox mapZone(0, 0, 0, 1500, 1000, 0);
             World::generate_map(tiles, walls, Vec2f(100, 50), mapZone, false);
             Tile* thouse = new Tile(tm.getResourceByAlias("HOUSE"), Vec3f(0, 0, 0), Vec3f(250, 300, 0), sf::IntRect(0, 0, 250, 300));
@@ -243,7 +243,7 @@ namespace sorrok {
             w = new g2d::Wall(walls[3],&g2d::AmbientLight::getAmbientLight());
             w->setPosition(Vec3f(0, 130, 130 + w->getSize().y * 0.5f));
             World::addEntity(w);
-        }
+        //}
         ps->setTexture(*tm.getResourceByAlias("PARTICLE"));
         for (unsigned int i = 0; i < 10; i++) {
             ps->addTextureRect(sf::IntRect(i*10, 0, 10, 10));
@@ -260,10 +260,10 @@ namespace sorrok {
         ForceAffector affector(acceleration);
         billboard->getParticleSystem().addAffector(affector);*/
         ps->addEmitter(refEmitter(emitter));
-        World::addEntity(ps);
+        //World::addEntity(ps);
         View view = getView();
         //view.rotate(0, 0, 20);
-        ZSortingRenderComponent *frc1 = new ZSortingRenderComponent(getRenderWindow(),0, "E_BIGTILE");
+        ZSortingRenderComponent *frc1 = new ZSortingRenderComponent(getRenderWindow(),0, "E_BIGTILE", *theMap);
         ShadowRenderComponent *frc2 = new ShadowRenderComponent(getRenderWindow(), 1, "E_WALL+E_DECOR+E_ANIMATION+E_HERO", window::ContextSettings(0, 0, 4, 3, 0));
         OITRenderComponent *frc3 = new OITRenderComponent(getRenderWindow(),2, "E_WALL+E_DECOR+E_HERO+E_ANIMATION+E_PARTICLES", window::ContextSettings(0, 0, 4, 3, 0));
         LightRenderComponent *frc4 = new LightRenderComponent(getRenderWindow(), 3, "E_WALL+E_DECOR+E_HERO+E_ANIMATION+E_PONCTUAL_LIGHT",window::ContextSettings(0, 0, 4, 3, 0));
@@ -280,6 +280,7 @@ namespace sorrok {
         hero->setCenter(math::Vec3f(-25, -50, 0));
         for (unsigned int i = 0; i <= 56; i+=8) {
             Anim* animation = new Anim(0.1f, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), 0);
+            hero->addAnimation(animation);
             for (unsigned int j = 0; j < 8; j++) {
                 sf::IntRect textRect (textRectX, textRectY, textRectWidth, textRectHeight);
                 Tile *tile = new Tile(text, Vec3f(-25, -50, 0), Vec3f(textRectWidth, textRectHeight, 0), textRect);
@@ -294,7 +295,6 @@ namespace sorrok {
                 animation->addFrame(frame);
             }
             animation->getCurrentFrame()->setBoneIndex(i / 8);
-            hero->addAnimation(animation);
             au->addAnim(animation);
         }
         for (unsigned int i = 0; i < 8; i++) {
@@ -329,7 +329,7 @@ namespace sorrok {
         //getView().move(d.x * 0.5f, d.y * 0.5f, 0);
         World::addEntity(hero);
 
-        //World::computeIntersectionsWithWalls();
+        //World::computeIntersectionsWithWalls();*/
         World::update();
         Action a1 (Action::EVENT_TYPE::KEY_HELD_DOWN, IKeyboard::Key::Z);
         Action a2 (Action::EVENT_TYPE::KEY_HELD_DOWN, IKeyboard::Key::Q);
