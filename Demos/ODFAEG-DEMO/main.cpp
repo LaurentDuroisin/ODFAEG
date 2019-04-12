@@ -257,7 +257,7 @@ int main(int argc, char* argv[])
     s  = a / b;
     std::cout<<"a / b : "<<s.getStr()<<std::endl;
     return 0;*/
-    /*EXPORT_CLASS_GUID(BoundingVolumeBoundingBox, BoundingVolume, BoundingBox)
+    EXPORT_CLASS_GUID(BoundingVolumeBoundingBox, BoundingVolume, BoundingBox)
     EXPORT_CLASS_GUID(EntityTile, Entity, Tile)
     EXPORT_CLASS_GUID(EntityTile, Entity, BigTile)
     EXPORT_CLASS_GUID(EntityWall, Entity, g2d::Wall)
@@ -268,13 +268,16 @@ int main(int argc, char* argv[])
     MyAppli app(sf::VideoMode(800, 600), "Test odfaeg");
     return app.exec();
     TestAppli appli(sf::VideoMode(800, 600), "Test appli");
-    return appli.exec();*/
+    return appli.exec();
     RenderWindow window(sf::VideoMode(800, 600), "Test per pixel linked list", sf::Style::Default, ContextSettings(24, 0, 8, 3, 0));
-    Tile tile1(nullptr, Vec3f(0, 0, 0), Vec3f(100, 50, 0), sf::IntRect(0, 0, 100, 50), sf::Color(255, 0, 0, 50));
-    Tile tile2(nullptr, Vec3f(50, 0, 10), Vec3f(100, 50, 0), sf::IntRect(0, 0, 100, 50), sf::Color(0, 255, 0, 75));
-    Tile tile3(nullptr, Vec3f(25, 25, 20), Vec3f(100, 50, 0), sf::IntRect(0, 0, 100, 50), sf::Color(0, 0, 255, 100));
+    window.getView().move(400, 300, 0);
+    Texture tex;
+    tex.loadFromFile("tilesets/herbe.png");
+    Tile tile1(nullptr, Vec3f(0, 0, 200), Vec3f(100, 50, 0), sf::IntRect(0, 0, 100, 50), sf::Color(255, 0, 0, 50));
+    Tile tile2(nullptr, Vec3f(50, 0, 100), Vec3f(100, 50, 0), sf::IntRect(0, 0, 100, 50), sf::Color(0, 255, 0, 100));
+    Tile tile3(nullptr, Vec3f(25, 25, 0), Vec3f(100, 50, 0), sf::IntRect(0, 0, 100, 50), sf::Color(0, 0, 255, 150));
     std::vector<Entity*> entities = {&tile1, &tile2, &tile3};
-    PerPixelLinkedListRenderComponent ppll(window, 0, "E_TILE", ContextSettings(0, 0, 8, 3, 0));
+    PerPixelLinkedListRenderComponent ppll(window, 0, "E_TILE", ContextSettings(0, 0, 4, 3, 0));
     ppll.loadEntitiesOnComponent(entities);
     while (window.isOpen()) {
         IEvent event;

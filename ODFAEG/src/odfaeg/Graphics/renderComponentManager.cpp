@@ -10,7 +10,6 @@ namespace odfaeg {
             windows.push_back(&window);
         }
         void RenderComponentManager::addComponent(Component* component) {
-            std::cout<<"add component layer : "<<component->getPriority()<<std::endl;
             components.insert(std::make_pair(component->getPriority(), component));
         }
         bool RenderComponentManager::removeComponent(unsigned int layer) {

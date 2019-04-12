@@ -1096,7 +1096,6 @@ namespace odfaeg {
         void Map::drawOnComponents(std::string expression, int layer, sf::BlendMode blendMode) {
             HeavyComponent* frc = frcm->getRenderComponent(layer);
             if (frc != nullptr) {
-                std::cout<<"component layer : "<<frc->getPriority()<<std::endl;
                 frc->setExpression(expression);
             }
         }

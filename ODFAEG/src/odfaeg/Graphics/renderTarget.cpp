@@ -513,29 +513,26 @@ namespace odfaeg {
         {
             //priv::ensureExtensionsInit();
             // Apply the blend mode, falling back to the non-separate versions if necessary
-            /*if (GLEXT_blend_func_separate)
-            {
-                glCheck(GLEXT_glBlendFuncSeparate(
-                    factorToGlConstant(mode.colorSrcFactor), factorToGlConstant(mode.colorDstFactor),
-                    factorToGlConstant(mode.alphaSrcFactor), factorToGlConstant(mode.alphaDstFactor)));
-            }
-            else
-            {*/
-                glCheck(glBlendFunc(
+
+
+            glCheck(glBlendFuncSeparate(
+                factorToGlConstant(mode.colorSrcFactor), factorToGlConstant(mode.colorDstFactor),
+                factorToGlConstant(mode.alphaSrcFactor), factorToGlConstant(mode.alphaDstFactor)));
+
+            /*    glCheck(glBlendFunc(
                     factorToGlConstant(mode.colorSrcFactor),
-                    factorToGlConstant(mode.colorDstFactor)));
+                    factorToGlConstant(mode.colorDstFactor)));*/
             //}
 
             /*if (GLEXT_blend_equation_separate)
-            {
-                glCheck(GLEXT_glBlendEquationSeparate(
+            {*/
+                glCheck(glBlendEquationSeparate(
                     equationToGlConstant(mode.colorEquation),
                     equationToGlConstant(mode.alphaEquation)));
-            }
-            else
-            {*/
+
+
                 //glCheck(glBlendEquation(equationToGlConstant(mode.colorEquation)));
-            //}
+
             m_cache.lastBlendMode = mode;
         }
         ////////////////////////////////////////////////////////////
