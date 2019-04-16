@@ -257,7 +257,7 @@ int main(int argc, char* argv[])
     s  = a / b;
     std::cout<<"a / b : "<<s.getStr()<<std::endl;
     return 0;*/
-    EXPORT_CLASS_GUID(BoundingVolumeBoundingBox, BoundingVolume, BoundingBox)
+    /*EXPORT_CLASS_GUID(BoundingVolumeBoundingBox, BoundingVolume, BoundingBox)
     EXPORT_CLASS_GUID(EntityTile, Entity, Tile)
     EXPORT_CLASS_GUID(EntityTile, Entity, BigTile)
     EXPORT_CLASS_GUID(EntityWall, Entity, g2d::Wall)
@@ -268,7 +268,7 @@ int main(int argc, char* argv[])
     MyAppli app(sf::VideoMode(800, 600), "Test odfaeg");
     return app.exec();
     TestAppli appli(sf::VideoMode(800, 600), "Test appli");
-    return appli.exec();
+    return appli.exec();*/
     RenderWindow window(sf::VideoMode(800, 600), "Test per pixel linked list", sf::Style::Default, ContextSettings(24, 0, 8, 3, 0));
     window.getView().move(400, 300, 0);
     Texture tex;

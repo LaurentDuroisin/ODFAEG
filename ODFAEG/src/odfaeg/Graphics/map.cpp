@@ -357,7 +357,6 @@ namespace odfaeg {
             }*/
         }
         void Map::generate_map(std::vector<Tile*> tGround, std::vector<Tile*> walls, math::Vec2f tileSize, physic::BoundingBox &rect, bool terrain3D) {
-
             int startX = rect.getPosition().x / tileSize.x * tileSize.x;
             int startY = rect.getPosition().y / tileSize.y * tileSize.y;
             int endX = (rect.getPosition().x + rect.getWidth()) / tileSize.x * tileSize.x;
@@ -520,11 +519,11 @@ namespace odfaeg {
                      }
                 }
                 gridMap->addEntity(entity);
-                for (unsigned int c = 0; c < frcm->getNbComponents(); c++) {
+                /*for (unsigned int c = 0; c < frcm->getNbComponents(); c++) {
                     if(frcm->getRenderComponent(c) != nullptr) {
                         frcm->getRenderComponent(c)->loadShaders();
                     }
-                }
+                }*/
             }
             /*std::vector<Entity*> tiles;
             getChildren(entity, tiles, "*");
@@ -574,9 +573,9 @@ namespace odfaeg {
             std::vector<Entity*> children = entity->getChildren();
             for (unsigned int i = 0; i < children.size(); i++) {
                 if (entity->isAnimated()) {
-                    removeEntity(static_cast<AnimatedEntity*>(children[i])->getCurrentFrame());
+                    deleteEntity(static_cast<AnimatedEntity*>(children[i])->getCurrentFrame());
                 } else {
-                    removeEntity(children[i]);
+                    deleteEntity(children[i]);
                 }
             }
             if (entity->isLeaf()) {
@@ -630,7 +629,7 @@ namespace odfaeg {
             removeEntity(entity);
             entity->move(math::Vec3f(dx, dy, dz));
             addEntity(entity);
-            for (unsigned int i = 0; i < frcm->getNbComponents(); i++) {
+            /*for (unsigned int i = 0; i < frcm->getNbComponents(); i++) {
                 if (frcm->getRenderComponent(i) != nullptr) {
                     frcm->getRenderComponent(i)->updateTransformMatrices();
                 }

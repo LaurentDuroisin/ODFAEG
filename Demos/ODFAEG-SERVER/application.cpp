@@ -129,7 +129,7 @@ namespace sorrok {
         monster->addLootableItem(item, 0.5);
         tmpPosition = pos;
         monster->setCenter(pos);
-        World::addEntity(monster);        
+        World::addEntity(monster);
         std::cout<<"server is ready!"<<std::endl;
     }
     void MyAppli::onExec () {
@@ -356,6 +356,15 @@ namespace sorrok {
                 }
                 delete stmt;
                 delete result;*/
+            } else if (request == "ADDLIFE")   {
+                int id = conversionStringInt(infos[1]);
+                Caracter* hero = static_cast<Caracter*>(World::getEntity(id));
+                float potionAmount = conversionStringFloat(infos[2]);
+                if (hero->getLife() + potionAmount > hero->getMaxLife()) {
+                    hero->setLife(hero->getMaxLife());
+                } else {
+                    hero->setLife(hero->getLife() + potionAmount);
+                }
             }
         }
         if (getClock("LoopTime").getElapsedTime().asMilliseconds() < 100)

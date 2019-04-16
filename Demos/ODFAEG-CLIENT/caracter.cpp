@@ -144,18 +144,19 @@ namespace sorrok {
             damages.clear();
             regen.clear();
             restartRespawn();
-            World::update();
+            //World::update();
         } else if (alive == false && b == true) {
             if(getType() == "E_HERO") {
                 std::cout<<"hero alive"<<std::endl;
             }
             changeAttribute("isAlive",Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
             baseAnimIndex = WALKING;
+            BoneAnimation::setBoneIndex(baseAnimIndex + currentAnimIndex);
             setLife(getMaxLife());
             if(getType() == "E_HERO") {
                 std::cout<<"hero live"<<getLife()<<std::endl;
             }
-            World::update();
+            //World::update();
         }
         alive = b;
     }

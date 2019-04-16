@@ -342,7 +342,7 @@ namespace odfaeg {
                         types->insert(type);
                         nbEntitiesTypes++;
                     }
-                    //nbEntities++;
+                    nbEntities++;
                 }
                 Entity* getRoot() {
                     if (parent != nullptr)

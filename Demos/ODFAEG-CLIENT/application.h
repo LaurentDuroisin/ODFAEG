@@ -12,6 +12,7 @@
 #include "odfaeg/Graphics/tile.h"
 #include "odfaeg/Core/world.h"
 #include "odfaeg/Graphics/map.h"
+#include "odfaeg/Graphics/perPixelLinkedListRenderComponent.hpp"
 #include "odfaeg/Graphics/2D/decor.h"
 #include "odfaeg/Graphics/anim.h"
 #include "odfaeg/Graphics/2D/ambientLight.h"

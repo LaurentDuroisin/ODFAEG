@@ -375,7 +375,6 @@ namespace odfaeg {
         }
         bool LightRenderComponent::loadEntitiesOnComponent(std::vector<Entity*> vEntities)
         {
-
             batcher.clear();
             lightBatcher.clear();
             for (unsigned int i = 0; i < vEntities.size(); i++) {
@@ -455,7 +454,7 @@ namespace odfaeg {
             for (unsigned int i = 0; i < m_light_instances.size(); i++) {
                 if (m_light_instances[i].getAllVertices().getVertexCount() > 0) {
                     for (unsigned int j = 0; j < m_light_instances[i].getVertexArrays().size(); j++) {
-
+                        //std::cout<<"draw light"<<std::endl;
                         states.transform =  *m_light_instances[i].getTransforms()[j];
                         EntityLight* el = static_cast<EntityLight*> (m_light_instances[i].getVertexArrays()[j]->getEntity());
                         math::Vec3f center = getWindow().mapCoordsToPixel(el->getLightCenter(), view);

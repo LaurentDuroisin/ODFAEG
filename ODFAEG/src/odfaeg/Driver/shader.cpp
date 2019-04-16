@@ -9,6 +9,7 @@
 namespace odfaeg {
     namespace driver {
         Shader::Shader() {
+
         }
         void Shader::compile(std::string sroucecode) {
 

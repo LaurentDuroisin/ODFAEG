@@ -7,7 +7,7 @@ using namespace odfaeg::math;
 using namespace odfaeg::network;
 using namespace odfaeg::window;
 namespace sorrok {
-    MyAppli::MyAppli(sf::VideoMode wm, std::string title) : Application (wm, title, sf::Style::Default, ContextSettings(0, 0, 4, 3, 0)) {
+    MyAppli::MyAppli(sf::VideoMode wm, std::string title) : Application (wm, title, sf::Style::Default, ContextSettings(24, 0, 4, 3, 0)) {
         running = false;
         actualKey = IKeyboard::Key::Unknown;
         previousKey = IKeyboard::Key::Unknown;
@@ -69,11 +69,12 @@ namespace sorrok {
         const Font* font = fm.getResourceByAlias(Fonts::Serif);
         unsigned int nbRows = 1 + items.size() / 10;
         unsigned int rowIndex = 0, colIndex = 0;
-        Table table(nbRows, 10);
+        Table table(4, 10);
         std::map<Item::Type, std::vector<Item>>::iterator it;
         for(it = items.begin(); it != items.end(); it++) {
             Sprite sprite (*tm2.getResourceByAlias(it->first),pItems->getPosition(),Vec3f(50, 50, 0), sf::IntRect(0, 0, 50, 50));
             Icon* icon = new Icon(*wInventory,Vec3f(0, 0, 0),Vec3f(0, 0, 0),sprite);
+            icon->setName("HPPOTION_ICON");
             Action a (Action::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
             Command cmd(a, FastDelegate<bool>(&Icon::isMouseInside, icon), FastDelegate<void>(&MyAppli::onIconClicked, this, icon));
             icon->getListener().connect("UseItem"+conversionIntString(it->first), cmd);
@@ -109,7 +110,7 @@ namespace sorrok {
         if (itemsToDisplay.size() > 0) {
             std::cout<<"there are some items close to the hero, display them : "<<std::endl;
             FontManager<Fonts> &fm = cache.resourceManager<Font,Fonts>("FontManager");
-            Table table (itemsToDisplay.size(),2);
+            Table table (4,2);
             TextureManager<Item::Type> &tm2 = cache.resourceManager<Texture, Item::Type>("TextureManager2");
             for (unsigned int i = 0; i < itemsToDisplay.size(); i++) {
                 Label* itemName = new Label(*wPickupItems, Vec3f(0, 0, 0), Vec3f(0, 0, 0), fm.getResourceByAlias(Fonts::Serif), itemsToDisplay[i].getName(),15);
@@ -164,7 +165,7 @@ namespace sorrok {
                 std::cout<<"there are some items close to the hero, display them : "<<std::endl;
                 FontManager<Fonts> &fm = cache.resourceManager<Font,Fonts>("FontManager");
                 TextureManager<Item::Type> &tm2 = cache.resourceManager<Texture, Item::Type>("TextureManager2");
-                Table table (itemsToDisplay.size(),2);
+                Table table (4,2);
                 for (unsigned int i = 0; i < itemsToDisplay.size(); i++) {
                     Label* itemName = new Label(*wPickupItems, Vec3f(0, 0, 0), Vec3f(0, 0, 0), fm.getResourceByAlias(Fonts::Serif), itemsToDisplay[i].getName(),15);
                     Action a (Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
@@ -451,6 +452,8 @@ namespace sorrok {
             au->addAnim(animation);
         }
         hero->setCenter(tmpCenter);
+        /*Item item("HP_POTION", Item::HP_POTION);
+        static_cast<Hero*>(hero)->addItem(item);*/
         getView().move(hero->getCenter().x, hero->getCenter().y, hero->getCenter().z - 300);
         BoundingVolume* bb2 = new BoundingBox(hero->getGlobalBounds().getPosition().x, hero->getGlobalBounds().getPosition().y + hero->getGlobalBounds().getSize().y * 0.4f, 0,
         hero->getGlobalBounds().getSize().x, hero->getGlobalBounds().getSize().y * 0.25f, 0);
@@ -543,9 +546,9 @@ namespace sorrok {
         light2 = new g2d::PonctualLight(Vec3f(50, 160, 160), 100, 50, 50, 255, sf::Color::Yellow, 16);
         World::addEntity(light1);
         World::addEntity(light2);
-        ZSortingRenderComponent *frc1 = new ZSortingRenderComponent(getRenderWindow(),0, "E_BIGTILE");
+        ZSortingRenderComponent *frc1 = new ZSortingRenderComponent(getRenderWindow(),0, "E_BIGTILE", *theMap);
         ShadowRenderComponent *frc2 = new ShadowRenderComponent(getRenderWindow(),1, "E_WALL+E_DECOR+E_ANIMATION+E_HERO");
-        OITRenderComponent* frc3 = new OITRenderComponent(getRenderWindow(),2,"E_WALL+E_DECOR+E_ANIMATION+E_HERO");
+        PerPixelLinkedListRenderComponent* frc3 = new PerPixelLinkedListRenderComponent(getRenderWindow(),2,"E_WALL+E_DECOR+E_ANIMATION+E_HERO", ContextSettings(0, 0, 0, 3, 0));
         LightRenderComponent* frc4 = new LightRenderComponent(getRenderWindow(),3,"E_WALL+E_DECOR+E_ANIMATION+E_PONCTUAL_LIGHT");
         /*View view = getView();
         frc1->setView(view);*/
@@ -813,6 +816,7 @@ namespace sorrok {
             bool isAttacking = conversionStringInt(infos[8]);
             bool isAlive = conversionStringInt(infos[9]);
             int life = conversionStringInt(infos[10]);
+            std::cout<<"type : "<<caracter->getType()<<std::endl;
             if (last_cli_time > caracter->getAttribute("isMoving").getValue<sf::Int64>()) {
                 caracter->setMoving(isMoving);
             }

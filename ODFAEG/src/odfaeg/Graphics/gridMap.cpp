@@ -384,15 +384,15 @@ namespace odfaeg {
                         return true;
                     }
                 }
-                if (entity->getCollisionVolume() != nullptr) {
-                    math::Vec3f t = position - entity->getCollisionVolume()->getCenter();
-                    physic::BoundingVolume* cv = entity->getCollisionVolume()->clone().release();
+                if (entity->getRootEntity()->getCollisionVolume() != nullptr) {
+                    math::Vec3f t = position - entity->getRootEntity()->getCollisionVolume()->getCenter();
+                    physic::BoundingVolume* cv = entity->getRootEntity()->getCollisionVolume()->clone().release();
                     cv->move(t);
                     for (unsigned int k = 0; k < cell->getEntitiesInside().size(); k++)  {
-                        if (cell->getEntitiesInside()[k]->getCollisionVolume() != nullptr && cell->getEntitiesInside()[k] != entity) {
+                        if (cell->getEntitiesInside()[k]->getRootEntity()->getCollisionVolume() != nullptr && cell->getEntitiesInside()[k]->getRootEntity() != entity) {
                             physic::CollisionResultSet::Info info;
-                            if (cv->intersects(*cell->getEntitiesInside()[k]->getCollisionVolume(), info)) {
-                                info.entity = cell->getEntitiesInside()[k];
+                            if (cv->intersects(*cell->getEntitiesInside()[k]->getRootEntity()->getCollisionVolume(), info)) {
+                                info.entity = cell->getEntitiesInside()[k]->getRootEntity();
                                 info.center = cv->getCenter();
                                 physic::CollisionResultSet::pushCollisionInfo(info);
                                 if (cv->getChildren().size() == 0) {
@@ -414,7 +414,7 @@ namespace odfaeg {
             std::vector<CellMap*> cells = getCasesInBox(bx);
             for (unsigned int i = 0; i < cells.size(); i++) {
                 for (unsigned int j = 0; j < cells[i]->getEntitiesInside().size(); j++) {
-                    Entity* entity2 = cells[i]->getEntitiesInside()[j];
+                    Entity* entity2 = cells[i]->getEntitiesInside()[j]->getRootEntity();
                     if (entity2 != entity) {
                         physic::BoundingVolume* bv2 = entity2->getCollisionVolume();
                         physic::CollisionResultSet::Info info;

@@ -113,6 +113,7 @@ namespace odfaeg {
                 interpolatedFrame->setType(currentFrame->getType());
                 interpolatedFrame->setPosition(currentFrame->getPosition());
                 interpolatedFrame->setSize(currentFrame->getSize());
+                interpolatedFrame->setParent(currentFrame->getParent());
                 interpolate(currentFrame, nextFrame, scene);
             }
         }
@@ -128,6 +129,7 @@ namespace odfaeg {
                     Face* face = new Face(va,currentFrame->getFaces()[i]->getMaterial(), currentFrame->getTransform());
                     interpolatedFrame->addFace(face);
                 }
+                interpolatedFrame->setType(currentFrame->getType());
                 interpolatedFrame->setPosition(currentFrame->getPosition());
                 interpolatedFrame->setSize(currentFrame->getSize());
                 interpolatedFrame->setParent(currentFrame->getParent());
@@ -157,6 +159,7 @@ namespace odfaeg {
                 }
                 interpolatedFrame->setPosition(currentFrame->getPosition());
                 interpolatedFrame->setSize(currentFrame->getSize());
+                interpolatedFrame->setParent(currentFrame->getParent());
             }
         }
         void Anim::interpolate(Entity* currentFrame, Entity* nextFrame, EntityManager* scene) {

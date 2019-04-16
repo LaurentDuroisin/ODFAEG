@@ -5,6 +5,7 @@
 #include <sstream>
 #include "stateParameter.h"
 #include <memory>
+#include <iostream>
 /**
  *\namespace odfaeg
  * the namespace of the Opensource Development Framework Adapted for Every Games.
@@ -43,7 +44,6 @@ namespace odfaeg {
                 std::string getName () const;
                 void setName (std::string name);
                 template <typename T> bool addParameter (std::string name, T value) {
-
                     StateParameter* p = new StateParameter (value, name);
 
                     for (unsigned int i = 0; i < parameters.size(); i++) {
