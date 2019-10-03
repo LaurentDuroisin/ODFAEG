@@ -14,9 +14,10 @@ namespace odfaeg {
             quad(math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0)) {
             GLuint maxNodes = 20 * window.getView().getSize().x * window.getView().getSize().y;
             GLint nodeSize = 5 * sizeof(GLfloat) + sizeof(GLuint);
-            /*frameBuffer.create(window.getView().getSize().x, window.getView().getSize().y, settings);
-            frameBufferSprite = Sprite(frameBuffer.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), sf::IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));*/
-            window.setActive();
+            frameBuffer.create(window.getView().getSize().x, window.getView().getSize().y, settings);
+            frameBufferSprite = Sprite(frameBuffer.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), sf::IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
+            frameBuffer.setView(view);
+            //window.setActive();
             glCheck(glGenBuffers(1, &atomicBuffer));
             glCheck(glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, atomicBuffer));
             glCheck(glBufferData(GL_ATOMIC_COUNTER_BUFFER, sizeof(GLuint), nullptr, GL_DYNAMIC_DRAW));
@@ -30,7 +31,7 @@ namespace odfaeg {
             glCheck(glTexStorage2D(GL_TEXTURE_2D, 1, GL_R32UI, window.getView().getSize().x, window.getView().getSize().y));
             glCheck(glBindImageTexture(0, headPtrTex, 0, GL_FALSE, 0, GL_READ_WRITE, GL_R32UI));
             glCheck(glBindTexture(GL_TEXTURE_2D, 0));
-            std::vector<GLuint> headPtrClearBuf(window.getView().getSize().x*window.getView().getSize().y, 0);
+            std::vector<GLuint> headPtrClearBuf(window.getView().getSize().x*window.getView().getSize().y, 0xffffffff);
             glCheck(glGenBuffers(1, &clearBuf));
             glCheck(glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clearBuf));
             glCheck(glBufferData(GL_PIXEL_UNPACK_BUFFER, headPtrClearBuf.size() * sizeof(GLuint),
@@ -40,6 +41,8 @@ namespace odfaeg {
             core::FastDelegate<void> slot (&PerPixelLinkedListRenderComponent::drawNextFrame, this);
             core::Command cmd(signal, slot);
             getListener().connect("UPDATE", cmd);
+
+
             const std::string  simpleVertexShader =
             R"(#version 140
             void main () {
@@ -69,32 +72,29 @@ namespace odfaeg {
                #extension GL_ARB_shading_language_420pack : require
                #extension GL_ARB_shader_image_load_store : require
                #extension GL_ARB_shader_storage_buffer_object : require
-               #define MAX_FRAGMENTS 75
                struct NodeType {
                   vec4 color;
                   float depth;
                   uint next;
                };
                layout(binding = 0, offset = 0) uniform atomic_uint nextNodeCounter;
-               layout(binding = 0, r32ui) coherent uniform uimage2D headPointers;
-               layout(binding = 0, std430) coherent buffer linkedLists {
+               layout(binding = 0, r32ui) uniform uimage2D headPointers;
+               layout(binding = 0, std430) buffer linkedLists {
                    NodeType nodes[];
                };
                uniform uint maxNodes;
                uniform float haveTexture;
                uniform sampler2D texture;
-               in mat4 projMat;
                void main() {
-                   uint nodeIdx = atomicCounterIncrement(nextNodeCounter) + 1u;
+                   uint nodeIdx = atomicCounterIncrement(nextNodeCounter);
                    vec4 texel = texture2D(texture, gl_TexCoord[0].xy);
                    vec4 color = (haveTexture > 0.9) ? gl_Color * texel : gl_Color;
-                   if (nodeIdx < maxNodes && color.a != 0 && color.a != 1) {
+                   if (nodeIdx < maxNodes && color.a != 0) {
                         uint prevHead = imageAtomicExchange(headPointers, ivec2(gl_FragCoord.xy), nodeIdx);
                         nodes[nodeIdx].color = color;
                         nodes[nodeIdx].depth = gl_FragCoord.z;
                         nodes[nodeIdx].next = prevHead;
                    }
-                   gl_FragColor = vec4(0, 0, 0, 0);
                })";
                const std::string fragmentShader2 =
                R"(
@@ -109,104 +109,19 @@ namespace odfaeg {
                   float depth;
                   uint next;
                };
-               layout(binding = 0, r32ui) coherent uniform uimage2D headPointers;
-               layout(binding = 0, std430) coherent buffer linkedLists {
+               layout(binding = 0, r32ui) uniform uimage2D headPointers;
+               layout(binding = 0, std430) buffer linkedLists {
                    NodeType nodes[];
                };
                void main() {
                   NodeType frags[MAX_FRAGMENTS];
-                  NodeType frags2[MAX_FRAGMENTS];
-                  float depth[MAX_FRAGMENTS];
                   int count = 0;
                   uint n = imageLoad(headPointers, ivec2(gl_FragCoord.xy)).r;
-                  while( n != 0u && count < MAX_FRAGMENTS) {
+                  while( n != 0xffffffffu && count < MAX_FRAGMENTS) {
                        frags[count] = nodes[n];
-                       frags2[count] = frags[count];
-                       depth[count] = frags[count].depth;
-                       n = nodes[n].next;
+                       n = frags[count].next;
                        count++;
                   }
-                  // Sort the array by depth using insertion sort (largest
-                  // to smallest).
-
-                  //insert sort
-
-                  /*for( int i = 1; i < count; i++ )
-                  {
-                    NodeType toInsert = frags[i];
-                    int j = i;
-                    while( j > 0 && toInsert.depth > frags[j-1].depth ) {
-                      frags[j] = frags[j-1];
-                      j--;
-                    }
-                    frags[j] = toInsert;
-                  }*/
-
-                  //selection sort
-
-                  /*int max;
-                  NodeType tempNode;
-                  int j, i;
-                  for(j = 0; j < count - 1; j++)
-                  {
-                    max = j;
-                    for(  i = j + 1; i < count; i++)
-                    {
-                        if(frags[i].depth > frags[max].depth)
-                        {
-                            max = i;
-                        }
-                    }
-                    if(max != j)
-                    {
-                        tempNode = frags[j];
-                        frags[j] = frags[max];
-                        frags[max] = tempNode;
-                    }
-                  }*/
-
-
-
-                  //bubble sort
-                  /*int j, i;
-                  NodeType tempNode;
-                  float tempDepth;
-                  for(i = 0; i < count - 1; i++)
-                  {
-                    for(j = 0; j < count - i - 1; j++)
-                    {
-                        if(depth[j] < depth[j+1])
-                        {
-                            tempNode = frags[j];
-                            frags[j] = frags[j+1];
-                            frags[j+1] = tempNode;
-                            tempDepth = depth[j];
-                            depth[j] = depth[j+1];
-                            depth[j+1] = tempDepth;
-                        }
-                    }
-                  }*/
-                 /* int i, j;
-                    NodeType tmp;
-                    int inc = count / 2;
-                    while (inc > 0)
-                    {
-                        for (i = inc; i < count; i++)
-                        {
-                            tmp = frags[i];
-                            j = i;
-                            while (j >= inc && frags[j - inc].depth < tmp.depth)
-                            {
-                                frags[j] = frags[j - inc];
-                                j -= inc;
-                            }
-                            frags[j] = tmp;
-                        }
-                        inc = int(inc / 2.2 + 0.5);
-                    }*/
-
-
-
                   //merge sort
                   int i, j1, j2, k;
                   int a, b, c;
@@ -231,7 +146,7 @@ namespace odfaeg {
                           j2 = 0;
                           for (k = a; k < c; k++)
                           {
-                              if (b + j1 >= c || (j2 < step && leftArray[j2].depth > frags[b + j1].depth))
+                              if (b + j1 >= c || (j2 < step && leftArray[j2].depth <= frags[b + j1].depth))
                                   frags[k] = leftArray[j2++];
                               else
                                   frags[k] = frags[b + j1++];
@@ -241,33 +156,10 @@ namespace odfaeg {
                       }
                       step *= 2;
                   }
-                  //Tri indexé.
-                  /*int inds[MAX_FRAGMENTS];
-                  for (int i = 0; i < count; i++) {
-                    inds[i] = i;
-                  }
-                  int j, i;
-                  int temp;
-                  for(i = 0; i < count - 1; i++)
-                  {
-                    for(j = 0; j < count - i - 1; j++)
-                    {
-                        if(frags2[j].depth < frags2[j+1].depth)
-                        {
-                            temp = inds[j];
-                            inds[j] = inds[j+1];
-                            inds[j+1] = temp;
-                        }
-                    }
-                  }*/
                   vec4 color = vec4(0, 0, 0, 0);
-                  float mdepth = 0.f;
                   for( int i = 0; i < count; i++ )
                   {
                       color = mix( color, frags[i].color, frags[i].color.a);
-                      //color = vec4(frags[inds[i]].color.rgb * frags[inds[i]].color.a + color.rgb * (1 - frags[inds[i]].color.a), frags[inds[i]].color.a + color.a * (1 - frags[inds[i]].color.a));
-                      if (frags2[i].color.r > 1 || frags2[i].color.g > 1 || frags2[i].color.b > 1 || frags2[i].color.a > 1)
-                        color = color;
                   }
                   gl_FragColor = color;
                })";
@@ -289,9 +181,9 @@ namespace odfaeg {
             backgroundColor = color;
         }
         void PerPixelLinkedListRenderComponent::clear() {
-            /*frameBuffer.setActive();
-            frameBuffer.clear(backgroundColor);*/
-            getWindow().setActive();
+            frameBuffer.setActive();
+            frameBuffer.clear(backgroundColor);
+            //getWindow().setActive();
             GLuint zero = 0;
             glCheck(glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, atomicBuffer));
             glCheck(glBufferSubData(GL_ATOMIC_COUNTER_BUFFER, 0, sizeof(GLuint), &zero));
@@ -301,19 +193,13 @@ namespace odfaeg {
             glCheck(glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, view.getSize().x, view.getSize().y, GL_RED_INTEGER,
             GL_UNSIGNED_INT, NULL));
             glCheck(glBindTexture(GL_TEXTURE_2D, 0));
-            /*GLuint maxNodes = 20 * view.getSize().x * view.getSize().y;
-            GLint nodeSize = 5 * sizeof(GLfloat) + sizeof(GLuint);
-            glCheck(glBindBuffer(GL_SHADER_STORAGE_BUFFER, linkedListBuffer));
-            std::vector<GLfloat> data(maxNodes * nodeSize, 0);
-            glCheck(glBufferData(GL_SHADER_STORAGE_BUFFER, maxNodes * nodeSize, &data[0], GL_DYNAMIC_DRAW));
-            glCheck(glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0));*/
-            //frameBuffer.resetGLStates();
-            getWindow().resetGLStates();
+            frameBuffer.resetGLStates();
+            //getWindow().resetGLStates();
             glCheck(glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, 0, atomicBuffer));
             glCheck(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, linkedListBuffer));
         }
         void PerPixelLinkedListRenderComponent::drawNextFrame() {
-            /*frameBuffer.setActive();
+            frameBuffer.setActive();
             currentStates.blendMode = sf::BlendAlpha;
             currentStates.shader=&perPixelLinkedList;
 
@@ -328,24 +214,28 @@ namespace odfaeg {
                     frameBuffer.draw(m_instances[i].getAllVertices(), currentStates);
                 }
             }
+
+            //glCheck(glTextureBarrier());
             glCheck(glFinish());
-            frameBuffer.display();
-            glCheck(glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, 0, 0));
-            glCheck(glTextureBarrier());
-            glCheck(glMemoryBarrier( GL_TEXTURE_FETCH_BARRIER_BIT ));
-            glCheck(glMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT ));
+            glCheck(glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT | GL_TEXTURE_FETCH_BARRIER_BIT));
+
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
             currentStates.shader = &perPixelLinkedListP2;
             for (unsigned int i = 0; i < m_instances.size(); i++) {
                if (m_instances[i].getAllVertices().getVertexCount() > 0) {
                     frameBuffer.draw(m_instances[i].getAllVertices(), currentStates);
                }
             }
+            //glCheck(glDepthMask(GL_TRUE));
+            //currentStates.shader = nullptr;
+            //quad.setCenter(frameBuffer.getView().getPosition());
+            //frameBuffer.draw(quad, currentStates);
             glCheck(glFinish());
-            frameBuffer.display();*/
-
+            frameBuffer.display();
         }
         void PerPixelLinkedListRenderComponent::draw(RenderTarget& target, RenderStates states) {
-            for (unsigned int i = 0; i < m_instances.size(); i++) {
+            /*for (unsigned int i = 0; i < m_instances.size(); i++) {
                if (m_instances[i].getAllVertices().getVertexCount() > 0) {
                     if (m_instances[i].getMaterial().getTexture() == nullptr) {
                         perPixelLinkedList.setParameter("haveTexture", 0.f);
@@ -356,29 +246,32 @@ namespace odfaeg {
                     }
                     states.texture = m_instances[i].getMaterial().getTexture();
                     states.shader=&perPixelLinkedList;
-                    target.draw(m_instances[i].getAllVertices(), states);
-                    states.shader=&filterNotOpaque;
-                    target.draw(m_instances[i].getAllVertices(), states);
-                }
+                    states.blendMode = sf::BlendAlpha;
+                    target.draw(m_instances[i].getAllVertices(), states);*/
+                    /*states.shader=&filterNotOpaque;
+                    target.draw(m_instances[i].getAllVertices(), states);*/
+                /*}
             }
+            glCheck(glMemoryBarrier( GL_TEXTURE_FETCH_BARRIER_BIT  | GL_SHADER_STORAGE_BARRIER_BIT ));
             glCheck(glFinish());
-            glCheck(glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, 0, 0));
+
             //glCheck(glTextureBarrier());
-            //glCheck(glMemoryBarrier( GL_TEXTURE_FETCH_BARRIER_BIT ));
-            glCheck(glMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT ));
+
             states.shader = &perPixelLinkedListP2;
-            states.blendMode = sf::BlendAlpha;
-            glCheck(glDepthMask(GL_FALSE));
-            for (unsigned int i = 0; i < m_instances.size(); i++) {
+            states.blendMode = sf::BlendAlpha;*/
+            //glCheck(glDepthMask(GL_FALSE));
+            /*for (unsigned int i = 0; i < m_instances.size(); i++) {
                if (m_instances[i].getAllVertices().getVertexCount() > 0) {
                     target.draw(m_instances[i].getAllVertices(), states);
                }
-            }
+            }*/
+            /*glCheck(glDepthMask(GL_FALSE));
+            //glCheck(glDepthMask(GL_TRUE));
+            target.draw(quad, states);
             glCheck(glDepthMask(GL_TRUE));
-            //target.draw(quad, states);
-            glCheck(glFinish());
-            /*frameBufferSprite.setCenter(target.getView().getPosition());
-            target.draw(frameBufferSprite, states);*/
+            glCheck(glFinish());*/
+            frameBufferSprite.setCenter(target.getView().getPosition());
+            target.draw(frameBufferSprite, states);
         }
         int  PerPixelLinkedListRenderComponent::getLayer() {
             return getPosition().z;
