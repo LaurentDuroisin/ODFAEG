@@ -21,14 +21,12 @@ namespace sorrok {
         isClientAuthentified = true;
     }
     void MyAppli::onIconClicked(Icon* icon) {
-        std::cout<<"cliqued on icon"<<std::endl;
         TextureManager<Item::Type> &tm2 = cache.resourceManager<Texture, Item::Type>("TextureManager2");
         Item::Type itemType = tm2.getAliasByResource(const_cast<Texture*>(icon->getSprite().getTexture()))[0];
         std::map<Item::Type, std::vector<Item>>& items = static_cast<Hero*>(hero)->getInventory();
         std::map<Item::Type, std::vector<Item>>::iterator it = items.find(itemType);
         Item item = it->second.back();
         if (itemType == Item::HP_POTION) {
-            std::cout<<"item type = hp potion"<<std::endl;
             it->second.pop_back();
             Label* label;
             bool found = false;
@@ -94,11 +92,9 @@ namespace sorrok {
         }
     }
     void MyAppli::dropItems(Label* label) {
-        std::cout<<"drop items"<<std::endl;
         std::vector<Item>::iterator it;
         for (it = selectedCristal.second.begin(); it != selectedCristal.second.end(); ) {
             if (it->getName() == label->getText()) {
-                std::cout<<"add item to inventory"<<std::endl;
                 static_cast<Hero*>(hero)->addItem(*it);
                 it = selectedCristal.second.erase(it);
             } else {
@@ -108,7 +104,6 @@ namespace sorrok {
         std::vector<Item> itemsToDisplay = selectedCristal.second;
         pItems->removeAll();
         if (itemsToDisplay.size() > 0) {
-            std::cout<<"there are some items close to the hero, display them : "<<std::endl;
             FontManager<Fonts> &fm = cache.resourceManager<Font,Fonts>("FontManager");
             Table table (4,2);
             TextureManager<Item::Type> &tm2 = cache.resourceManager<Texture, Item::Type>("TextureManager2");
@@ -162,7 +157,6 @@ namespace sorrok {
                 wPickupItems->setPosition(sf::Vector2i(selectedCristal.first->getPosition().x, selectedCristal.first->getPosition().y));
             }
             if (itemsToDisplay.size() > 0) {
-                std::cout<<"there are some items close to the hero, display them : "<<std::endl;
                 FontManager<Fonts> &fm = cache.resourceManager<Font,Fonts>("FontManager");
                 TextureManager<Item::Type> &tm2 = cache.resourceManager<Texture, Item::Type>("TextureManager2");
                 Table table (4,2);
@@ -189,7 +183,6 @@ namespace sorrok {
         if (actualKey != IKeyboard::Key::Unknown && key == IKeyboard::Key::Z) {
             if (!hero->isMoving()) {
                 //if (actualKey != previousKey) {
-                    std::cout<<"move from keyboard"<<std::endl;
                     Vec2f dir(0, -1);
                     hero->setDir(dir);
                     sf::Int64 cli_time = Application::getTimeClk().getElapsedTime().asMicroseconds();
@@ -204,7 +197,6 @@ namespace sorrok {
         } else if (actualKey != IKeyboard::Key::Unknown && key == IKeyboard::Key::Q) {
             if (!hero->isMoving()) {
                 //if (actualKey != previousKey) {
-                    std::cout<<"move from keyboard"<<std::endl;
                     Vec2f dir(-1, 0);
                     hero->setDir(dir);
                     sf::Int64 cli_time = Application::getTimeClk().getElapsedTime().asMicroseconds();
@@ -218,7 +210,6 @@ namespace sorrok {
         } else if (actualKey != IKeyboard::Key::Unknown && actualKey == IKeyboard::Key::S) {
             if (!hero->isMoving()) {
                 //if (actualKey != previousKey) {
-                    std::cout<<"move from keyboard"<<std::endl;
                     Vec2f dir(0, 1);
                     hero->setDir(dir);
                     sf::Int64 cli_time = Application::getTimeClk().getElapsedTime().asMicroseconds();
@@ -232,7 +223,6 @@ namespace sorrok {
         } else if (actualKey != IKeyboard::Key::Unknown && key == IKeyboard::Key::D) {
             if (!hero->isMoving()) {
                 //if (actualKey != previousKey) {
-                    std::cout<<"move from keyboard"<<std::endl;
                     Vec2f dir(1, 0);
                     hero->setDir(dir);
                     sf::Int64 cli_time = Application::getTimeClk().getElapsedTime().asMicroseconds();
@@ -246,7 +236,6 @@ namespace sorrok {
         }
     }
     void MyAppli::leftMouseButtonPressed(sf::Vector2f mousePos) {
-        std::cout<<"move from path"<<std::endl;
         Vec3f finalPos(mousePos.x, getRenderWindow().getSize().y - mousePos.y, 0);
         finalPos = getRenderWindow().mapPixelToCoords(finalPos);
         finalPos = Vec3f(finalPos.x, finalPos.y, 0);
@@ -256,7 +245,6 @@ namespace sorrok {
         Network::sendTcpPacket(packet);
     }
     void MyAppli::rightMouseButtonPressed(sf::Vector2f mousePos) {
-        std::cout<<"attack!"<<std::endl;
         Vec3f finalPos (mousePos.x, getRenderWindow().getSize().y - mousePos.y, 0);
         finalPos = getRenderWindow().mapPixelToCoords(finalPos);
         finalPos = Vec3f(finalPos.x, finalPos.y, 0);
@@ -382,7 +370,6 @@ namespace sorrok {
         ia.clear();
         iss.str(response);
         ia(hero);
-        std::cout<<"hero id : "<<hero->getId()<<std::endl;
         std::string path = "tilesets/vlad_sword.png";
         cache.resourceManager<Texture, std::string>("TextureManager").fromFileWithAlias(path, "VLADSWORD");
         const Texture *text = cache.resourceManager<Texture, std::string>("TextureManager").getResourceByPath(path);
@@ -465,7 +452,6 @@ namespace sorrok {
         ia.clear();
         iss.str(response);
         ia(monster);
-        std::cout<<"monster id : "<<monster->getId()<<std::endl;
         path = "tilesets/ogro.png";
         //for (unsigned int n = 0; n < monsters.size(); n++) {
             tmpCenter = monster->getCenter();
@@ -816,7 +802,6 @@ namespace sorrok {
             bool isAttacking = conversionStringInt(infos[8]);
             bool isAlive = conversionStringInt(infos[9]);
             int life = conversionStringInt(infos[10]);
-            std::cout<<"type : "<<caracter->getType()<<std::endl;
             if (last_cli_time > caracter->getAttribute("isMoving").getValue<sf::Int64>()) {
                 caracter->setMoving(isMoving);
             }
@@ -829,8 +814,10 @@ namespace sorrok {
             if (last_cli_time > caracter->getAttribute("isAlive").getValue<sf::Int64>()) {
                 caracter->setAlive(isAlive);
             }
+            if (last_cli_time > caracter->getAttribute("life").getValue<sf::Int64>()) {
+                caracter->setLife(life);
+            }
             if (!caracter->isMoving() && static_cast<Hero*>(caracter)->isMovingFromKeyboard()) {
-                std::cout<<"stop caracter moving"<<std::endl;
                 static_cast<Hero*>(caracter)->setIsMovingFromKeyboard(false);
             }
             if (static_cast<Hero*> (caracter) && static_cast<Hero*>(caracter)->isMovingFromKeyboard() && caracter->isMoving()) {
@@ -855,7 +842,6 @@ namespace sorrok {
             caracter->interpolation.first = Vec3f(caracter->getCenter().x, caracter->getCenter().y, caracter->getCenter().z);
             if (caracter->isMoving()) {
                 if (caracter->isMovingFromKeyboard()) {
-                    std::cout<<"new server pos :"<<newPos;
                     caracter->interpolation.second = caracter->interpolation.first + Vec3f(caracter->getDir().x,caracter->getDir().y,0)  * caracter->getSpeed() * (ping + timeBtwnTwoReq.asMicroseconds());
                 } else {
                     caracter->interpolation.second = Computer::getPosOnPathFromTime(caracter->interpolation.first, caracter->getPath(),ping + timeBtwnTwoReq.asMicroseconds(),caracter->getSpeed());
@@ -928,7 +914,6 @@ namespace sorrok {
             hero->setMoving(false);
         }
         if (Network::getResponse("IDOK", response)) {
-            std::cout<<"client authentified"<<std::endl;
             isClientAuthentified = true;
             wIdentification->setVisible(false);
             idButton->setEventContextActivated(false);
@@ -941,7 +926,6 @@ namespace sorrok {
             std::vector<Item> items;
             ita(items);
             if (items.size() > 0) {
-                std::cout<<"items"<<std::endl;
                 cristals.clear();
                 TextureManager<> &tm = cache.resourceManager<Texture, std::string>("TextureManager");
                 Sprite* cristal = new Sprite(*tm.getResourceByAlias("CRISTAL"),hero->getFocusedCaracter()->getPosition(),Vec3f(50, 100, 0),sf::IntRect(0, 0, 50, 100));
@@ -963,7 +947,6 @@ namespace sorrok {
                         Vec3f actualPos = Vec3f(caracter->getCenter().x, caracter->getCenter().y, 0);
                         sf::Int64 elapsedTime = caracter->getClkTransfertTime().getElapsedTime().asMicroseconds();
                         Vec3f newPos = caracter->interpolation.first + (caracter->interpolation.second - caracter->interpolation.first) * ((float) elapsedTime / (float) (ping + timeBtwnTwoReq.asMicroseconds()));
-                        std::cout<<"new client pos :"<<newPos;
                         Ray ray(actualPos, newPos);
                         if (World::collide(caracter, ray)) {
                             newPos = actualPos;
@@ -1115,16 +1098,10 @@ namespace sorrok {
                         text.setSize(Vec3f(10, 10, 0));
                         tmpTexts.push_back(std::make_pair(std::make_pair(caracter, text), std::make_pair(Application::getTimeClk().getElapsedTime(), sf::seconds(0.5))));
                         if (caracter->getLife() + rgn >= caracter->getMaxLife()) {
-                            if (caracter->getType() == "E_HERO")
-                                std::cout<<"set life : "<<std::endl;
                             caracter->setLife(caracter->getMaxLife());
                         } else {
-                            if (caracter->getType() == "E_HERO")
-                                std::cout<<"set life : "<<std::endl;
                             caracter->setLife(caracter->getLife() + rgn);
                         }
-                        if (caracter->getType() == "E_HERO")
-                            std::cout<<"get life : "<<caracter->getLife()<<std::endl;
                     }
                 }
             } else {

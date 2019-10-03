@@ -37,6 +37,7 @@ namespace sorrok {
         addAttribute("isMoving",i);
         addAttribute("isInFightingMode", i);
         addAttribute("isAttacking", i);
+        addAttribute("life", i);
         dmgTransferTime = rgnTransferTime = 0;
     }
     void Caracter::setXpHpBar(ProgressBar* xpBar, ProgressBar* hpBar) {
@@ -93,6 +94,9 @@ namespace sorrok {
     }
     void Caracter::setLife(int life) {
         this->life = life;
+        if (hpBar != nullptr)
+            std::cout<<"life : "<<life<<std::endl;
+        changeAttribute("life", Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
         if (hpBar != nullptr) {
             hpBar->setValue(life);
         }

@@ -107,39 +107,30 @@ int main(int argv, char* argc[]) {
         }
     }
     return 0;*/
-    /*RenderWindow window(sf::VideoMode(800, 600), "test oit", sf::Style::Default, ContextSettings(0, 0, 8, 3, 0));
-    //window.getView().move(400, 300, 300);
-    std::string path = "tilesets/vlad_sword.png";
-    Texture text;
-    text.loadFromFile(path);
-    int textRectX = 0, textRectY = 0, textRectWidth = 50, textRectHeight = 100;
-    int textWidth = text.getSize().x;
-    Anim* animation = new Anim(0.1f, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), 0);
-    for (unsigned int j = 0; j < 8; j++) {
-        sf::IntRect textRect (textRectX, textRectY, textRectWidth, textRectHeight);
-        Tile *tile = new Tile(&text, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), textRect);
-        tile->getFaces()[0]->getMaterial().setTexId("VLADSWORD");
-        g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight());
-        frame->setShadowCenter(Vec3f(0, 200, 0));
-        if (textRectX + textRectWidth > textWidth) {
-            textRectX = 0;
-            textRectY += textRectHeight;
-        } else {
-            textRectX += textRectWidth;
-        }
-        animation->addFrame(frame);
-    }
-    while(window.isOpen()) {
-        IEvent event;
-        while (window.pollEvent(event)) {
-            if (event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_CLOSED)
-                window.close();
-        }
-        window.clear();
-        window.draw(*animation->getCurrentFrame());
-        animation->computeNextFrame();
-        window.display();
-    }
-    delete animation;
-    return 0;*/
+    /*Window window(sf::VideoMode(800, 600), "test oit", sf::Style::Default, ContextSettings(24, 8, 4, 3, 0));
+     GLuint maxNodes = 20 * 800 * 600;
+    GLint nodeSize = 5 * sizeof(GLfloat) + sizeof(GLuint);
+    GLuint atomicBuffer, linkedListBuffer, headPtrTex, clearBuf;
+    glGenBuffers(1, &atomicBuffer);
+    glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, atomicBuffer);
+    glBufferData(GL_ATOMIC_COUNTER_BUFFER, sizeof(GLuint), NULL, GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, 0);
+    glGenBuffers(1, &linkedListBuffer);
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, linkedListBuffer);
+    glBufferData(GL_SHADER_STORAGE_BUFFER, maxNodes * nodeSize, NULL, GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+    glGenTextures(1, &headPtrTex);
+    glBindTexture(GL_TEXTURE_2D, headPtrTex);
+    glTexStorage2D(GL_TEXTURE_2D, 1, GL_R32UI, 800, 600);
+    glBindImageTexture(0, headPtrTex, 0, GL_FALSE, 0, GL_READ_WRITE, GL_R32UI);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    std::vector<GLuint> headPtrClearBuf(800*600, 0);
+    glGenBuffers(1, &clearBuf);
+    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clearBuf);
+    glBufferData(GL_PIXEL_UNPACK_BUFFER, headPtrClearBuf.size() * sizeof(GLuint),
+            &headPtrClearBuf[0], GL_STATIC_COPY);
+    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);*/
+    return 0;
 }

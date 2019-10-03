@@ -1,0 +1,4 @@
+namespace sorrok {
+    Pnj::Pnj() {
+    }
+}
