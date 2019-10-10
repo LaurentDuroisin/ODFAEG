@@ -72,6 +72,7 @@ namespace odfaeg {
                #extension GL_ARB_shading_language_420pack : require
                #extension GL_ARB_shader_image_load_store : require
                #extension GL_ARB_shader_storage_buffer_object : require
+               #define MAX_FRAGMENTS 75
                struct NodeType {
                   vec4 color;
                   float depth;
@@ -86,15 +87,63 @@ namespace odfaeg {
                uniform float haveTexture;
                uniform sampler2D texture;
                void main() {
+                   NodeType frags[MAX_FRAGMENTS];
+                   int count = 0;
                    uint nodeIdx = atomicCounterIncrement(nextNodeCounter);
                    vec4 texel = texture2D(texture, gl_TexCoord[0].xy);
                    vec4 color = (haveTexture > 0.9) ? gl_Color * texel : gl_Color;
-                   if (nodeIdx < maxNodes && color.a != 0) {
+                   if (nodeIdx < maxNodes) {
                         uint prevHead = imageAtomicExchange(headPointers, ivec2(gl_FragCoord.xy), nodeIdx);
                         nodes[nodeIdx].color = color;
                         nodes[nodeIdx].depth = gl_FragCoord.z;
                         nodes[nodeIdx].next = prevHead;
                    }
+                   uint n = imageLoad(headPointers, ivec2(gl_FragCoord.xy)).r;
+                   while( n != 0xffffffffu && count < MAX_FRAGMENTS) {
+                        frags[count] = nodes[n];
+                        n = frags[count].next;
+                        count++;
+                   }
+                   //merge sort
+                   int i, j1, j2, k;
+                   int a, b, c;
+                   int step = 1;
+                   NodeType leftArray[MAX_FRAGMENTS/2]; //for merge sort
+
+                   while (step <= count)
+                   {
+                       i = 0;
+                       while (i < count - step)
+                       {
+                           ////////////////////////////////////////////////////////////////////////
+                           //merge(step, i, i + step, min(i + step + step, count));
+                           a = i;
+                           b = i + step;
+                           c = (i + step + step) >= count ? count : (i + step + step);
+
+                           for (k = 0; k < step; k++)
+                               leftArray[k] = frags[a + k];
+
+                           j1 = 0;
+                           j2 = 0;
+                           for (k = a; k < c; k++)
+                           {
+                               if (b + j1 >= c || (j2 < step && leftArray[j2].depth > frags[b + j1].depth))
+                                   frags[k] = leftArray[j2++];
+                               else
+                                   frags[k] = frags[b + j1++];
+                           }
+                           ////////////////////////////////////////////////////////////////////////
+                           i += 2 * step;
+                       }
+                       step *= 2;
+                   }
+                   color = vec4(0, 0, 0, 0);
+                   for( int i = count - 1; i >= 0; i--)
+                   {
+                     color = mix(color, frags[i].color, frags[i].color.a);
+                   }
+                   gl_FragColor = color;
                })";
                const std::string fragmentShader2 =
                R"(
@@ -146,7 +195,7 @@ namespace odfaeg {
                           j2 = 0;
                           for (k = a; k < c; k++)
                           {
-                              if (b + j1 >= c || (j2 < step && leftArray[j2].depth <= frags[b + j1].depth))
+                              if (b + j1 >= c || (j2 < step && leftArray[j2].depth > frags[b + j1].depth))
                                   frags[k] = leftArray[j2++];
                               else
                                   frags[k] = frags[b + j1++];
@@ -157,9 +206,9 @@ namespace odfaeg {
                       step *= 2;
                   }
                   vec4 color = vec4(0, 0, 0, 0);
-                  for( int i = 0; i < count; i++ )
+                  for( int i = count - 1; i >= 0; i-- )
                   {
-                      color = mix( color, frags[i].color, frags[i].color.a);
+                    color = mix( color, frags[i].color, frags[i].color.a);
                   }
                   gl_FragColor = color;
                })";
@@ -200,7 +249,7 @@ namespace odfaeg {
         }
         void PerPixelLinkedListRenderComponent::drawNextFrame() {
             frameBuffer.setActive();
-            currentStates.blendMode = sf::BlendAlpha;
+            currentStates.blendMode = sf::BlendNone;
             currentStates.shader=&perPixelLinkedList;
 
             for (unsigned int i = 0; i < m_instances.size(); i++) {
@@ -214,23 +263,25 @@ namespace odfaeg {
                     frameBuffer.draw(m_instances[i].getAllVertices(), currentStates);
                 }
             }
+            glCheck(glFinish());
+            glCheck(glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT));
 
             //glCheck(glTextureBarrier());
-            glCheck(glFinish());
-            glCheck(glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT | GL_TEXTURE_FETCH_BARRIER_BIT));
 
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+            /*glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
 
             currentStates.shader = &perPixelLinkedListP2;
             for (unsigned int i = 0; i < m_instances.size(); i++) {
                if (m_instances[i].getAllVertices().getVertexCount() > 0) {
                     frameBuffer.draw(m_instances[i].getAllVertices(), currentStates);
                }
-            }
+
             //glCheck(glDepthMask(GL_TRUE));
             //currentStates.shader = nullptr;
             //quad.setCenter(frameBuffer.getView().getPosition());
-            //frameBuffer.draw(quad, currentStates);
+            frameBuffer.draw(quad, currentStates);*/
             glCheck(glFinish());
             frameBuffer.display();
         }
