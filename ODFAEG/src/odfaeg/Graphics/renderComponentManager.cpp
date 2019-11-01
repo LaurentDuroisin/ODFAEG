@@ -65,23 +65,19 @@ namespace odfaeg {
         }
         HeavyComponent* RenderComponentManager::getRenderComponent(unsigned int layer) {
             std::multimap<int, std::unique_ptr<Component>, std::greater<int>>::reverse_iterator it;
-            unsigned int i = 0;
             for (it = components.rbegin(); it != components.rend(); it++) {
-               if (i == layer && dynamic_cast<HeavyComponent*>(it->second.get()) != nullptr) {
+               if (dynamic_cast<HeavyComponent*>(it->second.get()) != nullptr && it->second->getPriority() == layer) {
                    return dynamic_cast<HeavyComponent*>(it->second.get());
                }
-               i++;
             }
             return nullptr;
         }
         LightComponent* RenderComponentManager::getGuiComponent(unsigned int layer) {
             std::multimap<int, std::unique_ptr<Component>, std::greater<int>>::iterator it;
-            unsigned int i = 0;
             for (it = components.begin(); it != components.end(); it++) {
-               if (i == layer && dynamic_cast<LightComponent*>(it->second.get()) != nullptr) {
+               if (dynamic_cast<LightComponent*>(it->second.get()) != nullptr && it->second->getPriority() == layer) {
                    return dynamic_cast<LightComponent*>(it->second.get());
                }
-               i++;
             }
             return nullptr;
         }

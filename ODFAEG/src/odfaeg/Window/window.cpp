@@ -56,6 +56,8 @@ namespace odfaeg {
         ////////////////////////////////////////////////////////////
         bool Window::pollEvent(IEvent& event)
         {
+            if (event.type == IEvent::TEXT_INPUT_EVENT)
+                std::cout<<"text input event!"<<std::endl;
             if (m_window && m_window->pollEvent(event))
             {
                 return m_window->filterEvent(event);

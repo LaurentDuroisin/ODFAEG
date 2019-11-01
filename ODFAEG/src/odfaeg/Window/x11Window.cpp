@@ -1656,6 +1656,7 @@ namespace odfaeg {
                             Utf8::decode(keyBuffer, keyBuffer + length, unicode, 0);
                             if (unicode != 0)
                             {
+                                std::cout<<"text event!"<<std::endl;
                                 IEvent textEvent;
                                 textEvent.type = IEvent::EventType::TEXT_INPUT_EVENT;
                                 std::chrono::time_point<std::chrono::system_clock> time = std::chrono::system_clock::now();
@@ -1663,7 +1664,7 @@ namespace odfaeg {
                                 textEvent.text.timestamp = std::chrono::system_clock::to_time_t(time);
                                 textEvent.text.windowID = reinterpret_cast<unsigned long long int>(&m_window);
                                 textEvent.text.unicode = static_cast<Uint32>(keyBuffer[0]);
-                                pushEvent(event);
+                                pushEvent(textEvent);
                             }
                         }
                     }
@@ -1674,6 +1675,7 @@ namespace odfaeg {
                         char keyBuffer[16];
                         if (XLookupString(&xevent.xkey, keyBuffer, sizeof(keyBuffer), NULL, &status))
                         {
+
                             IEvent textEvent;
                             textEvent.type = IEvent::EventType::TEXT_INPUT_EVENT;
                             std::chrono::time_point<std::chrono::system_clock> time = std::chrono::system_clock::now();
@@ -1681,7 +1683,7 @@ namespace odfaeg {
                             textEvent.text.timestamp = std::chrono::system_clock::to_time_t(time);
                             textEvent.text.windowID = reinterpret_cast<unsigned long long int>(&m_window);
                             textEvent.text.unicode = static_cast<Uint32>(keyBuffer[0]);
-                            pushEvent(event);
+                            pushEvent(textEvent);
                         }
                     }
                 }

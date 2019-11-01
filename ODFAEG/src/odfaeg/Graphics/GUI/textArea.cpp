@@ -93,6 +93,7 @@ namespace odfaeg {
                 physic::BoundingBox bb = getGlobalBounds();
                 math::Vec2f mousePos = math::Vec2f(window::IMouse::getPosition(getWindow()).x, window::IMouse::getPosition(getWindow()).y);
                 if (bb.isPointInside(mousePos)) {
+
                     return true;
                 }
                 return false;

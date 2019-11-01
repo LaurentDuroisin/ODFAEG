@@ -16,8 +16,12 @@ namespace sorrok {
         Network::startSrv(10'000, 10'001);
         theMap = new Map(nullptr, "Map test", 100, 50, 0);
         /*sql::Driver* driver = get_driver_instance();
-        sql::Connection* con = driver->connect("localhost", "root","Kirokofu457$");*/
-        //con->setSchema("SORROK");
+        if (driver == nullptr)
+            std::cout<<"failed to get driver"<<std::endl;
+        sql::Connection* con = driver->connect("localhost", "root","Kirokofu457$");
+        if (con == nullptr)
+            std::cout<<"failed to connect to database"<<std::endl;
+        con->setSchema("SORROK");*/
         BaseChangementMatrix bcm;
         bcm.set2DIsoMatrix();
         theMap->setBaseChangementMatrix(bcm);
@@ -323,18 +327,19 @@ namespace sorrok {
                 SymEncPacket packet;
                 packet<<"ALIVE"+conversionIntString(hero->getId())+"*"+conversionFloatString(hero->getCenter().x)+"*"+conversionFloatString(hero->getCenter().y);
                 user->sendTcpPacket(packet);
-            } else if (request == "CONNECT") {
+            } else if (request == "INV") {
+                SymEncPacket packet;
+                packet<<"IDOK";
+                user->sendTcpPacket(packet);
                 std::cout<<"connect"<<std::endl;
                 caracter = new Hero(user, "Sorrok", "Nagi", "M", "Map test", "Brain", "Green", "White","Normal","Novice", 1);
-                std::cout<<"hero id : "<<caracter->getId()<<std::endl;
+
                 BoundingVolume* bb2 = new BoundingBox(caracter->getGlobalBounds().getPosition().x, caracter->getGlobalBounds().getPosition().y + caracter->getGlobalBounds().getSize().y * 0.4f, 0,
                 caracter->getGlobalBounds().getSize().x, caracter->getGlobalBounds().getSize().y * 0.25f, 0);
                 caracter->setCollisionVolume(bb2);
                 caracter->setCenter(Vec3f(0, 300, 300));
                 World::addEntity(caracter);
-                SymEncPacket packet;
-                packet<<"CONNECTED";
-                user->sendTcpPacket(packet);
+            } else if (request == "CONNECT") {
                 std::vector<Entity*> caracters = World::getEntities("E_HERO+E_MONSTER");
                 for (unsigned int i = 0; i < caracters.size(); i++) {
                     if (dynamic_cast<Caracter*> (caracters[i])) {
@@ -343,7 +348,7 @@ namespace sorrok {
                         caracter->getDamages().clear();
                     }
                 }
-                /*std::string pseudo = infos[1];
+                std::string pseudo = infos[1];
                 std::string pswd = infos[2];
                 sql::Statement* stmt = con->createStatement();
                 sql::ResultSet* result = stmt->executeQuery("SELECT NAME, PASSWORD FROM HEROES WHERE NAME = "+pseudo+";");
@@ -352,10 +357,18 @@ namespace sorrok {
                         SymEncPacket packet;
                         packet<<"IDOK";
                         user->sendTcpPacket(packet);
+                        std::cout<<"connect"<<std::endl;
+                        caracter = new Hero(user, "Sorrok", "Nagi", "M", "Map test", "Brain", "Green", "White","Normal","Novice", 1);
+
+                        BoundingVolume* bb2 = new BoundingBox(caracter->getGlobalBounds().getPosition().x, caracter->getGlobalBounds().getPosition().y + caracter->getGlobalBounds().getSize().y * 0.4f, 0,
+                        caracter->getGlobalBounds().getSize().x, caracter->getGlobalBounds().getSize().y * 0.25f, 0);
+                        caracter->setCollisionVolume(bb2);
+                        caracter->setCenter(Vec3f(0, 300, 300));
+                        World::addEntity(caracter);
                     }
                 }
                 delete stmt;
-                delete result;*/
+                delete result;
             } else if (request == "ADDLIFE")   {
                 int id = conversionStringInt(infos[1]);
                 Caracter* hero = static_cast<Caracter*>(World::getEntity(id));
