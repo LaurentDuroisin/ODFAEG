@@ -312,9 +312,9 @@ namespace sorrok {
         light2 = new g2d::PonctualLight(Vec3f(50, 160, 160), 100, 50, 50, 255, sf::Color::Yellow, 16);
         World::addEntity(light1);
         World::addEntity(light2);
-        ZSortingRenderComponent *frc1 = new ZSortingRenderComponent(getRenderWindow(),0, "", *theMap);
+        ZSortingRenderComponent *frc1 = new ZSortingRenderComponent(getRenderWindow(),0, "",*theMap);
         ShadowRenderComponent *frc2 = new ShadowRenderComponent(getRenderWindow(),1, "");
-        OITRenderComponent* frc3 = new OITRenderComponent(getRenderWindow(),2,"", ContextSettings(24, 0, 0, 3, 0));
+        PerPixelLinkedListRenderComponent* frc3 = new PerPixelLinkedListRenderComponent(getRenderWindow(),2,"", ContextSettings(24, 0, 0, 3, 0));
         LightRenderComponent* frc4 = new LightRenderComponent(getRenderWindow(),3,"");
         /*View view = getView();
         frc1->setView(view);*/

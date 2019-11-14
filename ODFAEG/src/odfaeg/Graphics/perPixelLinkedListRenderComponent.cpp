@@ -11,7 +11,8 @@ namespace odfaeg {
                           math::Vec3f(window.getView().getSize().x + window.getView().getSize().x * 0.5f, window.getView().getPosition().y + window.getView().getSize().y * 0.5f, layer)),
             view(window.getView()),
             expression(expression),
-            quad(math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0)) {
+            quad(math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, window.getSize().y * 0.5f)) {
+            quad.move(math::Vec3f(-window.getView().getSize().x * 0.5f, -window.getView().getSize().y * 0.5f, 0));
             GLuint maxNodes = 20 * window.getView().getSize().x * window.getView().getSize().y;
             GLint nodeSize = 5 * sizeof(GLfloat) + sizeof(GLuint);
             /*frameBuffer.create(window.getView().getSize().x, window.getView().getSize().y, settings);
@@ -32,6 +33,7 @@ namespace odfaeg {
             glCheck(glBindImageTexture(0, headPtrTex, 0, GL_FALSE, 0, GL_READ_WRITE, GL_R32UI));
             glCheck(glBindTexture(GL_TEXTURE_2D, 0));
             std::vector<GLuint> headPtrClearBuf(window.getView().getSize().x*window.getView().getSize().y, 0xffffffff);
+            std::vector<GLuint> linkedListClearBuffer(maxNodes * nodeSize, 0);
             glCheck(glGenBuffers(1, &clearBuf));
             glCheck(glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clearBuf));
             glCheck(glBufferData(GL_PIXEL_UNPACK_BUFFER, headPtrClearBuf.size() * sizeof(GLuint),
@@ -66,13 +68,31 @@ namespace odfaeg {
                 b = (color.a == 1);
                 gl_FragColor = colors[int(b)];
             })";
+            const std::string initializeSSBO =
+            R"(#version 140
+               #extension GL_ARB_shader_storage_buffer_object : require
+               struct NodeType {
+                  vec4 color;
+                  float depth;
+                  uint next;
+               };
+               layout(binding = 0, std430) buffer linkedLists {
+                   NodeType nodes[];
+               };
+               void main() {
+                   for (int i = 0; i < 20; i++) {
+                       nodes[i].color = vec4(0, 0, 0, 0);
+                       nodes[i].depth = 0;
+                       nodes[i].next = 0xffffffffu;
+                   }
+                   gl_FragColor = vec4(0, 0, 0, 0);
+               })";
             const std::string fragmentShader =
             R"(#version 140
                #extension GL_ARB_shader_atomic_counters : require
                #extension GL_ARB_shading_language_420pack : require
                #extension GL_ARB_shader_image_load_store : require
                #extension GL_ARB_shader_storage_buffer_object : require
-               #define MAX_FRAGMENTS 75
                struct NodeType {
                   vec4 color;
                   float depth;
@@ -87,8 +107,6 @@ namespace odfaeg {
                uniform float haveTexture;
                uniform sampler2D texture;
                void main() {
-                   NodeType frags[MAX_FRAGMENTS];
-                   int count = 0;
                    uint nodeIdx = atomicCounterIncrement(nextNodeCounter);
                    vec4 texel = texture2D(texture, gl_TexCoord[0].xy);
                    vec4 color = (haveTexture > 0.9) ? gl_Color * texel : gl_Color;
@@ -98,52 +116,7 @@ namespace odfaeg {
                         nodes[nodeIdx].depth = gl_FragCoord.z;
                         nodes[nodeIdx].next = prevHead;
                    }
-                   uint n = imageLoad(headPointers, ivec2(gl_FragCoord.xy)).r;
-                   while( n != 0xffffffffu && count < MAX_FRAGMENTS) {
-                        frags[count] = nodes[n];
-                        n = frags[count].next;
-                        count++;
-                   }
-                   //merge sort
-                   int i, j1, j2, k;
-                   int a, b, c;
-                   int step = 1;
-                   NodeType leftArray[MAX_FRAGMENTS/2]; //for merge sort
-
-                   while (step <= count)
-                   {
-                       i = 0;
-                       while (i < count - step)
-                       {
-                           ////////////////////////////////////////////////////////////////////////
-                           //merge(step, i, i + step, min(i + step + step, count));
-                           a = i;
-                           b = i + step;
-                           c = (i + step + step) >= count ? count : (i + step + step);
-
-                           for (k = 0; k < step; k++)
-                               leftArray[k] = frags[a + k];
-
-                           j1 = 0;
-                           j2 = 0;
-                           for (k = a; k < c; k++)
-                           {
-                               if (b + j1 >= c || (j2 < step && leftArray[j2].depth > frags[b + j1].depth))
-                                   frags[k] = leftArray[j2++];
-                               else
-                                   frags[k] = frags[b + j1++];
-                           }
-                           ////////////////////////////////////////////////////////////////////////
-                           i += 2 * step;
-                       }
-                       step *= 2;
-                   }
-                   color = vec4(0, 0, 0, 0);
-                   for( int i = count - 1; i >= 0; i--)
-                   {
-                     color = mix(color, frags[i].color, frags[i].color.a);
-                   }
-                   gl_FragColor = color;
+                   gl_FragColor = vec4(0, 0, 0, 0);
                })";
                const std::string fragmentShader2 =
                R"(
@@ -152,7 +125,7 @@ namespace odfaeg {
                #extension GL_ARB_shading_language_420pack : require
                #extension GL_ARB_shader_image_load_store : require
                #extension GL_ARB_shader_storage_buffer_object : require
-               #define MAX_FRAGMENTS 75
+               #define MAX_FRAGMENTS 20
                struct NodeType {
                   vec4 color;
                   float depth;
@@ -206,12 +179,17 @@ namespace odfaeg {
                       step *= 2;
                   }
                   vec4 color = vec4(0, 0, 0, 0);
-                  for( int i = 0; i < count; i++ )
+                  for( int i = count - 1; i >= 0; i--)
                   {
-                    color = mix( color, frags[i].color, frags[i].color.a);
+                    color.rgb = frags[i].color.rgb * frags[i].color.a + color.rgb * (1 - frags[i].color.a);
+                    color.a = frags[i].color.a + color.a * (1 - frags[i].color.a);
+                    //color = mix(frags[i].color, color, frags[i].color.a);
                   }
                   gl_FragColor = color;
                })";
+               if (!initialize.loadFromMemory(simpleVertexShader, initializeSSBO)) {
+                    throw core::Erreur(54, "Failed to load initialize ssbo shader");
+               }
                if (!perPixelLinkedList.loadFromMemory(simpleVertexShader, fragmentShader)) {
                     throw core::Erreur(54, "Failed to load per pixel linked list shader");
                }
@@ -286,6 +264,8 @@ namespace odfaeg {
             frameBuffer.display();*/
         }
         void PerPixelLinkedListRenderComponent::draw(RenderTarget& target, RenderStates states) {
+            states.blendMode = sf::BlendNone;
+            states.shader=&perPixelLinkedList;
             for (unsigned int i = 0; i < m_instances.size(); i++) {
                if (m_instances[i].getAllVertices().getVertexCount() > 0) {
                     if (m_instances[i].getMaterial().getTexture() == nullptr) {
@@ -296,33 +276,31 @@ namespace odfaeg {
                         filterNotOpaque.setParameter("haveTexture", 1.f);
                     }
                     states.texture = m_instances[i].getMaterial().getTexture();
-                    states.shader=&perPixelLinkedList;
-                    states.blendMode = sf::BlendNone;
                     target.draw(m_instances[i].getAllVertices(), states);
                     /*states.shader=&filterNotOpaque;
                     target.draw(m_instances[i].getAllVertices(), states);*/
                 }
             }
-            /*glCheck(glMemoryBarrier( GL_TEXTURE_FETCH_BARRIER_BIT  | GL_SHADER_STORAGE_BARRIER_BIT ));
+            glCheck(glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT));
             glCheck(glFinish());
 
             //glCheck(glTextureBarrier());
 
             states.shader = &perPixelLinkedListP2;
-            states.blendMode = sf::BlendAlpha;*/
+
             //glCheck(glDepthMask(GL_FALSE));
             /*for (unsigned int i = 0; i < m_instances.size(); i++) {
                if (m_instances[i].getAllVertices().getVertexCount() > 0) {
                     target.draw(m_instances[i].getAllVertices(), states);
                }
             }*/
-            /*glCheck(glDepthMask(GL_FALSE));
-            //glCheck(glDepthMask(GL_TRUE));
+
             target.draw(quad, states);
-            glCheck(glDepthMask(GL_TRUE));
-            glCheck(glFinish());*/
+            glCheck(glFinish());
             /*frameBufferSprite.setCenter(target.getView().getPosition());
             target.draw(frameBufferSprite, states);*/
+            glCheck(glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, 0, 0));
+            glCheck(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, 0));
         }
         int  PerPixelLinkedListRenderComponent::getLayer() {
             return getPosition().z;
@@ -333,6 +311,8 @@ namespace odfaeg {
         void PerPixelLinkedListRenderComponent::changeVisibleEntities(Entity* toRemove, Entity* toAdd, EntityManager* em) {
         }
         void PerPixelLinkedListRenderComponent::setView(View view) {
+            math::Vec3f t = view.getPosition() - this->view.getPosition();
+            quad.move(t);
             frameBuffer.setView(view);
             this->view = view;
         }
@@ -386,6 +366,7 @@ namespace odfaeg {
             glDeleteBuffers(1, &atomicBuffer);
             glDeleteBuffers(1, &linkedListBuffer);
             glDeleteBuffers(1, &clearBuf);
+            glDeleteBuffers(1, &clearBuf2);
             glDeleteTextures(1, &headPtrTex);
         }
     }

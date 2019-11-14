@@ -46,7 +46,28 @@ int main(int argv, char* argc[]) {
     ita(b2);
     std::cout<<"b : "<<b2<<std::endl;
     return 0;*/
-
+    /*RenderWindow window(sf::VideoMode(800, 600, 32), "Test ppll", sf::Style::Default, ContextSettings(0, 0, 8, 3, 0));
+    Texture tex;
+    tex.loadFromFile("tilesets/herbe.png");
+    Tile t1 (nullptr, Vec3f(0, 0, 0),Vec3f(100, 50, 0),sf::IntRect(0, 0, 100, 50), sf::Color(255, 0, 0, 150));
+    Tile t2 (nullptr, Vec3f(50, 0, 0),Vec3f(100, 50, 0),sf::IntRect(0, 0, 100, 50), sf::Color(0, 255, 0, 100));
+    Tile t3 (nullptr, Vec3f(25, 25, 0),Vec3f(100, 50, 0),sf::IntRect(0, 0, 100, 50), sf::Color(0, 0, 255, 50));
+    PerPixelLinkedListRenderComponent ppll(window, 0, "E_TILE", ContextSettings(24, 0, 8, 3, 0));
+    std::vector<Entity*> entities = {&t1, &t2, &t3};
+    ppll.loadEntitiesOnComponent(entities);
+    ppll.drawNextFrame();
+    while (window.isOpen()) {
+        IEvent event;
+        while(window.pollEvent(event)) {
+            if (event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_CLOSED) {
+                window.close();
+            }
+        }
+        window.clear();
+        ppll.clear();
+        window.draw(ppll);
+        window.display();
+    }*/
     EXPORT_CLASS_GUID(BoundingVolumeBoundingBox, BoundingVolume, BoundingBox)
     EXPORT_CLASS_GUID(EntityTile, Entity, Tile)
     EXPORT_CLASS_GUID(EntityTile, Entity, BigTile)
@@ -58,6 +79,7 @@ int main(int argv, char* argc[]) {
     EXPORT_CLASS_GUID(EntityMesh, Entity, Mesh)
     MyAppli app(sf::VideoMode(800, 600, 32), "Test odfaeg");
     return app.exec();
+
     /*TcpSocket clientTCP;
     bool running = false;
     if(clientTCP.connect(IpAddress::LocalHost, 10000) != Socket::Done) {
@@ -105,32 +127,6 @@ int main(int argv, char* argc[]) {
                 }
             }
         }
-    }
-    return 0;*/
-    /*Window window(sf::VideoMode(800, 600), "test oit", sf::Style::Default, ContextSettings(24, 8, 4, 3, 0));
-     GLuint maxNodes = 20 * 800 * 600;
-    GLint nodeSize = 5 * sizeof(GLfloat) + sizeof(GLuint);
-    GLuint atomicBuffer, linkedListBuffer, headPtrTex, clearBuf;
-    glGenBuffers(1, &atomicBuffer);
-    glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, atomicBuffer);
-    glBufferData(GL_ATOMIC_COUNTER_BUFFER, sizeof(GLuint), NULL, GL_DYNAMIC_DRAW);
-    glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, 0);
-    glGenBuffers(1, &linkedListBuffer);
-    glBindBuffer(GL_SHADER_STORAGE_BUFFER, linkedListBuffer);
-    glBufferData(GL_SHADER_STORAGE_BUFFER, maxNodes * nodeSize, NULL, GL_DYNAMIC_DRAW);
-    glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-    glGenTextures(1, &headPtrTex);
-    glBindTexture(GL_TEXTURE_2D, headPtrTex);
-    glTexStorage2D(GL_TEXTURE_2D, 1, GL_R32UI, 800, 600);
-    glBindImageTexture(0, headPtrTex, 0, GL_FALSE, 0, GL_READ_WRITE, GL_R32UI);
-    glBindTexture(GL_TEXTURE_2D, 0);
-    std::vector<GLuint> headPtrClearBuf(800*600, 0);
-    glGenBuffers(1, &clearBuf);
-    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, clearBuf);
-    glBufferData(GL_PIXEL_UNPACK_BUFFER, headPtrClearBuf.size() * sizeof(GLuint),
-            &headPtrClearBuf[0], GL_STATIC_COPY);
-    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);*/
+    }*/
     return 0;
 }

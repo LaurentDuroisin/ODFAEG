@@ -107,7 +107,16 @@ namespace sorrok {
             fire->addFrame(fire2);
             fire->addFrame(fire3);
             World::addEntity(fire);
-        //}
+            /*Anim* pnj = new Anim(0.1f, Vec3f (200, 100, 150), Vec3f(100, 100, 0), 0);
+            Tile* pnjt1 = new Tile(nullptr,Vec3f(200, 100, 150),Vec3f(100, 100, 0),sf::IntRect(0, 0, 150, 200));
+            g2d::Decor* pnjdec = new g2d::Decor(pnjt1, &g2D::AmbientLight::getAmbientLight());
+            pnjdec->setShadowCenter(Vec3f(0, 200, 0));
+            pnj->addFrame(pnjdec);*/
+            Quest quest("Quête du débutant", "Tuer 10 monstres");
+            Pnj* pnj = new Pnj();
+            pnj->addQuest(quest);
+            pnj->setCenter(Vec3f (200, 200, 150));
+            World::addEntity(pnj);       //}
 
         //PonctualLight* light = new PonctualLight(Vec2f(50, 150),100,50,0,200,sf::Color(255,255,0),16,0);
         //World::addEntity(light);

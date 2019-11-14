@@ -9,10 +9,10 @@ namespace sorrok {
         return task;
     }
     void Quest::addItemToCollect(std::string name, unsigned int nb) {
-        itemsToCollect.insert(std::pair(name, std::pair(nb, 0)));
+        itemsToCollect.insert(std::make_pair(name, std::make_pair(nb, 0)));
     }
     void Quest::addMonsterToKill(std::string name, unsigned int nb) {
-        monstersToKill.insert(std::pair(name, std::pair(nb, 0));
+        monstersToKill.insert(std::make_pair(name, std::make_pair(nb, 0)));
     }
     void Quest::addItemCollectedProgress(std::string name) {
         std::map<std::string, std::pair<unsigned int, unsigned int>>::iterator it;

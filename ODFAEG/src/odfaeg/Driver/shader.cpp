@@ -6,15 +6,10 @@
 #include <unistd.h>
 #include <xf86drm.h>
 #include <xf86drmMode.h>
+#include <sys/ioctl.h>
 namespace odfaeg {
     namespace driver {
         Shader::Shader() {
-
-        }
-        void Shader::compile(std::string sroucecode) {
-
-        }
-        void Shader::link() {
             int fd;
             int i, j;
             uint8_t color;
@@ -39,14 +34,24 @@ namespace odfaeg {
             /* FIXME: use first drm_dev */
             dev = dev_head;
             drm_setup_fb(fd, dev);
+            parser = CppToGppParser(dev->buf);
+        }
+        void Shader::compile(std::string sourcecode) {
+            parseCppToGpp(sourcecode);
+        }
+        void Shader::link() {
+
 
             /* draw something */
-            for (i = 0; i < byteCode.size(); i++) {
+            for (i = 0; i < byteCode.dataSize(); i++) {
                 *(dev->buf + i) = (uint32_t) byteCode[i];
             }
             /* destroy */
         }
         void Shader::run() {
+            for (unsigned int i = 0; i < byteCode.size(); i++) {
+                ioctl(fd, byteCode[i]);
+            }
         }
         void Shader::fatal (char* str) {
             std::cerr<<str<<std::endl;
@@ -177,4 +182,5 @@ namespace odfaeg {
 
             close(fd);
         }
+    }
 }

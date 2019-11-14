@@ -143,7 +143,7 @@ namespace odfaeg {
             states.blendMode = sf::BlendAlpha;
             for (unsigned int i = 0; i < m_instances.size(); i++) {
                 if (m_instances[i].getAllVertices().getVertexCount() > 0) {
-                    //m_instances[i].sortVertexArrays(view);
+                    m_instances[i].sortVertexArrays(view);
                     states.texture = m_instances[i].getMaterial().getTexture();
                     //states.shader = &instancedRenderingShader;
                     /*for (unsigned int j = 0; j < m_instances[i].getAllIndexes().size(); j++)

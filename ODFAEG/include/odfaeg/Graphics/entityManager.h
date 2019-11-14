@@ -134,7 +134,7 @@ namespace odfaeg {
                 entity->getTransform().setTransformId(nbTransforms);
                 nbTransforms++;
             }
-	    virtual bool containsVisibleEntity(Entity* ae) = 0;
+            virtual bool containsVisibleEntity(Entity* ae) = 0;
             /**
             * \fn bool containsAnimatedVisibleEntity(AnimatedEntity *ae)
             * \brief virtual function to redefine to check if the entity manager contains an animated entity.
