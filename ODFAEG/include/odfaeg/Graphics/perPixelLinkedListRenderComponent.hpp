@@ -93,6 +93,7 @@ namespace odfaeg {
             bool update;
             unsigned int atomicBuffer, linkedListBuffer, clearBuf, clearBuf2, clearBuf3, pass1Index, pass2Index, headPtrTex, colorTex, depthTex;
             Sprite frameBufferSprite;
+            static int nb_created;
         };
     }
 }

@@ -5,6 +5,7 @@
 #include "../../../include/odfaeg/Physics/particuleSystem.h"
 namespace odfaeg {
     namespace graphic {
+        int PerPixelLinkedListRenderComponent::nb_created = -1;
         PerPixelLinkedListRenderComponent::PerPixelLinkedListRenderComponent(RenderWindow& window, int layer, std::string expression, window::ContextSettings settings) :
             HeavyComponent(window, math::Vec3f(window.getView().getPosition().x, window.getView().getPosition().y, layer),
                           math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0),
@@ -15,10 +16,11 @@ namespace odfaeg {
             quad.move(math::Vec3f(-window.getView().getSize().x * 0.5f, -window.getView().getSize().y * 0.5f, 0));
             GLuint maxNodes = 20 * window.getView().getSize().x * window.getView().getSize().y;
             GLint nodeSize = 5 * sizeof(GLfloat) + sizeof(GLuint);
-            /*frameBuffer.create(window.getView().getSize().x, window.getView().getSize().y, settings);
+            nb_created++;
+            frameBuffer.create(window.getView().getSize().x, window.getView().getSize().y, settings);
             frameBufferSprite = Sprite(frameBuffer.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), sf::IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
-            frameBuffer.setView(view);*/
-            window.setActive();
+            frameBuffer.setView(view);
+            //window.setActive();
             glCheck(glGenBuffers(1, &atomicBuffer));
             glCheck(glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, atomicBuffer));
             glCheck(glBufferData(GL_ATOMIC_COUNTER_BUFFER, sizeof(GLuint), nullptr, GL_DYNAMIC_DRAW));
@@ -183,7 +185,6 @@ namespace odfaeg {
                   {
                     color.rgb = frags[i].color.rgb * frags[i].color.a + color.rgb * (1 - frags[i].color.a);
                     color.a = frags[i].color.a + color.a * (1 - frags[i].color.a);
-                    //color = mix(frags[i].color, color, frags[i].color.a);
                   }
                   gl_FragColor = color;
                })";
@@ -208,9 +209,9 @@ namespace odfaeg {
             backgroundColor = color;
         }
         void PerPixelLinkedListRenderComponent::clear() {
-            /*frameBuffer.setActive();
-            frameBuffer.clear(backgroundColor);*/
-            getWindow().setActive();
+            frameBuffer.setActive();
+            frameBuffer.clear(backgroundColor);
+            //getWindow().setActive();
             GLuint zero = 0;
             glCheck(glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, atomicBuffer));
             glCheck(glBufferSubData(GL_ATOMIC_COUNTER_BUFFER, 0, sizeof(GLuint), &zero));
@@ -220,13 +221,12 @@ namespace odfaeg {
             glCheck(glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, view.getSize().x, view.getSize().y, GL_RED_INTEGER,
             GL_UNSIGNED_INT, NULL));
             glCheck(glBindTexture(GL_TEXTURE_2D, 0));
-            //frameBuffer.resetGLStates();
-            getWindow().resetGLStates();
-            glCheck(glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, 0, atomicBuffer));
-            glCheck(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, linkedListBuffer));
+            frameBuffer.resetGLStates();
+            //getWindow().resetGLStates();
+            glCheck(glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, nb_created, atomicBuffer));
+            glCheck(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, nb_created, linkedListBuffer));
         }
         void PerPixelLinkedListRenderComponent::drawNextFrame() {
-            /*frameBuffer.setActive();
             currentStates.blendMode = sf::BlendNone;
             currentStates.shader=&perPixelLinkedList;
 
@@ -240,31 +240,28 @@ namespace odfaeg {
                     currentStates.texture = m_instances[i].getMaterial().getTexture();
                     frameBuffer.draw(m_instances[i].getAllVertices(), currentStates);
                 }
-            }*/
-            /*glCheck(glFinish());
-            glCheck(glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT*/
+            }
+            glCheck(glFinish());
+            glCheck(glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT));
 
-            //glCheck(glTextureBarrier());
-
-
-            /*glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
 
             currentStates.shader = &perPixelLinkedListP2;
-            for (unsigned int i = 0; i < m_instances.size(); i++) {
+            /*for (unsigned int i = 0; i < m_instances.size(); i++) {
                if (m_instances[i].getAllVertices().getVertexCount() > 0) {
                     frameBuffer.draw(m_instances[i].getAllVertices(), currentStates);
                }
 
-            //glCheck(glDepthMask(GL_TRUE));
-            //currentStates.shader = nullptr;
+            //glCheck(glDepthMask(GL_TRUE));*/
+
             //quad.setCenter(frameBuffer.getView().getPosition());
-            frameBuffer.draw(quad, currentStates);*/
-            /*glCheck(glFinish());
-            frameBuffer.display();*/
+            frameBuffer.draw(quad, currentStates);
+            glCheck(glFinish());
+            frameBuffer.display();
         }
         void PerPixelLinkedListRenderComponent::draw(RenderTarget& target, RenderStates states) {
-            states.blendMode = sf::BlendNone;
+            /*states.blendMode = sf::BlendNone;
             states.shader=&perPixelLinkedList;
             for (unsigned int i = 0; i < m_instances.size(); i++) {
                if (m_instances[i].getAllVertices().getVertexCount() > 0) {
@@ -277,8 +274,7 @@ namespace odfaeg {
                     }
                     states.texture = m_instances[i].getMaterial().getTexture();
                     target.draw(m_instances[i].getAllVertices(), states);
-                    /*states.shader=&filterNotOpaque;
-                    target.draw(m_instances[i].getAllVertices(), states);*/
+
                 }
             }
             glCheck(glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT));
@@ -295,10 +291,10 @@ namespace odfaeg {
                }
             }*/
 
-            target.draw(quad, states);
-            glCheck(glFinish());
-            /*frameBufferSprite.setCenter(target.getView().getPosition());
-            target.draw(frameBufferSprite, states);*/
+            /*target.draw(quad, states);
+            glCheck(glFinish());*/
+            frameBufferSprite.setCenter(target.getView().getPosition());
+            target.draw(frameBufferSprite, states);
             glCheck(glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, 0, 0));
             glCheck(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, 0));
         }
