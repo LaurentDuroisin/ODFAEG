@@ -314,7 +314,7 @@ namespace sorrok {
         World::addEntity(light2);
         ZSortingRenderComponent *frc1 = new ZSortingRenderComponent(getRenderWindow(),0, "",*theMap);
         ShadowRenderComponent *frc2 = new ShadowRenderComponent(getRenderWindow(),1, "");
-        PerPixelLinkedListRenderComponent* frc3 = new PerPixelLinkedListRenderComponent(getRenderWindow(),2,"", ContextSettings(24, 0, 0, 3, 0));
+        PerPixelLinkedListRenderComponent* frc3 = new PerPixelLinkedListRenderComponent(getRenderWindow(),2,"", ContextSettings(0, 0, 0, 3, 0));
         LightRenderComponent* frc4 = new LightRenderComponent(getRenderWindow(),3,"");
         /*View view = getView();
         frc1->setView(view);*/
