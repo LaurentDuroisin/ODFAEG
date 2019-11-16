@@ -268,7 +268,7 @@ namespace odfaeg {
             */
             template <typename T,
                   class... D,
-                  class = typename std::enable_if<std::is_fundamental<T>::value>::type,
+                  class = typename std::enable_if<!std::is_fundamental<T>::value>::type,
                   class = typename std::enable_if<std::is_same<T, std::string>::value>::type,
                   class = typename std::enable_if<!std::is_enum<T>::value>::type>
             void operator() (T* data, D...) {

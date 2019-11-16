@@ -996,7 +996,13 @@ namespace odfaeg {
                 if (type < visibleEntities.size()) {
                     vector<Entity*> visibleEntitiesType = visibleEntities[type];
                     for (unsigned int i = 0; i < visibleEntitiesType.size(); i++) {
-                        if (visibleEntitiesType[i] != nullptr) {
+                        bool found = false;
+                        for (unsigned int j = 0; j < types.size(); j++) {
+                            if (visibleEntitiesType[i] != nullptr && visibleEntitiesType[i]->getRootType() == types[j]) {
+                                found = true;
+                            }
+                        }
+                        if (visibleEntitiesType[i] != nullptr && found) {
                             BoneAnimation* ba = dynamic_cast<BoneAnimation*>(visibleEntitiesType[i]->getRootEntity());
                             if (ba != nullptr) {
                                 if (ba->getBoneIndex() == visibleEntitiesType[i]->getBoneIndex()) {

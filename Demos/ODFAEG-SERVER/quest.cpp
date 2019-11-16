@@ -1,5 +1,7 @@
 #include "quest.hpp"
 namespace sorrok {
+    Quest::Quest() {
+    }
     Quest::Quest(std::string name, std::string task) : name(name), task(task) {
     }
     std::string Quest::getName() {
@@ -8,22 +10,22 @@ namespace sorrok {
     std::string Quest::getTask() {
         return task;
     }
-    void Quest::addItemToCollect(std::string name, unsigned int nb) {
-        itemsToCollect.insert(std::make_pair(name, std::make_pair(nb, 0)));
+    void Quest::addItemToCollect(unsigned int id, unsigned int nb) {
+        itemsToCollect.insert(std::make_pair(id, std::make_pair(nb, 0)));
     }
-    void Quest::addMonsterToKill(std::string name, unsigned int nb) {
-        monstersToKill.insert(std::make_pair(name, std::make_pair(nb, 0)));
+    void Quest::addMonsterToKill(unsigned int id, unsigned int nb) {
+        monstersToKill.insert(std::make_pair(id, std::make_pair(nb, 0)));
     }
-    void Quest::addItemCollectedProgress(std::string name) {
-        std::map<std::string, std::pair<unsigned int, unsigned int>>::iterator it;
-        it = itemsToCollect.find(name);
+    void Quest::addItemCollectedProgress(unsigned int id) {
+        std::map<unsigned int, std::pair<unsigned int, unsigned int>>::iterator it;
+        it = itemsToCollect.find(id);
         if (it != itemsToCollect.end() && it->second.second < it->second.first) {
             it->second.second++;
         }
     }
-    void Quest::addMonsterToKillProgress(std::string name) {
-        std::map<std::string, std::pair<unsigned int, unsigned int>>::iterator it;
-        it = monstersToKill.find(name);
+    void Quest::addMonsterToKillProgress(unsigned int id) {
+        std::map<unsigned int, std::pair<unsigned int, unsigned int>>::iterator it;
+        it = monstersToKill.find(id);
         if (it != monstersToKill.end() && it->second.second < it->second.first) {
             it->second.second++;
         }

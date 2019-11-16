@@ -29,6 +29,7 @@ namespace odfaeg {
                 this->mini = mini;
             }
             void ProgressBar::setValue(int value) {
+                std::cout<<"value : "<<value<<std::endl;
                 int sizeX = getSize().x / (maxi - mini) * value;
                 std::cout<<" size x : "<<sizeX<<std::endl;
                 bar.setSize(math::Vec3f(sizeX, bar.getSize().y, bar.getSize().z));

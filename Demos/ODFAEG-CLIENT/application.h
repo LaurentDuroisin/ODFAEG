@@ -42,6 +42,7 @@
 #include <unordered_map>
 #include "gameAction.hpp"
 #include "itemAction.hpp"
+#include "pnj.hpp"
 namespace sorrok {
     class MyAppli : public odfaeg::core::Application,
                     public odfaeg::graphic::gui::ActionListener {

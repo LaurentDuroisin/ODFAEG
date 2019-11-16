@@ -21,7 +21,7 @@ namespace sorrok {
         criticalAddDamagesRate = 10;
         defMin = 2;
         defMax = 4;
-        attackSpeed = 1.f;
+        attackSpeed = 5.f;
         attackMin = 5;
         attackMax = 10;
         fightingMode = attacking = attacked = agressif = false;

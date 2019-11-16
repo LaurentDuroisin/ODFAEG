@@ -115,7 +115,7 @@ namespace sorrok {
             Quest quest("Quête du débutant", "Tuer 10 monstres");
             Pnj* pnj = new Pnj();
             pnj->addQuest(quest);
-            pnj->setCenter(Vec3f (200, 200, 150));
+            pnj->setCenter(Vec3f (300, 300, 350));
             World::addEntity(pnj);       //}
 
         //PonctualLight* light = new PonctualLight(Vec2f(50, 150),100,50,0,200,sf::Color(255,255,0),16,0);
@@ -175,6 +175,13 @@ namespace sorrok {
                 oa(monster);
                 packet.clear();
                 packet<<"MONSTERSINFOS"+oss.str();
+                user->sendTcpPacket(packet);
+                oss.str("");
+                oa.clear();
+                Caracter* pnj = static_cast<Caracter*>(World::getEntities("E_PNJ")[0]);
+                oa(pnj);
+                packet.clear();
+                packet<<"PNJINFOS"+oss.str();
                 user->sendTcpPacket(packet);
             } else if (request == "MOVEFROMKEYBOARD") {
                 int id = conversionStringInt(infos[1]);

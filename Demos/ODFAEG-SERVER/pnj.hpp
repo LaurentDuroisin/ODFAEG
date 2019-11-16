@@ -10,6 +10,11 @@ namespace sorrok {
             void addQuest(Quest quest);
             bool isMovingFromKeyboard();
             bool isMonster();
+            template <typename Archive>
+            void vtserialize(Archive &ar) {
+                Caracter::vtserialize(ar);
+                ar(quests);
+            }
         private :
             std::vector<Quest> quests;
     };

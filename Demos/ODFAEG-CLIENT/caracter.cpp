@@ -20,7 +20,7 @@ namespace sorrok {
         this->life = 100;
         this->maxLife = 100;
         range = 100;
-        attackSpeed = 1.f;
+        attackSpeed = 5.f;
         attackMin = 5;
         attackMax = 10;
         fightingMode = attacking;
