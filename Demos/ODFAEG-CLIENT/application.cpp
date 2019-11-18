@@ -565,66 +565,65 @@ namespace sorrok {
             int id = conversionStringInt(infos[0]);
             ping = conversionStringLong(infos[1]);
             Caracter* caracter = static_cast<Caracter*>(World::getEntity(id));
-            if (caracter != nullptr) {
-                Vec3f actualPos = Vec3f(caracter->getCenter().x, caracter->getCenter().y, 0);
-                Vec3f newPos (conversionStringFloat(infos[2]), conversionStringFloat(infos[3]), conversionStringFloat(infos[4]));
 
-                sf::Int64 last_cli_time = conversionStringLong(infos[5]);
-                sf::Int64 elapsedTime = Application::getTimeClk().getElapsedTime().asMicroseconds() - last_cli_time;
-                bool isMoving = conversionStringInt(infos[6]);
-                bool isInFightingMode = conversionStringInt(infos[7]);
-                bool isAttacking = conversionStringInt(infos[8]);
-                bool isAlive = conversionStringInt(infos[9]);
-                int life = conversionStringInt(infos[10]);
-                if (last_cli_time > caracter->getAttribute("isMoving").getValue<sf::Int64>()) {
-                    caracter->setMoving(isMoving);
-                }
-                if (last_cli_time > caracter->getAttribute("isInFightingMode").getValue<sf::Int64>()) {
-                    caracter->setFightingMode(isInFightingMode);
-                }
-                if(last_cli_time > caracter->getAttribute("isAttacking").getValue<sf::Int64>()) {
-                    caracter->setAttacking(isAttacking);
-                }
-                if (last_cli_time > caracter->getAttribute("isAlive").getValue<sf::Int64>()) {
-                    caracter->setAlive(isAlive);
-                }
-                if (last_cli_time > caracter->getAttribute("life").getValue<sf::Int64>()) {
-                    caracter->setLife(life);
-                }
-                if (!caracter->isMoving() && static_cast<Hero*>(caracter)->isMovingFromKeyboard()) {
-                    static_cast<Hero*>(caracter)->setIsMovingFromKeyboard(false);
-                }
-                if (static_cast<Hero*> (caracter) && static_cast<Hero*>(caracter)->isMovingFromKeyboard() && caracter->isMoving()) {
-                    newPos = newPos + Vec3f(caracter->getDir().x, caracter->getDir().y, 0) * caracter->getSpeed() * elapsedTime;
-                } else if (caracter->isMoving()) {
-                    newPos = Computer::getPosOnPathFromTime(newPos, caracter->getPath(),elapsedTime, caracter->getSpeed());
-                }
-                Vec3f d = newPos - actualPos;
+            Vec3f actualPos = Vec3f(caracter->getCenter().x, caracter->getCenter().y, 0);
+            Vec3f newPos (conversionStringFloat(infos[2]), conversionStringFloat(infos[3]), conversionStringFloat(infos[4]));
 
-                if (id == hero->getId()) {
-                    for (unsigned int i = 0; i < getRenderComponentManager().getNbComponents(); i++) {
-                        if (getRenderComponentManager().getRenderComponent(i) != nullptr) {
-                            View view = getRenderComponentManager().getRenderComponent(i)->getView();
-                            view.move(d.x, d.y, d.y);
-                            getRenderComponentManager().getRenderComponent(i)->setView(view);
-                        }
-                    }
-                    getView().move (d.x, d.y, d.y);
-                }
-                World::moveEntity(caracter, d.x, d.y, d.y);
-                World::update();
-                caracter->interpolation.first = Vec3f(caracter->getCenter().x, caracter->getCenter().y, caracter->getCenter().z);
-                if (caracter->isMoving()) {
-                    if (caracter->isMovingFromKeyboard()) {
-                        caracter->interpolation.second = caracter->interpolation.first + Vec3f(caracter->getDir().x,caracter->getDir().y,0)  * caracter->getSpeed() * (ping + timeBtwnTwoReq.asMicroseconds());
-                    } else {
-                        caracter->interpolation.second = Computer::getPosOnPathFromTime(caracter->interpolation.first, caracter->getPath(),ping + timeBtwnTwoReq.asMicroseconds(),caracter->getSpeed());
-                    }
-                } else {
-                    caracter->interpolation.second = caracter->interpolation.first;
-                }
-                caracter->getClkTransfertTime().restart();
+            sf::Int64 last_cli_time = conversionStringLong(infos[5]);
+            sf::Int64 elapsedTime = Application::getTimeClk().getElapsedTime().asMicroseconds() - last_cli_time;
+            bool isMoving = conversionStringInt(infos[6]);
+            bool isInFightingMode = conversionStringInt(infos[7]);
+            bool isAttacking = conversionStringInt(infos[8]);
+            bool isAlive = conversionStringInt(infos[9]);
+            int life = conversionStringInt(infos[10]);
+            if (last_cli_time > caracter->getAttribute("isMoving").getValue<sf::Int64>()) {
+                caracter->setMoving(isMoving);
             }
+            if (last_cli_time > caracter->getAttribute("isInFightingMode").getValue<sf::Int64>()) {
+                caracter->setFightingMode(isInFightingMode);
+            }
+            if(last_cli_time > caracter->getAttribute("isAttacking").getValue<sf::Int64>()) {
+                caracter->setAttacking(isAttacking);
+            }
+            if (last_cli_time > caracter->getAttribute("isAlive").getValue<sf::Int64>()) {
+                caracter->setAlive(isAlive);
+            }
+            if (last_cli_time > caracter->getAttribute("life").getValue<sf::Int64>()) {
+                caracter->setLife(life);
+            }
+            if (!caracter->isMoving() && static_cast<Hero*>(caracter)->isMovingFromKeyboard()) {
+                static_cast<Hero*>(caracter)->setIsMovingFromKeyboard(false);
+            }
+            if (static_cast<Hero*> (caracter) && static_cast<Hero*>(caracter)->isMovingFromKeyboard() && caracter->isMoving()) {
+                newPos = newPos + Vec3f(caracter->getDir().x, caracter->getDir().y, 0) * caracter->getSpeed() * elapsedTime;
+            } else if (caracter->isMoving()) {
+                newPos = Computer::getPosOnPathFromTime(newPos, caracter->getPath(),elapsedTime, caracter->getSpeed());
+            }
+            Vec3f d = newPos - actualPos;
+
+            if (id == hero->getId()) {
+                for (unsigned int i = 0; i < getRenderComponentManager().getNbComponents(); i++) {
+                    if (getRenderComponentManager().getRenderComponent(i) != nullptr) {
+                        View view = getRenderComponentManager().getRenderComponent(i)->getView();
+                        view.move(d.x, d.y, d.y);
+                        getRenderComponentManager().getRenderComponent(i)->setView(view);
+                    }
+                }
+                getView().move (d.x, d.y, d.y);
+            }
+            World::moveEntity(caracter, d.x, d.y, d.y);
+            World::update();
+            caracter->interpolation.first = Vec3f(caracter->getCenter().x, caracter->getCenter().y, caracter->getCenter().z);
+            if (caracter->isMoving()) {
+                if (caracter->isMovingFromKeyboard()) {
+                    caracter->interpolation.second = caracter->interpolation.first + Vec3f(caracter->getDir().x,caracter->getDir().y,0)  * caracter->getSpeed() * (ping + timeBtwnTwoReq.asMicroseconds());
+                } else {
+                    caracter->interpolation.second = Computer::getPosOnPathFromTime(caracter->interpolation.first, caracter->getPath(),ping + timeBtwnTwoReq.asMicroseconds(),caracter->getSpeed());
+                }
+            } else {
+                caracter->interpolation.second = caracter->interpolation.first;
+            }
+            caracter->getClkTransfertTime().restart();
        }
        if (Network::getResponse("DEATH", response)) {
            int id = conversionStringInt(response);
@@ -682,7 +681,6 @@ namespace sorrok {
             wIdentification->setVisible(false);
             idButton->setEventContextActivated(false);
             invButton->setEventContextActivated(false);
-            setEventContextActivated(true);
             SymEncPacket packet;
             packet<<"GETMAPINFOS";
             Network::sendTcpPacket(packet);
@@ -910,6 +908,8 @@ namespace sorrok {
             text = cache.resourceManager<Texture, std::string>("TextureManager").getResourceByPath(path);
             textRectX = 0, textRectY = 0, textRectWidth = 50, textRectHeight = 100;
             textWidth = text->getSize().x;
+            tmpCenter = pnj->getCenter();
+            pnj->setCenter(Vec3f(0, 0, 0));
             for (unsigned int i = 0; i < 1; i++) {
                 Anim* animation = new Anim(0.1f, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), 0);
                 for (unsigned int j = 0; j < 8; j++) {
@@ -930,6 +930,7 @@ namespace sorrok {
                 pnj->addAnimation(animation);
                 au->addAnim(animation);
             }
+            pnj->setCenter(tmpCenter);
             World::addEntity(pnj);
             hero->setXpHpBar(xpBar, hpBar);
             monster->setXpHpBar(nullptr, fcHpBar);
@@ -940,6 +941,7 @@ namespace sorrok {
             Network::sendTcpPacket(packet);
             received = false;
             World::update();
+            setEventContextActivated(true);
        }
        if (Network::getResponse("ITEMS", response)) {
             std::istringstream iss(response);

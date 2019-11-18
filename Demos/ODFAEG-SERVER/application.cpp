@@ -115,7 +115,7 @@ namespace sorrok {
             Quest quest("Quête du débutant", "Tuer 10 monstres");
             Pnj* pnj = new Pnj();
             pnj->addQuest(quest);
-            pnj->setCenter(Vec3f (300, 300, 350));
+            pnj->setCenter(Vec3f (300, 300, 300));
             World::addEntity(pnj);       //}
 
         //PonctualLight* light = new PonctualLight(Vec2f(50, 150),100,50,0,200,sf::Color(255,255,0),16,0);

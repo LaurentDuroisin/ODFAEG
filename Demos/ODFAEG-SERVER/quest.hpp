@@ -9,12 +9,12 @@ namespace sorrok {
             Quest (std::string name, std::string task);
             std::string getName();
             std::string getTask();
-            void addItemToCollect(unsigned int id, unsigned int nb);
-            void addMonsterToKill(unsigned int id, unsigned int nb);
+            void addItemToCollect(std::string, unsigned int nb);
+            void addMonsterToKill(std::string, unsigned int nb);
             bool isMonsterToKillInList(std::string name);
             bool isItemToCollectInList(std::string name);
-            void addItemCollectedProgress(unsigned int id);
-            void addMonsterToKillProgress(unsigned int id);
+            void addItemCollectedProgress(std::string id);
+            void addMonsterToKillProgress(std::string id);
             template <typename Archive>
             void serialize (Archive &ar) {
                 ar(name);
@@ -25,8 +25,8 @@ namespace sorrok {
         private :
             std::string name;
             std::string task;
-            std::map<unsigned int, std::pair<unsigned int, unsigned int>> itemsToCollect;
-            std::map<unsigned int, std::pair<unsigned int, unsigned int>> monstersToKill;
+            std::map<std::string, std::pair<unsigned int, unsigned int>> itemsToCollect;
+            std::map<std::string, std::pair<unsigned int, unsigned int>> monstersToKill;
     };
 }
 #endif

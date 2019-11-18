@@ -237,7 +237,7 @@ namespace odfaeg {
             template <typename T,
                   class... D,
                   class = typename std::enable_if<!std::is_fundamental<T>::value>::type,
-                  class = typename std::enable_if<std::is_same<T, std::string>::value>::type,
+                  class = typename std::enable_if<std::is_same<T, std::string>::value || std::is_same<T, const std::string>::value>::type,
                   class = typename std::enable_if<!std::is_enum<T>::value>::type>
             void operator() (T& data, D...) {
                 std::ostringstream oss;
@@ -307,7 +307,7 @@ namespace odfaeg {
             template <class O,
                       class... D,
                       class = typename std::enable_if<!std::is_fundamental<O>::value>::type,
-                      class = typename std::enable_if<!std::is_same<O, std::string>::value && !std::is_pointer<O>::value>::type,
+                      class = typename std::enable_if<!std::is_same<O, std::string>::value && !std::is_same<O, const std::string>::value && !std::is_pointer<O>::value>::type,
                       class = typename std::enable_if<!has_typedef_key<O>::value>::type,
                       class = typename std::enable_if<!std::is_enum<O>::value>::type>
             void operator() (O& object, D...) {
