@@ -107,16 +107,7 @@ namespace sorrok {
             fire->addFrame(fire2);
             fire->addFrame(fire3);
             World::addEntity(fire);
-            /*Anim* pnj = new Anim(0.1f, Vec3f (200, 100, 150), Vec3f(100, 100, 0), 0);
-            Tile* pnjt1 = new Tile(nullptr,Vec3f(200, 100, 150),Vec3f(100, 100, 0),sf::IntRect(0, 0, 150, 200));
-            g2d::Decor* pnjdec = new g2d::Decor(pnjt1, &g2D::AmbientLight::getAmbientLight());
-            pnjdec->setShadowCenter(Vec3f(0, 200, 0));
-            pnj->addFrame(pnjdec);*/
-            Quest quest("Quête du débutant", "Tuer 10 monstres");
-            Pnj* pnj = new Pnj();
-            pnj->addQuest(quest);
-            pnj->setCenter(Vec3f (300, 300, 300));
-            World::addEntity(pnj);       //}
+                  //}
 
         //PonctualLight* light = new PonctualLight(Vec2f(50, 150),100,50,0,200,sf::Color(255,255,0),16,0);
         //World::addEntity(light);
@@ -143,6 +134,12 @@ namespace sorrok {
         tmpPosition = pos;
         monster->setCenter(pos);
         World::addEntity(monster);
+        Quest quest("Quête du débutant", "Tuer 10 ogres");
+        quest.addMonsterToKill(monster->getName(), 10);
+        Pnj* pnj = new Pnj();
+        pnj->addQuest(quest);
+        pnj->setCenter(Vec3f (300, 300, 300));
+            World::addEntity(pnj);
         std::cout<<"server is ready!"<<std::endl;
     }
     void MyAppli::onExec () {
@@ -349,7 +346,6 @@ namespace sorrok {
                 user->sendTcpPacket(packet);
                 std::cout<<"connect"<<std::endl;
                 caracter = new Hero(user, "Sorrok", "Nagi", "M", "Map test", "Brain", "Green", "White","Normal","Novice", 1);
-
                 BoundingVolume* bb2 = new BoundingBox(caracter->getGlobalBounds().getPosition().x, caracter->getGlobalBounds().getPosition().y + caracter->getGlobalBounds().getSize().y * 0.4f, 0,
                 caracter->getGlobalBounds().getSize().x, caracter->getGlobalBounds().getSize().y * 0.25f, 0);
                 caracter->setCollisionVolume(bb2);
@@ -496,7 +492,7 @@ namespace sorrok {
                                     int atk = 0;
                                     if (critical <= caracter->getCriticalChanceRate()) {
                                         atk = Math::random(caracter->getAttackMin(), caracter->getAttackMax());
-                                        atk += atk * caracter->getCriticalAddDamagesRate();
+                                        atk += atk / 100 * caracter->getCriticalAddDamagesRate();
                                     } else {
                                         atk = Math::random(caracter->getAttackMin(), caracter->getAttackMax());
                                     }
@@ -524,6 +520,8 @@ namespace sorrok {
                             caracter->restartAttackSpeed();
                             int dmg = caracter->getDamages().back();
                             caracter->getDamages().pop_back();
+                            if (!caracter->getFocusedCaracter()->isMonster())
+                                std::cout<<"Time : "<<static_cast<Hero*>(caracter->getFocusedCaracter())->getUser()->getClientTime()<<std::endl;
                             caracter->attackFocusedCaracter(dmg);
                             if (!caracter->getFocusedCaracter()->isAlive()) {
                                 SymEncPacket packet;

@@ -111,6 +111,12 @@ namespace sorrok {
             ar(alive);
             ar(regenHpAmountMin);
             ar(regenHpAmountMax);
+            sf::Int64 i = 0;
+            addAttribute("isAlive"+odfaeg::core::conversionIntString(getId()), i);
+            addAttribute("isMoving"+odfaeg::core::conversionIntString(getId()),i);
+            addAttribute("isInFightingMode"+odfaeg::core::conversionIntString(getId()), i);
+            addAttribute("isAttacking"+odfaeg::core::conversionIntString(getId()), i);
+            addAttribute("life"+odfaeg::core::conversionIntString(getId()), i);
         }
         std::pair<odfaeg::math::Vec2f, odfaeg::math::Vec2f> interpolation;
         void setRegen(std::vector<int> regen);

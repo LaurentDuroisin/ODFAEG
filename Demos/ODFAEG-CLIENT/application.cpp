@@ -576,19 +576,21 @@ namespace sorrok {
             bool isAttacking = conversionStringInt(infos[8]);
             bool isAlive = conversionStringInt(infos[9]);
             int life = conversionStringInt(infos[10]);
-            if (last_cli_time > caracter->getAttribute("isMoving").getValue<sf::Int64>()) {
+            if (last_cli_time > caracter->getAttribute("isMoving"+conversionIntString(id)).getValue<sf::Int64>()) {
                 caracter->setMoving(isMoving);
             }
-            if (last_cli_time > caracter->getAttribute("isInFightingMode").getValue<sf::Int64>()) {
+            if (last_cli_time > caracter->getAttribute("isInFightingMode"+conversionIntString(id)).getValue<sf::Int64>()) {
                 caracter->setFightingMode(isInFightingMode);
             }
-            if(last_cli_time > caracter->getAttribute("isAttacking").getValue<sf::Int64>()) {
+            if(last_cli_time > caracter->getAttribute("isAttacking"+conversionIntString(id)).getValue<sf::Int64>()) {
                 caracter->setAttacking(isAttacking);
             }
-            if (last_cli_time > caracter->getAttribute("isAlive").getValue<sf::Int64>()) {
+            if (last_cli_time > caracter->getAttribute("isAlive"+conversionIntString(id)).getValue<sf::Int64>()) {
                 caracter->setAlive(isAlive);
             }
-            if (last_cli_time > caracter->getAttribute("life").getValue<sf::Int64>()) {
+            if (last_cli_time > caracter->getAttribute("life"+conversionIntString(id)).getValue<sf::Int64>()) {
+                if (!caracter->isMonster())
+                    std::cout<<"set live from server : "<<life<<std::endl;
                 caracter->setLife(life);
             }
             if (!caracter->isMoving() && static_cast<Hero*>(caracter)->isMovingFromKeyboard()) {

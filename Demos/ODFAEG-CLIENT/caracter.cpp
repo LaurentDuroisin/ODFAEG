@@ -32,12 +32,6 @@ namespace sorrok {
         focusedCaracter = nullptr;
         baseAnimIndex = WALKING;
         timeBefLastRespawn = sf::seconds(10.f);
-        sf::Int64 i = 0;
-        addAttribute("isAlive", i);
-        addAttribute("isMoving",i);
-        addAttribute("isInFightingMode", i);
-        addAttribute("isAttacking", i);
-        addAttribute("life", i);
         dmgTransferTime = rgnTransferTime = 0;
     }
     void Caracter::setXpHpBar(ProgressBar* xpBar, ProgressBar* hpBar) {
@@ -94,10 +88,10 @@ namespace sorrok {
     }
     void Caracter::setLife(int life) {
         this->life = life;
-        if (hpBar != nullptr)
-            std::cout<<"life : "<<life<<std::endl;
-        changeAttribute("life", Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
+        changeAttribute("life"+conversionIntString(getId()), Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
         if (hpBar != nullptr) {
+            if (life < 0)
+                std::cout<<"negatif"<<std::endl;
             hpBar->setValue(life);
         }
     }
@@ -120,14 +114,14 @@ namespace sorrok {
         if (attacking != b) {
             this->attacking = b;
             if (attacking) {
-                changeAttribute("isAttacking", Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
+                changeAttribute("isAttacking"+conversionIntString(getId()), Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
                 anims[baseAnimIndex + currentAnimIndex]->stop();
                 anims[baseAnimIndex + currentAnimIndex]->setCurrentFrame(0);
                 baseAnimIndex = ATTACKING;
                 BoneAnimation::setBoneIndex(baseAnimIndex + currentAnimIndex);
                 //World::update();
             } else {
-                changeAttribute("isAttacking", Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
+                changeAttribute("isAttacking"+conversionIntString(getId()), Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
                 anims[baseAnimIndex + currentAnimIndex]->stop();
                 anims[baseAnimIndex + currentAnimIndex]->setCurrentFrame(0);
                 damages.clear();
@@ -139,7 +133,7 @@ namespace sorrok {
             if(getType() == "E_HERO") {
                 std::cout<<"hero death"<<std::endl;
             }
-            changeAttribute("isAlive",Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
+            changeAttribute("isAlive"+conversionIntString(getId()),Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
             anims[baseAnimIndex + currentAnimIndex]->stop();
             anims[baseAnimIndex + currentAnimIndex]->setCurrentFrame(0);
             baseAnimIndex = TIPPING_OVER;
@@ -153,7 +147,7 @@ namespace sorrok {
             if(getType() == "E_HERO") {
                 std::cout<<"hero alive"<<std::endl;
             }
-            changeAttribute("isAlive",Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
+            changeAttribute("isAlive"+conversionIntString(getId()),Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
             baseAnimIndex = WALKING;
             BoneAnimation::setBoneIndex(baseAnimIndex + currentAnimIndex);
             setLife(getMaxLife());
@@ -175,12 +169,12 @@ namespace sorrok {
             regen.clear();
             if (focusedCaracter)
                 focusedCaracter->attacked = b;
-            changeAttribute("isInFightingMode",Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
+            changeAttribute("isInFightingMode"+conversionIntString(getId()),Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
         }
         if (fightingMode == true && b == false) {
             if (focusedCaracter)
                 focusedCaracter->attacked = b;
-            changeAttribute("isInFightingMode",Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
+            changeAttribute("isInFightingMode"+conversionIntString(getId()),Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
             if (!moving && !attacked)
             clockRegenHp.restart();
             if (focusedCaracter) {
@@ -265,7 +259,7 @@ namespace sorrok {
             }
             this->moving = b;
             if (moving) {
-                changeAttribute("isMoving",Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
+                changeAttribute("isMoving"+conversionIntString(getId()),Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
                 anims[baseAnimIndex + currentAnimIndex]->stop();
                 anims[baseAnimIndex + currentAnimIndex]->setCurrentFrame(0);
                 baseAnimIndex = WALKING;
@@ -274,7 +268,7 @@ namespace sorrok {
                 BoneAnimation::setBoneIndex(baseAnimIndex);
                 //World::update();
             } else {
-                changeAttribute("isMoving",Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
+                changeAttribute("isMoving"+conversionIntString(getId()),Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
                 anims[baseAnimIndex + currentAnimIndex]->stop();
                 anims[baseAnimIndex + currentAnimIndex]->setCurrentFrame(0);
             }
@@ -329,6 +323,8 @@ namespace sorrok {
     void Caracter::attackFocusedCaracter(int attack) {
         anims[baseAnimIndex + currentAnimIndex]->play(false);
         focusedCaracter->setLife(focusedCaracter->getLife() - attack);
+        if (!focusedCaracter->isMonster())
+            std::cout<<"time : "<<Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds()<<std::endl<<"focused caracter life : "<<focusedCaracter->getLife()<<std::endl;
         if (focusedCaracter->getLife() <= 0 && focusedCaracter->isAlive()) {
             focusedCaracter->setLife(0);
         }
