@@ -170,6 +170,7 @@ namespace odfaeg {
                     ar(currentFrameChanged);
                     ar(interpolatedFrame);
                 }
+                void onMove(math::Vec3f& t);
                 /**
                 *  \fn ~Anim()
                 *  destructor.

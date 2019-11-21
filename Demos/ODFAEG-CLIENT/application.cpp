@@ -910,7 +910,6 @@ namespace sorrok {
             text = cache.resourceManager<Texture, std::string>("TextureManager").getResourceByPath(path);
             textRectX = 0, textRectY = 0, textRectWidth = 50, textRectHeight = 100;
             textWidth = text->getSize().x;
-            tmpCenter = pnj->getCenter();
             for (unsigned int i = 0; i < 1; i++) {
                 Anim* animation = new Anim(0.1f, Vec3f(275, 250, 0), Vec3f(50, 100, 0), 0);
                 for (unsigned int j = 0; j < 8; j++) {
@@ -932,7 +931,6 @@ namespace sorrok {
                 pnj->addAnimation(animation);
                 au->addAnim(animation);
             }
-            std::cout<<"nb children : "<<pnj->getAnimation(0)->getCurrentFrame()->getChildren().size()<<std::endl;
             World::addEntity(pnj);
             hero->setXpHpBar(xpBar, hpBar);
             monster->setXpHpBar(nullptr, fcHpBar);
@@ -1153,6 +1151,7 @@ namespace sorrok {
         }
     }
     void MyAppli::actionPerformed(gui::Button* item) {
+        //std::cout<<"text : "<<item->getText()<<std::endl;
         if (item->getText() == "Respawn") {
             SymEncPacket packet;
             std::string message = "ALIVE*"+conversionIntString(hero->getId());

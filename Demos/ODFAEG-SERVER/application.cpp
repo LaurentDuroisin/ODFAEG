@@ -138,7 +138,7 @@ namespace sorrok {
         quest.addMonsterToKill(monster->getName(), 10);
         Pnj* pnj = new Pnj();
         pnj->addQuest(quest);
-        pnj->setCenter(Vec3f (400, 500, 500));
+        pnj->setCenter(Vec3f (300, 300, 300));
         World::addEntity(pnj);
         std::cout<<"server is ready!"<<std::endl;
     }

@@ -975,7 +975,7 @@ namespace odfaeg {
             else
             {
                 //If the window has just been created we need to do this otherwise the window is not unmapped.
-                sf::sleep(sf::seconds(1));
+                sf::sleep(sf::seconds(2));
                 XUnmapWindow(m_display, m_window);
 
                 XFlush(m_display);
@@ -1655,8 +1655,7 @@ namespace odfaeg {
                             Uint32 unicode = 0;
                             Utf8::decode(keyBuffer, keyBuffer + length, unicode, 0);
                             if (unicode != 0)
-                            {
-                                std::cout<<"text event!"<<std::endl;
+                            {                                ;
                                 IEvent textEvent;
                                 textEvent.type = IEvent::EventType::TEXT_INPUT_EVENT;
                                 std::chrono::time_point<std::chrono::system_clock> time = std::chrono::system_clock::now();

@@ -678,7 +678,6 @@ namespace odfaeg {
                                        /*if (entity->getRootType() == "E_PONCTUAL_LIGHT")
                                             std::cout<<"add ponctual light"<<std::endl;*/
                                        if (bx.intersects(bounds) && visibleEntities[entity->getRootTypeInt()][entity->getId()] != entity) {
-
                                            visibleEntities[entity->getRootTypeInt()][entity->getId()] = entity;
                                        }
                                        /*if (!containsVisibleParentEntity(entity->getRootEntity())) {

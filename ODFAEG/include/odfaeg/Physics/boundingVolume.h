@@ -100,6 +100,12 @@ namespace odfaeg {
             void vtserialize(Archive & ar) {
                 ar(children);
             }
+            void setName (std::string name) {
+                this->name = name;
+            }
+            std::string getName() {
+                return name;
+            }
             virtual ~BoundingVolume() {}
             protected :
             BoundingVolume(const BoundingVolume& other) {
@@ -108,6 +114,8 @@ namespace odfaeg {
             BoundingVolume& operator= (const BoundingVolume& other) {
                 return *this;
             }
+            private :
+            std::string name;
         };
     }
 }

@@ -219,9 +219,12 @@ namespace odfaeg {
         Entity* Anim::getCurrentFrame () const {
               return interpolatedFrame.get();
         }
-
         void Anim::onDraw(RenderTarget &target, RenderStates states) {
              target.draw(*interpolatedFrame, states);
+        }
+        void Anim::onMove(math::Vec3f& t) {
+            Entity::onMove(t);
+            interpolatedFrame->move(t);
         }
         Anim::~Anim () {
 
