@@ -80,6 +80,10 @@ namespace sorrok {
     }
     void Caracter::setLife(int life) {
         this->life = life;
+        if (life < 0)
+            life = 0;
+        if (life > maxLife)
+            life = maxLife;
         clockRegenHp.restart();
     }
     int Caracter::getLife() {

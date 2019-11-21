@@ -588,11 +588,11 @@ namespace sorrok {
             if (last_cli_time > caracter->getAttribute("isAlive"+conversionIntString(id)).getValue<sf::Int64>()) {
                 caracter->setAlive(isAlive);
             }
-            if (last_cli_time > caracter->getAttribute("life"+conversionIntString(id)).getValue<sf::Int64>()) {
+            /*if (last_cli_time > caracter->getAttribute("life"+conversionIntString(id)).getValue<sf::Int64>()) {
                 if (!caracter->isMonster())
                     std::cout<<"set live from server : "<<life<<std::endl;
                 caracter->setLife(life);
-            }
+            }*/
             if (!caracter->isMoving() && static_cast<Hero*>(caracter)->isMovingFromKeyboard()) {
                 static_cast<Hero*>(caracter)->setIsMovingFromKeyboard(false);
             }
@@ -911,12 +911,12 @@ namespace sorrok {
             textRectX = 0, textRectY = 0, textRectWidth = 50, textRectHeight = 100;
             textWidth = text->getSize().x;
             tmpCenter = pnj->getCenter();
-            pnj->setCenter(Vec3f(0, 0, 0));
             for (unsigned int i = 0; i < 1; i++) {
-                Anim* animation = new Anim(0.1f, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), 0);
+                Anim* animation = new Anim(0.1f, Vec3f(275, 250, 0), Vec3f(50, 100, 0), 0);
                 for (unsigned int j = 0; j < 8; j++) {
                     sf::IntRect textRect (textRectX, textRectY, textRectWidth, textRectHeight);
-                    Tile *tile = new Tile(text, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), textRect);
+                    Tile *tile = new Tile(text, Vec3f(275, 250, 0), Vec3f(50, 100, 0), textRect);
+                    tile->setName("PNJ");
                     tile->getFaces()[0]->getMaterial().setTexId("LUIGI");
                     g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight());
                     frame->setShadowCenter(Vec3f(0, 200, 0));
@@ -932,7 +932,7 @@ namespace sorrok {
                 pnj->addAnimation(animation);
                 au->addAnim(animation);
             }
-            pnj->setCenter(tmpCenter);
+            std::cout<<"nb children : "<<pnj->getAnimation(0)->getCurrentFrame()->getChildren().size()<<std::endl;
             World::addEntity(pnj);
             hero->setXpHpBar(xpBar, hpBar);
             monster->setXpHpBar(nullptr, fcHpBar);

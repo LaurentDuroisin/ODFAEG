@@ -91,7 +91,9 @@ namespace sorrok {
         changeAttribute("life"+conversionIntString(getId()), Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
         if (hpBar != nullptr) {
             if (life < 0)
-                std::cout<<"negatif"<<std::endl;
+                life = 0;
+            if (life >= maxLife)
+                life = maxLife;
             hpBar->setValue(life);
         }
     }
@@ -264,8 +266,7 @@ namespace sorrok {
                 anims[baseAnimIndex + currentAnimIndex]->setCurrentFrame(0);
                 baseAnimIndex = WALKING;
                 anims[baseAnimIndex + currentAnimIndex]->play(true);
-                baseAnimIndex + currentAnimIndex;
-                BoneAnimation::setBoneIndex(baseAnimIndex);
+                BoneAnimation::setBoneIndex(baseAnimIndex + currentAnimIndex);
                 //World::update();
             } else {
                 changeAttribute("isMoving"+conversionIntString(getId()),Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
@@ -325,9 +326,6 @@ namespace sorrok {
         focusedCaracter->setLife(focusedCaracter->getLife() - attack);
         if (!focusedCaracter->isMonster())
             std::cout<<"time : "<<Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds()<<std::endl<<"focused caracter life : "<<focusedCaracter->getLife()<<std::endl;
-        if (focusedCaracter->getLife() <= 0 && focusedCaracter->isAlive()) {
-            focusedCaracter->setLife(0);
-        }
     }
     sf::Time Caracter::getTimeBeforeLastRespawn() {
         return timeBefLastRespawn;
