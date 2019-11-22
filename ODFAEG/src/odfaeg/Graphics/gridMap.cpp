@@ -318,6 +318,7 @@ namespace odfaeg {
                     }
                 }
             }
+            return entities;
         }
 
         vector<Entity*> GridMap::getEntities () {

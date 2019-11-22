@@ -95,6 +95,7 @@ namespace sorrok {
         void dropItems (odfaeg::graphic::gui::Label* label);
         void showInventory();
         void onIconClicked(odfaeg::graphic::gui::Icon* icon);
+        void talkToPnj(odfaeg::window::IKeyboard::Key key);
         std::vector<std::pair<odfaeg::core::Variant<Hero::Novice, Hero::Warrior, Hero::Magician, Hero::Thief>, std::pair<odfaeg::core::Variant<Item>, odfaeg::core::FastDelegate<void>>>> gameActions;
         std::vector<ItemAction*> itemActions;
         std::vector<std::pair<std::pair<Caracter*, odfaeg::graphic::Text>, std::pair<sf::Time, sf::Time>>> tmpTexts;

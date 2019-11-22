@@ -172,6 +172,18 @@ namespace sorrok {
             }
         }
     }
+    void MyAppli::talkToPnj(IKeyboard::Key key) {
+        int x = getView().getPosition().x;
+        int y = getView().getPosition().y;
+        int z = getView().getPosition().z;
+        int w = getView().getSize().x;
+        int h = getView().getSize().y;
+        int d = getView().getSize().z;
+        std::string message = "TALKTOPNJ*"+conversionIntString(x)+"*"+conversionIntString(y)+"*"+conversionIntString(z)+"*"+conversionIntString(w)+"*"+conversionIntString(h)+"*"+conversionIntString(d);
+        SymEncPacket packet;
+        packet<<message;
+        Network::sendTcpPacket(packet);
+    }
     void MyAppli::keyHeldDown (IKeyboard::Key key) {
         //BoundingRectangle rect (pos.x, pos.y, getView().getSize().x, getView().getSize().y);
         if (actualKey != IKeyboard::Key::Unknown && key == IKeyboard::Key::Z) {
@@ -357,6 +369,10 @@ namespace sorrok {
         Action aShowInventory(Action::KEY_PRESSED_ONCE, IKeyboard::Key::I);
         Command cmdShowInventory(aShowInventory, FastDelegate<void>(&MyAppli::showInventory, this));
         getListener().connect("ShowInventory", cmdShowInventory);
+        Action aTalk (Action::EVENT_TYPE::KEY_PRESSED_ONCE, IKeyboard::Key::T);
+        Command cmdTalk (aTalk, FastDelegate<void>(&MyAppli::talkToPnj, this, IKeyboard::Key::Unknown));
+        getListener().connect("TalkToPnj", cmdTalk);
+
         wResuHero = new RenderWindow (sf::VideoMode(400, 300), "Create ODFAEG Application", sf::Style::Titlebar, ContextSettings(0, 0, 4, 3, 0));
         label = new gui::Label(*wResuHero, Vec3f(0, 0, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"5", 15);
         getRenderComponentManager().addComponent(label);
@@ -512,6 +528,10 @@ namespace sorrok {
             Network::sendUdpPacket(packet);
             getClock("RequestTime").restart();
         }*/
+        if (Network::getResponse("SHOWQUEST", response)) {
+            Pnj* pnj = static_cast<Pnj*>(World::getEntity(conversionStringInt(response)));
+            std::cout<<"display quest"<<std::endl;
+        }
         if (Network::getResponse("NEWPATH", response)) {
             std::vector<std::string> infos = split(response, "*");
             std::vector<Vec2f> path;

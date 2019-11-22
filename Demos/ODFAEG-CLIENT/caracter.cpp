@@ -324,8 +324,6 @@ namespace sorrok {
     void Caracter::attackFocusedCaracter(int attack) {
         anims[baseAnimIndex + currentAnimIndex]->play(false);
         focusedCaracter->setLife(focusedCaracter->getLife() - attack);
-        if (!focusedCaracter->isMonster())
-            std::cout<<"time : "<<Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds()<<std::endl<<"focused caracter life : "<<focusedCaracter->getLife()<<std::endl;
     }
     sf::Time Caracter::getTimeBeforeLastRespawn() {
         return timeBefLastRespawn;

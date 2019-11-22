@@ -149,6 +149,32 @@ namespace sorrok {
             sf::Int64 oldLoopCliTime = user->getClientTime();
             std::vector<std::string> infos = split(message, "*");
             std::string request = infos[0];
+            if (request == "TALKTOPNJ") {
+                int x = conversionStringInt(infos[1]);
+                int y = conversionStringInt(infos[2]);
+                int z = conversionStringInt(infos[3]);
+                int w = conversionStringInt(infos[4]);
+                int h = conversionStringInt(infos[5]);
+                int d = conversionStringInt(infos[6]);
+                Vec3f position(x, y, 0);
+                BoundingBox rect (x, y, z, w, h, d);
+                std::vector<Entity*> pnjs = World::getEntitiesInRect(rect, "E_PNJ");
+                int distMin = 100;
+                int id = -1;
+                for (unsigned int i = 0; i < pnjs.size(); i++) {
+                    Vec3f center(pnjs[i]->getCenter().x, pnjs[i]->getCenter().y, 0);
+                    if (center.computeDist(position) < distMin) {
+                        distMin = center.computeDist(position);
+                        id = pnjs[i]->getId();
+                    }
+                }
+                if (id != -1) {
+                    std::string message = "SHOWQUEST"+conversionIntString(id);
+                    SymEncPacket packet;
+                    packet<<message;
+                    user->sendTcpPacket(packet);
+                }
+            }
             if (request == "GETMAPINFOS") {
                 std::ostringstream oss;
                 OTextArchive oa(oss);
@@ -520,8 +546,6 @@ namespace sorrok {
                             caracter->restartAttackSpeed();
                             int dmg = caracter->getDamages().back();
                             caracter->getDamages().pop_back();
-                            if (!caracter->getFocusedCaracter()->isMonster())
-                                std::cout<<"Time : "<<static_cast<Hero*>(caracter->getFocusedCaracter())->getUser()->getClientTime()<<std::endl;
                             caracter->attackFocusedCaracter(dmg);
                             if (!caracter->getFocusedCaracter()->isAlive()) {
                                 SymEncPacket packet;
