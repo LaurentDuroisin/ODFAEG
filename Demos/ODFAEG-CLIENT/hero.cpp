@@ -68,6 +68,29 @@ namespace sorrok {
         std::cout<<"job : "<<(int) job<<std::endl;
         return job;
     }
+    bool Hero::containsQuest(Quest quest) {
+        for (unsigned int i = 0; i < diary.size(); i++) {
+            if (diary[i].getName() == quest.getName())
+                return true;
+        }
+        return false;
+    }
+    void Hero::addQuest(Quest quest) {
+        diary.push_back(quest);
+    }
+    void Hero::removeQuest(Quest quest) {
+        std::vector<Quest>::iterator it;
+        for (it = diary.begin(); it != diary.end(); ){
+            if (it->getName() == quest.getName()) {
+                it = diary.erase(it);
+            } else {
+                it++;
+            }
+        }
+    }
+    std::vector<Quest> Hero::getDiary() {
+        return diary;
+    }
     Hero::~Hero() {
     }
 }

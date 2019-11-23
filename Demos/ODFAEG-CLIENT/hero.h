@@ -2,6 +2,7 @@
 #define HERO_HPP
 #include "caracter.h"
 #include "item.hpp"
+#include "quest.hpp"
 namespace sorrok {
     class Hero : public Caracter {
     public :
@@ -46,6 +47,10 @@ namespace sorrok {
             ar(xpReqForNextLevel);
         }
         void addItem (Item item);
+        bool containsQuest(Quest quest);
+        void addQuest(Quest quest);
+        void removeQuest (Quest quest);
+        std::vector<Quest> getDiary();
         std::map<Item::Type, std::vector<Item>>& getInventory();
         Job getJobType();
         odfaeg::core::Variant<Hero::Novice, Hero::Warrior, Hero::Magician, Hero::Thief> getJobVariant();
@@ -55,6 +60,7 @@ namespace sorrok {
         bool moveFromKeyboard;
         int xp, xpReqForNextLevel;
         std::map<Item::Type, std::vector<Item>> inventory;
+        std::vector<Quest> diary;
         Job job;
     };
 }

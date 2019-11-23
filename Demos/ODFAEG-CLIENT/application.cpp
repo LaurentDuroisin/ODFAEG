@@ -20,6 +20,30 @@ namespace sorrok {
         Network::setCertifiateClientMess("SORROKCLIENT");
         isClientAuthentified = false;
     }
+    void MyAppli::showDiary() {
+        FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
+        pQuestNames->removeAll();
+        for(unsigned int i = 0; i < static_cast<Hero*>(hero)->getDiary().size(); i++) {
+            Label* label = new Label(*wDiary, Vec3f(0, 100*i, 0), Vec3f(300, 100, 0),fm.getResourceByAlias(Fonts::Serif),static_cast<Hero*>(hero)->getDiary()[i].getName(), 15);
+            pQuestNames->addChild(label);
+            label->setParent(pQuestNames);
+        }
+        wDiary->setVisible(true);
+        setEventContextActivated(false);
+    }
+    void MyAppli::onLabQuestClicked(Label* label, Pnj* pnj) {
+        wDisplayQuests->setVisible(false);
+        Quest quest;
+        for (unsigned int i = 0; i < pnj->getQuests().size(); i++) {
+            if (pnj->getQuests()[i].getName() == label->getText()) {
+                quest = pnj->getQuests()[i];
+                selectedQuest = quest;
+            }
+        }
+        lQuestName->setText(quest.getName());
+        lQuestTask->setText(quest.getTask());
+        wDisplayQuest->setVisible(true);
+    }
     void MyAppli::onIconClicked(Icon* icon) {
         TextureManager<Item::Type> &tm2 = cache.resourceManager<Texture, Item::Type>("TextureManager2");
         Item::Type itemType = tm2.getAliasByResource(const_cast<Texture*>(icon->getSprite().getTexture()))[0];
@@ -372,6 +396,9 @@ namespace sorrok {
         Action aTalk (Action::EVENT_TYPE::KEY_PRESSED_ONCE, IKeyboard::Key::T);
         Command cmdTalk (aTalk, FastDelegate<void>(&MyAppli::talkToPnj, this, IKeyboard::Key::Unknown));
         getListener().connect("TalkToPnj", cmdTalk);
+        Action aShowDiary(Action::KEY_PRESSED_ONCE, IKeyboard::Key::D);
+        Command cmd(aShowDiary, FastDelegate<void>(&MyAppli::showDiary, this));
+        getListener().connect("ShowDiary", cmd);
 
         wResuHero = new RenderWindow (sf::VideoMode(400, 300), "Create ODFAEG Application", sf::Style::Titlebar, ContextSettings(0, 0, 4, 3, 0));
         label = new gui::Label(*wResuHero, Vec3f(0, 0, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"5", 15);
@@ -414,22 +441,37 @@ namespace sorrok {
         getRenderComponentManager().addComponent(invButton);
         invButton->addActionListener(this);
         idButton->addActionListener(this);
-        hpBar = new gui::ProgressBar(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(100, 10, 0),*fm.getResourceByAlias(Fonts::Serif),15);
-        hpBar->setMaximum(100);
-        hpBar->setMinimum(0);
-        hpBar->setValue(100);
-        xpBar = new gui::ProgressBar(getRenderWindow(), Vec3f(0, 590, 0), Vec3f(800, 10, 0),*fm.getResourceByAlias(Fonts::Serif),15);
-        xpBar->setMaximum(1500);
-        xpBar->setMinimum(0);
-        xpBar->setValue(0);
-        fcHpBar = new gui::ProgressBar(getRenderWindow(), Vec3f(700, 0, 0), Vec3f(100, 10, 0),*fm.getResourceByAlias(Fonts::Serif),15);
-        fcHpBar->setMinimum(0);
-        fcHpBar->setMaximum(100);
-        fcHpBar->setValue(100);
-        fcHpBar->setVisible(false);
-        getRenderComponentManager().addComponent(hpBar);
-        getRenderComponentManager().addComponent(xpBar);
-        getRenderComponentManager().addComponent(fcHpBar);
+        wDisplayQuests = new RenderWindow(sf::VideoMode(400, 300), "Quest list", sf::Style::Default, ContextSettings(0, 0, 4, 3, 0));
+        addWindow(wDisplayQuests);
+        pQuestList = new Panel(*wDisplayQuests,Vec3f(0, 0, 0),Vec3f(400, 300, 0));
+        getRenderComponentManager().addComponent(pQuestList);
+        wDisplayQuests->setVisible(false);
+
+        wDisplayQuest = new RenderWindow(sf::VideoMode(400, 600), "Quest details", sf::Style::Default, ContextSettings(0, 0, 4, 3, 0));
+        addWindow(wDisplayQuest);
+        lQuestName = new Label(*wDisplayQuest, Vec3f(0, 0, 0),Vec3f(400, 100, 0),fm.getResourceByAlias(Fonts::Serif), "", 15);
+        getRenderComponentManager().addComponent(lQuestName);
+        lQuestTask = new Label(*wDisplayQuest, Vec3f(0, 100, 0),Vec3f(400, 400, 0),fm.getResourceByAlias(Fonts::Serif), "", 15);
+        getRenderComponentManager().addComponent(lQuestTask);
+        bAccept = new Button(Vec3f(0, 400, 0), Vec3f(200, 100, 0),fm.getResourceByAlias(Fonts::Serif), "Accept", 15, *wDisplayQuest);
+        getRenderComponentManager().addComponent(bAccept);
+        bAccept->addActionListener(this);
+        bDeny = new Button(Vec3f(200, 400, 0), Vec3f(200, 100, 0),fm.getResourceByAlias(Fonts::Serif), "Give up", 15, *wDisplayQuest);
+        getRenderComponentManager().addComponent(bDeny);
+        bDeny->addActionListener(this);
+        wDisplayQuest->setVisible(false);
+
+        wDiary = new RenderWindow(sf::VideoMode(600, 600), "Diary", sf::Style::Default, ContextSettings(0, 0, 4, 3, 0));
+        addWindow(wDiary);
+        pQuestNames = new Panel(*wDiary, Vec3f(0, 0, 0), Vec3f(300, 500, 0));
+        getRenderComponentManager().addComponent(pQuestNames);
+        pQuestProgress = new Panel(*wDiary, Vec3f(300, 0, 0), Vec3f(300, 500, 0));
+        getRenderComponentManager().addComponent(pQuestProgress);
+        bGiveUp = new Button(Vec3f(0, 500, 0), Vec3f(100, 600, 0),fm.getResourceByAlias(Fonts::Serif),"Give up",15,*wDiary);
+        bGiveUp->addActionListener(this);
+        getRenderComponentManager().addComponent(bGiveUp);
+        wDiary->setVisible(false);
+
         setEventContextActivated(false);
     }
     void MyAppli::onRender(RenderComponentManager *cm) {
@@ -482,6 +524,14 @@ namespace sorrok {
             pInventory->removeAll();
             wInventory->setVisible(false);
         }
+        if (event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_CLOSED && window == wDisplayQuests) {
+            wDisplayQuests->setVisible(false);
+            setEventContextActivated(true);
+        }
+        if (event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_CLOSED && window == wDiary) {
+            wDiary->setVisible(false);
+            setEventContextActivated(true);
+        }
         if (event.type == IEvent::KEYBOARD_EVENT && event.keyboard.type == IEvent::KEY_EVENT_PRESSED && window == &getRenderWindow()) {
             previousKey = actualKey;
             actualKey = static_cast<IKeyboard::Key>(event.keyboard.code);
@@ -530,7 +580,19 @@ namespace sorrok {
         }*/
         if (Network::getResponse("SHOWQUEST", response)) {
             Pnj* pnj = static_cast<Pnj*>(World::getEntity(conversionStringInt(response)));
-            std::cout<<"display quest"<<std::endl;
+            std::vector<Quest> quests = pnj->getQuests();
+            pQuestList->removeAll();
+            FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
+            for (unsigned int i = 0; i < quests.size(); i++) {
+                Label* label = new Label(*wDisplayQuests,Vec3f(0, i * 100, 0),Vec3f(400, 100, 0),fm.getResourceByAlias(Fonts::Serif), quests[i].getName(), 15);
+                pQuestList->addChild(label);
+                label->setParent(pQuestList);
+                Action aLabClicked(Action::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
+                Command cmdLabClicked(aLabClicked, FastDelegate<bool>(&Label::isMouseInside, label), FastDelegate<void>(&MyAppli::onLabQuestClicked, this, label, pnj));
+                label->getListener().connect("ALABCLICKED", cmdLabClicked);
+            }
+            wDisplayQuests->setVisible(true);
+            setEventContextActivated(false);
         }
         if (Network::getResponse("NEWPATH", response)) {
             std::vector<std::string> infos = split(response, "*");
@@ -952,6 +1014,23 @@ namespace sorrok {
                 au->addAnim(animation);
             }
             World::addEntity(pnj);
+            FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
+            hpBar = new gui::ProgressBar(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(100, 10, 0),*fm.getResourceByAlias(Fonts::Serif),15);
+            hpBar->setMaximum(100);
+            hpBar->setMinimum(0);
+            hpBar->setValue(100);
+            xpBar = new gui::ProgressBar(getRenderWindow(), Vec3f(0, 590, 0), Vec3f(800, 10, 0),*fm.getResourceByAlias(Fonts::Serif),15);
+            xpBar->setMaximum(1500);
+            xpBar->setMinimum(0);
+            xpBar->setValue(0);
+            fcHpBar = new gui::ProgressBar(getRenderWindow(), Vec3f(700, 0, 0), Vec3f(100, 10, 0),*fm.getResourceByAlias(Fonts::Serif),15);
+            fcHpBar->setMinimum(0);
+            fcHpBar->setMaximum(100);
+            fcHpBar->setValue(100);
+            fcHpBar->setVisible(false);
+            getRenderComponentManager().addComponent(hpBar);
+            getRenderComponentManager().addComponent(xpBar);
+            getRenderComponentManager().addComponent(fcHpBar);
             hero->setXpHpBar(xpBar, hpBar);
             monster->setXpHpBar(nullptr, fcHpBar);
             packet.clear();
@@ -1172,6 +1251,22 @@ namespace sorrok {
     }
     void MyAppli::actionPerformed(gui::Button* item) {
         //std::cout<<"text : "<<item->getText()<<std::endl;
+        if (item->getText() == "Accept") {
+            if (!static_cast<Hero*>(hero)->containsQuest(selectedQuest)) {
+                static_cast<Hero*>(hero)->addQuest(selectedQuest);
+            }
+            wDisplayQuest->setVisible(false);
+            setEventContextActivated(true);
+            selectedQuest = Quest();
+        }
+        if (item->getText() == "Give up") {
+            if (static_cast<Hero*>(hero)->containsQuest(selectedQuest)) {
+                static_cast<Hero*>(hero)->removeQuest(selectedQuest);
+            }
+            wDisplayQuest->setVisible(false);
+            setEventContextActivated(true);
+            selectedQuest = Quest();
+        }
         if (item->getText() == "Respawn") {
             SymEncPacket packet;
             std::string message = "ALIVE*"+conversionIntString(hero->getId());

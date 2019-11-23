@@ -15,6 +15,7 @@ namespace sorrok {
                 Caracter::vtserialize(ar);
                 ar(quests);
             }
+            std::vector<Quest> getQuests();
         private :
             std::vector<Quest> quests;
     };
