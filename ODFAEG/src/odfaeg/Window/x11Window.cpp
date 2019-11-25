@@ -975,7 +975,7 @@ namespace odfaeg {
             else
             {
                 //If the window has just been created we need to do this otherwise the window is not unmapped.
-                sf::sleep(sf::seconds(2));
+                sf::sleep(sf::seconds(0.5f));
                 XUnmapWindow(m_display, m_window);
 
                 XFlush(m_display);

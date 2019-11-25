@@ -163,6 +163,7 @@ namespace odfaeg {
                 ar(m_vertices);
                 ar(m_primitiveType);
                 ar(m_locals);
+                ar(m_entity);
                 if (ar.isInputArchive())
                     onLoad();
             }

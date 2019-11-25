@@ -1191,7 +1191,7 @@ namespace odfaeg {
                     } else {
                         std::string typeName;
                         getline(buffer, typeName);
-                        std::cout<<"type name : "<<typeName<<std::endl;
+                        //std::cout<<"type name : "<<typeName<<std::endl;
                         if (typeName == "BaseType") {
                             object = new O();
                             std::ostringstream oss;

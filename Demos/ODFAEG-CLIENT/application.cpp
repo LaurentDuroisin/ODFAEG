@@ -336,6 +336,7 @@ namespace sorrok {
         //shader.loadFromFile("Shaders/SimpleVertexShader.vertexshader", "Shaders/SimpleFragmentShader.fragmentshader");
     }
     void MyAppli::onInit () {
+        setEventContextActivated(false);
         FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
         Network::startCli(10'000, 10'001,sf::IpAddress::LocalHost);
         TextureManager<> &tm = cache.resourceManager<Texture, std::string>("TextureManager");
@@ -370,10 +371,7 @@ namespace sorrok {
         //}
 
         //caracter->setCenter(Vec3f(getView().getPosition().x, getView().getPosition().y, 300));
-        g2d::PonctualLight* light1 = new g2d::PonctualLight(Vec3f(0, 420, 420), 100, 50, 50, 255, sf::Color::Yellow, 16);
-        light2 = new g2d::PonctualLight(Vec3f(50, 160, 160), 100, 50, 50, 255, sf::Color::Yellow, 16);
-        World::addEntity(light1);
-        World::addEntity(light2);
+
         ZSortingRenderComponent *frc1 = new ZSortingRenderComponent(getRenderWindow(),0, "",ContextSettings(0, 0, 0, 3, 0));
         ShadowRenderComponent *frc2 = new ShadowRenderComponent(getRenderWindow(),1, "");
         PerPixelLinkedListRenderComponent* frc3 = new PerPixelLinkedListRenderComponent(getRenderWindow(),2,"", ContextSettings(0, 0, 0, 3, 0));
@@ -791,7 +789,8 @@ namespace sorrok {
             wIdentification->setVisible(false);
             idButton->setEventContextActivated(false);
             invButton->setEventContextActivated(false);
-            unsigned int heroId = conversionStringInt(response);
+            int heroId = conversionStringInt(response);
+            std::cout<<"hero id : "<<heroId<<std::endl;
             SymEncPacket packet;
             packet<<"GETMAPINFOS";
             Network::sendTcpPacket(packet);
@@ -921,7 +920,9 @@ namespace sorrok {
                     au->addAnim(animation);
                 }
                 player->setCenter(tmpCenter);
+                std::cout<<"player id : "<<player->getId();
                 if (heroId == player->getId()) {
+                    std::cout<<"set hero"<<std::endl;
                     hero = player;
                     getView().move(hero->getCenter().x, hero->getCenter().y, hero->getCenter().z - 300);
                     for (unsigned int i = 0; i < getRenderComponentManager().getNbComponents(); i++) {

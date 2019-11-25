@@ -50,7 +50,30 @@ namespace odfaeg {
             }
             return false;
         }
-
+        bool CellMap::removeEntity (std::string type) {
+            typename vector<std::unique_ptr<Entity>>::iterator it;
+            for (it = entityInside.begin(); it != entityInside.end();) {
+                if (it->get()->getType() == type) {
+                    it->release();
+                    it = entityInside.erase(it);
+                    return true;
+                } else
+                    it++;
+            }
+            return false;
+        }
+        bool CellMap::deleteEntity (std::string type) {
+            typename vector<std::unique_ptr<Entity>>::iterator it;
+            for (it = entityInside.begin(); it != entityInside.end();) {
+                if (it->get()->getType() == type) {
+                    it->release();
+                    it = entityInside.erase(it);
+                    return true;
+                } else
+                    it++;
+            }
+            return false;
+        }
         math::Vec2f CellMap::getCenter () {
             return cellVolume->getCenter();
         }

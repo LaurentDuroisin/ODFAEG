@@ -128,6 +128,8 @@ namespace odfaeg {
                 * \fn ~CellMap();
                 * \brief destructor.
                 */
+                bool removeEntity (std::string type);
+                bool deleteEntity (std::string type);
                 ~CellMap();
             private :
                 std::vector<std::unique_ptr<Entity>> entityInside; /**> the entities which are inside the cell.*/

@@ -22,6 +22,7 @@ namespace odfaeg {
             nbEntities++;
             alreadySerialized = false;
             collisionVolume = nullptr;
+            shadowOrigin = math::Vec3f (0, 0, 0);
             shadowCenter = math::Vec3f (0, 0, 0);
             shadowScale = math::Vec3f(1.f, 1.f, 1.f);
             shadowRotationAngle = 0;

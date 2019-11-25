@@ -221,7 +221,7 @@ namespace odfaeg {
             ///
             ////////////////////////////////////////////////////////////
             math::Vec3f mapCoordsToPixel(const math::Vec3f& point, View& view);
-
+            void drawInstanced(VertexBuffer& vertexBuffer, unsigned int vboWorldMatrices, enum sf::PrimitiveType type, unsigned int start, unsigned int nb, unsigned int nbInstances, RenderStates states);
 
             ////////////////////////////////////////////////////////////
             /// \brief Draw a drawable object to the render-target

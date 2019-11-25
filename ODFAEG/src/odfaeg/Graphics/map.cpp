@@ -356,6 +356,147 @@ namespace odfaeg {
                 }
             }*/
         }
+         void Map::generate_labyrinthe (std::vector<Tile*> tGround, std::vector<Tile*> walls, math::Vec2f tileSize, physic::BoundingBox &rect, bool laby3D) {
+            int startX = rect.getPosition().x / tileSize.x * tileSize.x;
+            int startY = rect.getPosition().y / tileSize.y * tileSize.y;
+            int endX = (rect.getPosition().x + rect.getWidth()) / tileSize.x * tileSize.x;
+            int endY = (rect.getPosition().y + rect.getHeight()) / tileSize.y * tileSize.y;
+            BigTile *bt;
+            bt = new BigTile(math::Vec3f(startX, startY, startY + endY * 0.5f));
+            addEntity(bt);
+            unsigned int i, j;
+            for (int y = startY, j = 0; y < endY; y+= tileSize.y, j++) {
+                for (int x = startX, i = 0; x < endX; x+= tileSize.x, i++) {
+                    math::Vec3f projPos = gridMap->getBaseChangementMatrix().changeOfBase(math::Vec3f (x - startX, y - startY, 0));
+                    math::Vec2f pos (projPos.x + startX, projPos.y + startY);
+                    if (x == startX && y == startY) {
+                        g2d::Wall *w = new g2d::Wall(new Tile(*walls[TOP_LEFT]),&g2d::AmbientLight::getAmbientLight());
+                        w->setPosition(math::Vec3f(pos.x, pos.y, pos.y + walls[TOP_LEFT]->getSize().y * 0.5f));
+                        addEntity(w);
+                        gridMap->getGridCellAt(math::Vec3f(w->getPosition().x, w->getPosition().y, 0))->setPassable(false);
+                    } else if (x == endX && y == startY) {
+                        g2d::Wall *w = new g2d::Wall(new Tile(*walls[TOP_RIGHT]),&g2d::AmbientLight::getAmbientLight());
+                        w->setPosition(math::Vec3f(pos.x, pos.y, pos.y + walls[TOP_RIGHT]->getSize().y * 0.5f));
+                        addEntity(w);
+                        gridMap->getGridCellAt(math::Vec3f(w->getPosition().x, w->getPosition().y, 0))->setPassable(false);
+                    } else if (y == endY && x == endX) {
+                        g2d::Wall *w = new g2d::Wall(new Tile(*walls[BOTTOM_RIGHT]),&g2d::AmbientLight::getAmbientLight());
+                        w->setPosition(math::Vec3f(pos.x, pos.y, pos.y + walls[BOTTOM_RIGHT]->getSize().y * 0.5f));
+                        addEntity(w);
+                        gridMap->getGridCellAt(math::Vec3f(w->getPosition().x, w->getPosition().y, 0))->setPassable(false);
+                    } else if (x == startX && y == endY) {
+                        g2d::Wall *w = new g2d::Wall(new Tile(*walls[BOTTOM_LEFT]),&g2d::AmbientLight::getAmbientLight());
+                        w->setPosition(math::Vec3f(pos.x, pos.y, pos.y + walls[BOTTOM_LEFT]->getSize().y * 0.5f));
+                        addEntity(w);
+                        gridMap->getGridCellAt(math::Vec3f(w->getPosition().x, w->getPosition().y, 0))->setPassable(false);
+                    } else if (y == startY && j % 2 != 0) {
+                        g2d::Wall *w = new g2d::Wall(new Tile(*walls[TOP_BOTTOM]),&g2d::AmbientLight::getAmbientLight());
+                        w->setPosition(math::Vec3f(pos.x, pos.y, pos.y + walls[TOP_BOTTOM]->getSize().y * 0.5f));
+                        addEntity(w);
+                        gridMap->getGridCellAt(math::Vec3f(w->getPosition().x, w->getPosition().y, 0))->setPassable(false);
+                    } else if (y == startY && j % 2 == 0) {
+                        g2d::Wall *w = new g2d::Wall(new Tile(*walls[T_TOP]),&g2d::AmbientLight::getAmbientLight());
+                        w->setPosition(math::Vec3f(pos.x, pos.y, pos.y + walls[T_TOP]->getSize().y * 0.5f));
+                        addEntity(w);
+                        gridMap->getGridCellAt(math::Vec3f(w->getPosition().x, w->getPosition().y, 0))->setPassable(false);
+                    } else if (x == endX && j % 2 != 0) {
+                        g2d::Wall *w = new g2d::Wall(new Tile(*walls[RIGHT_LEFT]),&g2d::AmbientLight::getAmbientLight());
+                        w->setPosition(math::Vec3f(pos.x, pos.y, pos.y + walls[RIGHT_LEFT]->getSize().y * 0.5f));
+                        addEntity(w);
+                        gridMap->getGridCellAt(math::Vec3f(w->getPosition().x, w->getPosition().y, 0))->setPassable(false);
+                    } else if (x == endX && j % 2 == 0) {
+                        g2d::Wall *w = new g2d::Wall(new Tile(*walls[T_RIGHT]),&g2d::AmbientLight::getAmbientLight());
+                        w->setPosition(math::Vec3f(pos.x, pos.y, pos.y + walls[T_RIGHT]->getSize().y * 0.5f));
+                        addEntity(w);
+                        gridMap->getGridCellAt(math::Vec3f(w->getPosition().x, w->getPosition().y, 0))->setPassable(false);
+                    } else if(y == endY && i % 2 != 0) {
+                        g2d::Wall *w = new g2d::Wall(new Tile(*walls[TOP_BOTTOM]),&g2d::AmbientLight::getAmbientLight());
+                        w->setPosition(math::Vec3f(pos.x, pos.y, pos.y + walls[TOP_BOTTOM]->getSize().y * 0.5f));
+                        addEntity(w);
+                        gridMap->getGridCellAt(math::Vec3f(w->getPosition().x, w->getPosition().y, 0))->setPassable(false);
+                    } else if (y == endY && i % 2 == 0) {
+                        g2d::Wall *w = new g2d::Wall(new Tile(*walls[T_BOTTOM]),&g2d::AmbientLight::getAmbientLight());
+                        w->setPosition(math::Vec3f(pos.x, pos.y, pos.y + walls[T_BOTTOM]->getSize().y * 0.5f));
+                        addEntity(w);
+                        gridMap->getGridCellAt(math::Vec3f(w->getPosition().x, w->getPosition().y, 0))->setPassable(false);
+                    } else if (x == startX && j % 2 != 0) {
+                        g2d::Wall *w = new g2d::Wall(new Tile(*walls[RIGHT_LEFT]),&g2d::AmbientLight::getAmbientLight());
+                        w->setPosition(math::Vec3f(pos.x, pos.y, pos.y + walls[RIGHT_LEFT]->getSize().y * 0.5f));
+                        addEntity(w);
+                        gridMap->getGridCellAt(math::Vec3f(w->getPosition().x, w->getPosition().y, 0))->setPassable(false);
+                    } else if (x == startX && j % 2 == 0) {
+                        g2d::Wall *w = new g2d::Wall(new Tile(*walls[T_LEFT]),&g2d::AmbientLight::getAmbientLight());
+                        w->setPosition(math::Vec3f(pos.x, pos.y, pos.y + walls[T_LEFT]->getSize().y * 0.5f));
+                        addEntity(w);
+                        gridMap->getGridCellAt(math::Vec3f(w->getPosition().x, w->getPosition().y, 0))->setPassable(false);
+                    } else if (j % 2 != 0 && i % 2 == 0) {
+                        g2d::Wall *w = new g2d::Wall(new Tile(*walls[RIGHT_LEFT]),&g2d::AmbientLight::getAmbientLight());
+                        w->setPosition(math::Vec3f(pos.x, pos.y, pos.y + walls[RIGHT_LEFT]->getSize().y * 0.5f));
+                        addEntity(w);
+                        gridMap->getGridCellAt(math::Vec3f(w->getPosition().x, w->getPosition().y, 0))->setPassable(false);
+                    } else if (j % 2 == 0 && i % 2 != 0) {
+                        g2d::Wall *w = new g2d::Wall(new Tile(*walls[TOP_BOTTOM]),&g2d::AmbientLight::getAmbientLight());
+                        w->setPosition(math::Vec3f(pos.x, pos.y, pos.y + walls[TOP_BOTTOM]->getSize().y * 0.5f));
+                        addEntity(w);
+                        gridMap->getGridCellAt(math::Vec3f(w->getPosition().x, w->getPosition().y, 0))->setPassable(false);
+                    } else if (j % 2 == 0 && i % 2 == 0) {
+                        g2d::Wall *w = new g2d::Wall(new Tile(*walls[X]),&g2d::AmbientLight::getAmbientLight());
+                        w->setPosition(math::Vec3f(pos.x, pos.y, pos.y + walls[X]->getSize().y * 0.5f));
+                        addEntity(w);
+                        gridMap->getGridCellAt(math::Vec3f(w->getPosition().x, w->getPosition().y, 0))->setPassable(false);
+                    }
+                }
+            }
+            std::vector<CellMap*> visited;
+            std::vector<math::Vec2f> dirs;
+            int n = 0, cx = startX + tileSize.x, cy = startY + tileSize.y;
+            while (n < i * j) {
+                for (unsigned int i = 0; i < 4; i++) {
+                    int x = cx, y = cy;
+                    math::Vec2f dir;
+                    if (i == 0) {
+                        dir = math::Vec2f (1, 0);
+                    } else if (i == 1) {
+                        dir = math::Vec2f (0, 1);
+                    } else if (i == 2) {
+                        dir = math::Vec2f (-1, 0);
+                    } else {
+                        dir = math::Vec2f (0, -1);
+                    }
+                    x += dir.x * tileSize.x * 2;
+                    y += dir.y * tileSize.y * 2;
+                    math::Vec3f projPos = gridMap->getBaseChangementMatrix().changeOfBase(math::Vec3f (x - startX, y - startY, 0));
+                    math::Vec2f pos (projPos.x + startX, projPos.y + startY);
+                    CellMap* cell = gridMap->getGridCellAt(math::Vec2f(pos.x, pos.y));
+                    if (cell != nullptr) {
+                        dirs.push_back(dir);
+                    }
+                }
+                math::Vec2f dir = dirs[math::Math::random(0, dirs.size())];
+                int x = cx + dir.x * tileSize.x;
+                int y = cy + dir.y * tileSize.y;
+                math::Vec3f projPos = gridMap->getBaseChangementMatrix().changeOfBase(math::Vec3f (x - startX, y - startY, 0));
+                math::Vec2f pos (projPos.x + startX, projPos.y + startY);
+                CellMap* cell = gridMap->getGridCellAt(math::Vec2f(pos.x, pos.y));
+                cell->removeEntity("E_WALL");
+                cell->setPassable(true);
+                cx += dir.x * tileSize.x * 2;
+                cy += dir.y * tileSize.y * 2;
+                x = cx, y = cy;
+                projPos = gridMap->getBaseChangementMatrix().changeOfBase(math::Vec3f (x - startX, y - startY, 0));
+                pos = math::Vec2f (projPos.x + startX, projPos.y + startY);
+                cell = gridMap->getGridCellAt(math::Vec2f(pos.x, pos.y));
+                bool contains = false;
+                for (unsigned int j = 0; j < visited.size() && !contains; j++) {
+                    if (visited[j] == cell)
+                        contains = true;
+                }
+                if (!contains) {
+                    n++;
+                    visited.push_back(cell);
+                }
+            }
+         }
         void Map::generate_map(std::vector<Tile*> tGround, std::vector<Tile*> walls, math::Vec2f tileSize, physic::BoundingBox &rect, bool terrain3D) {
             int startX = rect.getPosition().x / tileSize.x * tileSize.x;
             int startY = rect.getPosition().y / tileSize.y * tileSize.y;
@@ -570,12 +711,15 @@ namespace odfaeg {
             return gridMap->removeEntity(entity);*/
         }
         bool Map::deleteEntity (Entity *entity) {
+            std::cout<<"map delete entity!"<<std::endl;
             std::vector<Entity*> children = entity->getChildren();
             for (unsigned int i = 0; i < children.size(); i++) {
                 if (entity->isAnimated()) {
                     deleteEntity(static_cast<AnimatedEntity*>(children[i])->getCurrentFrame());
+                    delete entity;
                 } else {
                     deleteEntity(children[i]);
+                    delete children[i];
                 }
             }
             if (entity->isLeaf()) {
@@ -978,6 +1122,10 @@ namespace odfaeg {
                                 BoneAnimation* ba = dynamic_cast<BoneAnimation*>(visibleEntities[i][j]->getRootEntity());
                                 if (ba != nullptr) {
                                     if (ba->getBoneIndex() == visibleEntities[i][j]->getBoneIndex()) {
+                                        if (visibleEntities[i][j]->getRootType() == "E_MONSTER")
+                                            std::cout<<"get E_MONSTER"<<std::endl;
+                                            if (visibleEntities[i][j]->getRootType() == "E_HERO")
+                                            std::cout<<"get E_HERO"<<std::endl;
                                         entities.push_back(visibleEntities[i][j]);
                                     }
                                 } else {

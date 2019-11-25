@@ -195,7 +195,6 @@ namespace odfaeg {
         }
 
         bool GridMap::deleteEntity (Entity *entity) {
-
             int x = entity->getGlobalBounds().getPosition().x;
             int y = entity->getGlobalBounds().getPosition().y;
             int endX = (x + entity->getGlobalBounds().getWidth());

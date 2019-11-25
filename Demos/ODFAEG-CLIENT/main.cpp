@@ -78,6 +78,7 @@ int main(int argv, char* argc[]) {
     EXPORT_CLASS_GUID(EntityMonster, Entity, Monster)
     EXPORT_CLASS_GUID(EntityPnj, Entity, Pnj)
     EXPORT_CLASS_GUID(EntityMesh, Entity, Mesh)
+    EXPORT_CLASS_GUID(EntityPLIGHT, Entity, g2d::PonctualLight)
     MyAppli app(sf::VideoMode(800, 600, 32), "Test odfaeg");
     return app.exec();
 

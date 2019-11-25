@@ -37,6 +37,9 @@ class ODFAEG_GRAPHICS_API Map : public EntityManager {
         *   \param cellHeight : the height of the cells.
         *   \param cellDepth : the depth of the cells.
         */
+        enum Walls {
+            TOP_LEFT, TOP_RIGHT, BOTTOM_RIGHT, BOTTOM_LEFT, TOP_BOTTOM, RIGHT_LEFT, T_TOP, T_RIGHT, T_LEFT, T_BOTTOM, X
+        };
         Map(RenderComponentManager* frcm, std::string name, int cellWidth, int cellHeight, int cellDepth);
         GridMap *gridMap; /**> The grid used to store the entities.*/
         /**
@@ -228,6 +231,7 @@ class ODFAEG_GRAPHICS_API Map : public EntityManager {
         bool collide(Entity *entity);
         bool collide(Entity* entity, math::Vec3f position);
         bool collide(Entity* entity, math::Ray ray);
+        void generate_labyrinthe(std::vector<Tile*> tGround, std::vector<Tile*> walls, math::Vec2f tileSize, physic::BoundingBox &box, bool terrain3D);
         /** \fn generate_map(std::vector<Tile*> tGround, std::vector<Tile*> walls, BoundingBox &box)
         *   \brief generate a map in the given zone, which the given tiles for the ground and the given tiles for the walls.
         *   \param std::vector<Tile*> tGround : the tiles used for the ground.

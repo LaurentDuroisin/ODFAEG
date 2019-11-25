@@ -1,7 +1,10 @@
 #include "../../../include/odfaeg/Graphics/zSortingRenderComponent.hpp"
+#include <GL/glew.h>
+#include <SFML/OpenGL.hpp>
+#include "glCheck.h"
 namespace odfaeg {
     namespace graphic {
-        ZSortingRenderComponent::ZSortingRenderComponent (RenderWindow& window, int layer, std::string expression, EntityManager& scene) :
+        ZSortingRenderComponent::ZSortingRenderComponent (RenderWindow& window, int layer, std::string expression, window::ContextSettings settings) :
             HeavyComponent(window, math::Vec3f(window.getView().getPosition().x, window.getView().getPosition().y, layer),
                           math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0),
                           math::Vec3f(window.getView().getSize().x + window.getView().getSize().x * 0.5f, window.getView().getPosition().y + window.getView().getSize().y * 0.5f, layer)),
@@ -13,27 +16,53 @@ namespace odfaeg {
             core::FastDelegate<void> slot (&ZSortingRenderComponent::drawNextFrame, this);
             core::Command cmd(signal, slot);
             getListener().connect("UPDATE", cmd);
-            /*const std::string vertexShader =
-            R"(#version 140
-            #extension GL_ARB_bindless_texture : require
-            #extension GL_EXT_texture_array : require
-            void main () {
-                gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
-                gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;
-                gl_FrontColor = gl_Color;
-            })";
-            const std::string fragmentShader =
-            R"(#version 140
-            uniform TBloc {
-                layout(bindless_sampler) uniform sampler2DArray t;
-                float textureIndex;
-            } T;
-            void main () {
-                gl_FragColor = texture2DArray(T.t, vec3(v_texCoord.xy, T.textureIndex));
-            })";
-            if (!shader.loadFromMemory(vertexShader, fragmentShader)) {
-                throw core::Erreur(54, "Failed to load bindless texture shader");
-            }*/
+            frameBuffer.create(window.getView().getSize().x, window.getView().getSize().y, settings);
+            frameBuffer.setView(window.getView());
+            sprite = Sprite(frameBuffer.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), sf::IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
+            if (settings.versionMajor >= 3 && settings.versionMinor >= 3) {
+                glGenBuffers(1, &vboWorldMatrices);
+                const std::string vertexShader =
+                R"(#version 330 core
+                    #extension GL_ARB_shading_language_420pack : require
+                    layout (location = 0) in vec3 position;
+                    layout (location = 1) in vec4 color;
+                    layout (location = 2) in vec2 texCoords;
+                    layout (location = 10) in mat4 worldMat;
+                    void main() {
+                        gl_Position = worldMat * gl_ModelViewProjectionMatrix * vec4(position, 1.f);
+                        gl_TexCoord[0] = gl_TextureMatrix[0] * vec4(texCoords, 1.f, 1.f);
+                        gl_FrontColor = color;
+                    }
+                )";
+                const std::string fragmentShader =
+                R"(#version 140
+                uniform sampler2D texture;
+                void main() {
+                    gl_FragColor = texture2D (texture, gl_FragCoord.xy) * gl_Color;
+                })";
+                /*const std::string vertexShader =
+                R"(#version 140
+                #extension GL_ARB_bindless_texture : require
+                #extension GL_EXT_texture_array : require
+                void main () {
+                    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+                    gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;
+                    gl_FrontColor = gl_Color;
+                })";
+                const std::string fragmentShader =
+                R"(#version 140
+                uniform TBloc {
+                    layout(bindless_sampler) uniform sampler2DArray t;
+                    float textureIndex;
+                } T;
+                void main () {
+                    gl_FragColor = texture2DArray(T.t, vec3(v_texCoord.xy, T.textureIndex));
+                })";*/
+                if (!shader.loadFromMemory(vertexShader, fragmentShader)) {
+                    throw core::Erreur(54, "Failed to load shader");
+                }
+            }
+            backgroundColor = sf::Color::Transparent;
         }
         void ZSortingRenderComponent::updateSceneVertices() {
             scene.getSceneVertices().updateVBOBuffer();
@@ -107,6 +136,11 @@ namespace odfaeg {
             }
             m_instances = batcher.getInstances();
             visibleEntities = vEntities;
+            for (unsigned int i = 0; i < m_instances.size(); i++) {
+                if (m_instances[i].getAllVertices().getVertexCount() > 0) {
+                    m_instances[i].sortVertexArrays(view);
+                }
+            }
             update = true;
             return true;
         }
@@ -130,6 +164,7 @@ namespace odfaeg {
             }*/
         }
         void ZSortingRenderComponent::setView(View view) {
+            frameBuffer.setView(view);
             this->view = view;
         }
         void ZSortingRenderComponent::setExpression(std::string expression) {
@@ -139,11 +174,46 @@ namespace odfaeg {
         std::vector<Entity*> ZSortingRenderComponent::getEntities() {
             return visibleEntities;
         }
+        void ZSortingRenderComponent::clear() {
+            frameBuffer.clear(backgroundColor);
+        }
+        void ZSortingRenderComponent::drawNextFrame() {
+            RenderStates states;
+            if (frameBuffer.getSettings().versionMajor >= 3 && frameBuffer.getSettings().versionMinor >= 3) {
+                VertexBuffer vb(sf::TrianglesStrip);
+                for (unsigned int i = 0; i < m_instances.size(); i++) {
+                    std::vector<TransformMatrix*> tm = m_instances[i].getTransforms();
+                    std::vector<float> matrices;
+                    for (unsigned int j = 0; j < tm.size(); j++) {
+                        std::array<float, 16> matrix = tm[j]->getMatrix().toGlMatrix();
+                        for (unsigned int n = 0; n < 16; n++) {
+                            matrices.push_back(matrix[n]);
+                        }
+                    }
+                    glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboWorldMatrices));
+                    glCheck(glBufferData(GL_ARRAY_BUFFER, sizeof(matrices), &matrices[0], GL_DYNAMIC_DRAW));
+                    for (unsigned int j = 0; j < m_instances[i].getAllVertices().getVertexCount(); j++) {
+                        vb.append(m_instances[i].getAllVertices()[j]);
+                    }
+                    states.shader = &shader;
+                    states.texture = m_instances[i].getMaterial().getTexture();
+                    frameBuffer.drawInstanced(vb, vboWorldMatrices, sf::TrianglesStrip, 0, 6, tm.size(), states);
+                }
+            } else {
+                states.blendMode = sf::BlendAlpha;
+                for (unsigned int i = 0; i < m_instances.size(); i++) {
+                    if (m_instances[i].getAllVertices().getVertexCount() > 0) {
+                        states.texture = m_instances[i].getMaterial().getTexture();
+                        frameBuffer.draw(m_instances[i].getAllVertices(), states);
+                    }
+                }
+            }
+            frameBuffer.display();
+        }
         void ZSortingRenderComponent::draw(RenderTarget& target, RenderStates states) {
             states.blendMode = sf::BlendAlpha;
             for (unsigned int i = 0; i < m_instances.size(); i++) {
                 if (m_instances[i].getAllVertices().getVertexCount() > 0) {
-                    m_instances[i].sortVertexArrays(view);
                     states.texture = m_instances[i].getMaterial().getTexture();
                     //states.shader = &instancedRenderingShader;
                     /*for (unsigned int j = 0; j < m_instances[i].getAllIndexes().size(); j++)
@@ -159,6 +229,8 @@ namespace odfaeg {
                        // update = false;
                     }*/
                     target.draw(m_instances[i].getAllVertices(), states);
+                    /*sprite.setCenter(target.getView().getPosition());
+                    target.draw(sprite, states);*/
                 }
             }
         }

@@ -4,6 +4,8 @@
 #include "entityManager.h"
 #include "heavyComponent.h"
 #include "../Physics/particuleSystem.h"
+#include "sprite.h"
+#include "renderTexture.h"
 /**
   *\namespace odfaeg
   * the namespace of the Opensource Development Framework Adapted for Every Games.
@@ -20,7 +22,7 @@ namespace odfaeg {
           */
         class ODFAEG_GRAPHICS_API ZSortingRenderComponent : public HeavyComponent {
             public :
-                ZSortingRenderComponent (RenderWindow& window, int layer, std::string expression, EntityManager& scene);
+                ZSortingRenderComponent (RenderWindow& window, int layer, std::string expression, window::ContextSettings settings);
                 void loadShaders();
                 void pushEvent(window::IEvent event, RenderWindow& rw);
                 bool needToUpdate();
@@ -34,10 +36,8 @@ namespace odfaeg {
                 void draw(RenderTarget& target, RenderStates states);
                 View& getView();
                 int getLayer();
-                void clear() {
-                }
-                void drawNextFrame() {
-                }
+                void clear();
+                void drawNextFrame();
                 void draw(Drawable& drawable, RenderStates states) {
                 }
                 void updateParticleSystems();
@@ -46,12 +46,16 @@ namespace odfaeg {
             private :
                 Batcher batcher;
                 View view;
+                Sprite sprite;
                 std::vector<Instance> m_instances;
                 std::vector<Entity*> visibleEntities;
                 std::string expression;
                 bool update;
                 EntityManager& scene;
                 Shader instancedRenderingShader, shader;
+                RenderTexture frameBuffer;
+                unsigned int vboWorldMatrices;
+                sf::Color backgroundColor;
         };
     }
 }

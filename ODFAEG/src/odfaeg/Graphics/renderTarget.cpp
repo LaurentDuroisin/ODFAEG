@@ -137,7 +137,59 @@ namespace odfaeg {
             coords = vpm.toViewportCoordinates(coords);
             return coords;
         }
-        ////////////////////////////////////////////////////////////
+        void RenderTarget::drawInstanced(VertexBuffer& vertexBuffer, unsigned int vboWorldMatrices, enum sf::PrimitiveType type, unsigned int start, unsigned int nb, unsigned int nbInstances, RenderStates states) {
+            if (vertexBuffer.getVertexCount() == 0) {
+                return;
+            }
+
+            if (activate(true))
+            {
+
+                // First set the persistent OpenGL states if it's the very first call
+                if (!m_cache.glStatesSet)
+                    resetGLStates();
+                // Apply the view
+                if (m_cache.viewChanged || m_view.viewUpdated)
+                    applyCurrentView();
+                // Apply the blend mode
+                if (states.blendMode != m_cache.lastBlendMode)
+                    applyBlendMode(states.blendMode);
+                sf::Uint64 textureId = states.texture ? states.texture->m_cacheId : 0;
+                /*if (textureId > 0)
+                     std::cout<<"texture id : "<<textureId<<" "<<states.texture->m_texture<<std::endl;*/
+                if (textureId != m_cache.lastTextureId)
+                    applyTexture(states.texture);
+
+                // Apply the shader
+                if (states.shader)
+                    applyShader(states.shader);
+                if (m_cache.lastVboBuffer != &vertexBuffer) {
+                    if (m_versionMajor >= 3 && m_versionMinor >= 3) {
+                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.vboVertexBuffer));
+                        glCheck(glEnableVertexAttribArray(0));
+                        glCheck(glEnableVertexAttribArray(1));
+                        glCheck(glEnableVertexAttribArray(2));
+                        glCheck(glVertexAttribPointer(0, 3,GL_FLOAT,GL_FALSE,sizeof(Vertex), (GLvoid*) 0));
+                        glCheck(glVertexAttribPointer(1, 4,GL_UNSIGNED_BYTE,GL_TRUE,sizeof(Vertex),(GLvoid*) 12));
+                        glCheck(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) 16));
+                        glCheck(glDisableVertexAttribArray(0));
+                        glCheck(glDisableVertexAttribArray(1));
+                        glCheck(glDisableVertexAttribArray(2));
+                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboWorldMatrices));
+                        for (unsigned int i = 0; i < 4 ; i++) {
+                            glEnableVertexAttribArray(10 + i);
+                            glVertexAttribPointer(10 + i, 4, GL_FLOAT, GL_FALSE, sizeof(math::Matrix4f),
+                                                    (const GLvoid*)(sizeof(GLfloat) * i * 4));
+                            glVertexAttribDivisor(10 + i, 1);
+                        }
+                    }
+                    static const GLenum modes[] = {GL_POINTS, GL_LINES, GL_LINE_STRIP, GL_TRIANGLES,
+                                                   GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_QUADS};
+                    GLenum mode = modes[type];
+                    glDrawArraysInstanced(mode,start,nb,nbInstances);
+                }
+            }
+        } //////////////////////////////////////////////////////////
         void RenderTarget::draw(Drawable& drawable, RenderStates states)
         {
             drawable.draw(*this, states);

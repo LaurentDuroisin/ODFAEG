@@ -17,6 +17,9 @@ namespace sorrok {
         bool selectable() const {
             return false;
         }
+        bool isLeaf() const {
+            return true;
+        }
         bool operator== (Entity& other);
         void addAnimation (odfaeg::graphic::Anim *anim);
         odfaeg::graphic::Tile& getCurrentTile();

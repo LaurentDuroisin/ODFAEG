@@ -126,7 +126,7 @@ namespace sorrok {
         BoundingPolyhedron monsterZone(pts[0], pts[2], pts[3], true);
         monsterZone.addTriangle(pts[2], pts[0], pts[3]);
         Monster* monster = new Monster("Ogro", "Orc","MapTest",1,monsterZone);
-        std::cout<<"monster id : "<<monster->getId()<<std::endl;
+        //std::cout<<"monster id : "<<monster->getId()<<std::endl;
         Vec3f pos = monster->respawn();
         Item item("HP potion", Item::HP_POTION);
         item.addAttribute(Item::POTION_AMOUNT, 50);
@@ -178,7 +178,7 @@ namespace sorrok {
             if (request == "GETMAPINFOS") {
                 std::ostringstream oss;
                 OTextArchive oa(oss);
-                std::vector<Entity*> entities = World::getEntities("E_BIGTILE+E_WALL+E_DECOR+E_ANIMATION");
+                std::vector<Entity*> entities = World::getEntities("E_BIGTILE+E_WALL+E_DECOR+E_ANIMATION+E_PONCTUAL_LIGHT");
                 oa(entities);
                 SymEncPacket packet;
                 packet<<"MAPINFOS"+oss.str();
@@ -188,6 +188,7 @@ namespace sorrok {
                 std::ostringstream oss;
                 OTextArchive oa(oss);
                 std::vector<Entity*> heroes = World::getEntities("E_HERO");
+                std::cout<<"hero id : "<<heroes[0]->getId()<<std::endl;
                 oa(heroes);
                 SymEncPacket packet;
                 packet<<"CARINFOS"+oss.str();
@@ -367,13 +368,14 @@ namespace sorrok {
                 packet<<"ALIVE"+conversionIntString(hero->getId())+"*"+conversionFloatString(hero->getCenter().x)+"*"+conversionFloatString(hero->getCenter().y);
                 user->sendTcpPacket(packet);
             } else if (request == "INV") {
-                std::cout<<"connect"<<std::endl;
+                //std::cout<<"connect"<<std::endl;
                 caracter = new Hero(user, "Sorrok", "Nagi", "M", "Map test", "Brain", "Green", "White","Normal","Novice", 1);
                 BoundingVolume* bb2 = new BoundingBox(caracter->getGlobalBounds().getPosition().x, caracter->getGlobalBounds().getPosition().y + caracter->getGlobalBounds().getSize().y * 0.4f, 0,
                 caracter->getGlobalBounds().getSize().x, caracter->getGlobalBounds().getSize().y * 0.25f, 0);
                 caracter->setCollisionVolume(bb2);
                 caracter->setCenter(Vec3f(0, 300, 300));
                 SymEncPacket packet;
+                std::cout<<"hero id : "<<caracter->getId()<<std::endl;
                 packet<<"IDOK"+conversionIntString(caracter->getId());
                 user->sendTcpPacket(packet);
                 World::addEntity(caracter);
@@ -684,6 +686,7 @@ namespace sorrok {
                 World::deleteEntity(heroes[i]);
             }
         }
+        heroes = World::getEntities("E_HERO");
     }
     MyAppli::~MyAppli() {
         stop();
