@@ -81,7 +81,6 @@ namespace sorrok {
             ar(classs);
             ar(level);
             ar(speed);
-            ar(path);
             ar(attackMin);
             ar(attackMax);
             ar(range);
@@ -90,6 +89,7 @@ namespace sorrok {
             ar(alive);
             ar(regenHpAmountMin);
             ar(regenHpAmountMax);
+            ar(life);
         }
         virtual bool isMonster() = 0;
         void restartRespawn();

@@ -102,7 +102,6 @@ namespace sorrok {
             ar(classs);
             ar(level);
             ar(speed);
-            ar(path);
             ar(attackMin);
             ar(attackMax);
             ar(range);
@@ -111,6 +110,7 @@ namespace sorrok {
             ar(alive);
             ar(regenHpAmountMin);
             ar(regenHpAmountMax);
+            ar(life);
             sf::Int64 i = 0;
             addAttribute("isAlive"+odfaeg::core::conversionIntString(getId()), i);
             addAttribute("isMoving"+odfaeg::core::conversionIntString(getId()),i);

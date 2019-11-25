@@ -8,6 +8,7 @@ namespace sorrok {
     Caracter::Caracter (std::string type, string name, string currentMapName, string classs, int level)
     : AnimatedEntity (Vec3f(-25, -50, 0), Vec3f (50, 100, 0), Vec3f(25, 50, 0), type) {
         currentAnimIndex = 0;
+        this->name = name;
         this->classs = classs;
         this->level = level;
         speed = 0.0001f;

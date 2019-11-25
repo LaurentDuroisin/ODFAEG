@@ -15,6 +15,8 @@ namespace sorrok {
             bool isItemToCollectInList(std::string name);
             void addItemCollectedProgress(std::string name);
             void addMonsterToKillProgress(std::string name);
+            std::map<std::string, std::pair<unsigned int, unsigned int>> getMonsterToKill();
+            std::map<std::string, std::pair<unsigned int, unsigned int>> getItemsToCollect();
             template <typename Archive>
             void serialize(Archive &ar) {
                 ar(name);

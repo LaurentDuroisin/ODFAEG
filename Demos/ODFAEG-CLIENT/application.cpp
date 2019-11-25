@@ -15,10 +15,33 @@ namespace sorrok {
         sf::Clock clock1;
         addClock(clock1, "RequestTime");
         hero = nullptr;
-        monster = nullptr;
+        //monster = nullptr;
         received = false;
         Network::setCertifiateClientMess("SORROKCLIENT");
         isClientAuthentified = false;
+    }
+    void MyAppli::onLabDiaryQuestName(Label* label)  {
+        Quest quest;
+        for (unsigned int i = 0; i < static_cast<Hero*>(hero)->getDiary().size(); i++) {
+            if (label->getName() == static_cast<Hero*>(hero)->getDiary()[i].getName()) {
+                quest = static_cast<Hero*>(hero)->getDiary()[i];
+            }
+        }
+        FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
+        std::map<std::string, std::pair<unsigned int, unsigned int>>::iterator it;
+        std::map<std::string, std::pair<unsigned int, unsigned int>> monstersToKill = quest.getMonsterToKill();
+        pQuestProgress->removeAll();
+        for (it = monstersToKill.begin(); it != monstersToKill.end(); it++) {
+            Label* lab = new Label(*wDiary, Vec3f(0, 0, 0), Vec3f(300, 100, 0), fm.getResourceByAlias(Fonts::Serif),conversionIntString(it->second.first)+"/"+conversionIntString(it->second.second)+" "+it->first, 15);
+            pQuestProgress->addChild(lab);
+            lab->setParent(pQuestProgress);
+        }
+        std::map<std::string, std::pair<unsigned int, unsigned int>> itemsToCollect = quest.getItemsToCollect();
+        for (it = itemsToCollect.begin(); it != itemsToCollect.end(); it++) {
+            Label* lab = new Label(*wDiary, Vec3f(0, 0, 0), Vec3f(300, 100, 0), fm.getResourceByAlias(Fonts::Serif),conversionIntString(it->second.first)+"/"+conversionIntString(it->second.second)+" "+it->first, 15);
+            pQuestProgress->addChild(lab);
+            lab->setParent(pQuestProgress);
+        }
     }
     void MyAppli::showDiary() {
         FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
@@ -27,6 +50,9 @@ namespace sorrok {
             Label* label = new Label(*wDiary, Vec3f(0, 100*i, 0), Vec3f(300, 100, 0),fm.getResourceByAlias(Fonts::Serif),static_cast<Hero*>(hero)->getDiary()[i].getName(), 15);
             pQuestNames->addChild(label);
             label->setParent(pQuestNames);
+            Action aLabDiaryQuestName (Action::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
+            Command cmdLabDiaryQuestName (aLabDiaryQuestName, FastDelegate<bool>(&Label::isMouseInside, label), FastDelegate<void>(&MyAppli::onLabDiaryQuestName, this, label));
+            label->getListener().connect("LabDiaryQuestName", cmdLabDiaryQuestName);
         }
         wDiary->setVisible(true);
         setEventContextActivated(false);
@@ -348,7 +374,7 @@ namespace sorrok {
         light2 = new g2d::PonctualLight(Vec3f(50, 160, 160), 100, 50, 50, 255, sf::Color::Yellow, 16);
         World::addEntity(light1);
         World::addEntity(light2);
-        ZSortingRenderComponent *frc1 = new ZSortingRenderComponent(getRenderWindow(),0, "",*theMap);
+        ZSortingRenderComponent *frc1 = new ZSortingRenderComponent(getRenderWindow(),0, "",ContextSettings(0, 0, 0, 3, 0));
         ShadowRenderComponent *frc2 = new ShadowRenderComponent(getRenderWindow(),1, "");
         PerPixelLinkedListRenderComponent* frc3 = new PerPixelLinkedListRenderComponent(getRenderWindow(),2,"", ContextSettings(0, 0, 0, 3, 0));
         LightRenderComponent* frc4 = new LightRenderComponent(getRenderWindow(),3,"");
@@ -467,7 +493,7 @@ namespace sorrok {
         getRenderComponentManager().addComponent(pQuestNames);
         pQuestProgress = new Panel(*wDiary, Vec3f(300, 0, 0), Vec3f(300, 500, 0));
         getRenderComponentManager().addComponent(pQuestProgress);
-        bGiveUp = new Button(Vec3f(0, 500, 0), Vec3f(100, 600, 0),fm.getResourceByAlias(Fonts::Serif),"Give up",15,*wDiary);
+        bGiveUp = new Button(Vec3f(0, 500, 0), Vec3f(600, 100, 0),fm.getResourceByAlias(Fonts::Serif),"Give up",15,*wDiary);
         bGiveUp->addActionListener(this);
         getRenderComponentManager().addComponent(bGiveUp);
         wDiary->setVisible(false);
@@ -765,6 +791,7 @@ namespace sorrok {
             wIdentification->setVisible(false);
             idButton->setEventContextActivated(false);
             invButton->setEventContextActivated(false);
+            unsigned int heroId = conversionStringInt(response);
             SymEncPacket packet;
             packet<<"GETMAPINFOS";
             Network::sendTcpPacket(packet);
@@ -813,7 +840,7 @@ namespace sorrok {
                     au->addAnim(anim);
                 }
             }
-
+            FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
             packet.clear();
             packet<<"GETCARINFOS";
             Network::sendTcpPacket(packet);
@@ -821,218 +848,231 @@ namespace sorrok {
             iss.str("");
             ia.clear();
             iss.str(response);
-            ia(hero);
-            std::string path = "tilesets/vlad_sword.png";
-            cache.resourceManager<Texture, std::string>("TextureManager").fromFileWithAlias(path, "VLADSWORD");
-            const Texture *text = cache.resourceManager<Texture, std::string>("TextureManager").getResourceByPath(path);
-            int textRectX = 0, textRectY = 0, textRectWidth = 50, textRectHeight = 100;
-            int textWidth = text->getSize().x;
-            Vec3f tmpCenter = hero->getCenter();
-            hero->setCenter(Vec3f(0, 0, 0));
-            for (unsigned int i = 0; i < 8; i++) {
-                Anim* animation = new Anim(0.1f, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), 0);
-                for (unsigned int j = 0; j < 8; j++) {
-                    sf::IntRect textRect (textRectX, textRectY, textRectWidth, textRectHeight);
-                    Tile *tile = new Tile(text, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), textRect);
-                    tile->getFaces()[0]->getMaterial().setTexId("VLADSWORD");
-                    g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight());
-                    frame->setShadowCenter(Vec3f(0, 200, 0));
-                    if (textRectX + textRectWidth > textWidth) {
-                        textRectX = 0;
-                        textRectY += textRectHeight;
-                    } else {
-                        textRectX += textRectWidth;
+            std::vector<Entity*> heroes;
+            ia(heroes);
+            for (unsigned int i = 0; i < heroes.size(); i++) {
+                Hero* player = static_cast<Hero*>(heroes[i]);
+                std::string path = "tilesets/vlad_sword.png";
+                cache.resourceManager<Texture, std::string>("TextureManager").fromFileWithAlias(path, "VLADSWORD");
+                const Texture *text = cache.resourceManager<Texture, std::string>("TextureManager").getResourceByPath(path);
+                int textRectX = 0, textRectY = 0, textRectWidth = 50, textRectHeight = 100;
+                int textWidth = text->getSize().x;
+                Vec3f tmpCenter = player->getCenter();
+                player->setCenter(Vec3f(0, 0, 0));
+                for (unsigned int i = 0; i < 8; i++) {
+                    Anim* animation = new Anim(0.1f, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), 0);
+                    for (unsigned int j = 0; j < 8; j++) {
+                        sf::IntRect textRect (textRectX, textRectY, textRectWidth, textRectHeight);
+                        Tile *tile = new Tile(text, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), textRect);
+                        tile->getFaces()[0]->getMaterial().setTexId("VLADSWORD");
+                        g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight());
+                        frame->setShadowCenter(Vec3f(0, 200, 0));
+                        if (textRectX + textRectWidth > textWidth) {
+                            textRectX = 0;
+                            textRectY += textRectHeight;
+                        } else {
+                            textRectX += textRectWidth;
+                        }
+                        animation->getCurrentFrame()->setBoneIndex(i);
+                        animation->addFrame(frame);
                     }
-                    animation->getCurrentFrame()->setBoneIndex(i);
-                    animation->addFrame(frame);
+                    player->addAnimation(animation);
+                    au->addAnim(animation);
                 }
-                hero->addAnimation(animation);
-                au->addAnim(animation);
-            }
-            for (unsigned int i = 0; i < 8; i++) {
-                Anim* animation = new Anim(0.1f, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), 0);
-                for (unsigned int j = 0; j < 12; j++) {
-                    sf::IntRect textRect (textRectX, textRectY, textRectWidth, textRectHeight);
-                    Tile *tile = new Tile(text, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), textRect);
-                    tile->getFaces()[0]->getMaterial().setTexId("VLADSWORD");
-                    g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight());
-                    frame->setShadowCenter(Vec3f(0, 200, 0));
-                    if (textRectX + textRectWidth > textWidth) {
-                        textRectX = 0;
-                        textRectY += textRectHeight;
-                    } else {
-                        textRectX += textRectWidth;
+                for (unsigned int i = 0; i < 8; i++) {
+                    Anim* animation = new Anim(0.1f, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), 0);
+                    for (unsigned int j = 0; j < 12; j++) {
+                        sf::IntRect textRect (textRectX, textRectY, textRectWidth, textRectHeight);
+                        Tile *tile = new Tile(text, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), textRect);
+                        tile->getFaces()[0]->getMaterial().setTexId("VLADSWORD");
+                        g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight());
+                        frame->setShadowCenter(Vec3f(0, 200, 0));
+                        if (textRectX + textRectWidth > textWidth) {
+                            textRectX = 0;
+                            textRectY += textRectHeight;
+                        } else {
+                            textRectX += textRectWidth;
+                        }
+                        animation->addFrame(frame);
                     }
-                    animation->addFrame(frame);
+                    animation->getCurrentFrame()->setBoneIndex(i+8);
+                    player->addAnimation(animation);
+                    au->addAnim(animation);
                 }
-                animation->getCurrentFrame()->setBoneIndex(i+8);
-                hero->addAnimation(animation);
-                au->addAnim(animation);
-            }
-            textRectWidth = 100;
-            for (unsigned int i = 0; i < 8; i++) {
-                Anim* animation = new Anim(0.1f, Vec3f(-50, -50, 0), Vec3f(100, 100, 0), 0);
-                for (unsigned int j = 0; j < 12; j++) {
-                    sf::IntRect textRect (textRectX, textRectY, textRectWidth, textRectHeight);
-                    Tile *tile = new Tile(text, Vec3f(-50, -50, 0), Vec3f(100, 100, 0), textRect);
-                    tile->getFaces()[0]->getMaterial().setTexId("VLADSWORD");
-                    g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight());
-                    frame->setShadowCenter(Vec3f(0, 200, 0));
-                    if (textRectX + textRectWidth > textWidth) {
-                        textRectX = 0;
-                        textRectY += textRectHeight;
-                    } else {
-                        textRectX += textRectWidth;
+                textRectWidth = 100;
+                for (unsigned int i = 0; i < 8; i++) {
+                    Anim* animation = new Anim(0.1f, Vec3f(-50, -50, 0), Vec3f(100, 100, 0), 0);
+                    for (unsigned int j = 0; j < 12; j++) {
+                        sf::IntRect textRect (textRectX, textRectY, textRectWidth, textRectHeight);
+                        Tile *tile = new Tile(text, Vec3f(-50, -50, 0), Vec3f(100, 100, 0), textRect);
+                        tile->getFaces()[0]->getMaterial().setTexId("VLADSWORD");
+                        g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight());
+                        frame->setShadowCenter(Vec3f(0, 200, 0));
+                        if (textRectX + textRectWidth > textWidth) {
+                            textRectX = 0;
+                            textRectY += textRectHeight;
+                        } else {
+                            textRectX += textRectWidth;
+                        }
+                        animation->addFrame(frame);
                     }
-                    animation->addFrame(frame);
+                    animation->getCurrentFrame()->setBoneIndex(i+16);
+                    player->addAnimation(animation);
+                    au->addAnim(animation);
                 }
-                animation->getCurrentFrame()->setBoneIndex(i+16);
-                hero->addAnimation(animation);
-                au->addAnim(animation);
-            }
-            hero->setCenter(tmpCenter);
-            getView().move(hero->getCenter().x, hero->getCenter().y, hero->getCenter().z - 300);
-            for (unsigned int i = 0; i < getRenderComponentManager().getNbComponents(); i++) {
-                if (getRenderComponentManager().getRenderComponent(i) != nullptr) {
-                    View view = getView();
-                    getRenderComponentManager().getRenderComponent(i)->setView(view);
+                player->setCenter(tmpCenter);
+                if (heroId == player->getId()) {
+                    hero = player;
+                    getView().move(hero->getCenter().x, hero->getCenter().y, hero->getCenter().z - 300);
+                    for (unsigned int i = 0; i < getRenderComponentManager().getNbComponents(); i++) {
+                        if (getRenderComponentManager().getRenderComponent(i) != nullptr) {
+                            View view = getView();
+                            getRenderComponentManager().getRenderComponent(i)->setView(view);
+                        }
+                    }
+                    hpBar = new gui::ProgressBar(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(100, 10, 0),*fm.getResourceByAlias(Fonts::Serif),15);
+                    hpBar->setMaximum(100);
+                    hpBar->setMinimum(0);
+                    hpBar->setValue(100);
+                    xpBar = new gui::ProgressBar(getRenderWindow(), Vec3f(0, 590, 0), Vec3f(800, 10, 0),*fm.getResourceByAlias(Fonts::Serif),15);
+                    xpBar->setMaximum(1500);
+                    xpBar->setMinimum(0);
+                    xpBar->setValue(0);
+
+                    getRenderComponentManager().addComponent(hpBar);
+                    getRenderComponentManager().addComponent(xpBar);
+                    hero->setXpHpBar(xpBar, hpBar);
                 }
+                World::addEntity(player);
             }
-            BoundingVolume* bb2 = new BoundingBox(hero->getGlobalBounds().getPosition().x, hero->getGlobalBounds().getPosition().y + hero->getGlobalBounds().getSize().y * 0.4f, 0,
-            hero->getGlobalBounds().getSize().x, hero->getGlobalBounds().getSize().y * 0.25f, 0);
-            hero->setCollisionVolume(bb2);
-            World::addEntity(hero);
             //Network::sendTcpPacket(packet);
             response = Network::waitForLastResponse("MONSTERSINFOS", sf::seconds(5.f));
             iss.str("");
             ia.clear();
             iss.str(response);
-            ia(monster);
-            path = "tilesets/ogro.png";
-            //for (unsigned int n = 0; n < monsters.size(); n++) {
-            tmpCenter = monster->getCenter();
-            monster->setCenter(Vec3f(0, 0, 0));
-            cache.resourceManager<Texture, std::string>("TextureManager").fromFileWithAlias(path, "OGRO");
-            text = cache.resourceManager<Texture, std::string>("TextureManager").getResourceByPath(path);
-            textRectX = 0, textRectY = 0, textRectWidth = 50, textRectHeight = 100;
-            textWidth = text->getSize().x;
-            for (unsigned int i = 0; i < 8; i++) {
-                Anim* animation = new Anim(0.1f, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), 0);
-                for (unsigned int j = 0; j < 8; j++) {
-                    sf::IntRect textRect (textRectX, textRectY, textRectWidth, textRectHeight);
-                    Tile *tile = new Tile(text, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), textRect);
-                    tile->getFaces()[0]->getMaterial().setTexId("OGRO");
-                    g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight());
-                    frame->setShadowCenter(Vec3f(0, 200, 0));
-                    if (textRectX + textRectWidth > textWidth) {
-                        textRectX = 0;
-                        textRectY += textRectHeight;
-                    } else {
-                        textRectX += textRectWidth;
+            std::vector<Entity*> monsters;
+            ia(monsters);
+            for (unsigned int i = 0; i < monsters.size(); i++) {
+                Monster* monster = dynamic_cast<Monster*>(monsters[i]);
+                std::string path = "tilesets/ogro.png";
+                //for (unsigned int n = 0; n < monsters.size(); n++) {
+                Vec3f tmpCenter = monster->getCenter();
+                monster->setCenter(Vec3f(0, 0, 0));
+                cache.resourceManager<Texture, std::string>("TextureManager").fromFileWithAlias(path, "OGRO");
+                const Texture* text = cache.resourceManager<Texture, std::string>("TextureManager").getResourceByPath(path);
+                int textRectX = 0, textRectY = 0, textRectWidth = 50, textRectHeight = 100;
+                int textWidth = text->getSize().x;
+                for (unsigned int i = 0; i < 8; i++) {
+                    Anim* animation = new Anim(0.1f, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), 0);
+                    for (unsigned int j = 0; j < 8; j++) {
+                        sf::IntRect textRect (textRectX, textRectY, textRectWidth, textRectHeight);
+                        Tile *tile = new Tile(text, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), textRect);
+                        tile->getFaces()[0]->getMaterial().setTexId("OGRO");
+                        g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight());
+                        frame->setShadowCenter(Vec3f(0, 200, 0));
+                        if (textRectX + textRectWidth > textWidth) {
+                            textRectX = 0;
+                            textRectY += textRectHeight;
+                        } else {
+                            textRectX += textRectWidth;
+                        }
+                        animation->addFrame(frame);
                     }
-                    animation->addFrame(frame);
+                    animation->getCurrentFrame()->setBoneIndex(i);
+                    monster->addAnimation(animation);
+                    au->addAnim(animation);
                 }
-                animation->getCurrentFrame()->setBoneIndex(i);
-                monster->addAnimation(animation);
-                au->addAnim(animation);
-            }
-            for (unsigned int i = 0; i < 8; i++) {
-                Anim* animation = new Anim(0.1f, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), 0);
-                for (unsigned int j = 0; j < 6; j++) {
-                    sf::IntRect textRect (textRectX, textRectY, textRectWidth, textRectHeight);
-                    Tile *tile = new Tile(text, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), textRect);
-                    tile->getFaces()[0]->getMaterial().setTexId("OGRO");
-                    g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight());
-                    frame->setShadowCenter(Vec3f(0, 200, 0));
-                    //decor->changeGravityCenter(Vec3f(50, 50, 0));
-                    if (textRectX + textRectWidth > textWidth) {
-                        textRectX = 0;
-                        textRectY += textRectHeight;
-                    } else {
-                        textRectX += textRectWidth;
+                for (unsigned int i = 0; i < 8; i++) {
+                    Anim* animation = new Anim(0.1f, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), 0);
+                    for (unsigned int j = 0; j < 6; j++) {
+                        sf::IntRect textRect (textRectX, textRectY, textRectWidth, textRectHeight);
+                        Tile *tile = new Tile(text, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), textRect);
+                        tile->getFaces()[0]->getMaterial().setTexId("OGRO");
+                        g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight());
+                        frame->setShadowCenter(Vec3f(0, 200, 0));
+                        //decor->changeGravityCenter(Vec3f(50, 50, 0));
+                        if (textRectX + textRectWidth > textWidth) {
+                            textRectX = 0;
+                            textRectY += textRectHeight;
+                        } else {
+                            textRectX += textRectWidth;
+                        }
+                        animation->addFrame(frame);
                     }
-                    animation->addFrame(frame);
+                    animation->getCurrentFrame()->setBoneIndex(i+8);
+                    monster->addAnimation(animation);
+                    au->addAnim(animation);
                 }
-                animation->getCurrentFrame()->setBoneIndex(i+8);
-                monster->addAnimation(animation);
-                au->addAnim(animation);
-            }
-            textRectWidth = 100;
-            for (unsigned int i = 0; i < 8; i++) {
-                Anim* animation = new Anim(0.1f, Vec3f(-50, -50, 0), Vec3f(100, 100, 0), 0);
-                for (unsigned int j = 0; j < 11; j++) {
-                    sf::IntRect textRect(textRectX, textRectY, textRectWidth, textRectHeight);
-                    Tile *tile = new Tile(text, Vec3f(-50, -50, 0), Vec3f(100, 100, 0), textRect);
-                    tile->getFaces()[0]->getMaterial().setTexId("OGRO");
-                    g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight());
-                    frame->setShadowCenter(Vec3f(0, 200, 0));
-                    //decor->changeGravityCenter(Vec3f(50, 50, 0));
-                    if (textRectX + textRectWidth > textWidth) {
-                        textRectX = 0;
-                        textRectY += textRectHeight;
-                    } else {
-                        textRectX += textRectWidth;
+                textRectWidth = 100;
+                for (unsigned int i = 0; i < 8; i++) {
+                    Anim* animation = new Anim(0.1f, Vec3f(-50, -50, 0), Vec3f(100, 100, 0), 0);
+                    for (unsigned int j = 0; j < 11; j++) {
+                        sf::IntRect textRect(textRectX, textRectY, textRectWidth, textRectHeight);
+                        Tile *tile = new Tile(text, Vec3f(-50, -50, 0), Vec3f(100, 100, 0), textRect);
+                        tile->getFaces()[0]->getMaterial().setTexId("OGRO");
+                        g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight());
+                        frame->setShadowCenter(Vec3f(0, 200, 0));
+                        //decor->changeGravityCenter(Vec3f(50, 50, 0));
+                        if (textRectX + textRectWidth > textWidth) {
+                            textRectX = 0;
+                            textRectY += textRectHeight;
+                        } else {
+                            textRectX += textRectWidth;
+                        }
+                        animation->addFrame(frame);
                     }
-                    animation->addFrame(frame);
+                    animation->getCurrentFrame()->setBoneIndex(i+16);
+                    monster->addAnimation(animation);
+                    au->addAnim(animation);
                 }
-                animation->getCurrentFrame()->setBoneIndex(i+16);
-                monster->addAnimation(animation);
-                au->addAnim(animation);
+                monster->setCenter(tmpCenter);
+                ProgressBar* fcHpBar = new gui::ProgressBar(getRenderWindow(), Vec3f(700, 0, 0), Vec3f(100, 10, 0),*fm.getResourceByAlias(Fonts::Serif),15);
+                fcHpBar->setMinimum(0);
+                fcHpBar->setMaximum(100);
+                fcHpBar->setValue(100);
+                fcHpBar->setVisible(false);
+                monster->setXpHpBar(nullptr, fcHpBar);
+                getRenderComponentManager().addComponent(fcHpBar);
+                World::addEntity(monster);
             }
-            monster->setCenter(tmpCenter);
-            World::addEntity(monster);
             response = Network::waitForLastResponse("PNJINFOS");
             iss.str("");
             ia.clear();
             iss.str(response);
-            Pnj* pnj;
-            ia(pnj);
-            path = "tilesets/luigi.png";
-            cache.resourceManager<Texture, std::string>("TextureManager").fromFileWithAlias(path, "LUIGI");
-            text = cache.resourceManager<Texture, std::string>("TextureManager").getResourceByPath(path);
-            textRectX = 0, textRectY = 0, textRectWidth = 50, textRectHeight = 100;
-            textWidth = text->getSize().x;
-            for (unsigned int i = 0; i < 1; i++) {
-                Anim* animation = new Anim(0.1f, Vec3f(275, 250, 0), Vec3f(50, 100, 0), 0);
-                for (unsigned int j = 0; j < 8; j++) {
-                    sf::IntRect textRect (textRectX, textRectY, textRectWidth, textRectHeight);
-                    Tile *tile = new Tile(text, Vec3f(275, 250, 0), Vec3f(50, 100, 0), textRect);
-                    tile->setName("PNJ");
-                    tile->getFaces()[0]->getMaterial().setTexId("LUIGI");
-                    g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight());
-                    frame->setShadowCenter(Vec3f(0, 200, 0));
-                    if (textRectX + textRectWidth > textWidth) {
-                        textRectX = 0;
-                        textRectY += textRectHeight;
-                    } else {
-                        textRectX += textRectWidth;
+            std::vector<Entity*> pnjs;
+            ia(pnjs);
+            for (unsigned int i = 0; i < pnjs.size(); i++) {
+                Pnj* pnj = static_cast<Pnj*>(pnjs[i]);
+                std::string path = "tilesets/luigi.png";
+                cache.resourceManager<Texture, std::string>("TextureManager").fromFileWithAlias(path, "LUIGI");
+                const Texture* text = cache.resourceManager<Texture, std::string>("TextureManager").getResourceByPath(path);
+                int textRectX = 0, textRectY = 0, textRectWidth = 50, textRectHeight = 100;
+                int textWidth = text->getSize().x;
+                for (unsigned int i = 0; i < 1; i++) {
+                    Anim* animation = new Anim(0.1f, Vec3f(275, 250, 0), Vec3f(50, 100, 0), 0);
+                    for (unsigned int j = 0; j < 8; j++) {
+                        sf::IntRect textRect (textRectX, textRectY, textRectWidth, textRectHeight);
+                        Tile *tile = new Tile(text, Vec3f(275, 250, 0), Vec3f(50, 100, 0), textRect);
+                        tile->setName("PNJ");
+                        tile->getFaces()[0]->getMaterial().setTexId("LUIGI");
+                        g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight());
+                        frame->setShadowCenter(Vec3f(0, 200, 0));
+                        if (textRectX + textRectWidth > textWidth) {
+                            textRectX = 0;
+                            textRectY += textRectHeight;
+                        } else {
+                            textRectX += textRectWidth;
+                        }
+                        animation->addFrame(frame);
                     }
-                    animation->addFrame(frame);
+                    animation->getCurrentFrame()->setBoneIndex(i);
+                    pnj->addAnimation(animation);
+                    au->addAnim(animation);
                 }
-                animation->getCurrentFrame()->setBoneIndex(i);
-                pnj->addAnimation(animation);
-                au->addAnim(animation);
+                World::addEntity(pnj);
             }
-            World::addEntity(pnj);
-            FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
-            hpBar = new gui::ProgressBar(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(100, 10, 0),*fm.getResourceByAlias(Fonts::Serif),15);
-            hpBar->setMaximum(100);
-            hpBar->setMinimum(0);
-            hpBar->setValue(100);
-            xpBar = new gui::ProgressBar(getRenderWindow(), Vec3f(0, 590, 0), Vec3f(800, 10, 0),*fm.getResourceByAlias(Fonts::Serif),15);
-            xpBar->setMaximum(1500);
-            xpBar->setMinimum(0);
-            xpBar->setValue(0);
-            fcHpBar = new gui::ProgressBar(getRenderWindow(), Vec3f(700, 0, 0), Vec3f(100, 10, 0),*fm.getResourceByAlias(Fonts::Serif),15);
-            fcHpBar->setMinimum(0);
-            fcHpBar->setMaximum(100);
-            fcHpBar->setValue(100);
-            fcHpBar->setVisible(false);
-            getRenderComponentManager().addComponent(hpBar);
-            getRenderComponentManager().addComponent(xpBar);
-            getRenderComponentManager().addComponent(fcHpBar);
-            hero->setXpHpBar(xpBar, hpBar);
-            monster->setXpHpBar(nullptr, fcHpBar);
+
+            //monster->setXpHpBar(nullptr, fcHpBar);
             packet.clear();
             packet<<"GETCARPOS";
             hero->getClkTransfertTime().restart();

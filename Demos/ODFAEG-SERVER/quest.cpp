@@ -1,6 +1,8 @@
 #include "quest.hpp"
 namespace sorrok {
     Quest::Quest() {
+        name = "";
+        task = "";
     }
     Quest::Quest(std::string name, std::string task) : name(name), task(task) {
     }

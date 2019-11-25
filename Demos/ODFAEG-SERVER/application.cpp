@@ -187,22 +187,22 @@ namespace sorrok {
             if (request == "GETCARINFOS") {
                 std::ostringstream oss;
                 OTextArchive oa(oss);
-                Caracter* hero = static_cast<Caracter*> (World::getEntities("E_HERO")[0]);
-                oa(hero);
+                std::vector<Entity*> heroes = World::getEntities("E_HERO");
+                oa(heroes);
                 SymEncPacket packet;
                 packet<<"CARINFOS"+oss.str();
                 user->sendTcpPacket(packet);
                 oss.str("");
                 oa.clear();
-                Caracter* monster = static_cast<Caracter*>(World::getEntities("E_MONSTER")[0]);
-                oa(monster);
+                std::vector<Entity*> monsters = World::getEntities("E_MONSTER");
+                oa(monsters);
                 packet.clear();
                 packet<<"MONSTERSINFOS"+oss.str();
                 user->sendTcpPacket(packet);
                 oss.str("");
                 oa.clear();
-                Caracter* pnj = static_cast<Caracter*>(World::getEntities("E_PNJ")[0]);
-                oa(pnj);
+                std::vector<Entity*> pnjs = World::getEntities("E_PNJ");
+                oa(pnjs);
                 packet.clear();
                 packet<<"PNJINFOS"+oss.str();
                 user->sendTcpPacket(packet);
@@ -367,15 +367,15 @@ namespace sorrok {
                 packet<<"ALIVE"+conversionIntString(hero->getId())+"*"+conversionFloatString(hero->getCenter().x)+"*"+conversionFloatString(hero->getCenter().y);
                 user->sendTcpPacket(packet);
             } else if (request == "INV") {
-                SymEncPacket packet;
-                packet<<"IDOK";
-                user->sendTcpPacket(packet);
                 std::cout<<"connect"<<std::endl;
                 caracter = new Hero(user, "Sorrok", "Nagi", "M", "Map test", "Brain", "Green", "White","Normal","Novice", 1);
                 BoundingVolume* bb2 = new BoundingBox(caracter->getGlobalBounds().getPosition().x, caracter->getGlobalBounds().getPosition().y + caracter->getGlobalBounds().getSize().y * 0.4f, 0,
                 caracter->getGlobalBounds().getSize().x, caracter->getGlobalBounds().getSize().y * 0.25f, 0);
                 caracter->setCollisionVolume(bb2);
                 caracter->setCenter(Vec3f(0, 300, 300));
+                SymEncPacket packet;
+                packet<<"IDOK"+conversionIntString(caracter->getId());
+                user->sendTcpPacket(packet);
                 World::addEntity(caracter);
             } else if (request == "CONNECT") {
                 std::vector<Entity*> caracters = World::getEntities("E_HERO+E_MONSTER");

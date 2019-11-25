@@ -1,6 +1,8 @@
 #include "quest.hpp"
 namespace sorrok {
     Quest::Quest() {
+        name="";
+        task="";
     }
     Quest::Quest(std::string name, std::string task) : name(name), task(task) {
     }
@@ -29,5 +31,11 @@ namespace sorrok {
         if (it != monstersToKill.end() && it->second.second < it->second.first) {
             it->second.second++;
         }
+    }
+    std::map<std::string, std::pair<unsigned int, unsigned int>> Quest::getMonsterToKill() {
+        return monstersToKill;
+    }
+    std::map<std::string, std::pair<unsigned int, unsigned int>> Quest::getItemsToCollect() {
+        return itemsToCollect;
     }
 }

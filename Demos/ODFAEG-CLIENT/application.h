@@ -53,7 +53,6 @@ namespace sorrok {
         bool running;
         odfaeg::graphic::g2d::Wall *w;
         Caracter* hero;
-        Caracter* monster;
         odfaeg::window::IKeyboard::Key actualKey, previousKey;
         std::vector<odfaeg::graphic::Tile*> tiles;
         std::vector<odfaeg::graphic::Tile*> walls;
@@ -69,12 +68,13 @@ namespace sorrok {
         odfaeg::graphic::gui::TextArea* taPseudo;
         odfaeg::graphic::gui::PasswordField* taPassword;
         odfaeg::graphic::gui::Button* button, *idButton, *invButton, *bAccept, *bDeny, *bGiveUp;
-        odfaeg::graphic::gui::ProgressBar* hpBar, *xpBar, *fcHpBar;
+        odfaeg::graphic::gui::ProgressBar* hpBar, *xpBar;
         odfaeg::graphic::gui::Panel* pItems, *pInventory, *pQuestList, *pQuestNames, *pQuestProgress;
         bool isClientAuthentified;
         std::vector<std::pair<odfaeg::graphic::Sprite*, std::vector<Item>>> cristals;
         std::pair<odfaeg::graphic::Sprite*, std::vector<Item>> selectedCristal;
         Quest selectedQuest;
+        Pnj* selectedPnj;
     public :
         enum Fonts {
             Serif
@@ -99,9 +99,11 @@ namespace sorrok {
         void onIconClicked(odfaeg::graphic::gui::Icon* icon);
         void talkToPnj(odfaeg::window::IKeyboard::Key key);
         void onLabQuestClicked(odfaeg::graphic::gui::Label* label, Pnj* pnj);
+        void onLabDiaryQuestName(odfaeg::graphic::gui::Label* label);
         std::vector<std::pair<odfaeg::core::Variant<Hero::Novice, Hero::Warrior, Hero::Magician, Hero::Thief>, std::pair<odfaeg::core::Variant<Item>, odfaeg::core::FastDelegate<void>>>> gameActions;
         std::vector<ItemAction*> itemActions;
         std::vector<std::pair<std::pair<Caracter*, odfaeg::graphic::Text>, std::pair<sf::Time, sf::Time>>> tmpTexts;
+        std::vector<odfaeg::graphic::Entity*> monsters;
     };
 }
 #endif // MY_APPLI
