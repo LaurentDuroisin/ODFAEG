@@ -24,8 +24,11 @@ namespace sorrok {
         void setTimeUntilNextMove(sf::Time time);
         sf::Clock& getClkLastMove();
         bool isMovingFromKeyboard();
+        void setXp (unsigned int xp);
+        unsigned int getXp();
         ~Monster();
     private :
+        unsigned int xp;
         sf::Time time1, time2, time3;
         sf::Clock clockLastMove;
         odfaeg::physic::BoundingPolyhedron zone;

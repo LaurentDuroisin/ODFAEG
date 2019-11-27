@@ -40,8 +40,9 @@ namespace sorrok {
         this->xp += xp;
         if (this->xp >= xpReqForNextLevel) {
             setLevel(getLevel() + 1);
-            this->xp = this->xp - xpReqForNextLevel;
             xpReqForNextLevel *= 1.1f;
+            this->xp = this->xp - xpReqForNextLevel;
+            getXpBar()->setValue(this->xp);
         }
     }
     int Hero::getCurrentXp () {

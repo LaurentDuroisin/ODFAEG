@@ -297,7 +297,7 @@ namespace odfaeg {
             int endX = box.getPosition().x + box.getWidth();
             int endY = box.getPosition().y + box.getHeight();
             int endZ = box.getDepth();
-            physic::BoundingBox bx (x, y, z, endX-bx.getPosition().x, endY-bx.getPosition().y, endZ);
+            physic::BoundingBox bx (x, y, z, endX-x, endY-y, endZ);
             for (int i = x; i <= endX; i+=offsetX) {
                 for (int j = y; j <= endY; j+=offsetY) {
                     math::Vec3f point(i, j, 0);
@@ -311,8 +311,10 @@ namespace odfaeg {
                                 if (entities[k] == entity)
                                     contains = true;
                            }
-                           if (!contains && bx.intersects(bx2))
-                            entities.push_back(entity);
+                           if (!contains && bx.intersects(bx2)) {
+
+                                entities.push_back(entity);
+                           }
                         }
                     }
                 }

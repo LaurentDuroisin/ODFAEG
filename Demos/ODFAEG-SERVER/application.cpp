@@ -158,16 +158,19 @@ namespace sorrok {
                 int d = conversionStringInt(infos[6]);
                 Vec3f position(x, y, 0);
                 BoundingBox rect (x, y, z, w, h, d);
+                std::cout<<"rect : "<<rect.getPosition()<<rect.getSize()<<std::endl;
                 std::vector<Entity*> pnjs = World::getEntitiesInRect(rect, "E_PNJ");
                 int distMin = 100;
                 int id = -1;
                 for (unsigned int i = 0; i < pnjs.size(); i++) {
+                    std::cout<<"PNJ"<<std::endl;
                     Vec3f center(pnjs[i]->getCenter().x, pnjs[i]->getCenter().y, 0);
                     if (center.computeDist(position) < distMin) {
                         distMin = center.computeDist(position);
                         id = pnjs[i]->getId();
                     }
                 }
+                std::cout<<"ID : "<<id<<std::endl;
                 if (id != -1) {
                     std::string message = "SHOWQUEST"+conversionIntString(id);
                     SymEncPacket packet;
@@ -188,7 +191,6 @@ namespace sorrok {
                 std::ostringstream oss;
                 OTextArchive oa(oss);
                 std::vector<Entity*> heroes = World::getEntities("E_HERO");
-                std::cout<<"hero id : "<<heroes[0]->getId()<<std::endl;
                 oa(heroes);
                 SymEncPacket packet;
                 packet<<"CARINFOS"+oss.str();
@@ -375,7 +377,6 @@ namespace sorrok {
                 caracter->setCollisionVolume(bb2);
                 caracter->setCenter(Vec3f(0, 300, 300));
                 SymEncPacket packet;
-                std::cout<<"hero id : "<<caracter->getId()<<std::endl;
                 packet<<"IDOK"+conversionIntString(caracter->getId());
                 user->sendTcpPacket(packet);
                 World::addEntity(caracter);
@@ -562,6 +563,8 @@ namespace sorrok {
                                     std::string response = "ITEMS"+oss.str();
                                     packet<<response;
                                     Network::sendTcpPacket(packet);
+                                    static_cast<Hero*>(caracter)->up(static_cast<Monster*>(caracter->getFocusedCaracter())->getXp());
+
                                 }
                             }
                         }

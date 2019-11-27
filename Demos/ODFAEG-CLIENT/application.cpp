@@ -23,7 +23,7 @@ namespace sorrok {
     void MyAppli::onLabDiaryQuestName(Label* label)  {
         Quest quest;
         for (unsigned int i = 0; i < static_cast<Hero*>(hero)->getDiary().size(); i++) {
-            if (label->getName() == static_cast<Hero*>(hero)->getDiary()[i].getName()) {
+            if (label->getText() == static_cast<Hero*>(hero)->getDiary()[i].getName()) {
                 quest = static_cast<Hero*>(hero)->getDiary()[i];
             }
         }
@@ -31,16 +31,19 @@ namespace sorrok {
         std::map<std::string, std::pair<unsigned int, unsigned int>>::iterator it;
         std::map<std::string, std::pair<unsigned int, unsigned int>> monstersToKill = quest.getMonsterToKill();
         pQuestProgress->removeAll();
+        unsigned int i = 0;
         for (it = monstersToKill.begin(); it != monstersToKill.end(); it++) {
-            Label* lab = new Label(*wDiary, Vec3f(0, 0, 0), Vec3f(300, 100, 0), fm.getResourceByAlias(Fonts::Serif),conversionIntString(it->second.first)+"/"+conversionIntString(it->second.second)+" "+it->first, 15);
+            Label* lab = new Label(*wDiary, Vec3f(300, i*100, 0), Vec3f(300, 100, 0), fm.getResourceByAlias(Fonts::Serif),conversionIntString(it->second.first)+"/"+conversionIntString(it->second.second)+" "+it->first, 15);
             pQuestProgress->addChild(lab);
             lab->setParent(pQuestProgress);
+            i++;
         }
         std::map<std::string, std::pair<unsigned int, unsigned int>> itemsToCollect = quest.getItemsToCollect();
         for (it = itemsToCollect.begin(); it != itemsToCollect.end(); it++) {
-            Label* lab = new Label(*wDiary, Vec3f(0, 0, 0), Vec3f(300, 100, 0), fm.getResourceByAlias(Fonts::Serif),conversionIntString(it->second.first)+"/"+conversionIntString(it->second.second)+" "+it->first, 15);
+            Label* lab = new Label(*wDiary, Vec3f(300, i*100, 0), Vec3f(300, 100, 0), fm.getResourceByAlias(Fonts::Serif),conversionIntString(it->second.first)+"/"+conversionIntString(it->second.second)+" "+it->first, 15);
             pQuestProgress->addChild(lab);
             lab->setParent(pQuestProgress);
+            i++;
         }
     }
     void MyAppli::showDiary() {
@@ -223,6 +226,7 @@ namespace sorrok {
         }
     }
     void MyAppli::talkToPnj(IKeyboard::Key key) {
+        std::cout<<"talk to pnj"<<std::endl;
         int x = getView().getPosition().x;
         int y = getView().getPosition().y;
         int z = getView().getPosition().z;
@@ -603,6 +607,7 @@ namespace sorrok {
             getClock("RequestTime").restart();
         }*/
         if (Network::getResponse("SHOWQUEST", response)) {
+            std::cout<<"show quest"<<std::endl;
             Pnj* pnj = static_cast<Pnj*>(World::getEntity(conversionStringInt(response)));
             std::vector<Quest> quests = pnj->getQuests();
             pQuestList->removeAll();
@@ -739,6 +744,9 @@ namespace sorrok {
            caracter->setAttacking(false);
            caracter->setFightingMode(false);
            caracter->setAlive(false);
+           if (caracter->isMonster()) {
+                static_cast<Hero*>(caracter->getFocusedCaracter())->up(static_cast<Monster*>(caracter)->getXp());
+           }
        }
        if (Network::getResponse("ENTERINFIGHTINGMODE", response)) {
             int id = conversionStringInt(response);
@@ -790,7 +798,6 @@ namespace sorrok {
             idButton->setEventContextActivated(false);
             invButton->setEventContextActivated(false);
             int heroId = conversionStringInt(response);
-            std::cout<<"hero id : "<<heroId<<std::endl;
             SymEncPacket packet;
             packet<<"GETMAPINFOS";
             Network::sendTcpPacket(packet);
@@ -920,9 +927,7 @@ namespace sorrok {
                     au->addAnim(animation);
                 }
                 player->setCenter(tmpCenter);
-                std::cout<<"player id : "<<player->getId();
                 if (heroId == player->getId()) {
-                    std::cout<<"set hero"<<std::endl;
                     hero = player;
                     getView().move(hero->getCenter().x, hero->getCenter().y, hero->getCenter().z - 300);
                     for (unsigned int i = 0; i < getRenderComponentManager().getNbComponents(); i++) {

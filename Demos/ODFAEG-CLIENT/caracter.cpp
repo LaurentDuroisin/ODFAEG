@@ -355,6 +355,9 @@ namespace sorrok {
     bool Caracter::isAttacked() {
         return attacked;
     }
+    ProgressBar* Caracter::getXpBar() {
+        return xpBar;
+    }
     Caracter::~Caracter() {
     }
 }

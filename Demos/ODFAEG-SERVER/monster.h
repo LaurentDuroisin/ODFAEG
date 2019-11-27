@@ -29,6 +29,8 @@ namespace sorrok {
         bool isMovingFromKeyboard();
         void setSavedPos (odfaeg::math::Vec3f savedPos);
         odfaeg::math::Vec3f getSavedPos();
+        void setXp (unsigned int xp);
+        unsigned int getXp();
         ~Monster();
     private :
         sf::Time time1, time2, time3;
@@ -36,6 +38,7 @@ namespace sorrok {
         odfaeg::math::Vec3f savedPos;
         odfaeg::physic::BoundingPolyhedron zone;
         std::multimap<float, Item> lootableItems;
+        unsigned int xp;
     };
 }
 #endif

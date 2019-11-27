@@ -13,6 +13,7 @@ namespace sorrok {
         time1 = sf::seconds(5.f);
         time2 = sf::seconds(7.f);
         time3 = sf::seconds(Math::random(time1.asSeconds(), time2.asSeconds()));
+        xp = 500;
     }
     Vec3f Monster::respawn() {
          std::array<std::array<float, 2>, 3> exts = Computer::getExtends(zone.getPoints());
@@ -64,6 +65,12 @@ namespace sorrok {
             }
         }
         return items;
+    }
+    void Monster::setXp (unsigned int xp) {
+        this->xp = xp;
+    }
+    unsigned int Monster::getXp() {
+        return xp;
     }
     Monster::~Monster() {
     }

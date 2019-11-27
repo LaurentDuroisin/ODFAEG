@@ -336,7 +336,7 @@ namespace odfaeg {
             }
         }
         bool BoundingBox::intersects (BoundingVolume& bv, CollisionResultSet::Info& info) {
-            return false;
+            return bv.intersects(*this, info);
         }
         //Test if the box intersects the specified sphere.
         bool BoundingBox::intersects (BoundingSphere &bs, CollisionResultSet::Info& info) {

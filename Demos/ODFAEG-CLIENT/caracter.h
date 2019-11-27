@@ -124,6 +124,7 @@ namespace sorrok {
         void restartRegenHP();
         virtual ~Caracter();
         bool isAttacked();
+        odfaeg::graphic::gui::ProgressBar* getXpBar();
         private :
         std::string name, currentMapName, classs;
         int level, attackMin, attackMax, sterk, range;

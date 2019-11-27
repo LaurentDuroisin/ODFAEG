@@ -81,6 +81,9 @@ int main(int argv, char* argc[]) {
     EXPORT_CLASS_GUID(EntityPLIGHT, Entity, g2d::PonctualLight)
     MyAppli app(sf::VideoMode(800, 600, 32), "Test odfaeg");
     return app.exec();
+    BoundingBox bx(264, 321, 21, 800, 600, 2800);
+    BoundingBox bx2(275, 250, 300, 50, 100, 0);
+    std::cout<<bx.intersects(bx2);
 
     /*TcpSocket clientTCP;
     bool running = false;
