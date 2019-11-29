@@ -71,6 +71,26 @@ namespace sorrok {
         }
         lQuestName->setText(quest.getName());
         lQuestTask->setText(quest.getTask());
+        pRewards->removeAll();
+        FontManager<Fonts> &fm = cache.resourceManager<Font, Fonts>("FontManager");
+        Label* lxp = new Label(*wDisplayQuest, pRewards->getPosition(), Vec3f(50, 100, 0),fm.getResourceByAlias(Fonts::Serif),"xp : "+conversionIntString(quest.getXp()), 10);
+        pRewards->addChild(lxp);
+        lxp->setParent(pRewards);
+        std::map<unsigned int, Item> rewards = quest.getRewards();
+        std::map<unsigned int, Item>::iterator it;
+        TextureManager<Item::Type> &tm2 = cache.resourceManager<Texture, Item::Type>("TextureManager2");
+        unsigned int i = 0;
+        for (it = rewards.begin(); it != rewards.end(); it++) {
+            Sprite sprite (*tm2.getResourceByAlias(it->second.getType()),Vec3f(pRewards->getPosition().x + 50 * (i+1), pRewards->getPosition().y, 0),Vec3f(50, 50, 0), sf::IntRect(0, 0, 50, 50));
+            Icon* icon = new Icon(*wDisplayQuest,Vec3f(pRewards->getPosition().x + 50 * (i+1), pRewards->getPosition().y, 0),Vec3f(50, 50, 0),sprite);
+            pRewards->addChild(icon);
+            icon->setParent(pRewards);
+            Label* label = new Label(*wDisplayQuest, Vec3f(pRewards->getPosition().x + 50 * (i+1), pRewards->getPosition().y, 0), Vec3f(50, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionIntString(it->first), 10);
+            label->setBackgroundColor(sf::Color::Transparent);
+            pRewards->addChild(label);
+            lxp->setParent(pRewards);
+            i++;
+        }
         wDisplayQuest->setVisible(true);
     }
     void MyAppli::onIconClicked(Icon* icon) {
@@ -481,11 +501,13 @@ namespace sorrok {
         getRenderComponentManager().addComponent(lQuestName);
         lQuestTask = new Label(*wDisplayQuest, Vec3f(0, 100, 0),Vec3f(400, 400, 0),fm.getResourceByAlias(Fonts::Serif), "", 15);
         getRenderComponentManager().addComponent(lQuestTask);
-        bAccept = new Button(Vec3f(0, 400, 0), Vec3f(200, 100, 0),fm.getResourceByAlias(Fonts::Serif), "Accept", 15, *wDisplayQuest);
+        bAccept = new Button(Vec3f(0, 500, 0), Vec3f(200, 100, 0),fm.getResourceByAlias(Fonts::Serif), "Accept", 15, *wDisplayQuest);
         getRenderComponentManager().addComponent(bAccept);
         bAccept->addActionListener(this);
-        bDeny = new Button(Vec3f(200, 400, 0), Vec3f(200, 100, 0),fm.getResourceByAlias(Fonts::Serif), "Give up", 15, *wDisplayQuest);
+        bDeny = new Button(Vec3f(200, 500, 0), Vec3f(200, 100, 0),fm.getResourceByAlias(Fonts::Serif), "Give up", 15, *wDisplayQuest);
         getRenderComponentManager().addComponent(bDeny);
+        pRewards = new Panel(*wDisplayQuest, Vec3f(0, 400, 0), Vec3f(400, 100, 0));
+        getRenderComponentManager().addComponent(pRewards);
         bDeny->addActionListener(this);
         wDisplayQuest->setVisible(false);
 
@@ -607,8 +629,8 @@ namespace sorrok {
             getClock("RequestTime").restart();
         }*/
         if (Network::getResponse("SHOWQUEST", response)) {
-            std::cout<<"show quest"<<std::endl;
             Pnj* pnj = static_cast<Pnj*>(World::getEntity(conversionStringInt(response)));
+            selectedPnj = pnj;
             std::vector<Quest> quests = pnj->getQuests();
             pQuestList->removeAll();
             FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
@@ -1193,7 +1215,8 @@ namespace sorrok {
                             caracter->setDamages(damages);
                             sf::Int64 time = Application::getTimeClk().getElapsedTime().asMicroseconds() - conversionStringLong(infos[nb+1]);
                             caracter->setDmgTransferTime(time);
-                            caracter->setLife(conversionStringInt(infos[nb+2]));
+                            if (conversionStringLong(infos[nb+1]) > caracter->getAttribute("life"+conversionIntString(caracter->getId())).getValue<sf::Int64>())
+                                caracter->setLife(conversionStringInt(infos[nb+2]));
                         }
                     }
                     sf::Int64 time = caracter->getDmgTransferTime();
@@ -1242,7 +1265,8 @@ namespace sorrok {
                             caracter->setRegen(regen);
                             sf::Int64 time = Application::getTimeClk().getElapsedTime().asMicroseconds() - conversionStringLong(infos[nb+1]);
                             caracter->setRgnTransferTime(time);
-                            caracter->setLife(conversionStringInt(infos[nb+2]));
+                            if (conversionStringLong(infos[nb+1]) > caracter->getAttribute("life"+conversionIntString(caracter->getId())).getValue<sf::Int64>())
+                                caracter->setLife(conversionStringInt(infos[nb+2]));
                         }
                     }
                     sf::Int64 time = caracter->getRgnTransferTime();
@@ -1296,7 +1320,7 @@ namespace sorrok {
         }
     }
     void MyAppli::actionPerformed(gui::Button* item) {
-        //std::cout<<"text : "<<item->getText()<<std::endl;
+        std::cout<<"text : "<<item->getText()<<std::endl;
         if (item->getText() == "Accept") {
             if (!static_cast<Hero*>(hero)->containsQuest(selectedQuest)) {
                 static_cast<Hero*>(hero)->addQuest(selectedQuest);
@@ -1304,6 +1328,10 @@ namespace sorrok {
             wDisplayQuest->setVisible(false);
             setEventContextActivated(true);
             selectedQuest = Quest();
+            std::string request = "ACCEPT*"+conversionIntString(selectedPnj->getId())+"*"+selectedQuest.getName()+"*"+conversionIntString(hero->getId());
+            SymEncPacket packet;
+            packet<<request;
+            Network::sendTcpPacket(packet);
         }
         if (item->getText() == "Give up") {
             if (static_cast<Hero*>(hero)->containsQuest(selectedQuest)) {

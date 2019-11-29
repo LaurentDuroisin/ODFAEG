@@ -2,9 +2,14 @@
 #define QUEST_HPP
 #include <string>
 #include <map>
+#include "item.hpp"
+#include <map>
 namespace sorrok {
     class Quest {
         public :
+            enum Status {
+                NEW, IN_PROGRESS, COMPLETE
+            };
             Quest ();
             Quest (std::string name, std::string task);
             std::string getName();
@@ -17,18 +22,32 @@ namespace sorrok {
             void addMonsterToKillProgress(std::string name);
             std::map<std::string, std::pair<unsigned int, unsigned int>> getMonsterToKill();
             std::map<std::string, std::pair<unsigned int, unsigned int>> getItemsToCollect();
+            void setPnjToVisit(std::string name);
+            std::string getPnjToVisit();
+            void setXp (int xp);
+            int getXp();
+            void addReward (unsigned int nb, Item item);
+            std::map<unsigned int, Item> getRewards();
+            void setStatus (Status status);
+            Status getStatus();
             template <typename Archive>
             void serialize(Archive &ar) {
                 ar(name);
                 ar(task);
                 ar(itemsToCollect);
                 ar(monstersToKill);
+                ar(pnjToVisit);
+                ar(rewards);
+                ar(status);
             }
         private :
-            std::string name;
+            std::string name, pnjToVisit;
             std::string task;
             std::map<std::string, std::pair<unsigned int, unsigned int>> itemsToCollect;
             std::map<std::string, std::pair<unsigned int, unsigned int>> monstersToKill;
+            int xp;
+            std::map<unsigned int, Item> rewards;
+            Status status;
     };
 }
 #endif

@@ -136,6 +136,7 @@ namespace sorrok {
         World::addEntity(monster);
         Quest quest("Quête du débutant", "Tuer 10 ogres");
         quest.addMonsterToKill(monster->getName(), 10);
+        quest.addReward(5, item);
         Pnj* pnj = new Pnj();
         pnj->addQuest(quest);
         pnj->setCenter(Vec3f (300, 300, 300));
@@ -149,6 +150,19 @@ namespace sorrok {
             sf::Int64 oldLoopCliTime = user->getClientTime();
             std::vector<std::string> infos = split(message, "*");
             std::string request = infos[0];
+            if (request == "ACCEPT") {
+                unsigned int id = conversionStringInt(infos[1]);
+                std::string name = infos[2];
+                Pnj* pnj = static_cast<Pnj*>(World::getEntity(id));
+                Quest quest;
+                for (unsigned int i = 0; i < pnj->getQuests().size(); i++) {
+                    if (pnj->getQuests()[i].getName() == name) {
+                        quest = pnj->getQuests()[i];
+                    }
+                }
+                Hero* hero = static_cast<Hero*>(World::getEntity(conversionStringInt(infos[3])));
+                hero->addQuest(quest);
+            }
             if (request == "TALKTOPNJ") {
                 int x = conversionStringInt(infos[1]);
                 int y = conversionStringInt(infos[2]);

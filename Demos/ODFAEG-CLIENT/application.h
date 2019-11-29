@@ -69,7 +69,7 @@ namespace sorrok {
         odfaeg::graphic::gui::PasswordField* taPassword;
         odfaeg::graphic::gui::Button* button, *idButton, *invButton, *bAccept, *bDeny, *bGiveUp;
         odfaeg::graphic::gui::ProgressBar* hpBar, *xpBar;
-        odfaeg::graphic::gui::Panel* pItems, *pInventory, *pQuestList, *pQuestNames, *pQuestProgress;
+        odfaeg::graphic::gui::Panel* pItems, *pInventory, *pQuestList, *pQuestNames, *pQuestProgress, *pRewards;
         bool isClientAuthentified;
         std::vector<std::pair<odfaeg::graphic::Sprite*, std::vector<Item>>> cristals;
         std::pair<odfaeg::graphic::Sprite*, std::vector<Item>> selectedCristal;

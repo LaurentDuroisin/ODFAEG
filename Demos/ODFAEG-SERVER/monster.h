@@ -18,6 +18,7 @@ namespace sorrok {
         void vtserialize(Archive & ar) {
             Caracter::vtserialize(ar);
             ar(zone);
+            ar(xp);
         }
         sf::Time getMoveTimeInterval1();
         sf::Time getMoveTimeInterval2();

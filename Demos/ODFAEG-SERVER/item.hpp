@@ -11,6 +11,7 @@ namespace sorrok {
         enum AttribType {
             POTION_AMOUNT
         };
+        Item();
         Item (std::string name, Type type);
         Type getType();
         void addAttribute(AttribType attribType, float value);

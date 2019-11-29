@@ -4,7 +4,7 @@ namespace odfaeg {
         namespace gui {
             ProgressBar::ProgressBar(RenderWindow& rw, math::Vec3f position, math::Vec3f size, const Font& font, unsigned int charSize) :
             LightComponent(rw, position, size, size*0.5f) {
-                bar = RectangleShape(size);
+                bar = RectangleShape(math::Vec3f(0, size.y, size.z));
                 bar.setPosition(position);
                 bar.setFillColor(sf::Color::Red);
                 this->value = 0;
@@ -31,7 +31,10 @@ namespace odfaeg {
             void ProgressBar::setValue(int value) {
                 //std::cout<<"value : "<<value<<std::endl;
                 int sizeX = getSize().x / (maxi - mini) * value;
-                //std::cout<<" size x : "<<sizeX<<std::endl;
+                if (getName() == "XPBAR") {
+                    bar.setName("RXPBAR");
+                }
+
                 bar.setSize(math::Vec3f(sizeX, bar.getSize().y, bar.getSize().z));
                 //std::cout<<"new size : "<<bar.getSize()<<std::endl;
                 this->value = value;

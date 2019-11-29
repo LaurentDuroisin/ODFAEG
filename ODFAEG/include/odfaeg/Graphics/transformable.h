@@ -26,10 +26,10 @@ namespace odfaeg {
             * \brief get the bounding box of the transformable object.
             * \return the bounding box of the global object.
             */
-            virtual void setName (std::string name) {
+            void setName (std::string name) {
                 this->name = name;
             }
-            virtual std::string getName() {
+            std::string getName() {
                 return name;
             }
             physic::BoundingBox getLocalBounds() const {
@@ -68,7 +68,8 @@ namespace odfaeg {
             * \return the size of the transformable object.
             */
             math::Vec3f getSize() const {
-
+                if (name == "RXPBAR")
+                    std::cout<<"transformable size : "<<m_size<<std::endl;
                 return m_size;
             }
             /**
@@ -194,12 +195,15 @@ namespace odfaeg {
             * \param size : the size of the transformable object.
             */
             void setSize (math::Vec3f size) {
+                if (name == "RXPBAR")
+                        std::cout<<"old size : "<<m_size.x<<" new size : "<<size.x<<std::endl;
                 math::Vec3f scale;
                 if (m_size.x == 0 && size.x == 0) {
                     scale.x = 0;
                 } else if (m_size.x == 0) {
                     scale.x = 1;
                     m_size.x = size.x;
+
                     localBounds.setSize(m_size.x, localBounds.getHeight(), localBounds.getDepth());
                 } else {
                     scale.x = size.x / localBounds.getWidth();

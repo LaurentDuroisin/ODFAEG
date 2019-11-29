@@ -37,13 +37,14 @@ namespace sorrok {
         this->xpReqForNextLevel = xpReqForNextLevel;
     }
     void Hero::up (int xp) {
+        getXpBar()->setName("XPBAR");
         this->xp += xp;
         if (this->xp >= xpReqForNextLevel) {
             setLevel(getLevel() + 1);
-            xpReqForNextLevel *= 1.1f;
             this->xp = this->xp - xpReqForNextLevel;
-            getXpBar()->setValue(this->xp);
+            xpReqForNextLevel *= 1.1f;
         }
+        getXpBar()->setValue(this->xp);
     }
     int Hero::getCurrentXp () {
         return xp;

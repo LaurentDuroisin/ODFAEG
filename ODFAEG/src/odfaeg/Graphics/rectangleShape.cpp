@@ -46,8 +46,20 @@ namespace odfaeg
         ////////////////////////////////////////////////////////////
         void RectangleShape::onScale(math::Vec3f& scale)
         {
-           /*m_size = getSize();
-           update();*/
+           if(m_size.x == 0) {
+             m_size.x = getSize().x;
+             update();
+           }
+           if (m_size.y == 0) {
+             m_size.y = getSize().y;
+             update();
+           }
+           if (m_size.z == 0) {
+             m_size.z = getSize().z;
+             update();
+           }
+           if (getName() == "RXPBAR")
+               std::cout<<"size : "<<m_size<<std::endl;
         }
 
         ////////////////////////////////////////////////////////////

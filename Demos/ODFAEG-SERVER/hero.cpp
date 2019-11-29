@@ -15,6 +15,9 @@ namespace sorrok {
         moveFromKeyboard = false;
         this->user = user;
     }
+    void Hero::addQuest(Quest quest) {
+        diary.push_back(quest);
+    }
     User* Hero::getUser() {
         return user;
     }

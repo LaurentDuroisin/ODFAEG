@@ -2,6 +2,7 @@
 #define HERO_HPP
 #include "caracter.h"
 #include "odfaeg/Network/network.h"
+#include "quest.hpp"
 namespace sorrok {
     class Hero : public Caracter {
     public :
@@ -19,6 +20,7 @@ namespace sorrok {
         void up (int xp);
         int getCurrentXp ();
         int getXpReqForNextLevel ();
+        void addQuest(Quest quest);
         template <typename Archive>
         void vtserialize(Archive& ar) {
             Caracter::vtserialize(ar);
@@ -37,6 +39,7 @@ namespace sorrok {
         bool moveFromKeyboard;
         int xp, xpReqForNextLevel;
         odfaeg::network::User* user;
+        std::vector<Quest> diary;
     };
 }
 #endif // HERO_HPP

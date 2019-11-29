@@ -3,8 +3,10 @@ namespace sorrok {
     Quest::Quest() {
         name = "";
         task = "";
+        xp = 0;
     }
     Quest::Quest(std::string name, std::string task) : name(name), task(task) {
+        xp = 0;
     }
     std::string Quest::getName() {
         return name;
@@ -31,5 +33,29 @@ namespace sorrok {
         if (it != monstersToKill.end() && it->second.second < it->second.first) {
             it->second.second++;
         }
+    }
+    void Quest::setPnjToVisit(std::string name) {
+        pnjToVisit = name;
+    }
+    std::string Quest::getPnjToVisit() {
+        return pnjToVisit;
+    }
+    void Quest::setXp (int xp) {
+        this->xp = xp;
+    }
+    int Quest::getXp() {
+        return xp;
+    }
+    void Quest::addReward(unsigned int nb, Item item) {
+        rewards.insert(std::make_pair(nb, item));
+    }
+    std::map<unsigned int, Item> Quest::getRewards() {
+        return rewards;
+    }
+    void Quest::setStatus(Status status) {
+        this->status = status;
+    }
+    Quest::Status Quest::getStatus() {
+        return status;
     }
 }

@@ -5,6 +5,9 @@ namespace sorrok {
     void Pnj::addQuest (Quest quest) {
         quests.push_back(quest);
     }
+    std::vector<Quest> Pnj::getQuests() {
+        return quests;
+    }
     bool Pnj::isMovingFromKeyboard() {
         return false;
     }

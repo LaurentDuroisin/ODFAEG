@@ -11,14 +11,6 @@ namespace odfaeg {
             LightComponent(RenderWindow& window, math::Vec3f position, math::Vec3f size, math::Vec3f origin, unsigned int priority = 0, LightComponent* parent = nullptr) :
                 Component (window, position, size, origin, priority), parent(parent) {
             }
-            void setName(std::string name) {
-                if (name == "PINVENTORY")
-                    Transformable::setName(name);
-                this->name = name;
-            }
-            std::string getName() {
-                return name;
-            }
             void setParent(LightComponent* parent) {
                 this->parent = parent;
             }
@@ -85,9 +77,7 @@ namespace odfaeg {
                         && it->second->getPosition().y + it->second->getSize().y >= getPosition().y
                         && it->second->getPosition().x <= getPosition().x + getSize().x
                         && it->second->getPosition().y <= getPosition().y + getSize().y) {
-                        /*if(name == "PFILES" && it == sortedChildren.begin()) {
-                            std::cout<<"child pos : "<<it->second->getPosition()<<" child size : "<<it->second->getSize()<<std::endl;
-                        }*/
+
                         it->second->draw(target, states);
                     }
                 }
@@ -146,7 +136,6 @@ namespace odfaeg {
             }
             virtual ~LightComponent() {}
             private :
-            std::string name;
             LightComponent* parent;
             std::vector<std::unique_ptr<LightComponent>> children;
         };

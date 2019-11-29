@@ -8,6 +8,7 @@ namespace sorrok {
         public :
             Pnj();
             void addQuest(Quest quest);
+            std::vector<Quest> getQuests();
             bool isMovingFromKeyboard();
             bool isMonster();
             template <typename Archive>
