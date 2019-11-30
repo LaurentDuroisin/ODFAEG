@@ -58,8 +58,18 @@ namespace odfaeg
              m_size.z = getSize().z;
              update();
            }
-           if (getName() == "RXPBAR")
-               std::cout<<"size : "<<m_size<<std::endl;
+           if (scale.x == 0) {
+            m_size.x = 0;
+            update();
+           }
+           if (scale.y == 0) {
+            m_size.y = 0;
+            update();
+           }
+           if (scale.z == 0) {
+            m_size.z = 0;
+            update();
+           }
         }
 
         ////////////////////////////////////////////////////////////

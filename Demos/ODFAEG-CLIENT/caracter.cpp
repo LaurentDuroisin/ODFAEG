@@ -306,6 +306,9 @@ namespace sorrok {
     string Caracter::getClass () {
         return classs;
     }
+    std::string Caracter::getName() {
+        return name;
+    }
     void Caracter::onDraw(RenderTarget &target, RenderStates states) {
         target.draw(*getCurrentFrame(), states);
     }

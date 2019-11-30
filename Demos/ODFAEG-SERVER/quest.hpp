@@ -4,6 +4,7 @@
 #include <map>
 #include "item.hpp"
 #include <vector>
+#include <iostream>
 namespace sorrok {
     class Quest {
         enum Status {

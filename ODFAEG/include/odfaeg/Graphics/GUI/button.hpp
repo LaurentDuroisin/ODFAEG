@@ -21,6 +21,7 @@ namespace odfaeg {
                     bool isMouseInButton();
                     void onEventPushed(window::IEvent event, RenderWindow& window);
                     void onUpdate(RenderWindow* window, window::IEvent& event);
+                    void setText(std::string text);
                 private :
                     math::Vec3f size;
                     Text text;

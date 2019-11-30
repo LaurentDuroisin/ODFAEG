@@ -73,7 +73,7 @@ namespace sorrok {
         bool isClientAuthentified;
         std::vector<std::pair<odfaeg::graphic::Sprite*, std::vector<Item>>> cristals;
         std::pair<odfaeg::graphic::Sprite*, std::vector<Item>> selectedCristal;
-        Quest selectedQuest;
+        Quest* selectedQuest;
         Pnj* selectedPnj;
     public :
         enum Fonts {
@@ -98,7 +98,7 @@ namespace sorrok {
         void showInventory();
         void onIconClicked(odfaeg::graphic::gui::Icon* icon);
         void talkToPnj(odfaeg::window::IKeyboard::Key key);
-        void onLabQuestClicked(odfaeg::graphic::gui::Label* label, Pnj* pnj);
+        void onLabQuestClicked(odfaeg::graphic::gui::Label* label);
         void onLabDiaryQuestName(odfaeg::graphic::gui::Label* label);
         std::vector<std::pair<odfaeg::core::Variant<Hero::Novice, Hero::Warrior, Hero::Magician, Hero::Thief>, std::pair<odfaeg::core::Variant<Item>, odfaeg::core::FastDelegate<void>>>> gameActions;
         std::vector<ItemAction*> itemActions;

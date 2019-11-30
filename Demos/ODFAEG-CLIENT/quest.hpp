@@ -4,6 +4,7 @@
 #include <map>
 #include "item.hpp"
 #include <map>
+#include <iostream>
 namespace sorrok {
     class Quest {
         public :
@@ -41,6 +42,7 @@ namespace sorrok {
                 ar(status);
             }
         private :
+            bool checkIfIsComplete();
             std::string name, pnjToVisit;
             std::string task;
             std::map<std::string, std::pair<unsigned int, unsigned int>> itemsToCollect;

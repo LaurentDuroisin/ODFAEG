@@ -130,7 +130,7 @@ namespace sorrok {
         Vec3f pos = monster->respawn();
         Item item("HP potion", Item::HP_POTION);
         item.addAttribute(Item::POTION_AMOUNT, 50);
-        monster->addLootableItem(item, 0.5);
+        monster->addLootableItem(item, 1.f);
         tmpPosition = pos;
         monster->setCenter(pos);
         World::addEntity(monster);
@@ -140,6 +140,7 @@ namespace sorrok {
         Pnj* pnj = new Pnj();
         pnj->addQuest(quest);
         pnj->setCenter(Vec3f (300, 300, 300));
+        quest.setPnjToVisit("Questy");
         World::addEntity(pnj);
         std::cout<<"server is ready!"<<std::endl;
     }

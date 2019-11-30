@@ -12,7 +12,7 @@ namespace sorrok {
     bool Pnj::isMonster() {
         return false;
     }
-    std::vector<Quest> Pnj::getQuests() {
+    std::vector<Quest>& Pnj::getQuests() {
         return quests;
     }
 }

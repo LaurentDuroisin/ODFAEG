@@ -4,9 +4,13 @@ namespace sorrok {
         name = "";
         task = "";
         xp = 0;
+        status = NEW;
+        pnjToVisit = "";
     }
     Quest::Quest(std::string name, std::string task) : name(name), task(task) {
         xp = 0;
+        status = NEW;
+        pnjToVisit = "";
     }
     std::string Quest::getName() {
         return name;

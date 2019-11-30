@@ -1,12 +1,19 @@
 #include "quest.hpp"
+#include <vector>
+#include "pnj.hpp"
 namespace sorrok {
+    using namespace odfaeg::graphic;
     Quest::Quest() {
         name="";
         task="";
         xp = 0;
+        status = NEW;
+        pnjToVisit = "";
     }
     Quest::Quest(std::string name, std::string task) : name(name), task(task) {
         xp = 0;
+        status = NEW;
+        pnjToVisit = "";
     }
     std::string Quest::getName() {
         return name;
@@ -25,6 +32,9 @@ namespace sorrok {
         it = itemsToCollect.find(name);
         if (it != itemsToCollect.end() && it->second.second < it->second.first) {
             it->second.second++;
+            if (checkIfIsComplete()) {
+                status = COMPLETE;
+            }
         }
     }
     void Quest::addMonsterToKillProgress(std::string name) {
@@ -32,7 +42,22 @@ namespace sorrok {
         it = monstersToKill.find(name);
         if (it != monstersToKill.end() && it->second.second < it->second.first) {
             it->second.second++;
+            if (checkIfIsComplete()) {
+                status = COMPLETE;
+            }
         }
+    }
+    bool Quest::checkIfIsComplete() {
+        std::map<std::string, std::pair<unsigned int, unsigned int>>::iterator it;
+        for (it = monstersToKill.begin(); it != monstersToKill.end(); it++) {
+            if (it->second.first != it->second.second)
+                return false;
+        }
+        for (it = itemsToCollect.begin(); it != itemsToCollect.end(); it++) {
+            if (it->second.first != it->second.second)
+                return false;
+        }
+        return true;
     }
     std::map<std::string, std::pair<unsigned int, unsigned int>> Quest::getMonsterToKill() {
         return monstersToKill;

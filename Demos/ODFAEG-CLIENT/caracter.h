@@ -95,6 +95,7 @@ namespace sorrok {
         void setRgnTransferTime(sf::Int64 time);
         sf::Int64 getDmgTransferTime();
         sf::Int64 getRgnTransferTime();
+        std::string getName();
         template <typename Archive>
         void vtserialize(Archive & ar) {
             Entity::vtserialize(ar);

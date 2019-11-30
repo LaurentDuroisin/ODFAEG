@@ -15,30 +15,30 @@ namespace sorrok {
         sf::Clock clock1;
         addClock(clock1, "RequestTime");
         hero = nullptr;
-        //monster = nullptr;
+        selectedPnj = nullptr;
+        selectedQuest = nullptr;
         received = false;
         Network::setCertifiateClientMess("SORROKCLIENT");
         isClientAuthentified = false;
     }
     void MyAppli::onLabDiaryQuestName(Label* label)  {
-        Quest quest;
+        Quest* quest;
         for (unsigned int i = 0; i < static_cast<Hero*>(hero)->getDiary().size(); i++) {
-            if (label->getText() == static_cast<Hero*>(hero)->getDiary()[i].getName()) {
+            if (label->getText() == static_cast<Hero*>(hero)->getDiary()[i]->getName()) {
                 quest = static_cast<Hero*>(hero)->getDiary()[i];
             }
         }
         FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
         std::map<std::string, std::pair<unsigned int, unsigned int>>::iterator it;
-        std::map<std::string, std::pair<unsigned int, unsigned int>> monstersToKill = quest.getMonsterToKill();
-        pQuestProgress->removeAll();
+        std::map<std::string, std::pair<unsigned int, unsigned int>> monstersToKill = quest->getMonsterToKill();
         unsigned int i = 0;
         for (it = monstersToKill.begin(); it != monstersToKill.end(); it++) {
-            Label* lab = new Label(*wDiary, Vec3f(300, i*100, 0), Vec3f(300, 100, 0), fm.getResourceByAlias(Fonts::Serif),conversionIntString(it->second.first)+"/"+conversionIntString(it->second.second)+" "+it->first, 15);
+            Label* lab = new Label(*wDiary, Vec3f(300, i*100, 0), Vec3f(300, 100, 0), fm.getResourceByAlias(Fonts::Serif),conversionIntString(it->second.second)+"/"+conversionIntString(it->second.first)+" "+it->first, 15);
             pQuestProgress->addChild(lab);
             lab->setParent(pQuestProgress);
             i++;
         }
-        std::map<std::string, std::pair<unsigned int, unsigned int>> itemsToCollect = quest.getItemsToCollect();
+        std::map<std::string, std::pair<unsigned int, unsigned int>> itemsToCollect = quest->getItemsToCollect();
         for (it = itemsToCollect.begin(); it != itemsToCollect.end(); it++) {
             Label* lab = new Label(*wDiary, Vec3f(300, i*100, 0), Vec3f(300, 100, 0), fm.getResourceByAlias(Fonts::Serif),conversionIntString(it->second.first)+"/"+conversionIntString(it->second.second)+" "+it->first, 15);
             pQuestProgress->addChild(lab);
@@ -49,8 +49,9 @@ namespace sorrok {
     void MyAppli::showDiary() {
         FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
         pQuestNames->removeAll();
+        pQuestProgress->removeAll();
         for(unsigned int i = 0; i < static_cast<Hero*>(hero)->getDiary().size(); i++) {
-            Label* label = new Label(*wDiary, Vec3f(0, 100*i, 0), Vec3f(300, 100, 0),fm.getResourceByAlias(Fonts::Serif),static_cast<Hero*>(hero)->getDiary()[i].getName(), 15);
+            Label* label = new Label(*wDiary, Vec3f(0, 100*i, 0), Vec3f(300, 100, 0),fm.getResourceByAlias(Fonts::Serif),static_cast<Hero*>(hero)->getDiary()[i]->getName(), 15);
             pQuestNames->addChild(label);
             label->setParent(pQuestNames);
             Action aLabDiaryQuestName (Action::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
@@ -60,23 +61,22 @@ namespace sorrok {
         wDiary->setVisible(true);
         setEventContextActivated(false);
     }
-    void MyAppli::onLabQuestClicked(Label* label, Pnj* pnj) {
+    void MyAppli::onLabQuestClicked(Label* label) {
+        label->setEventContextActivated(false);
         wDisplayQuests->setVisible(false);
-        Quest quest;
-        for (unsigned int i = 0; i < pnj->getQuests().size(); i++) {
-            if (pnj->getQuests()[i].getName() == label->getText()) {
-                quest = pnj->getQuests()[i];
-                selectedQuest = quest;
+        for (unsigned int i = 0; i < selectedPnj->getQuests().size(); i++) {
+            if (selectedPnj->getQuests()[i].getName() == label->getText()) {
+                selectedQuest = &selectedPnj->getQuests()[i];
             }
         }
-        lQuestName->setText(quest.getName());
-        lQuestTask->setText(quest.getTask());
+        lQuestName->setText(selectedQuest->getName());
+        lQuestTask->setText(selectedQuest->getTask());
         pRewards->removeAll();
         FontManager<Fonts> &fm = cache.resourceManager<Font, Fonts>("FontManager");
-        Label* lxp = new Label(*wDisplayQuest, pRewards->getPosition(), Vec3f(50, 100, 0),fm.getResourceByAlias(Fonts::Serif),"xp : "+conversionIntString(quest.getXp()), 10);
+        Label* lxp = new Label(*wDisplayQuest, pRewards->getPosition(), Vec3f(50, 100, 0),fm.getResourceByAlias(Fonts::Serif),"xp : "+conversionIntString(selectedQuest->getXp()), 10);
         pRewards->addChild(lxp);
         lxp->setParent(pRewards);
-        std::map<unsigned int, Item> rewards = quest.getRewards();
+        std::map<unsigned int, Item> rewards = selectedQuest->getRewards();
         std::map<unsigned int, Item>::iterator it;
         TextureManager<Item::Type> &tm2 = cache.resourceManager<Texture, Item::Type>("TextureManager2");
         unsigned int i = 0;
@@ -85,12 +85,23 @@ namespace sorrok {
             Icon* icon = new Icon(*wDisplayQuest,Vec3f(pRewards->getPosition().x + 50 * (i+1), pRewards->getPosition().y, 0),Vec3f(50, 50, 0),sprite);
             pRewards->addChild(icon);
             icon->setParent(pRewards);
-            Label* label = new Label(*wDisplayQuest, Vec3f(pRewards->getPosition().x + 50 * (i+1), pRewards->getPosition().y, 0), Vec3f(50, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionIntString(it->first), 10);
-            label->setBackgroundColor(sf::Color::Transparent);
-            pRewards->addChild(label);
-            lxp->setParent(pRewards);
+            Label* lNbItems = new Label(*wDisplayQuest, Vec3f(pRewards->getPosition().x + 50 * (i+1), pRewards->getPosition().y, 0), Vec3f(50, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionIntString(it->first), 10);
+            lNbItems->setBackgroundColor(sf::Color::Transparent);
+            pRewards->addChild(lNbItems);
+            lNbItems->setParent(pRewards);
             i++;
         }
+        if (selectedQuest->getStatus() == Quest::NEW) {
+            std::cout<<"new"<<std::endl;
+            bAccept->setText("Accept");
+        } else if (selectedQuest->getStatus() == Quest::IN_PROGRESS || selectedQuest->getStatus() == Quest::COMPLETE && selectedQuest->getPnjToVisit() != selectedPnj->getName())  {
+            bAccept->setText("Continue");
+        } else if (selectedQuest->getStatus() == Quest::COMPLETE && selectedQuest->getPnjToVisit() == selectedPnj->getName()) {
+            std::cout<<"finished"<<std::endl;
+            bAccept->setText("Get rewards");
+        }
+        bAccept->setEventContextActivated(true);
+        bGiveUp->setEventContextActivated(true);
         wDisplayQuest->setVisible(true);
     }
     void MyAppli::onIconClicked(Icon* icon) {
@@ -639,7 +650,7 @@ namespace sorrok {
                 pQuestList->addChild(label);
                 label->setParent(pQuestList);
                 Action aLabClicked(Action::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
-                Command cmdLabClicked(aLabClicked, FastDelegate<bool>(&Label::isMouseInside, label), FastDelegate<void>(&MyAppli::onLabQuestClicked, this, label, pnj));
+                Command cmdLabClicked(aLabClicked, FastDelegate<bool>(&Label::isMouseInside, label), FastDelegate<void>(&MyAppli::onLabQuestClicked, this, label));
                 label->getListener().connect("ALABCLICKED", cmdLabClicked);
             }
             wDisplayQuests->setVisible(true);
@@ -768,6 +779,10 @@ namespace sorrok {
            caracter->setAlive(false);
            if (caracter->isMonster()) {
                 static_cast<Hero*>(caracter->getFocusedCaracter())->up(static_cast<Monster*>(caracter)->getXp());
+                Hero* hero = static_cast<Hero*>(caracter->getFocusedCaracter());
+                for (unsigned int i = 0; i < hero->getDiary().size(); i++) {
+                    hero->getDiary()[i]->addMonsterToKillProgress(caracter->getName());
+                }
            }
        }
        if (Network::getResponse("ENTERINFIGHTINGMODE", response)) {
@@ -1322,24 +1337,48 @@ namespace sorrok {
     void MyAppli::actionPerformed(gui::Button* item) {
         std::cout<<"text : "<<item->getText()<<std::endl;
         if (item->getText() == "Accept") {
+            selectedQuest->setStatus(Quest::IN_PROGRESS);
             if (!static_cast<Hero*>(hero)->containsQuest(selectedQuest)) {
                 static_cast<Hero*>(hero)->addQuest(selectedQuest);
             }
             wDisplayQuest->setVisible(false);
             setEventContextActivated(true);
-            selectedQuest = Quest();
-            std::string request = "ACCEPT*"+conversionIntString(selectedPnj->getId())+"*"+selectedQuest.getName()+"*"+conversionIntString(hero->getId());
+            std::string request = "ACCEPT*"+conversionIntString(selectedPnj->getId())+"*"+selectedQuest->getName()+"*"+conversionIntString(hero->getId());
             SymEncPacket packet;
             packet<<request;
             Network::sendTcpPacket(packet);
+            bAccept->setEventContextActivated(false);
+            bGiveUp->setEventContextActivated(false);
         }
         if (item->getText() == "Give up") {
             if (static_cast<Hero*>(hero)->containsQuest(selectedQuest)) {
                 static_cast<Hero*>(hero)->removeQuest(selectedQuest);
             }
+            bAccept->setEventContextActivated(false);
+            bGiveUp->setEventContextActivated(false);
             wDisplayQuest->setVisible(false);
             setEventContextActivated(true);
-            selectedQuest = Quest();
+        }
+        if (item->getText() == "Continue") {
+            wDisplayQuest->setVisible(false);
+            setEventContextActivated(true);
+        }
+        if (item->getText() == "Get rewards") {
+            static_cast<Hero*>(hero)->up(selectedQuest->getXp());
+            std::map<unsigned int, Item> rewards = selectedQuest->getRewards();
+            std::map<unsigned int, Item>::iterator it;
+            for (it = rewards.begin(); it != rewards.end(); it++) {
+                for (unsigned int i = 0; i < it->first; i++) {
+                    static_cast<Hero*>(hero)->addItem(it->second);
+                }
+            }
+            selectedQuest->setStatus(Quest::NEW);
+            for (unsigned int i = 0; i < selectedPnj->getQuests().size(); i++) {
+                if (selectedPnj->getQuests()[i].getName() == selectedQuest->getName());
+                    selectedPnj->getQuests()[i].setStatus(Quest::NEW);
+            }
+            wDisplayQuest->setVisible(false);
+            setEventContextActivated(true);
         }
         if (item->getText() == "Respawn") {
             SymEncPacket packet;

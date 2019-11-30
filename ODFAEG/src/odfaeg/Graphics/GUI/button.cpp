@@ -14,6 +14,9 @@ namespace odfaeg {
                 rect.setOutlineThickness(5.f);
                 rect.setOutlineColor(sf::Color::Red);
             }
+            void Button::setText(std::string text) {
+                this->text.setString(text);
+            }
             void Button::clear() {
                 if (background != rect.getFillColor())
                     rect.setFillColor(background);
