@@ -101,7 +101,8 @@ namespace sorrok {
             bAccept->setText("Get rewards");
         }
         bAccept->setEventContextActivated(true);
-        bGiveUp->setEventContextActivated(true);
+        bDeny->setEventContextActivated(true);
+        setEventContextActivated(false);
         wDisplayQuest->setVisible(true);
     }
     void MyAppli::onIconClicked(Icon* icon) {
@@ -515,11 +516,14 @@ namespace sorrok {
         bAccept = new Button(Vec3f(0, 500, 0), Vec3f(200, 100, 0),fm.getResourceByAlias(Fonts::Serif), "Accept", 15, *wDisplayQuest);
         getRenderComponentManager().addComponent(bAccept);
         bAccept->addActionListener(this);
+        bAccept->setEventContextActivated(false);
         bDeny = new Button(Vec3f(200, 500, 0), Vec3f(200, 100, 0),fm.getResourceByAlias(Fonts::Serif), "Give up", 15, *wDisplayQuest);
         getRenderComponentManager().addComponent(bDeny);
         pRewards = new Panel(*wDisplayQuest, Vec3f(0, 400, 0), Vec3f(400, 100, 0));
         getRenderComponentManager().addComponent(pRewards);
         bDeny->addActionListener(this);
+        bDeny->setName("DENY");
+        bDeny->setEventContextActivated(false);
         wDisplayQuest->setVisible(false);
 
         wDiary = new RenderWindow(sf::VideoMode(600, 600), "Diary", sf::Style::Default, ContextSettings(0, 0, 4, 3, 0));
@@ -530,6 +534,7 @@ namespace sorrok {
         getRenderComponentManager().addComponent(pQuestProgress);
         bGiveUp = new Button(Vec3f(0, 500, 0), Vec3f(600, 100, 0),fm.getResourceByAlias(Fonts::Serif),"Give up",15,*wDiary);
         bGiveUp->addActionListener(this);
+        bGiveUp->setEventContextActivated(false);
         getRenderComponentManager().addComponent(bGiveUp);
         wDiary->setVisible(false);
 
@@ -1335,7 +1340,7 @@ namespace sorrok {
         }
     }
     void MyAppli::actionPerformed(gui::Button* item) {
-        std::cout<<"text : "<<item->getText()<<std::endl;
+        //std::cout<<"text : "<<item->getText()<<std::endl;
         if (item->getText() == "Accept") {
             selectedQuest->setStatus(Quest::IN_PROGRESS);
             if (!static_cast<Hero*>(hero)->containsQuest(selectedQuest)) {
@@ -1348,14 +1353,14 @@ namespace sorrok {
             packet<<request;
             Network::sendTcpPacket(packet);
             bAccept->setEventContextActivated(false);
-            bGiveUp->setEventContextActivated(false);
+            bDeny->setEventContextActivated(false);
         }
         if (item->getText() == "Give up") {
             if (static_cast<Hero*>(hero)->containsQuest(selectedQuest)) {
                 static_cast<Hero*>(hero)->removeQuest(selectedQuest);
             }
             bAccept->setEventContextActivated(false);
-            bGiveUp->setEventContextActivated(false);
+            bDeny->setEventContextActivated(false);
             wDisplayQuest->setVisible(false);
             setEventContextActivated(true);
         }
