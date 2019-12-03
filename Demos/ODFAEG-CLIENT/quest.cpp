@@ -89,4 +89,13 @@ namespace sorrok {
     Quest::Status Quest::getStatus() {
         return status;
     }
+    void Quest::reset() {
+        std::map<std::string, std::pair<unsigned int, unsigned int>>::iterator it;
+        for (it = monstersToKill.begin(); it != monstersToKill.end(); it++) {
+            it->second.second = 0;
+        }
+        for (it = itemsToCollect.begin(); it != itemsToCollect.end(); it++) {
+            it->second.second = 0;
+        }
+    }
 }

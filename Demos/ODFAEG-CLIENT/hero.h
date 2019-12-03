@@ -3,6 +3,7 @@
 #include "caracter.h"
 #include "item.hpp"
 #include "quest.hpp"
+#include "skill.hpp"
 namespace sorrok {
     class Hero : public Caracter {
     public :
@@ -60,6 +61,7 @@ namespace sorrok {
         bool moveFromKeyboard;
         int xp, xpReqForNextLevel;
         std::map<Item::Type, std::vector<Item>> inventory;
+
         std::vector<Quest*> diary;
         Job job;
     };

@@ -20,6 +20,26 @@ namespace sorrok {
         received = false;
         Network::setCertifiateClientMess("SORROKCLIENT");
         isClientAuthentified = false;
+        ps = new ParticleSystem(Vec3f(0, 0, 150),Vec3f(100, 100, 0));
+    }
+    void MyAppli::onLastHeal (Label* label) {
+        ParticleSystem* ps = new ParticleSystem(hero->getPosition(), Vec3f(300, 300, 0));
+        TextureManager<> &tm = cache.resourceManager<Texture, std::string>("TextureManager");
+        ps->setTexture(*tm.getResourceByAlias("HEAL_PARTICLE"));
+        for (unsigned int i = 0; i < 10; i++) {
+            ps->addTextureRect(sf::IntRect(i*10, 558, 10, 10));
+        }
+        emitter.setEmissionRate(30);
+        emitter.setParticleLifetime(Distributions::uniform(sf::seconds(5), sf::seconds(7)));
+        emitter.setParticlePosition(Distributions::circle(Vec3f(hero->getPosition().x, hero->getPosition().y, 0), 50));   // Emit particles in given circle
+        emitter.setParticleVelocity(Distributions::deflect(Vec3f(10, 10, 0),  0)); // Emit towards direction with deviation of 15°
+        emitter.setParticleRotation(Distributions::uniform(0.f, 0.f));
+        emitter.setParticleTextureIndex(Distributions::uniformui(0, 9));
+        emitter.setParticleScale(Distributions::rect(Vec3f(2.1f, 2.1f, 1.f), Vec3f(2.f, 2.f, 1.f)));
+        ps->addEmitter(refEmitter(emitter));
+        psu->addParticleSystem(ps);
+        particles.insert(std::make_pair(ps, std::make_pair(Application::getClock("TimeClock").getElapsedTime(), sf::seconds(5))));
+        World::addEntity(ps);
     }
     void MyAppli::onLabDiaryQuestName(Label* label)  {
         Quest* quest;
@@ -132,10 +152,8 @@ namespace sorrok {
                 }
                 items.erase(it);
             }
-            ItemAction* ia = new ItemAction();
-            FastDelegate<void> action(&ItemAction::useHpPotion, ia, static_cast<Hero*>(hero), item);
-            gameActions.push_back(std::make_pair(static_cast<Hero*>(hero)->getJobVariant(), std::make_pair(item, action)));
-            itemActions.push_back(ia);
+            gameActions.push_back(std::make_pair(static_cast<Hero*>(hero)->getJobVariant(), std::make_pair(item, static_cast<Hero*>(hero))));
+            //itemActions.push_back(ia);
         }
     }
     void MyAppli::showInventory() {
@@ -362,6 +380,8 @@ namespace sorrok {
         tm.fromFileWithAlias("tilesets/flemmes2.png", "FIRE2");
         tm.fromFileWithAlias("tilesets/flemmes3.png", "FIRE3");
         tm.fromFileWithAlias("tilesets/cristal.png", "CRISTAL");
+        tm.fromFileWithAlias("tilesets/particles.jpeg", "HEAL_PARTICLE");
+        tm.fromFileWithAlias("tilesets/particule.png", "PARTICLE");
         TextureManager<Item::Type> tm2;
         tm2.fromFileWithAlias("tilesets/hppotion-icon.png", Item::HP_POTION);
         FontManager<Fonts> fm;
@@ -389,6 +409,8 @@ namespace sorrok {
         au = new AnimUpdater();
         au->setInterval(sf::seconds(0.01f));
         World::addTimer(au);
+        psu = new ParticleSystemUpdater();
+        World::addWorker(psu);
         tiles.push_back(new Tile(tm.getResourceByAlias("GRASS"), Vec3f(0, 0, 0), Vec3f(120, 60, 0),sf::IntRect(0, 0, 100, 50)));
         walls.push_back(new Tile(tm.getResourceByAlias("WALLS"), Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 0, 100, 100)));
         walls.push_back(new Tile(tm.getResourceByAlias("WALLS"), Vec3f(0, 0, 0), Vec3f(100, 100, 0), sf::IntRect(100, 100, 100, 100)));
@@ -408,7 +430,7 @@ namespace sorrok {
 
         //caracter->setCenter(Vec3f(getView().getPosition().x, getView().getPosition().y, 300));
 
-        ZSortingRenderComponent *frc1 = new ZSortingRenderComponent(getRenderWindow(),0, "",ContextSettings(0, 0, 0, 3, 0));
+        PerPixelLinkedListRenderComponent *frc1 = new PerPixelLinkedListRenderComponent(getRenderWindow(),0, "",ContextSettings(0, 0, 0, 3, 0));
         ShadowRenderComponent *frc2 = new ShadowRenderComponent(getRenderWindow(),1, "");
         PerPixelLinkedListRenderComponent* frc3 = new PerPixelLinkedListRenderComponent(getRenderWindow(),2,"", ContextSettings(0, 0, 0, 3, 0));
         LightRenderComponent* frc4 = new LightRenderComponent(getRenderWindow(),3,"");
@@ -537,7 +559,24 @@ namespace sorrok {
         bGiveUp->setEventContextActivated(false);
         getRenderComponentManager().addComponent(bGiveUp);
         wDiary->setVisible(false);
-
+        ps->setTexture(*tm.getResourceByAlias("PARTICLE"));
+        for (unsigned int i = 0; i < 10; i++) {
+            ps->addTextureRect(sf::IntRect(i*10, 0, 10, 10));
+        }
+        emitter2.setEmissionRate(30);
+        emitter2.setParticleLifetime(Distributions::uniform(sf::seconds(5), sf::seconds(7)));
+        emitter2.setParticlePosition(Distributions::rect(Vec3f(50, 90, 0), Vec3f(25, 5, 0)));   // Emit particles in given circle
+        emitter2.setParticleVelocity(Distributions::deflect(Vec3f(0, -10, 0),  0)); // Emit towards direction with deviation of 15°
+        emitter2.setParticleRotation(Distributions::uniform(0.f, 0.f));
+        emitter2.setParticleTextureIndex(Distributions::uniformui(0, 9));
+        emitter2.setParticleScale(Distributions::rect(Vec3f(2.1f, 2.1f, 1.f), Vec3f(2.f, 2.f, 1.f)));
+        //emitter.setParticleColor(Distributions::color(Vec3f(0, 0, 0, 255), Vec3f(0, 0, 0, 255)));
+       /* sf::Vector3f acceleration(0, -1, 0);
+        ForceAffector affector(acceleration);
+        billboard->getParticleSystem().addAffector(affector);*/
+        ps->addEmitter(refEmitter(emitter2));
+        psu->addParticleSystem(ps);
+        World::addEntity(ps);
         setEventContextActivated(false);
     }
     void MyAppli::onRender(RenderComponentManager *cm) {
@@ -545,7 +584,7 @@ namespace sorrok {
         if (isClientAuthentified) {
             World::drawOnComponents("E_BIGTILE", 0);
             World::drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_HERO+E_MONSTER+E_PNJ", 1);
-            World::drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_HERO+E_MONSTER+E_PNJ", 2);
+            World::drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_HERO+E_MONSTER+E_PNJ+E_PARTICLES", 2);
             World::drawOnComponents("E_WALL+E_DECOR+E_ANIMATION+E_HERO+E_MONSTER+E_PNJ+E_PONCTUAL_LIGHT", 3);
         } else {
             World::drawOnComponents("", 0);
@@ -1335,9 +1374,23 @@ namespace sorrok {
             std::cout<<"game action!"<<std::endl;
             apply_nary_visitor(GameAction(), gameActions.back().first, gameActions.back().second.first, gameActions.back().second.second);
             gameActions.pop_back();
-            delete itemActions.back();
-            itemActions.pop_back();
+            /*delete itemActions.back();
+            itemActions.pop_back();*/
         }
+        std::map<ParticleSystem*, std::pair<sf::Time, sf::Time>>::iterator it;
+        for (it = particles.begin(); it != particles.end(); ) {
+            sf::Time elapsedTime = Application::getTimeClk().getElapsedTime() - it->second.first;
+            it->second.first = Application::getTimeClk().getElapsedTime();
+            it->second.second -= elapsedTime;
+            if (it->second.second <= sf::seconds(0)) {
+                psu->removeParticleSystem(it->first);
+                World::deleteEntity(it->first);
+                it = particles.erase(it);
+            } else
+                it++;
+        }
+        ps->update(getClock("LoopTime").getElapsedTime());
+        World::update();
     }
     void MyAppli::actionPerformed(gui::Button* item) {
         //std::cout<<"text : "<<item->getText()<<std::endl;
@@ -1358,6 +1411,8 @@ namespace sorrok {
         if (item->getText() == "Give up") {
             if (static_cast<Hero*>(hero)->containsQuest(selectedQuest)) {
                 static_cast<Hero*>(hero)->removeQuest(selectedQuest);
+                selectedQuest->setStatus(Quest::NEW);
+                selectedQuest->reset();
             }
             bAccept->setEventContextActivated(false);
             bDeny->setEventContextActivated(false);
@@ -1378,10 +1433,7 @@ namespace sorrok {
                 }
             }
             selectedQuest->setStatus(Quest::NEW);
-            for (unsigned int i = 0; i < selectedPnj->getQuests().size(); i++) {
-                if (selectedPnj->getQuests()[i].getName() == selectedQuest->getName());
-                    selectedPnj->getQuests()[i].setStatus(Quest::NEW);
-            }
+            selectedQuest->reset();
             wDisplayQuest->setVisible(false);
             setEventContextActivated(true);
         }

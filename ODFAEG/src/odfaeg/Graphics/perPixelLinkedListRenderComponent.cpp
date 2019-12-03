@@ -5,7 +5,6 @@
 #include "../../../include/odfaeg/Physics/particuleSystem.h"
 namespace odfaeg {
     namespace graphic {
-        int PerPixelLinkedListRenderComponent::nb_created = -1;
         PerPixelLinkedListRenderComponent::PerPixelLinkedListRenderComponent(RenderWindow& window, int layer, std::string expression, window::ContextSettings settings) :
             HeavyComponent(window, math::Vec3f(window.getView().getPosition().x, window.getView().getPosition().y, layer),
                           math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0),
@@ -16,7 +15,6 @@ namespace odfaeg {
             quad.move(math::Vec3f(-window.getView().getSize().x * 0.5f, -window.getView().getSize().y * 0.5f, 0));
             GLuint maxNodes = 20 * window.getView().getSize().x * window.getView().getSize().y;
             GLint nodeSize = 5 * sizeof(GLfloat) + sizeof(GLuint);
-            nb_created++;
             frameBuffer.create(window.getView().getSize().x, window.getView().getSize().y, settings);
             frameBufferSprite = Sprite(frameBuffer.getTexture(), math::Vec3f(0, 0, 0), math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, 0), sf::IntRect(0, 0, window.getView().getSize().x, window.getView().getSize().y));
             frameBuffer.setView(view);
@@ -223,8 +221,8 @@ namespace odfaeg {
             glCheck(glBindTexture(GL_TEXTURE_2D, 0));
             frameBuffer.resetGLStates();
             //getWindow().resetGLStates();
-            glCheck(glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, nb_created, atomicBuffer));
-            glCheck(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, nb_created, linkedListBuffer));
+            glCheck(glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, 0, atomicBuffer));
+            glCheck(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, linkedListBuffer));
         }
         void PerPixelLinkedListRenderComponent::drawNextFrame() {
             currentStates.blendMode = sf::BlendNone;

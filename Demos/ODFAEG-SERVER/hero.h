@@ -3,6 +3,7 @@
 #include "caracter.h"
 #include "odfaeg/Network/network.h"
 #include "quest.hpp"
+#include "skill.hpp"
 namespace sorrok {
     class Hero : public Caracter {
     public :
@@ -33,6 +34,7 @@ namespace sorrok {
             ar(xp);
             ar(xpReqForNextLevel);
         }
+        void addSkill(Skill skill);
         ~Hero();
     private :
         std::string factionName, sex, hairColor, eyesColor, skinColor, faceType;
@@ -40,6 +42,7 @@ namespace sorrok {
         int xp, xpReqForNextLevel;
         odfaeg::network::User* user;
         std::vector<Quest> diary;
+        std::vector<Skill> skills;
     };
 }
 #endif // HERO_HPP

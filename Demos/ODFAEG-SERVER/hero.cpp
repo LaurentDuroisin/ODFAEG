@@ -47,6 +47,9 @@ namespace sorrok {
     void Hero::setIsMovingFromKeyboard(bool b) {
         moveFromKeyboard = b;
     }
+    void Hero::addSkill(Skill skill) {
+        skills.push_back(skill);
+    }
     Hero::~Hero() {
     }
 }

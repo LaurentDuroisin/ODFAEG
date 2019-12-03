@@ -84,7 +84,7 @@ namespace odfaeg {
         bool RenderComponentManager::isComponentAdded(unsigned int layer) {
            std::multimap<int, std::unique_ptr<Component>, std::greater<int>>::iterator it;
            for (it = components.begin(); it != components.end(); it++) {
-               if (it->second->getId() == layer) {
+               if (it->second->getPriority() == layer) {
                    return true;
                }
            }
@@ -112,6 +112,8 @@ namespace odfaeg {
            std::multimap<int, std::unique_ptr<Component>, std::greater<int>>::iterator it;
            for (it = components.begin(); it != components.end(); it++) {
                if (it->second->isEventContextActivated()) {
+                   if (it->second->getName() == "DENY")
+                        std::cout<<"process event DENY"<<std::endl;
                    it->second->processEvents();
                    it->second->recomputeSize();
                }

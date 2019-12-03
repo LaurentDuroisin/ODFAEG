@@ -28,6 +28,7 @@ namespace sorrok {
             void setXp (int xp);
             int getXp();
             void addReward (unsigned int nb, Item item);
+            void reset();
             std::map<unsigned int, Item> getRewards();
             void setStatus (Status status);
             Status getStatus();

@@ -18,18 +18,35 @@ namespace odfaeg {
         * \version 1.0
         * \date 1/02/2014
         */
-        class ODFAEG_CORE_API EntitiesUpdater : public core::EntitySystem {
+        class ODFAEG_CORE_API ParticleSystemUpdater : public core::EntitySystem {
         public :
-            EntitiesUpdater() : EntitySystem() {}
+            ParticleSystemUpdater() : EntitySystem() {}
             /**
             * \fn void onUpdate ()
             * \brief update all the entities which are in the current view.
             */
+            void addParticleSystem(physic::ParticleSystem* ps) {
+                particleSystems.push_back(ps);
+            }
+            void removeParticleSystem (physic::ParticleSystem* ps) {
+                std::vector<physic::ParticleSystem*>::iterator it;
+                for (it = particleSystems.begin(); it != particleSystems.end();) {
+                    if (*it == ps) {
+                        it = particleSystems.erase(it);
+                    } else {
+                        it++;
+                    }
+                }
+            }
             void onUpdate () {
-                graphic::World::updateParticles();
+                for (unsigned int i = 0; i < particleSystems.size(); i++) {
+                    particleSystems[i]->update();
+                }
+                World::changeVisibleEntity(nullptr, nullptr);
             }
         private :
-
+            std::vector<physic::ParticleSystem*> particleSystems;
         };
     }
 }
+#endif

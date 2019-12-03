@@ -22,6 +22,7 @@
 #include "odfaeg/Core/actionMap.h"
 #include "odfaeg/Graphics/entitiesUpdater.h"
 #include "odfaeg/Graphics/animationUpdater.h"
+#include "odfaeg/Graphics/particleSystemUpdater.hpp"
 #include "hero.h"
 #include "monster.h"
 #include "odfaeg/Network/network.h"
@@ -37,12 +38,14 @@
 #include "odfaeg/Graphics/GUI/panel.hpp"
 #include "odfaeg/Graphics/GUI/table.hpp"
 #include "odfaeg/Graphics/GUI/icon.hpp"
+#include "odfaeg/Math/distributions.h"
 #include "item.hpp"
 #include <fstream>
 #include <unordered_map>
 #include "gameAction.hpp"
 #include "itemAction.hpp"
 #include "pnj.hpp"
+#include "skill.hpp"
 namespace sorrok {
     class MyAppli : public odfaeg::core::Application,
                     public odfaeg::graphic::gui::ActionListener {
@@ -50,6 +53,7 @@ namespace sorrok {
         const float speed = 0.2f;
         odfaeg::graphic::EntitiesUpdater *eu;
         odfaeg::graphic::AnimUpdater *au;
+        odfaeg::graphic::ParticleSystemUpdater *psu;
         bool running;
         odfaeg::graphic::g2d::Wall *w;
         Caracter* hero;
@@ -75,6 +79,9 @@ namespace sorrok {
         std::pair<odfaeg::graphic::Sprite*, std::vector<Item>> selectedCristal;
         Quest* selectedQuest;
         Pnj* selectedPnj;
+        std::map<odfaeg::physic::ParticleSystem*, std::pair<sf::Time, sf::Time>> particles;
+        std::vector<odfaeg::physic::ParticleSystem*> particles2;
+        odfaeg::physic::UniversalEmitter emitter, emitter2;
     public :
         enum Fonts {
             Serif
@@ -100,10 +107,12 @@ namespace sorrok {
         void talkToPnj(odfaeg::window::IKeyboard::Key key);
         void onLabQuestClicked(odfaeg::graphic::gui::Label* label);
         void onLabDiaryQuestName(odfaeg::graphic::gui::Label* label);
-        std::vector<std::pair<odfaeg::core::Variant<Hero::Novice, Hero::Warrior, Hero::Magician, Hero::Thief>, std::pair<odfaeg::core::Variant<Item>, odfaeg::core::FastDelegate<void>>>> gameActions;
-        std::vector<ItemAction*> itemActions;
+        void onLastHeal(odfaeg::graphic::gui::Label* label);
+        std::vector<std::pair<odfaeg::core::Variant<Hero::Novice, Hero::Warrior, Hero::Magician, Hero::Thief>, std::pair<odfaeg::core::Variant<Item, Skill>, Hero*>>> gameActions;
+        //std::vector<ItemAction*> itemActions;
         std::vector<std::pair<std::pair<Caracter*, odfaeg::graphic::Text>, std::pair<sf::Time, sf::Time>>> tmpTexts;
         std::vector<odfaeg::graphic::Entity*> monsters;
+        odfaeg::physic::ParticleSystem* ps;
     };
 }
 #endif // MY_APPLI

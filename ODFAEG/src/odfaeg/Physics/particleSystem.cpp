@@ -249,6 +249,7 @@ namespace odfaeg
         }
         void ParticleSystem::computeVertices() const
         {
+
             // Clear vertex array (keeps memory allocated)
             if (scene != nullptr)
                 scene->removeVertices(mVertices);
