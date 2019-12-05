@@ -98,7 +98,7 @@ namespace odfaeg
                 return [=] () -> sf::Vector3f
                 {
                     //sf::Vector3f radiusVector = sf::Vector3f(radius * std::sqrt(Math::random(0.f, 1.f)), Math::random(0.f, 360.f), 0);
-                    sf::Vector3f radiusVector = sf::Vector3f(radius * Math::cosinus(Math::random(0, Math::toRadians(360))), radius * Math::sinus(Math::random(0, Math::toRadians(360))), 0);
+                    sf::Vector3f radiusVector = sf::Vector3f(Math::random(0, radius) * Math::cosinus(Math::random(0, Math::toRadians(360))), Math::random(0, radius) * Math::sinus(Math::random(0, Math::toRadians(360))), 0);
                     return center + radiusVector;
                 };
             }
