@@ -6,7 +6,8 @@ namespace odfaeg {
             LightComponent(rw, position, size, size*0.5f) {
                 bar = RectangleShape(math::Vec3f(0, size.y, size.z));
                 bar.setPosition(position);
-                bar.setFillColor(sf::Color::Red);
+                barColor = sf::Color::Red;
+                bar.setFillColor(barColor);
                 this->value = 0;
                 text.setFont(font);
                 text.setCharacterSize(charSize);
@@ -14,8 +15,11 @@ namespace odfaeg {
                 text.setPosition(position);
                 text.setString(core::conversionIntString(value)+"/"+core::conversionIntString(maxi));
             }
+            void ProgressBar::setColor(sf::Color barColor) {
+                this->barColor = barColor;
+            }
             void ProgressBar::clear() {
-                bar.setFillColor(sf::Color::Red);
+                bar.setFillColor(barColor);
             }
             void ProgressBar::onDraw(RenderTarget& target, RenderStates states) {
                 target.draw(bar);

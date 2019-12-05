@@ -202,6 +202,8 @@ namespace odfaeg {
                perPixelLinkedList.setParameter("texture", Shader::CurrentTexture);
                filterNotOpaque.setParameter("texture", Shader::CurrentTexture);
                backgroundColor = sf::Color::Transparent;
+               glCheck(glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, 0, atomicBuffer));
+               glCheck(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, linkedListBuffer));
         }
         void PerPixelLinkedListRenderComponent::setBackgroundColor(sf::Color color) {
             backgroundColor = color;
@@ -220,9 +222,8 @@ namespace odfaeg {
             GL_UNSIGNED_INT, NULL));
             glCheck(glBindTexture(GL_TEXTURE_2D, 0));
             frameBuffer.resetGLStates();
-            //getWindow().resetGLStates();
-            glCheck(glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, 0, atomicBuffer));
-            glCheck(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, linkedListBuffer));
+            //getWindow().resetGLStates();*/
+
         }
         void PerPixelLinkedListRenderComponent::drawNextFrame() {
             currentStates.blendMode = sf::BlendNone;
@@ -293,8 +294,7 @@ namespace odfaeg {
             glCheck(glFinish());*/
             frameBufferSprite.setCenter(target.getView().getPosition());
             target.draw(frameBufferSprite, states);
-            glCheck(glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, 0, 0));
-            glCheck(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, 0));
+
         }
         int  PerPixelLinkedListRenderComponent::getLayer() {
             return getPosition().z;

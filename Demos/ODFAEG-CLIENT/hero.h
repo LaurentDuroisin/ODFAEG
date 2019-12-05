@@ -46,6 +46,7 @@ namespace sorrok {
             ar(faceType);
             ar(xp);
             ar(xpReqForNextLevel);
+            ar(skills);
         }
         void addItem (Item item);
         bool containsQuest(Quest* quest);
@@ -55,13 +56,15 @@ namespace sorrok {
         std::map<Item::Type, std::vector<Item>>& getInventory();
         Job getJobType();
         odfaeg::core::Variant<Hero::Novice, Hero::Warrior, Hero::Magician, Hero::Thief> getJobVariant();
+        void addSkill (Skill skill);
+        std::vector<Skill> getSkills();
         ~Hero();
     private :
         std::string factionName, sex, hairColor, eyesColor, skinColor, faceType;
         bool moveFromKeyboard;
         int xp, xpReqForNextLevel;
         std::map<Item::Type, std::vector<Item>> inventory;
-
+        std::vector<Skill> skills;
         std::vector<Quest*> diary;
         Job job;
     };

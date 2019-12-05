@@ -29,14 +29,20 @@ namespace sorrok {
         regenHpSpeed = 1.f;
         regenHpAmountMin = 1;
         regenHpAmountMax = 2;
+        regenManaAmountMin = 1;
+        regenManaAmountMax = 2;
+        regenManaSpeed = 1.f;
         focusedCaracter = nullptr;
         baseAnimIndex = WALKING;
         timeBefLastRespawn = sf::seconds(10.f);
         dmgTransferTime = rgnTransferTime = 0;
+        mana = 100;
+        maxMana = 100;
     }
-    void Caracter::setXpHpBar(ProgressBar* xpBar, ProgressBar* hpBar) {
+    void Caracter::setXpHpBar(ProgressBar* xpBar, ProgressBar* hpBar, ProgressBar* manaBar) {
         this->xpBar = xpBar;
         this->hpBar = hpBar;
+        this->manaBar = manaBar;
     }
     void Caracter::setDmgTransferTime(sf::Int64 time) {
         dmgTransferTime = time;
@@ -50,6 +56,12 @@ namespace sorrok {
     sf::Int64 Caracter::getRgnTransferTime() {
         return rgnTransferTime;
     }
+    void Caracter::setRgnManaTransferTime(sf::Int64 time) {
+        rgnManaTransferTime = time;
+    }
+    sf::Int64 Caracter::getRgnManaTransferTime() {
+        return rgnManaTransferTime;
+    }
     void Caracter::onMove(Vec3f& t) {
         Entity::onMove(t);
         if (getCollisionVolume() != nullptr) {
@@ -59,11 +71,17 @@ namespace sorrok {
     float Caracter::getRegenHpSpeed () {
         return regenHpSpeed;
     }
+    float Caracter::getRegenManaSpeed() {
+        return regenManaSpeed;
+    }
     void Caracter::setRegenHpSpeed(float regenHpSpeed) {
         this->regenHpSpeed = regenHpSpeed;
     }
     sf::Time Caracter::getTimeOfLastHpRegen() {
         return clockRegenHp.getElapsedTime();
+    }
+    sf::Time Caracter::getTimeOfLastManaRegen() {
+        return clockManaRegen.getElapsedTime();
     }
     void Caracter::setLevel(int level) {
         this->level = level;
@@ -87,13 +105,13 @@ namespace sorrok {
         this->regenHpAmountMax = regenHpAmount;
     }
     void Caracter::setLife(int life) {
-        this->life = life;
         changeAttribute("life"+conversionIntString(getId()), Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
+        if (life < 0)
+            life = 0;
+        if (life >= maxLife)
+            life = maxLife;
+        this->life = life;
         if (hpBar != nullptr) {
-            if (life < 0)
-                life = 0;
-            if (life >= maxLife)
-                life = maxLife;
             hpBar->setValue(life);
         }
     }
@@ -300,6 +318,9 @@ namespace sorrok {
     int Caracter::getMaxLife() {
         return maxLife;
     }
+    int Caracter::getManaMax() {
+        return maxMana;
+    }
     int Caracter::getLevel() {
         return level;
     }
@@ -349,17 +370,40 @@ namespace sorrok {
     std::vector<int>& Caracter::getRegen() {
         return regen;
     }
+    void Caracter::setManaRegen(std::vector<int> manaRegen) {
+        this->manaRegen = manaRegen;
+    }
+    std::vector<int>& Caracter::getManaRegen() {
+        return manaRegen;
+    }
     void Caracter::restartAttackSpeed() {
         clockAtkSpeed.restart();
     }
     void Caracter::restartRegenHP() {
         clockRegenHp.restart();
     }
+    void Caracter::restartRegenMana() {
+        clockManaRegen.restart();
+    }
     bool Caracter::isAttacked() {
         return attacked;
     }
     ProgressBar* Caracter::getXpBar() {
         return xpBar;
+    }
+    int Caracter::getMana() {
+        return mana;
+    }
+    void Caracter::setMana(int mana) {
+        changeAttribute("mana"+conversionIntString(getId()), Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
+        if (mana < 0)
+            mana = 0;
+        if (mana > maxMana)
+            mana = maxMana;
+        this->mana = mana;
+        if (manaBar != nullptr) {
+            manaBar->setValue(mana);
+        }
     }
     Caracter::~Caracter() {
     }

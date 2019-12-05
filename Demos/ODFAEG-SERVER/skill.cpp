@@ -6,8 +6,11 @@ namespace sorrok {
         damage = 0;
         stat = NONE;
     }
-    Skill::Skill (std::string name, unsigned int damage, std::string target) : name(name), damage(damage), target(target) {
+    Skill::Skill (std::string name, unsigned int damage, std::string target, unsigned int manaCost) : name(name), damage(damage), target(target), manaCost(manaCost) {
         stat = NONE;
+    }
+    unsigned int Skill::getManaCost() {
+        return manaCost;
     }
     std::string Skill::getName() {
         return name;

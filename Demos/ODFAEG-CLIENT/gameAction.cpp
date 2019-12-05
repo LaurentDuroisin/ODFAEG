@@ -1,5 +1,6 @@
 #include "gameAction.hpp"
 #include "odfaeg/Network/network.h"
+#include "application.h"
 using namespace odfaeg::core;
 using namespace odfaeg::network;
 namespace sorrok {
@@ -26,6 +27,19 @@ namespace sorrok {
     void GameAction::operator()(const Hero::Thief&, Item& item, Hero* hero) {
     }
     void GameAction::operator()(const Hero::Novice&, Skill& skill, Hero* hero) {
+        if (hero->getMana() >= skill.getManaCost()) {
+            hero->setMana(hero->getMana() - skill.getManaCost());
+            if (skill.getTarget() == "SELF") {
+                if (skill.getStat() == Skill::HP) {
+                    hero->setLife(hero->getLife() + skill.getDamage());
+                    static_cast<MyAppli*>(MyAppli::app)->launchSkillAnim(skill.getName());
+                    std::string request = "ADDLIFE*"+conversionIntString(hero->getId())+"*"+conversionFloatString(skill.getDamage());
+                    SymEncPacket packet;
+                    packet<<request;
+                    Network::sendTcpPacket(packet);
+                }
+            }
+        }
     }
     void GameAction::operator()(const Hero::Warrior&, Skill& skill, Hero* hero) {
     }

@@ -50,6 +50,7 @@ namespace sorrok {
     class MyAppli : public odfaeg::core::Application,
                     public odfaeg::graphic::gui::ActionListener {
     private :
+        unsigned int fps;
         const float speed = 0.2f;
         odfaeg::graphic::EntitiesUpdater *eu;
         odfaeg::graphic::AnimUpdater *au;
@@ -67,13 +68,13 @@ namespace sorrok {
         sf::Int64 ping;
         bool received = false;
         static const unsigned int PATH_ERROR_MARGIN = 5;
-        odfaeg::graphic::RenderWindow* wResuHero, *wIdentification, *wPickupItems, *wInventory, *wDisplayQuests, *wDisplayQuest, *wDiary;
+        odfaeg::graphic::RenderWindow* wResuHero, *wIdentification, *wPickupItems, *wInventory, *wDisplayQuests, *wDisplayQuest, *wDiary, *wSkills;
         odfaeg::graphic::gui::Label* label, *labPseudo, *labMdp, *lQuestName, *lQuestTask;
         odfaeg::graphic::gui::TextArea* taPseudo;
         odfaeg::graphic::gui::PasswordField* taPassword;
         odfaeg::graphic::gui::Button* button, *idButton, *invButton, *bAccept, *bDeny, *bGiveUp;
-        odfaeg::graphic::gui::ProgressBar* hpBar, *xpBar;
-        odfaeg::graphic::gui::Panel* pItems, *pInventory, *pQuestList, *pQuestNames, *pQuestProgress, *pRewards;
+        odfaeg::graphic::gui::ProgressBar* hpBar, *xpBar, *manaBar;
+        odfaeg::graphic::gui::Panel* pItems, *pInventory, *pQuestList, *pQuestNames, *pQuestProgress, *pRewards, *pSkills;
         bool isClientAuthentified;
         std::vector<std::pair<odfaeg::graphic::Sprite*, std::vector<Item>>> cristals;
         std::pair<odfaeg::graphic::Sprite*, std::vector<Item>> selectedCristal;
@@ -108,6 +109,8 @@ namespace sorrok {
         void onLabQuestClicked(odfaeg::graphic::gui::Label* label);
         void onLabDiaryQuestName(odfaeg::graphic::gui::Label* label);
         void onLastHeal(odfaeg::graphic::gui::Label* label);
+        void onShowSkillPressed();
+        void launchSkillAnim(std::string name);
         std::vector<std::pair<odfaeg::core::Variant<Hero::Novice, Hero::Warrior, Hero::Magician, Hero::Thief>, std::pair<odfaeg::core::Variant<Item, Skill>, Hero*>>> gameActions;
         //std::vector<ItemAction*> itemActions;
         std::vector<std::pair<std::pair<Caracter*, odfaeg::graphic::Text>, std::pair<sf::Time, sf::Time>>> tmpTexts;

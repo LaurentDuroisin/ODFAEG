@@ -813,21 +813,14 @@ namespace odfaeg {
                                 if (cell != nullptr) {
                                     for (unsigned int n = 0; n < cell->getNbEntitiesInside(); n++) {
                                        Entity* entity = cell->getEntityInside(n);
-                                       /*if (entity->getType() == "E_PONCTUAL_LIGHT") {
-                                            std::cout<<"ponctual light"<<std::endl;
-                                            sf::sleep(sf::seconds(1.f));
-                                       }*/
+
                                        //std::cout<<"entity : "<<entity->getPosition()<<entity->getSize()<<std::endl;
                                        physic::BoundingBox& bounds = entity->getGlobalBounds();
-                                       /*if (entity->getRootType() == "E_PONCTUAL_LIGHT")
-                                            std::cout<<"add ponctual light"<<std::endl;*/
+
                                        if (bx.intersects(bounds) && visibleEntities[entity->getRootTypeInt()][entity->getId()] != entity) {
                                            visibleEntities[entity->getRootTypeInt()][entity->getId()] = entity;
                                        }
-                                       /*if (!containsVisibleParentEntity(entity->getRootEntity())) {
-                                            visibleParentEntities.push_back(entity->getRootEntity());
-                                            insertVisibleEntity(entity, bx);
-                                        }*/
+
                                     }
                                 }
                             //}
@@ -839,9 +832,6 @@ namespace odfaeg {
                     frcm->getRenderComponent(c)->loadEntitiesOnComponent(entities);
                 }
             }
-            /*std::string s;
-            std::cin>>s;*/
-
         }
         bool Map::containsVisibleParentEntity(Entity* entity) {
             for (unsigned int i = 0; i < visibleParentEntities.size(); i++) {

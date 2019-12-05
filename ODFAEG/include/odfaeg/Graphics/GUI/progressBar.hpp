@@ -15,12 +15,14 @@ namespace odfaeg {
             void setMaximum (int maxi);
             void setMinimum (int mini);
             void setValue (int value);
+            void setColor (sf::Color barColor);
             void clear();
             int getValue();
             private :
             RectangleShape bar;
             Text text;
             int maxi, mini, value;
+            sf::Color barColor;
             };
         }
     }

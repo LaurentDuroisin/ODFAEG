@@ -22,7 +22,7 @@ namespace sorrok {
             currentAnimIndex = 0;
         }
         Caracter (std::string type, std::string name, std::string currentMapName, std::string classs, int level);
-        void setXpHpBar(odfaeg::graphic::gui::ProgressBar* hpBar, odfaeg::graphic::gui::ProgressBar* xpBar);
+        void setXpHpBar(odfaeg::graphic::gui::ProgressBar* hpBar, odfaeg::graphic::gui::ProgressBar* xpBar, odfaeg::graphic::gui::ProgressBar* manaBar);
         bool isMovable() const {
             return true;
         }
@@ -50,6 +50,7 @@ namespace sorrok {
         void setMaxLife(int life);
         int getLife ();
         int getMaxLife();
+        int getManaMax();
         int getLevel();
         std::string getClass();
         int getAttackMin();
@@ -67,6 +68,7 @@ namespace sorrok {
         void setLevel (int level);
         sf::Time getTimeOfLastAttack();
         sf::Time getTimeOfLastHpRegen();
+        sf::Time getTimeOfLastManaRegen();
         void attackFocusedCaracter(int attack);
         void setFocusedCaracter(Caracter* caracter);
         Caracter* getFocusedCaracter();
@@ -74,6 +76,7 @@ namespace sorrok {
         int getCurrentXp ();
         int getXpReqForNextLevel ();
         float getRegenHpSpeed();
+        float getRegenManaSpeed();
         void setRegenHpSpeed(float regenHpSpeed);
         int getRegenHpAmountMin();
         void setRegenHpAmountMin(int regenHpAmount);
@@ -93,8 +96,10 @@ namespace sorrok {
         void setDamages(std::vector<int> damages);
         void setDmgTransferTime(sf::Int64 time);
         void setRgnTransferTime(sf::Int64 time);
+        void setRgnManaTransferTime(sf::Int64 time);
         sf::Int64 getDmgTransferTime();
         sf::Int64 getRgnTransferTime();
+        sf::Int64 getRgnManaTransferTime();
         std::string getName();
         template <typename Archive>
         void vtserialize(Archive & ar) {
@@ -112,38 +117,49 @@ namespace sorrok {
             ar(regenHpAmountMin);
             ar(regenHpAmountMax);
             ar(life);
+            ar(mana);
+            ar(regenManaSpeed);
+            ar(regenManaAmountMin);
+            ar(regenManaAmountMax);
+            std::cout<<"mana : "<<mana<<std::endl;
             sf::Int64 i = 0;
             addAttribute("isAlive"+odfaeg::core::conversionIntString(getId()), i);
             addAttribute("isMoving"+odfaeg::core::conversionIntString(getId()),i);
             addAttribute("isInFightingMode"+odfaeg::core::conversionIntString(getId()), i);
             addAttribute("isAttacking"+odfaeg::core::conversionIntString(getId()), i);
             addAttribute("life"+odfaeg::core::conversionIntString(getId()), i);
+            addAttribute("mana"+odfaeg::core::conversionIntString(getId()), i);
         }
         std::pair<odfaeg::math::Vec2f, odfaeg::math::Vec2f> interpolation;
         void setRegen(std::vector<int> regen);
+        void setManaRegen (std::vector<int> regen);
         std::vector<int>& getRegen();
+        std::vector<int>& getManaRegen();
         void restartRegenHP();
+        void restartRegenMana();
         virtual ~Caracter();
         bool isAttacked();
         odfaeg::graphic::gui::ProgressBar* getXpBar();
+        int getMana();
+        void setMana(int mana);
         private :
         std::string name, currentMapName, classs;
         int level, attackMin, attackMax, sterk, range;
-        float attackSpeed, regenHpSpeed, speed;
+        float attackSpeed, regenHpSpeed, regenManaSpeed, speed;
         bool moving, alive;
         odfaeg::math::Vec2f dir;
         std::vector<odfaeg::math::Vec2f> path;
         std::vector<odfaeg::graphic::Anim*> anims;
         int currentAnimIndex;
-        int life, maxLife, regenHpAmountMin, regenHpAmountMax;
+        int life, maxLife, regenHpAmountMin, regenHpAmountMax, mana, regenManaAmountMin, regenManaAmountMax, maxMana;
         bool attacking, fightingMode;
-        sf::Clock clockAtkSpeed, clockRegenHp, clockTransfertTime, clockBeforeLastRespawn;
+        sf::Clock clockAtkSpeed, clockRegenHp, clockTransfertTime, clockBeforeLastRespawn, clockManaRegen;
         Caracter* focusedCaracter;
         ANIMS baseAnimIndex;
         sf::Time timeBefLastRespawn;
-        std::vector<int> damages, regen;
-        sf::Int64 dmgTransferTime, rgnTransferTime;
-        odfaeg::graphic::gui::ProgressBar *hpBar, *xpBar;
+        std::vector<int> damages, regen, manaRegen;
+        sf::Int64 dmgTransferTime, rgnTransferTime, rgnManaTransferTime;
+        odfaeg::graphic::gui::ProgressBar *hpBar, *xpBar, *manaBar;
         bool attacked;
     };
 }

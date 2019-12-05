@@ -93,6 +93,12 @@ namespace sorrok {
     std::vector<Quest*> Hero::getDiary() {
         return diary;
     }
+    void Hero::addSkill(Skill skill) {
+        skills.push_back(skill);
+    }
+    std::vector<Skill> Hero::getSkills() {
+        return skills;
+    }
     Hero::~Hero() {
     }
 }

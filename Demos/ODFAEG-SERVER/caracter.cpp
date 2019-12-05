@@ -31,8 +31,32 @@ namespace sorrok {
         regenHpSpeed = 1.f;
         regenHpAmountMin = 1;
         regenHpAmountMax = 5;
+        regenManaAmountMin = 1;
+        regenManaAmountMax = 2;
+        regenManaSpeed = 1.f;
         focusedCaracter = nullptr;
         timeBefLastRespawn = sf::seconds(10.f);
+        manaMax = 100;
+        mana = 100;
+    }
+    float Caracter::getRegenManaSpeed() {
+        return regenManaSpeed;
+    }
+    int Caracter::getRegenManaAmountMin() {
+        return regenManaAmountMin;
+    }
+    int Caracter::getRegenManaAmountMax() {
+        return regenManaAmountMax;
+    }
+    void Caracter::setMana(int mana) {
+        if (mana < 0)
+            mana = 0;
+        if (mana > manaMax)
+            mana = manaMax;
+        this->mana = mana;
+    }
+    int Caracter::getMana() {
+        return mana;
     }
     void Caracter::setIsAgressif(bool agressif) {
         this->agressif = agressif;
@@ -57,6 +81,9 @@ namespace sorrok {
     }
     sf::Time Caracter::getTimeOfLastHpRegen() {
         return clockRegenHp.getElapsedTime();
+    }
+    sf::Time Caracter::getTimeOfLastManaRegen() {
+        return clockRegenMana.getElapsedTime();
     }
     void Caracter::setLevel(int level) {
         this->level = level;
@@ -200,6 +227,9 @@ namespace sorrok {
     void Caracter::setMaxLife(int life) {
         this->maxLife = maxLife;
     }
+    int Caracter::getManaMax() {
+        return manaMax;
+    }
     int Caracter::getMaxLife() {
         return maxLife;
     }
@@ -276,8 +306,17 @@ namespace sorrok {
     std::vector<int>& Caracter::getRegen() {
         return regen;
     }
+    std::vector<int>& Caracter::getRegenMana() {
+        return manaRegen;
+    }
+    void Caracter::setRegenMana(std::vector<int> manaRegen) {
+        this->manaRegen = manaRegen;
+    }
     void Caracter::restartRegenHP() {
         clockRegenHp.restart();
+    }
+    void Caracter::restartRegenMana() {
+        clockRegenMana.restart();
     }
     Caracter::~Caracter() {
     }

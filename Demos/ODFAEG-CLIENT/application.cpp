@@ -14,6 +14,9 @@ namespace sorrok {
         getView().setScale(1, -1, 1);
         sf::Clock clock1;
         addClock(clock1, "RequestTime");
+        sf::Clock clock2;
+        addClock(clock2, "FPS");
+        fps = 0;
         hero = nullptr;
         selectedPnj = nullptr;
         selectedQuest = nullptr;
@@ -23,23 +26,48 @@ namespace sorrok {
         ps = new ParticleSystem(Vec3f(0, 0, 150),Vec3f(100, 100, 0));
     }
     void MyAppli::onLastHeal (Label* label) {
-        ParticleSystem* ps = new ParticleSystem(hero->getPosition(), Vec3f(300, 300, 0));
-        TextureManager<> &tm = cache.resourceManager<Texture, std::string>("TextureManager");
-        ps->setTexture(*tm.getResourceByAlias("HEAL_PARTICLE"));
-        for (unsigned int i = 0; i < 10; i++) {
-            ps->addTextureRect(sf::IntRect(i*10, 558, 10, 10));
+        Skill skill;
+        for (unsigned int i = 0; i < static_cast<Hero*>(hero)->getSkills().size(); i++) {
+            if (label->getText() == static_cast<Hero*>(hero)->getSkills()[i].getName()) {
+                skill = static_cast<Hero*>(hero)->getSkills()[i];
+            }
         }
-        emitter.setEmissionRate(30);
-        emitter.setParticleLifetime(Distributions::uniform(sf::seconds(5), sf::seconds(7)));
-        emitter.setParticlePosition(Distributions::circle(Vec3f(hero->getPosition().x, hero->getPosition().y, 0), 50));   // Emit particles in given circle
-        emitter.setParticleVelocity(Distributions::deflect(Vec3f(10, 10, 0),  0)); // Emit towards direction with deviation of 15°
-        emitter.setParticleRotation(Distributions::uniform(0.f, 0.f));
-        emitter.setParticleTextureIndex(Distributions::uniformui(0, 9));
-        emitter.setParticleScale(Distributions::rect(Vec3f(2.1f, 2.1f, 1.f), Vec3f(2.f, 2.f, 1.f)));
-        ps->addEmitter(refEmitter(emitter));
-        psu->addParticleSystem(ps);
-        particles.insert(std::make_pair(ps, std::make_pair(Application::getClock("TimeClock").getElapsedTime(), sf::seconds(5))));
-        World::addEntity(ps);
+        gameActions.push_back(std::make_pair(static_cast<Hero*>(hero)->getJobVariant(), std::make_pair(skill, static_cast<Hero*>(hero))));
+    }
+    void MyAppli::launchSkillAnim(std::string name) {
+        if (name == "LastHeal") {
+            ParticleSystem* ps = new ParticleSystem(Vec3f(hero->getPosition().x, hero->getPosition().y, hero->getPosition().z), Vec3f(300, 300, 0));
+            TextureManager<> &tm = cache.resourceManager<Texture, std::string>("TextureManager");
+            ps->setTexture(*tm.getResourceByAlias("HEAL_PARTICLE"));
+            for (unsigned int i = 0; i < 10; i++) {
+                ps->addTextureRect(sf::IntRect(i*10, 558, 10, 10));
+            }
+            emitter.setEmissionRate(30);
+            emitter.setParticleLifetime(Distributions::uniform(sf::seconds(5), sf::seconds(7)));
+            emitter.setParticlePosition(Distributions::circle(Vec3f(0, 0, 0), 1));   // Emit particles in given circle
+            emitter.setParticleVelocity(Distributions::deflect(Vec3f(10, 10, 0),  0)); // Emit towards direction with deviation of 15°
+            emitter.setParticleRotation(Distributions::uniform(0.f, 0.f));
+            emitter.setParticleTextureIndex(Distributions::uniformui(0, 9));
+            emitter.setParticleScale(Distributions::rect(Vec3f(2.1f, 2.1f, 1.f), Vec3f(2.f, 2.f, 1.f)));
+            ps->addEmitter(refEmitter(emitter));
+            psu->addParticleSystem(ps);
+            particles.insert(std::make_pair(ps, std::make_pair(Application::getClock("TimeClock").getElapsedTime(), sf::seconds(1))));
+            World::addEntity(ps);
+        }
+    }
+    void MyAppli::onShowSkillPressed () {
+        pSkills->removeAll();
+        FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
+        for (unsigned int i = 0; i < static_cast<Hero*>(hero)->getSkills().size(); i++) {
+            Label* lSkill = new Label(*wSkills, Vec3f(0, 100 * i, 0), Vec3f(400, 100, 0),fm.getResourceByAlias(Fonts::Serif),static_cast<Hero*>(hero)->getSkills()[i].getName(), 15);
+            Action aSkillSelected (Action::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
+            Command cmdSkillSelected(aSkillSelected, FastDelegate<bool>(&Label::isMouseInside, lSkill), FastDelegate<void>(&MyAppli::onLastHeal, this, lSkill));
+            lSkill->getListener().connect("SkillSelected", cmdSkillSelected);
+            pSkills->addChild(lSkill);
+            lSkill->setParent(pSkills);
+        }
+        wSkills->setVisible(true);
+        setEventContextActivated(false);
     }
     void MyAppli::onLabDiaryQuestName(Label* label)  {
         Quest* quest;
@@ -430,7 +458,7 @@ namespace sorrok {
 
         //caracter->setCenter(Vec3f(getView().getPosition().x, getView().getPosition().y, 300));
 
-        PerPixelLinkedListRenderComponent *frc1 = new PerPixelLinkedListRenderComponent(getRenderWindow(),0, "",ContextSettings(0, 0, 0, 3, 0));
+        ZSortingRenderComponent *frc1 = new ZSortingRenderComponent(getRenderWindow(),0, "",ContextSettings(0, 0, 0, 3, 0));
         ShadowRenderComponent *frc2 = new ShadowRenderComponent(getRenderWindow(),1, "");
         PerPixelLinkedListRenderComponent* frc3 = new PerPixelLinkedListRenderComponent(getRenderWindow(),2,"", ContextSettings(0, 0, 0, 3, 0));
         LightRenderComponent* frc4 = new LightRenderComponent(getRenderWindow(),3,"");
@@ -481,6 +509,9 @@ namespace sorrok {
         Action aShowDiary(Action::KEY_PRESSED_ONCE, IKeyboard::Key::D);
         Command cmd(aShowDiary, FastDelegate<void>(&MyAppli::showDiary, this));
         getListener().connect("ShowDiary", cmd);
+        Action aShowSkill (Action::KEY_PRESSED_ONCE, IKeyboard::Key::S);
+        Command cmdShowSkill(aShowSkill, FastDelegate<void>(&MyAppli::onShowSkillPressed, this));
+        getListener().connect("ShowSkill", cmdShowSkill);
 
         wResuHero = new RenderWindow (sf::VideoMode(400, 300), "Create ODFAEG Application", sf::Style::Titlebar, ContextSettings(0, 0, 4, 3, 0));
         label = new gui::Label(*wResuHero, Vec3f(0, 0, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"5", 15);
@@ -559,6 +590,13 @@ namespace sorrok {
         bGiveUp->setEventContextActivated(false);
         getRenderComponentManager().addComponent(bGiveUp);
         wDiary->setVisible(false);
+
+        wSkills = new RenderWindow(sf::VideoMode(400, 600), "Skills", sf::Style::Default, ContextSettings(0, 0, 4, 3, 0));
+        addWindow(wSkills);
+        pSkills = new Panel (*wSkills, Vec3f(0, 0, 0), Vec3f(400, 600, 0));
+        getRenderComponentManager().addComponent(pSkills);
+        wSkills->setVisible(false);
+
         ps->setTexture(*tm.getResourceByAlias("PARTICLE"));
         for (unsigned int i = 0; i < 10; i++) {
             ps->addTextureRect(sf::IntRect(i*10, 0, 10, 10));
@@ -635,6 +673,12 @@ namespace sorrok {
         }
         if (event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_CLOSED && window == wDiary) {
             wDiary->setVisible(false);
+            setEventContextActivated(true);
+        }
+        if (event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_CLOSED && window == wSkills) {
+            wSkills->setVisible(false);
+            for (unsigned int i = 0; i < pSkills->getChildren().size(); i++)
+                pSkills->getChildren()[i]->setEventContextActivated(false);
             setEventContextActivated(true);
         }
         if (event.type == IEvent::KEYBOARD_EVENT && event.keyboard.type == IEvent::KEY_EVENT_PRESSED && window == &getRenderWindow()) {
@@ -1026,9 +1070,15 @@ namespace sorrok {
                     xpBar->setMinimum(0);
                     xpBar->setValue(0);
 
+                    manaBar = new gui::ProgressBar(getRenderWindow(), Vec3f(0, 20, 0), Vec3f(100, 10, 0),*fm.getResourceByAlias(Fonts::Serif),15);
+                    manaBar->setMaximum(100);
+                    manaBar->setMinimum(0);
+                    manaBar->setValue(100);
+                    manaBar->setColor(sf::Color::Blue);
                     getRenderComponentManager().addComponent(hpBar);
                     getRenderComponentManager().addComponent(xpBar);
-                    hero->setXpHpBar(xpBar, hpBar);
+                    getRenderComponentManager().addComponent(manaBar);
+                    hero->setXpHpBar(xpBar, hpBar, manaBar);
                 }
                 World::addEntity(player);
             }
@@ -1118,7 +1168,7 @@ namespace sorrok {
                 fcHpBar->setMaximum(100);
                 fcHpBar->setValue(100);
                 fcHpBar->setVisible(false);
-                monster->setXpHpBar(nullptr, fcHpBar);
+                monster->setXpHpBar(nullptr, fcHpBar, nullptr);
                 getRenderComponentManager().addComponent(fcHpBar);
                 World::addEntity(monster);
             }
@@ -1181,8 +1231,8 @@ namespace sorrok {
                 cristals.push_back(std::make_pair(cristal, items));
             }
        }
-       if (getClock("LoopTime").getElapsedTime().asMilliseconds() < 100)
-            sf::sleep(sf::milliseconds(100 - getClock("LoopTime").getElapsedTime().asMilliseconds()));
+      /* if (getClock("LoopTime").getElapsedTime().asMilliseconds() < 100)
+            sf::sleep(sf::milliseconds(100 - getClock("LoopTime").getElapsedTime().asMilliseconds()));*/
 
        std::vector<Entity*> caracters = World::getEntities("E_MONSTER+E_HERO");
        for (unsigned int i = 0; i < caracters.size(); i++) {
@@ -1354,6 +1404,50 @@ namespace sorrok {
                             caracter->setLife(caracter->getLife() + rgn);
                         }
                     }
+                    if (caracter->getManaRegen().empty()) {
+                        //std::cout<<"wait for received regen"<<std::endl;
+                        std::string response;
+
+                        if (Network::getResponse("RGNMANA"+conversionIntString(caracter->getId()), response)) {
+                            std::vector<int> regen;
+                            std::vector<std::string> infos = split(response, "*");
+                            int nb = conversionStringInt(infos[0]);
+                            for (unsigned int i = 0; i < nb; i++) {
+                                regen.push_back(conversionStringInt(infos[i+1]));
+                            }
+                            caracter->setManaRegen(regen);
+                            sf::Int64 time = Application::getTimeClk().getElapsedTime().asMicroseconds() - conversionStringLong(infos[nb+1]);
+                            caracter->setRgnManaTransferTime(time);
+                            if (conversionStringLong(infos[nb+1]) > caracter->getAttribute("mana"+conversionIntString(caracter->getId())).getValue<sf::Int64>())
+                                caracter->setMana(conversionStringInt(infos[nb+2]));
+                        }
+                    }
+                    time = caracter->getRgnManaTransferTime();
+                    if (!caracter->getManaRegen().empty() && caracter->getTimeOfLastManaRegen().asSeconds() >= caracter->getRegenManaSpeed() - time / 1e+6) {
+                        while (time > 0) {
+                            time -= caracter->getRegenManaSpeed() * 1e+6;
+                            if (time < 0)
+                                time = 0;
+                            caracter->setRgnManaTransferTime(time);
+                        }
+                        caracter->restartRegenMana();
+                        int rgn = caracter->getManaRegen().back();
+                        caracter->getManaRegen().pop_back();
+                        FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
+                        Text text;
+                        text.setFont(*fm.getResourceByAlias(Fonts::Serif));
+                        text.setString(conversionIntString(rgn));
+                        text.setColor(sf::Color::Blue);
+                        text.setCharacterSize(10);
+                        text.setPosition(Vec3f(caracter->getPosition().x,caracter->getPosition().y-10, 0));
+                        text.setSize(Vec3f(10, 10, 0));
+                        tmpTexts.push_back(std::make_pair(std::make_pair(caracter, text), std::make_pair(Application::getTimeClk().getElapsedTime(), sf::seconds(0.5))));
+                        if (caracter->getMana() + rgn >= caracter->getManaMax()) {
+                            caracter->setMana(caracter->getManaMax());
+                        } else {
+                            caracter->setMana(caracter->getMana() + rgn);
+                        }
+                    }
                 }
             } else {
                 if (caracter == hero) {
@@ -1390,10 +1484,22 @@ namespace sorrok {
                 it++;
         }
         ps->update(getClock("LoopTime").getElapsedTime());
+        for (it = particles.begin(); it != particles.end(); it++) {
+            it->first->update(getClock("LoopTime").getElapsedTime());
+        }
+        for (unsigned int i=0; i < particles2.size(); i++) {
+            particles2[i]->update(getClock("LoopTime").getElapsedTime());
+        }
         World::update();
+        fps++;
+        if (getClock("FPS").getElapsedTime().asSeconds() >= 1.f) {
+            std::cout<<"fps : "<<fps<<std::endl;
+            getClock("FPS").restart();
+            fps = 0;
+        }
     }
     void MyAppli::actionPerformed(gui::Button* item) {
-        //std::cout<<"text : "<<item->getText()<<std::endl;
+        std::cout<<"text : "<<item->getText()<<std::endl;
         if (item->getText() == "Accept") {
             selectedQuest->setStatus(Quest::IN_PROGRESS);
             if (!static_cast<Hero*>(hero)->containsQuest(selectedQuest)) {

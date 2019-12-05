@@ -33,6 +33,7 @@ namespace sorrok {
             ar(faceType);
             ar(xp);
             ar(xpReqForNextLevel);
+            ar(skills);
         }
         void addSkill(Skill skill);
         ~Hero();

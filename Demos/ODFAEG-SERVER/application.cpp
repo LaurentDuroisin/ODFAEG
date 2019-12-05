@@ -391,6 +391,9 @@ namespace sorrok {
                 caracter->getGlobalBounds().getSize().x, caracter->getGlobalBounds().getSize().y * 0.25f, 0);
                 caracter->setCollisionVolume(bb2);
                 caracter->setCenter(Vec3f(0, 300, 300));
+                Skill skill("LastHeal", 10, "SELF", 10);
+                skill.setStat(Skill::HP);
+                static_cast<Hero*>(caracter)->addSkill(skill);
                 SymEncPacket packet;
                 packet<<"IDOK"+conversionIntString(caracter->getId());
                 user->sendTcpPacket(packet);
@@ -612,6 +615,34 @@ namespace sorrok {
                             caracter->setLife(caracter->getMaxLife());
                         } else {
                             caracter->setLife(caracter->getLife() + rgn);
+                        }
+                    }
+                    if (caracter->getRegenMana().empty()) {
+                        std::vector<int> regen;
+                        int nb = 10.f / caracter->getRegenManaSpeed();
+                        std::string response = "RGNMANA"+conversionIntString(caracter->getId())+conversionIntString(nb)+"*";
+                        for (unsigned int i = 0; i < nb; i++) {
+                            int rgn = Math::random(caracter->getRegenManaAmountMin(), caracter->getRegenManaAmountMax());
+                            regen.push_back(rgn);
+                            response += conversionIntString(rgn)+"*";
+                        }
+                        caracter->setRegenMana(regen);
+                        for (unsigned int i = 0; i < Network::getUsers().size(); i++) {
+                            std::string userResponse = response;
+                            userResponse+=conversionLongString(Network::getUsers()[i]->getClientTime())+"*"+conversionIntString(caracter->getMana());
+                            SymEncPacket packet;
+                            packet<<userResponse;
+                            Network::getUsers()[i]->sendTcpPacket(packet);
+                        }
+                    }
+                    if (caracter->getTimeOfLastManaRegen().asSeconds() >= caracter->getRegenManaSpeed()) {
+                        caracter->restartRegenMana();
+                        int rgn = caracter->getRegenMana().back();
+                        caracter->getRegenMana().pop_back();
+                        if (caracter->getMana() + rgn >= caracter->getManaMax()) {
+                            caracter->setMana(caracter->getManaMax());
+                        } else {
+                            caracter->setMana(caracter->getMana() + rgn);
                         }
                     }
                 }
