@@ -44,11 +44,11 @@ namespace sorrok {
             }
             emitter.setEmissionRate(30);
             emitter.setParticleLifetime(Distributions::uniform(sf::seconds(5), sf::seconds(7)));
-            emitter.setParticlePosition(Distributions::circle(Vec3f(0, 0, 0), 1));   // Emit particles in given circle
-            emitter.setParticleVelocity(Distributions::deflect(Vec3f(10, 10, 0),  0)); // Emit towards direction with deviation of 15°
+            emitter.setParticlePosition(Distributions::circle(Vec3f(0, 0, 0), 10));   // Emit particles in given circle
+            emitter.setParticleVelocity(Distributions::deflect(Vec3f(0, 0, 0),  360)); // Emit towards direction with deviation of 15°
             emitter.setParticleRotation(Distributions::uniform(0.f, 0.f));
             emitter.setParticleTextureIndex(Distributions::uniformui(0, 9));
-            emitter.setParticleScale(Distributions::rect(Vec3f(2.1f, 2.1f, 1.f), Vec3f(2.f, 2.f, 1.f)));
+            emitter.setParticleScale(Distributions::rect(Vec3f(0.5f, 0.5f, 0.5f), Vec3f(0.5f, 0.5f, 0.5f)));
             ps->addEmitter(refEmitter(emitter));
             psu->addParticleSystem(ps);
             particles.insert(std::make_pair(ps, std::make_pair(Application::getClock("TimeClock").getElapsedTime(), sf::seconds(1))));
