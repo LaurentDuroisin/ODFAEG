@@ -85,6 +85,7 @@ namespace sorrok {
         template <typename Archive>
         void vtserialize(Archive & ar) {
             Entity::vtserialize(ar);
+            ar(moving);
             ar(name);
             ar(classs);
             ar(level);

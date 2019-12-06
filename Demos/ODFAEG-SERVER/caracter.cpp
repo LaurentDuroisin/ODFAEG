@@ -54,6 +54,7 @@ namespace sorrok {
         if (mana > manaMax)
             mana = manaMax;
         this->mana = mana;
+        //clockRegenMana.restart();
     }
     int Caracter::getMana() {
         return mana;
@@ -112,7 +113,7 @@ namespace sorrok {
             life = 0;
         if (life > maxLife)
             life = maxLife;
-        clockRegenHp.restart();
+        //clockRegenHp.restart();
     }
     int Caracter::getLife() {
     return life;
@@ -142,6 +143,7 @@ namespace sorrok {
         if (alive == true && b == false) {
             damages.clear();
             regen.clear();
+            manaRegen.clear();
         }
         alive = b;
     }
@@ -154,6 +156,7 @@ namespace sorrok {
     void Caracter::setFightingMode(bool b) {
         if (fightingMode == false && b == true) {
             regen.clear();
+            manaRegen.clear();
             if (focusedCaracter)
                 focusedCaracter->attacked = b;
         }
@@ -200,8 +203,11 @@ namespace sorrok {
     void Caracter::setMoving (bool b) {
         if (moving == true && b == false) {
             regen.clear();
-            if (!fightingMode && !attacked)
+            manaRegen.clear();
+            if (!fightingMode && !attacked) {
                 clockRegenHp.restart();
+                clockRegenMana.restart();
+            }
         }
         this->moving = b;
     }

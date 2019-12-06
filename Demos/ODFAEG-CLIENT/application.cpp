@@ -36,7 +36,7 @@ namespace sorrok {
     }
     void MyAppli::launchSkillAnim(std::string name) {
         if (name == "LastHeal") {
-            ParticleSystem* ps = new ParticleSystem(Vec3f(hero->getPosition().x, hero->getPosition().y, hero->getPosition().z), Vec3f(300, 300, 0));
+            ParticleSystem* ps = new ParticleSystem(Vec3f(hero->getCenter().x, hero->getCenter().y, hero->getPosition().z), Vec3f(300, 300, 0));
             TextureManager<> &tm = cache.resourceManager<Texture, std::string>("TextureManager");
             ps->setTexture(*tm.getResourceByAlias("HEAL_PARTICLE"));
             for (unsigned int i = 0; i < 10; i++) {
@@ -1380,7 +1380,7 @@ namespace sorrok {
                     }
                     sf::Int64 time = caracter->getRgnTransferTime();
                     if (!caracter->getRegen().empty() && caracter->getTimeOfLastHpRegen().asSeconds() >= caracter->getRegenHpSpeed() - time / 1e+6) {
-                        while (time > 0) {
+                        if (time > 0) {
                             time -= caracter->getRegenHpSpeed() * 1e+6;
                             if (time < 0)
                                 time = 0;
@@ -1422,15 +1422,16 @@ namespace sorrok {
                                 caracter->setMana(conversionStringInt(infos[nb+2]));
                         }
                     }
-                    time = caracter->getRgnManaTransferTime();
-                    if (!caracter->getManaRegen().empty() && caracter->getTimeOfLastManaRegen().asSeconds() >= caracter->getRegenManaSpeed() - time / 1e+6) {
-                        while (time > 0) {
-                            time -= caracter->getRegenManaSpeed() * 1e+6;
-                            if (time < 0)
-                                time = 0;
-                            caracter->setRgnManaTransferTime(time);
+                    sf::Int64 time2 = caracter->getRgnManaTransferTime();
+                    if (!caracter->getManaRegen().empty() && caracter->getTimeOfLastManaRegen().asSeconds() >= caracter->getRegenManaSpeed() - time2 / 1e+6) {
+                        if (time2 > 0) {
+                            time2 -= caracter->getRegenManaSpeed() * 1e+6;
+                            if (time2 < 0)
+                                time2 = 0;
+                            caracter->setRgnManaTransferTime(time2);
                         }
                         caracter->restartRegenMana();
+
                         int rgn = caracter->getManaRegen().back();
                         caracter->getManaRegen().pop_back();
                         FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
@@ -1445,6 +1446,8 @@ namespace sorrok {
                         if (caracter->getMana() + rgn >= caracter->getManaMax()) {
                             caracter->setMana(caracter->getManaMax());
                         } else {
+                            if (caracter->getType() == "E_HERO")
+                                std::cout<<"set mana"<<std::endl;
                             caracter->setMana(caracter->getMana() + rgn);
                         }
                     }

@@ -104,6 +104,7 @@ namespace sorrok {
         template <typename Archive>
         void vtserialize(Archive & ar) {
             Entity::vtserialize(ar);
+            ar(moving);
             ar(name);
             ar(classs);
             ar(level);
@@ -121,7 +122,6 @@ namespace sorrok {
             ar(regenManaSpeed);
             ar(regenManaAmountMin);
             ar(regenManaAmountMax);
-            std::cout<<"mana : "<<mana<<std::endl;
             sf::Int64 i = 0;
             addAttribute("isAlive"+odfaeg::core::conversionIntString(getId()), i);
             addAttribute("isMoving"+odfaeg::core::conversionIntString(getId()),i);

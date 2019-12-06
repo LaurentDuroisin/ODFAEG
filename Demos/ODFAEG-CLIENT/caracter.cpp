@@ -114,6 +114,7 @@ namespace sorrok {
         if (hpBar != nullptr) {
             hpBar->setValue(life);
         }
+        //clockRegenHp.restart();
     }
     int Caracter::getLife() {
         return life;
@@ -161,6 +162,7 @@ namespace sorrok {
             BoneAnimation::setBoneIndex(baseAnimIndex + currentAnimIndex);
             damages.clear();
             regen.clear();
+            manaRegen.clear();
             restartRespawn();
             //World::update();
         } else if (alive == false && b == true) {
@@ -187,6 +189,7 @@ namespace sorrok {
     void Caracter::setFightingMode(bool b) {
         if (fightingMode == false && b == true) {
             regen.clear();
+            manaRegen.clear();
             if (focusedCaracter)
                 focusedCaracter->attacked = b;
             changeAttribute("isInFightingMode"+conversionIntString(getId()),Application::app->getClock("TimeClock").getElapsedTime().asMicroseconds());
@@ -274,8 +277,11 @@ namespace sorrok {
         if (moving != b) {
             if (moving == true && b == false) {
                 regen.clear();
-                if (!fightingMode && !attacked)
+                manaRegen.clear();
+                if (!fightingMode && !attacked) {
                     clockRegenHp.restart();
+                    clockManaRegen.restart();
+                }
             }
             this->moving = b;
             if (moving) {
@@ -404,6 +410,7 @@ namespace sorrok {
         if (manaBar != nullptr) {
             manaBar->setValue(mana);
         }
+        //clockManaRegen.restart();
     }
     Caracter::~Caracter() {
     }

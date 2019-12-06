@@ -151,6 +151,13 @@ namespace sorrok {
             sf::Int64 oldLoopCliTime = user->getClientTime();
             std::vector<std::string> infos = split(message, "*");
             std::string request = infos[0];
+            if (request == "RETRACTMANA") {
+                std::cout<<"retract mana"<<std::endl;
+                int id = conversionStringInt(infos[1]);
+                Caracter* hero = static_cast<Caracter*>(World::getEntity(id));
+                float manaAmount = conversionStringFloat(infos[2]);
+                caracter->setMana(caracter->getMana() - manaAmount);
+            }
             if (request == "ACCEPT") {
                 unsigned int id = conversionStringInt(infos[1]);
                 std::string name = infos[2];
@@ -173,19 +180,18 @@ namespace sorrok {
                 int d = conversionStringInt(infos[6]);
                 Vec3f position(x, y, 0);
                 BoundingBox rect (x, y, z, w, h, d);
-                std::cout<<"rect : "<<rect.getPosition()<<rect.getSize()<<std::endl;
                 std::vector<Entity*> pnjs = World::getEntitiesInRect(rect, "E_PNJ");
                 int distMin = 100;
                 int id = -1;
                 for (unsigned int i = 0; i < pnjs.size(); i++) {
-                    std::cout<<"PNJ"<<std::endl;
+
                     Vec3f center(pnjs[i]->getCenter().x, pnjs[i]->getCenter().y, 0);
                     if (center.computeDist(position) < distMin) {
                         distMin = center.computeDist(position);
                         id = pnjs[i]->getId();
                     }
                 }
-                std::cout<<"ID : "<<id<<std::endl;
+
                 if (id != -1) {
                     std::string message = "SHOWQUEST"+conversionIntString(id);
                     SymEncPacket packet;
