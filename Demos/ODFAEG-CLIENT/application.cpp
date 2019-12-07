@@ -998,7 +998,7 @@ namespace sorrok {
                         tile->getFaces()[0]->getMaterial().setTexId("VLADSWORD");
                         g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight());
                         frame->setShadowCenter(Vec3f(0, 200, 0));
-                        if (textRectX + textRectWidth > textWidth) {
+                        if (textRectX + textRectWidth >= textWidth) {
                             textRectX = 0;
                             textRectY += textRectHeight;
                         } else {
@@ -1018,7 +1018,7 @@ namespace sorrok {
                         tile->getFaces()[0]->getMaterial().setTexId("VLADSWORD");
                         g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight());
                         frame->setShadowCenter(Vec3f(0, 200, 0));
-                        if (textRectX + textRectWidth > textWidth) {
+                        if (textRectX + textRectWidth >= textWidth) {
                             textRectX = 0;
                             textRectY += textRectHeight;
                         } else {
@@ -1039,7 +1039,7 @@ namespace sorrok {
                         tile->getFaces()[0]->getMaterial().setTexId("VLADSWORD");
                         g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight());
                         frame->setShadowCenter(Vec3f(0, 200, 0));
-                        if (textRectX + textRectWidth > textWidth) {
+                        if (textRectX + textRectWidth >= textWidth) {
                             textRectX = 0;
                             textRectY += textRectHeight;
                         } else {
@@ -1107,7 +1107,7 @@ namespace sorrok {
                         tile->getFaces()[0]->getMaterial().setTexId("OGRO");
                         g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight());
                         frame->setShadowCenter(Vec3f(0, 200, 0));
-                        if (textRectX + textRectWidth > textWidth) {
+                        if (textRectX + textRectWidth >= textWidth) {
                             textRectX = 0;
                             textRectY += textRectHeight;
                         } else {
@@ -1121,14 +1121,14 @@ namespace sorrok {
                 }
                 for (unsigned int i = 0; i < 8; i++) {
                     Anim* animation = new Anim(0.1f, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), 0);
-                    for (unsigned int j = 0; j < 6; j++) {
+                    for (unsigned int j = 0; j < 11; j++) {
                         sf::IntRect textRect (textRectX, textRectY, textRectWidth, textRectHeight);
                         Tile *tile = new Tile(text, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), textRect);
                         tile->getFaces()[0]->getMaterial().setTexId("OGRO");
                         g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight());
                         frame->setShadowCenter(Vec3f(0, 200, 0));
                         //decor->changeGravityCenter(Vec3f(50, 50, 0));
-                        if (textRectX + textRectWidth > textWidth) {
+                        if (textRectX + textRectWidth >= textWidth) {
                             textRectX = 0;
                             textRectY += textRectHeight;
                         } else {
@@ -1150,7 +1150,7 @@ namespace sorrok {
                         g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight());
                         frame->setShadowCenter(Vec3f(0, 200, 0));
                         //decor->changeGravityCenter(Vec3f(50, 50, 0));
-                        if (textRectX + textRectWidth > textWidth) {
+                        if (textRectX + textRectWidth >= textWidth) {
                             textRectX = 0;
                             textRectY += textRectHeight;
                         } else {
@@ -1194,7 +1194,7 @@ namespace sorrok {
                         tile->getFaces()[0]->getMaterial().setTexId("LUIGI");
                         g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight());
                         frame->setShadowCenter(Vec3f(0, 200, 0));
-                        if (textRectX + textRectWidth > textWidth) {
+                        if (textRectX + textRectWidth >= textWidth) {
                             textRectX = 0;
                             textRectY += textRectHeight;
                         } else {
