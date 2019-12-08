@@ -8,12 +8,12 @@ namespace sorrok {
         std::cout<<"action"<<std::endl;
         if (item.getType() == Item::HP_POTION) {
             float potionAmount = item.getAttributeVal(Item::POTION_AMOUNT);
-            std::cout<<"hp potion amount : "<<potionAmount<<std::endl;
+            /*std::cout<<"hp potion amount : "<<potionAmount<<std::endl;
             if (hero->getLife() + potionAmount > hero->getMaxLife()) {
                 hero->setLife(hero->getMaxLife());
             } else {
                 hero->setLife(hero->getLife() + potionAmount);
-            }
+            }*/
             SymEncPacket packet;
             std::string request = "ADDLIFE*"+conversionIntString(hero->getId())+"*"+conversionFloatString(potionAmount);
             packet<<request;
@@ -28,10 +28,10 @@ namespace sorrok {
     }
     void GameAction::operator()(const Hero::Novice&, Skill& skill, Hero* hero) {
         if (hero->getMana() >= skill.getManaCost()) {
-            hero->setMana(hero->getMana() - skill.getManaCost());
+            //hero->setMana(hero->getMana() - skill.getManaCost());
             if (skill.getTarget() == "SELF") {
                 if (skill.getStat() == Skill::HP && hero->isAlive()) {
-                    hero->setLife(hero->getLife() + skill.getDamage());
+                    //hero->setLife(hero->getLife() + skill.getDamage());
                     static_cast<MyAppli*>(MyAppli::app)->launchSkillAnim(skill.getName());
                     std::string request = "ADDLIFE*"+conversionIntString(hero->getId())+"*"+conversionFloatString(skill.getDamage());
                     SymEncPacket packet;

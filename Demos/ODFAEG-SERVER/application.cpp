@@ -152,11 +152,14 @@ namespace sorrok {
             std::vector<std::string> infos = split(message, "*");
             std::string request = infos[0];
             if (request == "RETRACTMANA") {
-                std::cout<<"retract mana"<<std::endl;
                 int id = conversionStringInt(infos[1]);
                 Caracter* hero = static_cast<Caracter*>(World::getEntity(id));
                 float manaAmount = conversionStringFloat(infos[2]);
                 caracter->setMana(caracter->getMana() - manaAmount);
+                std::string response = "RETRACTMANA"+conversionIntString(id)+"*"+conversionFloatString(manaAmount);
+                SymEncPacket packet;
+                packet<<response;
+                user->sendTcpPacket(packet);
             }
             if (request == "ACCEPT") {
                 unsigned int id = conversionStringInt(infos[1]);
@@ -443,6 +446,10 @@ namespace sorrok {
                 } else {
                     hero->setLife(hero->getLife() + potionAmount);
                 }
+                std::string response = "ADDLIFE"+conversionIntString(id)+"*"+conversionFloatString(potionAmount);
+                SymEncPacket packet;
+                packet<<response;
+                user->sendTcpPacket(packet);
             }
         }
         if (getClock("LoopTime").getElapsedTime().asMilliseconds() < 100)

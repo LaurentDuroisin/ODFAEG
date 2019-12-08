@@ -727,6 +727,20 @@ namespace sorrok {
             Network::sendUdpPacket(packet);
             getClock("RequestTime").restart();
         }*/
+        if (Network::getResponse("ADDLIFE", response)) {
+            std::vector<std::string> infos = split(response, "*");
+            int id = conversionStringInt(infos[0]);
+            float amount = conversionStringFloat(infos[1]);
+            Caracter* caracter = static_cast<Caracter*>(World::getEntity(id));
+            caracter->setLife(caracter->getLife() + amount);
+        }
+        if (Network::getResponse("RETRACTMANA", response)) {
+            std::vector<std::string> infos = split(response, "*");
+            int id = conversionStringInt(infos[0]);
+            float amount = conversionStringFloat(infos[1]);
+            Caracter* caracter = static_cast<Caracter*>(World::getEntity(id));
+            caracter->setMana(caracter->getMana() - amount);
+        }
         if (Network::getResponse("SHOWQUEST", response)) {
             Pnj* pnj = static_cast<Pnj*>(World::getEntity(conversionStringInt(response)));
             selectedPnj = pnj;
