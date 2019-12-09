@@ -80,9 +80,17 @@ namespace sorrok {
         std::pair<odfaeg::graphic::Sprite*, std::vector<Item>> selectedCristal;
         Quest* selectedQuest;
         Pnj* selectedPnj;
+        std::array<odfaeg::graphic::gui::Button*, 9> shorcutsButtons;
+        odfaeg::graphic::gui::Icon* floatingIcon;
         std::map<odfaeg::physic::ParticleSystem*, std::pair<sf::Time, sf::Time>> particles;
         std::vector<odfaeg::physic::ParticleSystem*> particles2;
+        std::map<std::string, sf::Time> doubleClicks;
         odfaeg::physic::UniversalEmitter emitter, emitter2;
+        std::vector<std::pair<odfaeg::core::Variant<Hero::Novice, Hero::Warrior, Hero::Magician, Hero::Thief>, std::pair<odfaeg::core::Variant<Item, Skill>, Hero*>>> gameActions;
+        std::vector<std::pair<std::pair<Caracter*, odfaeg::graphic::Text>, std::pair<sf::Time, sf::Time>>> tmpTexts;
+        std::vector<odfaeg::graphic::Entity*> monsters;
+        std::array<odfaeg::core::Variant<Skill, Item>*, 9> shorcuts;
+        odfaeg::physic::ParticleSystem* ps;
     public :
         enum Fonts {
             Serif
@@ -111,11 +119,9 @@ namespace sorrok {
         void onLastHeal(odfaeg::graphic::gui::Label* label);
         void onShowSkillPressed();
         void launchSkillAnim(std::string name);
-        std::vector<std::pair<odfaeg::core::Variant<Hero::Novice, Hero::Warrior, Hero::Magician, Hero::Thief>, std::pair<odfaeg::core::Variant<Item, Skill>, Hero*>>> gameActions;
-        //std::vector<ItemAction*> itemActions;
-        std::vector<std::pair<std::pair<Caracter*, odfaeg::graphic::Text>, std::pair<sf::Time, sf::Time>>> tmpTexts;
-        std::vector<odfaeg::graphic::Entity*> monsters;
-        odfaeg::physic::ParticleSystem* ps;
+        void onIconMoved(odfaeg::graphic::gui::Icon* icon);
+        void onIconMouseButtonReleased();
+        void onIconPressed(odfaeg::graphic::gui::Icon* icon);
     };
 }
 #endif // MY_APPLI

@@ -99,27 +99,32 @@ namespace odfaeg {
             }
         }
         bool Command::equalEvent (window::IEvent event, window::IEvent other) {
-            if (event.type != other.type)
+            if (event.type != other.type) {
                 return false;
+            }
             if (event.type == window::IEvent::EventType::TEXT_INPUT_EVENT) {
                 if (other.text.unicode == 0) {
                     return true;
                 }
                 return event.text.unicode == other.text.unicode;
             }
-            if (event.type == window::IEvent::KEYBOARD_EVENT && event.keyboard.type == window::IEvent::KEY_EVENT_PRESSED
-                || event.type == window::IEvent::KEYBOARD_EVENT && event.keyboard.type == window::IEvent::KEY_EVENT_RELEASED) {
+            if (event.type == window::IEvent::KEYBOARD_EVENT && event.keyboard.type == window::IEvent::KEY_EVENT_PRESSED && other.keyboard.type == window::IEvent::KEY_EVENT_PRESSED
+                || event.type == window::IEvent::KEYBOARD_EVENT && event.keyboard.type == window::IEvent::KEY_EVENT_RELEASED && other.keyboard.type == window::IEvent::KEY_EVENT_RELEASED) {
                 if (other.keyboard.code == window::IKeyboard::Unknown)
                     return true;
                 return event.keyboard.code == other.keyboard.code;
+            } else if (event.type == window::IEvent::KEYBOARD_EVENT) {
+                return false;
             }
-            if (event.type == window::IEvent::MOUSE_BUTTON_EVENT && event.mouseButton.type == window::IEvent::BUTTON_EVENT_PRESSED
-                || event.type == window::IEvent::MOUSE_BUTTON_EVENT && event.mouseButton.type == window::IEvent::BUTTON_EVENT_RELEASED) {
+            if (event.type == window::IEvent::MOUSE_BUTTON_EVENT && event.mouseButton.type == window::IEvent::BUTTON_EVENT_PRESSED && other.mouseButton.type == window::IEvent::BUTTON_EVENT_PRESSED
+                || event.type == window::IEvent::MOUSE_BUTTON_EVENT && event.mouseButton.type == window::IEvent::BUTTON_EVENT_RELEASED && other.mouseButton.type == window::IEvent::BUTTON_EVENT_RELEASED) {
                 if (event.mouseButton.button == -1)
                     return true;
                 return event.mouseButton.button == other.mouseButton.button;
+            } else if (event.type == window::IEvent::MOUSE_BUTTON_EVENT) {
+                return false;
             }
-            return false;
+            return true;
         }
         Command& Command::operator=(const Command& other) {
             if (other.action != nullptr)

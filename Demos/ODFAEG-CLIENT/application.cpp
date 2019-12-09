@@ -24,15 +24,38 @@ namespace sorrok {
         Network::setCertifiateClientMess("SORROKCLIENT");
         isClientAuthentified = false;
         ps = new ParticleSystem(Vec3f(0, 0, 150),Vec3f(100, 100, 0));
+        doubleClicks.insert(std::make_pair("useItem", getClock("TimeClock").getElapsedTime()));
+        doubleClicks.insert(std::make_pair("useSkill", getClock("TimeClock").getElapsedTime()));
+    }
+    void MyAppli::onIconMoved(Icon* icon) {
+        std::cout<<"move icon"<<std::endl;
+        floatingIcon->setPosition(Vec3f(IMouse::getPosition(getRenderWindow()).x, IMouse::getPosition(getRenderWindow()).y, 0));
+
+    }
+    void MyAppli::onIconPressed(Icon* icon) {
+        std::cout<<"icon pressed"<<std::endl;
+        floatingIcon->getSprite().setTexture(*icon->getSprite().getTexture());
+        floatingIcon->setVisible(true);
+    }
+    void MyAppli::onIconMouseButtonReleased() {
+        std::cout<<"release icon"<<std::endl;
+        floatingIcon->setVisible(false);
     }
     void MyAppli::onLastHeal (Label* label) {
-        Skill skill;
-        for (unsigned int i = 0; i < static_cast<Hero*>(hero)->getSkills().size(); i++) {
-            if (label->getText() == static_cast<Hero*>(hero)->getSkills()[i].getName()) {
-                skill = static_cast<Hero*>(hero)->getSkills()[i];
+        std::map<std::string, sf::Time>::iterator it;
+        it = doubleClicks.find("useSkill");
+        sf::Time elapsedTime = getClock("TimeClock").getElapsedTime() - it->second;
+        if (elapsedTime.asSeconds() <= 1.f) {
+            Skill skill;
+            for (unsigned int i = 0; i < static_cast<Hero*>(hero)->getSkills().size(); i++) {
+                if (label->getText() == static_cast<Hero*>(hero)->getSkills()[i].getName()) {
+                    skill = static_cast<Hero*>(hero)->getSkills()[i];
+                }
             }
+            gameActions.push_back(std::make_pair(static_cast<Hero*>(hero)->getJobVariant(), std::make_pair(skill, static_cast<Hero*>(hero))));
+        } else {
+            it->second = getClock("TimeClock").getElapsedTime();
         }
-        gameActions.push_back(std::make_pair(static_cast<Hero*>(hero)->getJobVariant(), std::make_pair(skill, static_cast<Hero*>(hero))));
     }
     void MyAppli::launchSkillAnim(std::string name) {
         if (name == "LastHeal") {
@@ -58,8 +81,25 @@ namespace sorrok {
     void MyAppli::onShowSkillPressed () {
         pSkills->removeAll();
         FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
+        TextureManager<Skill::Type>& tm3 = cache.resourceManager<Texture, Skill::Type>("TextureManager3");
         for (unsigned int i = 0; i < static_cast<Hero*>(hero)->getSkills().size(); i++) {
-            Label* lSkill = new Label(*wSkills, Vec3f(0, 100 * i, 0), Vec3f(400, 100, 0),fm.getResourceByAlias(Fonts::Serif),static_cast<Hero*>(hero)->getSkills()[i].getName(), 15);
+            Sprite sprite(*tm3.getResourceByAlias(Skill::LAST_HEAL), Vec3f(0, 100*i, 0), Vec3f(50, 50, 0), sf::IntRect(0, 0, 50, 50));
+            Icon* icon = new Icon(*wSkills, Vec3f(0, 100*i, 0),Vec3f(50, 50, 0), sprite);
+            icon->setName(static_cast<Hero*>(hero)->getSkills()[i].getName());
+            Action aSkillButtonPressed(Action::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
+            Action aSkillButtonHeldDown(Action::MOUSE_BUTTON_HELD_DOWN, IMouse::Left);
+            Action aSkillMouseMoved(Action::MOUSE_MOVED);
+            Action aSkillCombined = aSkillButtonHeldDown && aSkillMouseMoved;
+            Command cmd (aSkillCombined, FastDelegate<void>(&MyAppli::onIconMoved, this, icon));
+            icon->getListener().connect("IconMoved", cmd);
+            Action aSkillMouseButtonReleased(Action::MOUSE_BUTTON_RELEASED, IMouse::Left);
+            Command cmd2 (aSkillMouseButtonReleased, FastDelegate<void>(&MyAppli::onIconMouseButtonReleased, this));
+            icon->getListener().connect("IconReleased", cmd2);
+            Command cmd3 (aSkillButtonPressed, FastDelegate<bool> (&Icon::isMouseInside, icon), FastDelegate<void>(&MyAppli::onIconPressed, this, icon));
+            icon->getListener().connect("IconPressed", cmd3);
+            pSkills->addChild(icon);
+            icon->setParent(pSkills);
+            Label* lSkill = new Label(*wSkills, Vec3f(50, 100 * i, 0), Vec3f(400, 100, 0),fm.getResourceByAlias(Fonts::Serif),static_cast<Hero*>(hero)->getSkills()[i].getName(), 15);
             Action aSkillSelected (Action::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
             Command cmdSkillSelected(aSkillSelected, FastDelegate<bool>(&Label::isMouseInside, lSkill), FastDelegate<void>(&MyAppli::onLastHeal, this, lSkill));
             lSkill->getListener().connect("SkillSelected", cmdSkillSelected);
@@ -154,34 +194,40 @@ namespace sorrok {
         wDisplayQuest->setVisible(true);
     }
     void MyAppli::onIconClicked(Icon* icon) {
-        TextureManager<Item::Type> &tm2 = cache.resourceManager<Texture, Item::Type>("TextureManager2");
-        Item::Type itemType = tm2.getAliasByResource(const_cast<Texture*>(icon->getSprite().getTexture()))[0];
-        std::map<Item::Type, std::vector<Item>>& items = static_cast<Hero*>(hero)->getInventory();
-        std::map<Item::Type, std::vector<Item>>::iterator it = items.find(itemType);
-        Item item = it->second.back();
-        if (itemType == Item::HP_POTION) {
-            it->second.pop_back();
-            Label* label;
-            bool found = false;
-            for (unsigned int i = 0; i < pInventory->getChildren().size() && !found; i+=2) {
-                Icon* icn = dynamic_cast<Icon*> (pInventory->getChildren()[i]);
-                label = dynamic_cast<Label*> (pInventory->getChildren()[i+1]);
-                if (icon == icn) {
-                    label->setText(conversionIntString(it->second.size()));
-                    found = true;
-                }
-            }
-            if (it->second.empty()) {
-                for (unsigned int i = 0; i < pInventory->getChildren().size(); i++) {
-                    if (pInventory->getChildren()[i] == icon) {
-                        pInventory->removeChild(*icon);
-                        pInventory->removeChild(*label);
+        std::map<std::string, sf::Time>::iterator it;
+        it = doubleClicks.find("useItem");
+        sf::Time elapsedTime = getClock("TimeClock").getElapsedTime() - it->second;
+        if (elapsedTime.asSeconds() <= 1.f) {
+            TextureManager<Item::Type> &tm2 = cache.resourceManager<Texture, Item::Type>("TextureManager2");
+            Item::Type itemType = tm2.getAliasByResource(const_cast<Texture*>(icon->getSprite().getTexture()))[0];
+            std::map<Item::Type, std::vector<Item>>& items = static_cast<Hero*>(hero)->getInventory();
+            std::map<Item::Type, std::vector<Item>>::iterator it = items.find(itemType);
+            Item item = it->second.back();
+            if (itemType == Item::HP_POTION) {
+                it->second.pop_back();
+                Label* label;
+                bool found = false;
+                for (unsigned int i = 0; i < pInventory->getChildren().size() && !found; i+=2) {
+                    Icon* icn = dynamic_cast<Icon*> (pInventory->getChildren()[i]);
+                    label = dynamic_cast<Label*> (pInventory->getChildren()[i+1]);
+                    if (icon == icn) {
+                        label->setText(conversionIntString(it->second.size()));
+                        found = true;
                     }
                 }
-                items.erase(it);
+                if (it->second.empty()) {
+                    for (unsigned int i = 0; i < pInventory->getChildren().size(); i++) {
+                        if (pInventory->getChildren()[i] == icon) {
+                            pInventory->removeChild(*icon);
+                            pInventory->removeChild(*label);
+                        }
+                    }
+                    items.erase(it);
+                }
+                gameActions.push_back(std::make_pair(static_cast<Hero*>(hero)->getJobVariant(), std::make_pair(item, static_cast<Hero*>(hero))));
             }
-            gameActions.push_back(std::make_pair(static_cast<Hero*>(hero)->getJobVariant(), std::make_pair(item, static_cast<Hero*>(hero))));
-            //itemActions.push_back(ia);
+        } else {
+            it->second = getClock("TimeClock").getElapsedTime();
         }
     }
     void MyAppli::showInventory() {
@@ -197,7 +243,6 @@ namespace sorrok {
         for(it = items.begin(); it != items.end(); it++) {
             Sprite sprite (*tm2.getResourceByAlias(it->first),pItems->getPosition(),Vec3f(50, 50, 0), sf::IntRect(0, 0, 50, 50));
             Icon* icon = new Icon(*wInventory,Vec3f(0, 0, 0),Vec3f(0, 0, 0),sprite);
-            icon->setName("HPPOTION_ICON");
             Action a (Action::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
             Command cmd(a, FastDelegate<bool>(&Icon::isMouseInside, icon), FastDelegate<void>(&MyAppli::onIconClicked, this, icon));
             icon->getListener().connect("UseItem"+conversionIntString(it->first), cmd);
@@ -412,11 +457,14 @@ namespace sorrok {
         tm.fromFileWithAlias("tilesets/particule.png", "PARTICLE");
         TextureManager<Item::Type> tm2;
         tm2.fromFileWithAlias("tilesets/hppotion-icon.png", Item::HP_POTION);
+        TextureManager<Skill::Type> tm3;
+        tm3.fromFileWithAlias("tilesets/lastheal-icon.png", Skill::LAST_HEAL);
         FontManager<Fonts> fm;
         fm.fromFileWithAlias("fonts/FreeSerif.ttf", Serif);
         cache.addResourceManager(fm, "FontManager");
         cache.addResourceManager(tm, "TextureManager");
         cache.addResourceManager(tm2, "TextureManager2");
+        cache.addResourceManager(tm3, "TextureManager3");
         //shader.loadFromFile("Shaders/SimpleVertexShader.vertexshader", "Shaders/SimpleFragmentShader.fragmentshader");
     }
     void MyAppli::onInit () {
@@ -596,6 +644,11 @@ namespace sorrok {
         pSkills = new Panel (*wSkills, Vec3f(0, 0, 0), Vec3f(400, 600, 0));
         getRenderComponentManager().addComponent(pSkills);
         wSkills->setVisible(false);
+        TextureManager<Skill::Type>& tm3 = cache.resourceManager<Texture,Skill::Type>("TextureManager3");
+        Sprite sprite (*tm3.getResourceByAlias(Skill::LAST_HEAL),Vec3f(0, 0, 0),Vec3f(50, 50, 0), sf::IntRect(0, 0, 50, 50));
+        floatingIcon = new Icon(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(50, 50, 0), sprite);
+        floatingIcon->setVisible(false);
+        getRenderComponentManager().addComponent(floatingIcon);
 
         ps->setTexture(*tm.getResourceByAlias("PARTICLE"));
         for (unsigned int i = 0; i < 10; i++) {

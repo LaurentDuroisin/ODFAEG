@@ -4,6 +4,9 @@
 namespace sorrok {
     class Skill {
         public :
+        enum Type {
+            LAST_HEAL
+        };
         enum Stat {
             NONE, HP
         };
