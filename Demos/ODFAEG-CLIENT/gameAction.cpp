@@ -8,6 +8,7 @@ namespace sorrok {
         std::cout<<"action"<<std::endl;
         if (item.getType() == Item::HP_POTION) {
             float potionAmount = item.getAttributeVal(Item::POTION_AMOUNT);
+            static_cast<MyAppli*>(MyAppli::app)->retractFromInventory(item);
             /*std::cout<<"hp potion amount : "<<potionAmount<<std::endl;
             if (hero->getLife() + potionAmount > hero->getMaxLife()) {
                 hero->setLife(hero->getMaxLife());

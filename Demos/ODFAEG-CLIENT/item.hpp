@@ -2,6 +2,7 @@
 #define ITEM_HPP
 #include <string>
 #include <map>
+#include "odfaeg/Graphics/GUI/icon.hpp"
 namespace sorrok {
     class Item {
     public :
@@ -22,10 +23,13 @@ namespace sorrok {
             ar(type);
             ar(attributes);
         }
+        void setIcon(odfaeg::graphic::gui::Icon* icon);
+        odfaeg::graphic::gui::Icon* getIcon();
     private :
         std::string name;
         Type type;
         std::map<int, float> attributes;
+        odfaeg::graphic::gui::Icon* icon;
     };
 }
 #endif // ITEM_HPP

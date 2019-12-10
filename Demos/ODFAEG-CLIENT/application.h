@@ -122,6 +122,7 @@ namespace sorrok {
         void onIconMoved(odfaeg::graphic::gui::Icon* icon);
         void onIconMouseButtonReleased(odfaeg::graphic::gui::Icon* icon);
         void onIconPressed(odfaeg::graphic::gui::Icon* icon);
+        void retractFromInventory(Item& item);
         void onF1Pressed();
     };
 }
