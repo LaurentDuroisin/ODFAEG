@@ -246,12 +246,17 @@ namespace sorrok {
         it = doubleClicks.find("useItem");
         sf::Time elapsedTime = getClock("TimeClock").getElapsedTime() - it->second;
         if (elapsedTime.asSeconds() <= 1.f) {
-            TextureManager<Item::Type>& tm2 = cache.resourceManager<Texture, Item::Type>("TextureManager2");
             std::map<Item::Type, std::vector<Item>> items = static_cast<Hero*>(hero)->getInventory();
             std::map<Item::Type, std::vector<Item>>::iterator it;
-            std::vector<Item::Type> itemType = tm2.getAliasByResource(const_cast<Texture*>(icon->getSprite().getTexture()));
-            it = items.find(itemType[0]);
-            gameActions.push_back(std::make_pair(static_cast<Hero*>(hero)->getJobVariant(), std::make_pair(it->second.back(), static_cast<Hero*>(hero))));
+            Item item;
+            for (it = items.begin(); it != items.end(); it++) {
+                for (unsigned int i = 0; i < it->second.size(); i++) {
+                    if (it->second[i].getName() == icon->getName()) {
+                        item = it->second[i];
+                    }
+                }
+            }
+            gameActions.push_back(std::make_pair(static_cast<Hero*>(hero)->getJobVariant(), std::make_pair(item, static_cast<Hero*>(hero))));
         } else {
             it->second = getClock("TimeClock").getElapsedTime();
         }
@@ -271,6 +276,7 @@ namespace sorrok {
             Icon* icon = new Icon(*wInventory,Vec3f(0, 0, 0),Vec3f(0, 0, 0),sprite);
             for (unsigned int i = 0; i < it->second.size(); i++) {
                 it->second[i].setIcon(icon);
+                icon->setName(it->second[i].getName());
             }
             Action a (Action::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
             Command cmd(a, FastDelegate<bool>(&Icon::isMouseInside, icon), FastDelegate<void>(&MyAppli::onIconClicked, this, icon));
