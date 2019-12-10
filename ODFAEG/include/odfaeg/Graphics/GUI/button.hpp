@@ -22,6 +22,8 @@ namespace odfaeg {
                     void onEventPushed(window::IEvent event, RenderWindow& window);
                     void onUpdate(RenderWindow* window, window::IEvent& event);
                     void setText(std::string text);
+                    void setIcon(const Texture* text);
+                    const Texture* getIcon();
                 private :
                     math::Vec3f size;
                     Text text;

@@ -68,6 +68,12 @@ namespace odfaeg {
                     }
                 }
             }
+            void Button::setIcon(const Texture* text) {
+                rect.setTexture(text);
+            }
+            const Texture* Button::getIcon() {
+                return rect.getTexture();
+            }
         }
     }
 }

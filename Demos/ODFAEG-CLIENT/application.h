@@ -89,7 +89,7 @@ namespace sorrok {
         std::vector<std::pair<odfaeg::core::Variant<Hero::Novice, Hero::Warrior, Hero::Magician, Hero::Thief>, std::pair<odfaeg::core::Variant<Item, Skill>, Hero*>>> gameActions;
         std::vector<std::pair<std::pair<Caracter*, odfaeg::graphic::Text>, std::pair<sf::Time, sf::Time>>> tmpTexts;
         std::vector<odfaeg::graphic::Entity*> monsters;
-        std::array<odfaeg::core::Variant<Skill, Item>*, 9> shorcuts;
+        std::array<odfaeg::core::Variant<Item, Skill>*, 9> shorcuts;
         odfaeg::physic::ParticleSystem* ps;
     public :
         enum Fonts {
@@ -120,8 +120,9 @@ namespace sorrok {
         void onShowSkillPressed();
         void launchSkillAnim(std::string name);
         void onIconMoved(odfaeg::graphic::gui::Icon* icon);
-        void onIconMouseButtonReleased();
+        void onIconMouseButtonReleased(odfaeg::graphic::gui::Icon* icon);
         void onIconPressed(odfaeg::graphic::gui::Icon* icon);
+        void onF1Pressed();
     };
 }
 #endif // MY_APPLI

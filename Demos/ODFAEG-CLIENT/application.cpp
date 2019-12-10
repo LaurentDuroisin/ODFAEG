@@ -27,6 +27,10 @@ namespace sorrok {
         doubleClicks.insert(std::make_pair("useItem", getClock("TimeClock").getElapsedTime()));
         doubleClicks.insert(std::make_pair("useSkill", getClock("TimeClock").getElapsedTime()));
     }
+    void MyAppli::onF1Pressed() {
+        if (shorcuts[0] != nullptr)
+            gameActions.push_back(std::make_pair(static_cast<Hero*>(hero)->getJobVariant(), std::make_pair(*shorcuts[0], static_cast<Hero*>(hero))));
+    }
     void MyAppli::onIconMoved(Icon* icon) {
         std::cout<<"move icon"<<std::endl;
         floatingIcon->setPosition(Vec3f(IMouse::getPosition(getRenderWindow()).x, IMouse::getPosition(getRenderWindow()).y, 0));
@@ -37,8 +41,26 @@ namespace sorrok {
         floatingIcon->getSprite().setTexture(*icon->getSprite().getTexture());
         floatingIcon->setVisible(true);
     }
-    void MyAppli::onIconMouseButtonReleased() {
+    void MyAppli::onIconMouseButtonReleased(Icon* icon) {
         std::cout<<"release icon"<<std::endl;
+        unsigned int distMin = std::numeric_limits<unsigned int>::max();
+        int id = -1;
+        for (unsigned int i = 0; i < 9; i++) {
+            if (shorcutsButtons[i]->getGlobalBounds().intersects(floatingIcon->getGlobalBounds())) {
+                if (floatingIcon->getCenter().computeDist(shorcutsButtons[i]->getCenter()) < distMin) {
+                    distMin = floatingIcon->getCenter().computeDist(shorcutsButtons[i]->getCenter());
+                    id = i;
+                }
+            }
+        }
+        if (id != -1) {
+            shorcutsButtons[id]->setIcon(floatingIcon->getSprite().getTexture());
+            for (unsigned int i = 0; i < static_cast<Hero*>(hero)->getSkills().size(); i++) {
+                if (icon->getName() == static_cast<Hero*>(hero)->getSkills()[i].getName()) {
+                    shorcuts[id] = new Variant<Item, Skill>(static_cast<Hero*>(hero)->getSkills()[i]);
+                }
+            }
+        }
         floatingIcon->setVisible(false);
     }
     void MyAppli::onLastHeal (Label* label) {
@@ -93,7 +115,7 @@ namespace sorrok {
             Command cmd (aSkillCombined, FastDelegate<void>(&MyAppli::onIconMoved, this, icon));
             icon->getListener().connect("IconMoved", cmd);
             Action aSkillMouseButtonReleased(Action::MOUSE_BUTTON_RELEASED, IMouse::Left);
-            Command cmd2 (aSkillMouseButtonReleased, FastDelegate<void>(&MyAppli::onIconMouseButtonReleased, this));
+            Command cmd2 (aSkillMouseButtonReleased, FastDelegate<void>(&MyAppli::onIconMouseButtonReleased, this, icon));
             icon->getListener().connect("IconReleased", cmd2);
             Command cmd3 (aSkillButtonPressed, FastDelegate<bool> (&Icon::isMouseInside, icon), FastDelegate<void>(&MyAppli::onIconPressed, this, icon));
             icon->getListener().connect("IconPressed", cmd3);
@@ -560,6 +582,9 @@ namespace sorrok {
         Action aShowSkill (Action::KEY_PRESSED_ONCE, IKeyboard::Key::S);
         Command cmdShowSkill(aShowSkill, FastDelegate<void>(&MyAppli::onShowSkillPressed, this));
         getListener().connect("ShowSkill", cmdShowSkill);
+        Action aShorcutF1(Action::KEY_PRESSED_ONCE, IKeyboard::Key::F1);
+        Command cmdShorcutF1(aShorcutF1, FastDelegate<void>(&MyAppli::onF1Pressed, this));
+        getListener().connect("ShorcutF1", cmdShorcutF1);
 
         wResuHero = new RenderWindow (sf::VideoMode(400, 300), "Create ODFAEG Application", sf::Style::Titlebar, ContextSettings(0, 0, 4, 3, 0));
         label = new gui::Label(*wResuHero, Vec3f(0, 0, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"5", 15);
@@ -646,9 +671,11 @@ namespace sorrok {
         wSkills->setVisible(false);
         TextureManager<Skill::Type>& tm3 = cache.resourceManager<Texture,Skill::Type>("TextureManager3");
         Sprite sprite (*tm3.getResourceByAlias(Skill::LAST_HEAL),Vec3f(0, 0, 0),Vec3f(50, 50, 0), sf::IntRect(0, 0, 50, 50));
-        floatingIcon = new Icon(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(50, 50, 0), sprite);
+        floatingIcon = new Icon(getRenderWindow(), Vec3f(0, 0, -1), Vec3f(50, 50, 0), sprite);
         floatingIcon->setVisible(false);
         getRenderComponentManager().addComponent(floatingIcon);
+
+
 
         ps->setTexture(*tm.getResourceByAlias("PARTICLE"));
         for (unsigned int i = 0; i < 10; i++) {
@@ -1146,6 +1173,10 @@ namespace sorrok {
                     getRenderComponentManager().addComponent(xpBar);
                     getRenderComponentManager().addComponent(manaBar);
                     hero->setXpHpBar(xpBar, hpBar, manaBar);
+                }
+                for (unsigned int i = 0; i < shorcutsButtons.size(); i++) {
+                    shorcutsButtons[i] = new Button(Vec3f(i * 50, 540, 0),Vec3f(45, 45, 0), fm.getResourceByAlias(Fonts::Serif), "F"+conversionIntString(i+1), 10,getRenderWindow());
+                    getRenderComponentManager().addComponent(shorcutsButtons[i]);
                 }
                 World::addEntity(player);
             }

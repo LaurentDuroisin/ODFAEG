@@ -2,7 +2,7 @@
 namespace odfaeg {
     namespace graphic {
         namespace gui {
-            Icon::Icon(RenderWindow& window, math::Vec3f position, math::Vec3f size, Sprite icon) : LightComponent (window, position, size, size * 0.5f), icon(icon) {
+            Icon::Icon(RenderWindow& window, math::Vec3f position, math::Vec3f size, Sprite icon) : LightComponent (window, position, size, size * 0.5f, position.z), icon(icon) {
                 mousePos = math::Vec3f(0, 0, 0);
             }
             void Icon::onDraw (RenderTarget& target, RenderStates states) {
