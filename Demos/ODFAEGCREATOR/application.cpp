@@ -9,8 +9,9 @@ using namespace odfaeg::math;
 using namespace odfaeg::graphic;
 using namespace odfaeg::graphic::gui;
 using namespace odfaeg::physic;
+using namespace odfaeg::window;
 ODFAEGCreator::ODFAEGCreator(sf::VideoMode vm, std::string title) :
-Application (vm, title, sf::Style::Resize|sf::Style::Close, sf::ContextSettings(0, 0, 0, 3, 0)), isGuiShown (false), cursor(10), se(this) {
+Application (vm, title, sf::Style::Resize|sf::Style::Close, ContextSettings(0, 0, 0, 3, 0)), isGuiShown (false), cursor(10), se(this) {
     dpSelectTexture = nullptr;
 }
 void ODFAEGCreator::onLoad() {
@@ -77,12 +78,12 @@ void ODFAEGCreator::onInit() {
     getRenderComponentManager().addComponent(item42);
     menu4->addMenuItem(item41);
     menu4->addMenuItem(item42);
-    Action a1 (Action::EVENT_TYPE::KEY_HELD_DOWN, sf::Keyboard::Key::Z);
-    Action a2 (Action::EVENT_TYPE::KEY_HELD_DOWN, sf::Keyboard::Key::Q);
-    Action a3 (Action::EVENT_TYPE::KEY_HELD_DOWN, sf::Keyboard::Key::S);
-    Action a4 (Action::EVENT_TYPE::KEY_HELD_DOWN, sf::Keyboard::Key::D);
+    Action a1 (Action::EVENT_TYPE::KEY_HELD_DOWN, IKeyboard::Key::Z);
+    Action a2 (Action::EVENT_TYPE::KEY_HELD_DOWN, IKeyboard::Key::Q);
+    Action a3 (Action::EVENT_TYPE::KEY_HELD_DOWN, IKeyboard::Key::S);
+    Action a4 (Action::EVENT_TYPE::KEY_HELD_DOWN, IKeyboard::Key::D);
     Action combined = a1 || a2 || a3 || a4;
-    Command moveAction (combined, FastDelegate<void>(&ODFAEGCreator::processKeyHeldDown, this, sf::Keyboard::Unknown));
+    Command moveAction (combined, FastDelegate<void>(&ODFAEGCreator::processKeyHeldDown, this, IKeyboard::Unknown));
     getListener().connect("MoveAction", moveAction);
     View view(getRenderWindow().getSize().x, getRenderWindow().getSize().y, 80, 0.1f, 1000);
     view.setConstrains(0, 10);
@@ -94,8 +95,8 @@ void ODFAEGCreator::onInit() {
     fdTexturePath->setEventContextActivated(false);
     addWindow(&fdTexturePath->getWindow());
     getRenderComponentManager().addComponent(fdTexturePath);
-    wApplicationNew = new RenderWindow(sf::VideoMode(400, 300), "Create ODFAEG Application", sf::Style::Default, sf::ContextSettings(0, 0, 0, 3, 0));
-    wApplicationNew->setName("WAPPLICATIONNEW");
+    wApplicationNew = new RenderWindow(sf::VideoMode(400, 300), "Create ODFAEG Application", sf::Style::Default, ContextSettings(0, 0, 0, 3, 0));
+    //wApplicationNew->setName("WAPPLICATIONNEW");
     /*View waView = wApplicationNew->getDefaultView();
     waView.setCenter(Vec3f(wApplicationNew->getSize().x * 0.5f, wApplicationNew->getSize().y * 0.5f, 0));
     wApplicationNew->setView(waView);*/
@@ -137,7 +138,7 @@ void ODFAEGCreator::onInit() {
     lab->setForegroundColor(sf::Color::Red);
     lab->setParent(pProjects);
     pProjects->addChild(lab);
-    Action a(Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, sf::Mouse::Left);
+    Action a(Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
     Command cmd(a, FastDelegate<bool>(&Label::isMouseInside, lab), FastDelegate<void>(&ODFAEGCreator::showGUI, this, lab));
     lab->getListener().connect("SHOWGUI", cmd);
     if (applis) {
@@ -148,7 +149,7 @@ void ODFAEGCreator::onInit() {
             lab->setForegroundColor(sf::Color::Red);
             lab->setBackgroundColor(sf::Color::White);
             pProjects->addChild(lab);
-            Action a(Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, sf::Mouse::Left);
+            Action a(Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
             Command cmd(a, FastDelegate<bool>(&Label::isMouseInside, lab), FastDelegate<void>(&ODFAEGCreator::showProjectsFiles, this, lab));
             lab->getListener().connect("SHOWPFILES", cmd);
             i++;
@@ -210,7 +211,7 @@ void ODFAEGCreator::onInit() {
     cursor.setOutlineColor(sf::Color::Red);
     cursor.setOutlineThickness(5);
     cursor.setFillColor(sf::Color::Transparent);
-    Action moveCursorAction (Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, sf::Mouse::Left);
+    Action moveCursorAction (Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
     Command moveCursorCommand (moveCursorAction, FastDelegate<void>(&ODFAEGCreator::moveCursor, this, sf::Vector2f(-1, -1)));
     getListener().connect("MoveCursor", moveCursorCommand);
 }
@@ -245,17 +246,17 @@ void ODFAEGCreator::onDisplay(RenderWindow* window) {
         window->draw(cursor);
     window->setView(currentView);
 }
-void ODFAEGCreator::onUpdate(RenderWindow* window, sf::Event& event) {
-    if (&getRenderWindow() == window && event.type == sf::Event::KeyPressed)
-        getListener().setCommandSlotParams("MoveAction", this, event.key.code);
-    if (&getRenderWindow() == window && event.type == sf::Event::Closed) {
+void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
+    if (&getRenderWindow() == window && event.type == IEvent::KEYBOARD_EVENT && event.keyboard.type == IEvent::KEY_EVENT_PRESSED)
+        getListener().setCommandSlotParams("MoveAction", this, event.keyboard.code);
+    if (&getRenderWindow() == window && event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_CLOSED) {
         stop();
     }
-    if (&getRenderWindow() == window && event.type == sf::Event::MouseButtonPressed) {
+    if (&getRenderWindow() == window && event.type == IEvent::MOUSE_BUTTON_EVENT && event.mouseButton.type == IEvent::BUTTON_EVENT_PRESSED) {
         sf::Vector2f mousePos (event.mouseButton.x, event.mouseButton.y);
         getListener().setCommandSlotParams("MoveCursor", this, mousePos);
     }
-    if (wApplicationNew == window && event.type == sf::Event::Closed) {
+    if (wApplicationNew == window && event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_CLOSED) {
         wApplicationNew->setVisible(false);
     }
 }
@@ -309,7 +310,7 @@ void ODFAEGCreator::showProjectsFiles(Label* label) {
         lHeaders->setForegroundColor(sf::Color::Green);
         lSources->setForegroundColor(sf::Color::Green);
         pProjects->setAutoResized(true);
-        Action a(Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, sf::Mouse::Left);
+        Action a(Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
         Command cmd1(a, FastDelegate<bool>(&Label::isMouseInside, lHeaders), FastDelegate<void>(&ODFAEGCreator::showHeadersFiles, this, lHeaders));
         lHeaders->getListener().connect("SHOWHFILES", cmd1);
         Command cmd2(a, FastDelegate<bool>(&Label::isMouseInside, lSources), FastDelegate<void>(&ODFAEGCreator::showSourcesFiles, this, lSources));
@@ -334,7 +335,7 @@ void ODFAEGCreator::showHeadersFiles(Label* label) {
             lab->setForegroundColor(sf::Color::Yellow);
             Node* lnode = new Node("header files", lab, Vec2f(0, 0),Vec2f(1,0.025f),node);
             pProjects->addChild(lab);
-            Action a(Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, sf::Mouse::Left);
+            Action a(Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
             Command cmd(a, FastDelegate<bool>(&Label::isMouseInside, lab), FastDelegate<void>(&ODFAEGCreator::showFileContent, this, lab));
             lab->getListener().connect("SHOWHFILECONTENT"+lab->getText(), cmd);
         }
@@ -358,7 +359,7 @@ void ODFAEGCreator::showSourcesFiles(Label* label) {
             lab->setForegroundColor(sf::Color::Yellow);
             lab->setParent(pProjects);
             pProjects->addChild(lab);
-            Action a(Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, sf::Mouse::Left);
+            Action a(Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
             Command cmd(a, FastDelegate<bool>(&Label::isMouseInside, lab), FastDelegate<void>(&ODFAEGCreator::showFileContent, this, lab));
             lab->getListener().connect("SHOWHFILECONTENT"+lab->getText(), cmd);
         }
@@ -383,7 +384,7 @@ void ODFAEGCreator::showFileContent(Label* lab) {
         file.close();
     }
 }
-void ODFAEGCreator::processKeyHeldDown (sf::Keyboard::Key key) {
+void ODFAEGCreator::processKeyHeldDown (IKeyboard::Key key) {
 
 }
 void ODFAEGCreator::actionPerformed(Button* button) {
@@ -483,6 +484,7 @@ void ODFAEGCreator::actionPerformed(Button* button) {
 }
 void ODFAEGCreator::actionPerformed(MenuItem* item) {
     if (item->getText() == "New application") {
+        std::cout<<"new application"<<std::endl;
         wApplicationNew->setVisible(true);
     }
     if (item->getText() == "Build") {
@@ -528,7 +530,7 @@ void ODFAEGCreator::addShape(Shape *shape) {
     std::unique_ptr<Shape> ptr;
     ptr.reset(shape);
     unsigned int pos = cppAppliContent.find("tm.getResourceByAlias");
-    if (pos != std::string::npos) {
+    if (pos != std::string::npos && pos < cppAppliContent.size()) {
         std::string subs = cppAppliContent.substr(pos);
         pos += subs.find_first_of('\n') + 1;
         while (subs.find("tm.getResourceByAlias") != std::string::npos) {

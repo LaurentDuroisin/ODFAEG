@@ -25,9 +25,9 @@ class ODFAEGCreator : public odfaeg::core::Application,
     void onInit ();
     void onRender(odfaeg::graphic::RenderComponentManager *cm);
     void onDisplay(odfaeg::graphic::RenderWindow* window);
-    void onUpdate (odfaeg::graphic::RenderWindow*, sf::Event& event);
+    void onUpdate (odfaeg::graphic::RenderWindow*, odfaeg::window::IEvent& event);
     void onExec ();
-    void processKeyHeldDown(sf::Keyboard::Key key);
+    void processKeyHeldDown(odfaeg::window::IKeyboard::Key key);
     void actionPerformed(odfaeg::graphic::gui::Button* item);
     void actionPerformed(odfaeg::graphic::gui::MenuItem* item);
     void showProjectsFiles(odfaeg::graphic::gui::Label* label);
