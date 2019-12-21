@@ -1613,7 +1613,7 @@ namespace sorrok {
         }
     }
     void MyAppli::actionPerformed(gui::Button* item) {
-        std::cout<<"text : "<<item->getText()<<std::endl;
+        //std::cout<<"text : "<<item->getText()<<std::endl;
         if (item->getText() == "Accept") {
             selectedQuest->setStatus(Quest::IN_PROGRESS);
             if (!static_cast<Hero*>(hero)->containsQuest(selectedQuest)) {

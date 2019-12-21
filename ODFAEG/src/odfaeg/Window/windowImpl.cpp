@@ -94,7 +94,6 @@ std::cout<<"create context"<<std::endl;
                 m_size.y = event.window.data2;
 
             }
-
             return true;
         }
         ////////////////////////////////////////////////////////////
