@@ -17,6 +17,7 @@ namespace odfaeg {
                 id = nbComponents;
                 nbComponents++;
                 autoResize = false;
+                relPosition = false;
             }
             /** \fn set the relative position relative to the top-left of the parent's component.
             * if the component haven't any parent, the parent is the window.
@@ -27,6 +28,7 @@ namespace odfaeg {
                 relPosX = x;
                 relPosY = y;
                 autoResize = (autoResize ==  false) ? true : autoResize;
+                relPosition = true;
             }
             /** \fn set the size relative to the size of the parent's component.
             * \param w : the relative width for x axis : 1 = 100%, 0 = 0%
@@ -36,6 +38,13 @@ namespace odfaeg {
                 relSizeX = w;
                 relSizeY = h;
                 autoResize = (autoResize ==  false) ? true : autoResize;
+                relPosition = true;
+            }
+            bool isRelPosition() {
+                return relPosition;
+            }
+            void setRelPosition(bool relPosition) {
+                this->relPosition = relPosition;
             }
             /** \fn get the relative position.
             * \return Vec2f : the relative position.
@@ -94,7 +103,7 @@ namespace odfaeg {
             static int nbComponents;
             unsigned int priority;
             float relPosX, relPosY, relSizeX, relSizeY;
-            bool autoResize;
+            bool autoResize, relPosition;
         };
     }
 }

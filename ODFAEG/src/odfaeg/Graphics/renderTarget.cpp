@@ -558,6 +558,7 @@ namespace odfaeg {
             //delete viewMatrix;
 
             // Go back to model-view mode
+            getView().updated();
             glCheck(glMatrixMode(GL_MODELVIEW));
         }
         ////////////////////////////////////////////////////////////

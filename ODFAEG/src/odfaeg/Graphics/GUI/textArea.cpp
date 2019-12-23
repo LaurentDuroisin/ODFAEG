@@ -10,7 +10,7 @@ namespace odfaeg {
                 text.setString(t);
                 text.setColor(sf::Color::Black);
                 text.setPosition(position);
-                text.setSize(size);
+                //text.setSize(math::Vec3f(size);
                 rect = RectangleShape(size);
                 /*rect.setOutlineThickness(5.f);
                 rect.setOutlineColor(sf::Color::Black);*/
@@ -28,7 +28,7 @@ namespace odfaeg {
                 currentIndex = tmp_text.length();
                 sf::Vector2f pos = text.findCharacterPos(currentIndex);
                 cursorPos = math::Vec3f(pos.x, pos.y, 0);
-                setSize(text.getSize());
+                //setSize(text.getSize());
                 haveFocus = textChanged = false;
             }
             void TextArea::onEventPushed(window::IEvent event, RenderWindow& window) {
@@ -84,7 +84,7 @@ namespace odfaeg {
                 rect.setPosition(getPosition());
                 text.setPosition(getPosition());
                 rect.setSize(getSize());
-                text.setSize(getSize());
+                //text.setSize(getSize());
                 target.draw(rect);
                 target.draw(text);
                 target.draw(va);

@@ -3,12 +3,12 @@ namespace odfaeg {
     namespace graphic {
         namespace gui {
             MenuBar::MenuBar(RenderWindow& rw) :
-                LightComponent(rw, math::Vec3f(0, 0, 0), math::Vec3f(rw.getSize().x+20, 20, 0), math::Vec3f(0, 0, 0), -2) {
-                rect = RectangleShape(math::Vec3f(rw.getSize().x+20, 20, 0));
+                LightComponent(rw, math::Vec3f(0, 0, 0), math::Vec3f(rw.getSize().x, 20, 0), math::Vec3f(0, 0, 0), -2) {
+                rect = RectangleShape(math::Vec3f(rw.getSize().x, 20, 0));
                 background = sf::Color(50, 50, 50);
             }
             void MenuBar::addMenu(Menu* menu) {
-                unsigned int posX = 0;
+                unsigned int posX = rect.getPosition().x;
                 for (unsigned int i = 0; i < menus.size(); i++) {
                     posX += menus[i]->getSize().x;
                 }

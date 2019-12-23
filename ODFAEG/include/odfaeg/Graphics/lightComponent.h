@@ -105,6 +105,11 @@ namespace odfaeg {
             }
             virtual void pushEvent(window::IEvent event, RenderWindow &rw) {
                 getListener().pushEvent(event);
+                if (event.type == odfaeg::window::IEvent::WINDOW_EVENT && event.window.type == odfaeg::window::IEvent::WINDOW_EVENT_RESIZED) {
+                    if (isRelPosition()) {
+                        setAutoResized(true);
+                    }
+                }
                 onEventPushed(event, rw);
                 for (unsigned int i = 0; i < children.size(); i++) {
                     children[i]->pushEvent(event, rw);

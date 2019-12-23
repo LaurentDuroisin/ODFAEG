@@ -6,7 +6,7 @@ namespace odfaeg {
             LightComponent (window, position, size, size * 0.5f) {
                 text.setFont(*font);
                 text.setString(t);
-                text.setSize(size);
+                //text.setSize(size);
                 text.setCharacterSize(charSize);
                 rect = RectangleShape (size);
                 background = sf::Color::Black;
@@ -33,7 +33,7 @@ namespace odfaeg {
             void Label::onDraw(RenderTarget& target, RenderStates states) {
                 text.setPosition(getPosition());
                 rect.setPosition(getPosition());
-                text.setSize(getSize());
+                //text.setSize(getSize());
                 rect.setSize(getSize());
                 //std::cout<<"sizes : "<<text.getSize()/*<<rect.getSize()*/;
                 target.draw(rect);

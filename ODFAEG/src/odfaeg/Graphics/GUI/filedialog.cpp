@@ -4,7 +4,7 @@ namespace odfaeg {
     namespace graphic {
         namespace gui {
             FileDialog::FileDialog(math::Vec3f position, math::Vec3f size, const Font* font) :
-            rw(sf::VideoMode(size.x, size.y), "File Dialog", sf::Style::Default, window::ContextSettings(3, 0, 0, 0, 0)),
+            rw(sf::VideoMode(size.x, size.y), "File Dialog", sf::Style::Default, window::ContextSettings(0, 0, 0, 3, 0)),
             LightComponent (rw, position, size, size * 0.5),
             pTop(rw, position, size),
             pBottom (rw, position, size),

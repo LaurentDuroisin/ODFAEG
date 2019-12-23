@@ -8,7 +8,7 @@ namespace odfaeg {
                 text.setFont(*font);
                 text.setString(t);
                 text.setColor(sf::Color::Black);
-                text.setSize(size);
+                //text.setSize(size);
                 text.setCharacterSize(charSize);
                 rect = RectangleShape(size);
                 rect.setOutlineThickness(5.f);
@@ -30,7 +30,7 @@ namespace odfaeg {
             void Button::onDraw(RenderTarget& target, RenderStates states) {
                 text.setPosition(getPosition());
                 rect.setPosition(getPosition());
-                text.setSize(getSize());
+                //text.setSize(getSize());
                 rect.setSize(getSize());
                 target.draw(rect);
                 target.draw(text);

@@ -216,7 +216,7 @@ void ODFAEGCreator::onInit() {
     getListener().connect("MoveCursor", moveCursorCommand);
 }
 void ODFAEGCreator::updateScriptText(Shape* shape, Texture* text) {
-    TextureManager<>& tm = cache.resourceManager<Texture, std::string>("TextureManager");
+    /*TextureManager<>& tm = cache.resourceManager<Texture, std::string>("TextureManager");
     std::string relativePath = tm.getPathByResource(text);
     unsigned int id = tm.getIdByResource(text);
     if(cppAppliContent.find("text"+conversionUIntString(id)) == std::string::npos) {
@@ -231,7 +231,7 @@ void ODFAEGCreator::updateScriptText(Shape* shape, Texture* text) {
         pos += subs.find_first_of('\n') + 1;
         cppAppliContent.insert(pos,"shape"+conversionUIntString(shape->getId())+"->setTexture(text"+conversionUIntString(id)+");\n");
     } else {
-    }
+    }*/
 }
 void ODFAEGCreator::onRender(RenderComponentManager *cm) {
 
@@ -248,7 +248,7 @@ void ODFAEGCreator::onDisplay(RenderWindow* window) {
 }
 void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
     if (&getRenderWindow() == window && event.type == IEvent::KEYBOARD_EVENT && event.keyboard.type == IEvent::KEY_EVENT_PRESSED)
-        getListener().setCommandSlotParams("MoveAction", this, event.keyboard.code);
+        getListener().setCommandSlotParams("MoveAction", this, static_cast<IKeyboard::Key>(event.keyboard.code));
     if (&getRenderWindow() == window && event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_CLOSED) {
         stop();
     }
@@ -273,10 +273,10 @@ void ODFAEGCreator::onExec() {
         TextureManager<>& tm = cache.resourceManager<Texture, std::string>("TextureManager");
         tm.fromFileWithAlias(relativePath, relativePath);
         textPaths.push_back(relativePath);
-        unsigned int pos = cppAppliContent.find("TextureManager<>& tm");
+        /*unsigned int pos = cppAppliContent.find("TextureManager<>& tm");
         std::string subs = cppAppliContent.substr(pos);
         pos += subs.find_first_of('\n') + 1;
-        cppAppliContent.insert(pos, "    tm.fromFileWithAlias("+relativePath+","+relativePath+");");
+        cppAppliContent.insert(pos, "    tm.fromFileWithAlias("+relativePath+","+relativePath+");");*/
     }
     if (dpSelectTexture != nullptr && dpSelectTexture->isDroppedDown()) {
         bChooseText->setEventContextActivated(false);
@@ -529,7 +529,7 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
 void ODFAEGCreator::addShape(Shape *shape) {
     std::unique_ptr<Shape> ptr;
     ptr.reset(shape);
-    unsigned int pos = cppAppliContent.find("tm.getResourceByAlias");
+    /*unsigned int pos = cppAppliContent.find("tm.getResourceByAlias");
     if (pos != std::string::npos && pos < cppAppliContent.size()) {
         std::string subs = cppAppliContent.substr(pos);
         pos += subs.find_first_of('\n') + 1;
@@ -544,7 +544,7 @@ void ODFAEGCreator::addShape(Shape *shape) {
     }
     std::string toInsert = "    std::unique_ptr<sf::RectangleShape> shape"+conversionUIntString(shape->getId())+" = std::make_unique<RectangleShape>(Vec3f(100, 50, 0));\n"
                            "    drawables.push_back(std::move(shape));\n";
-    cppAppliContent.insert(pos, toInsert);
+    cppAppliContent.insert(pos, toInsert);*/
     shapes.push_back(std::move(ptr));
 }
 bool ODFAEGCreator::removeShape (unsigned int id) {
@@ -738,7 +738,7 @@ void ODFAEGCreator::moveCursor(sf::Vector2f mousePos) {
     }
 }
 void ODFAEGCreator::updateScriptPos(Shape* shape) {
-    if(cppAppliContent.find("shape"+conversionUIntString(shape->getId())+"->setPosition") == std::string::npos) {
+    /*if(cppAppliContent.find("shape"+conversionUIntString(shape->getId())+"->setPosition") == std::string::npos) {
         unsigned int pos = cppAppliContent.find("shape"+conversionUIntString(shape->getId())+" = std::make_unique<RectangleShape>");
         std::string subs = cppAppliContent.substr(pos);
         pos += subs.find_first_of('\n') + 1;
@@ -751,7 +751,7 @@ void ODFAEGCreator::updateScriptPos(Shape* shape) {
         cppAppliContent.erase(pos, endpos - pos);
         cppAppliContent.insert(pos,"shape"+conversionUIntString(shape->getId())+"->setPosition(Vec3f("+conversionIntString(shape->getPosition().x)+","
         +conversionIntString(shape->getPosition().y)+","+conversionIntString(shape->getPosition().z)+");\n");
-    }
+    }*/
 }
 void ODFAEGCreator::onObjectPosChanged(TextArea* ta) {
     if (ta == tPosX) {

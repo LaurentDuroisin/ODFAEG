@@ -189,6 +189,7 @@ namespace odfaeg {
             void setFlipY(bool flipY);
             bool isXFlipped();
             bool isYFlipped();
+            void updated();
         private :
              /**
             * \fn void setPerspective(double left, double right, double top, double bottom, double zNear, double zFar);
