@@ -14,6 +14,7 @@
 #include "odfaeg/Graphics/circleShape.h"
 #include "odfaeg/Graphics/rectangleShape.h"
 #include "odfaeg/Graphics/sprite.h"
+#include "odfaeg/Graphics/map.h"
 #include "odfaegCreatorStateExecutor.hpp"
 class ODFAEGCreator : public odfaeg::core::Application,
                       public odfaeg::graphic::gui::MenuItemListener,
@@ -36,13 +37,14 @@ class ODFAEGCreator : public odfaeg::core::Application,
     void showGUI(odfaeg::graphic::gui::Label* label);
     void showFileContent(odfaeg::graphic::gui::Label* lab);
     void displayInfos(odfaeg::graphic::Shape* shape);
+    void displayInfos(odfaeg::graphic::Tile* tile);
     void onObjectPosChanged(odfaeg::graphic::gui::TextArea* ta);
     void onObjectColorChanged(odfaeg::graphic::gui::TextArea* ta);
     void onSelectedTextureChanged(odfaeg::graphic::gui::DropDownList* dp);
     void onTexCoordsChanged(odfaeg::graphic::gui::TextArea* ta);
     void addShape(odfaeg::graphic::Shape *shape);
     bool removeShape (unsigned int id);
-    void updateScriptPos(odfaeg::graphic::Shape* shape);
+    void updateScriptPos(odfaeg::graphic::Transformable* shape);
     void updateScriptText(odfaeg::graphic::Shape* shape, odfaeg::graphic::Texture* text);
     enum Fonts {
         Serif
@@ -51,7 +53,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
         odfaeg::graphic::gui::MenuBar* menuBar;
         odfaeg::graphic::gui::Menu *menu1, *menu2, *menu3, *menu4;
         odfaeg::graphic::gui::MenuItem *item11, *item12, *item13, *item21, *item22, *item23, *item31, *item32, *item33,
-        *item41, *item42;
+        *item34, *item41, *item42, *item43;
         odfaeg::core::ResourceCache<> cache;
         odfaeg::graphic::gui::FileDialog* fdTexturePath;
         odfaeg::graphic::RenderWindow* wApplicationNew;
@@ -68,9 +70,9 @@ class ODFAEGCreator : public odfaeg::core::Application,
         std::unique_ptr<odfaeg::graphic::gui::Node> rootNode, rootPropNode, rootMaterialNode;
         odfaeg::graphic::CircleShape cursor;
         odfaeg::math::Vec3f guiSize, guiPos;
-        bool isGuiShown;
+        bool isGuiShown, showGrid, alignToGrid;
         std::vector<std::unique_ptr<odfaeg::graphic::Shape>> shapes;
-        odfaeg::graphic::Shape* selectedObject;
+        odfaeg::graphic::Transformable* selectedObject;
         odfaeg::graphic::gui::TextArea *tPosX, *tPosY, *tPosZ, *tRColor, *tGColor, *tBColor, *tAColor,
         *tTexCoordX, *tTexCoordY, *tTexCoordW, *tTexCoordH;
         odfaeg::graphic::gui::Label *lPosX, *lPosY, *lPosZ, *lPosition, *lColor, *lRColor,
@@ -80,5 +82,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
         odfaeg::graphic::Shape* sTextRect;
         odfaeg::core::StateStack stateStack;
         ODFAEGCreatorStateExecutor se;
+        std::vector<odfaeg::graphic::ConvexShape> cshapes;
+        odfaeg::graphic::Map* theMap;
 };
 #endif

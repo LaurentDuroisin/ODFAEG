@@ -109,6 +109,9 @@ namespace odfaeg {
             for (unsigned int j = 0; j < getFaces()[0]->getVertexArray().getVertexCount(); j++)
                 getFaces()[0]->getVertexArray()[j].color = color;
         }
+        sf::Color Tile::getColor() {
+            return getFaces()[0]->getVertexArray()[0].color;
+        }
     }
 }
 

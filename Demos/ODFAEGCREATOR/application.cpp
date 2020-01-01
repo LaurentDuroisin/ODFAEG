@@ -13,6 +13,8 @@ using namespace odfaeg::window;
 ODFAEGCreator::ODFAEGCreator(sf::VideoMode vm, std::string title) :
 Application (vm, title, sf::Style::Resize|sf::Style::Close, ContextSettings(0, 0, 0, 3, 0)), isGuiShown (false), cursor(10), se(this) {
     dpSelectTexture = nullptr;
+    showGrid = false;
+    alignToGrid = false;
 }
 void ODFAEGCreator::onLoad() {
     FontManager<Fonts> fm;
@@ -67,17 +69,25 @@ void ODFAEGCreator::onInit() {
     getRenderComponentManager().addComponent(item32);
     item33 = new MenuItem(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif),"Sprite");
     getRenderComponentManager().addComponent(item33);
+    item34 = new MenuItem(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif), "Tile");
+    getRenderComponentManager().addComponent(item34);
+    item34->addMenuItemListener(this);
     menu3->addMenuItem(item31);
     menu3->addMenuItem(item32);
     menu3->addMenuItem(item33);
+    menu4->addMenuItem(item34);
     item41 = new MenuItem(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif),"Undo");
     item41->addMenuItemListener(this);
     getRenderComponentManager().addComponent(item41);
     item42 = new MenuItem(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif),"Redo");
     item42->addMenuItemListener(this);
     getRenderComponentManager().addComponent(item42);
+    item43 = new MenuItem(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif), "Show grid");
+    item43->addMenuItemListener(this);
+    getRenderComponentManager().addComponent(item43);
     menu4->addMenuItem(item41);
     menu4->addMenuItem(item42);
+    menu4->addMenuItem(item43);
     Action a1 (Action::EVENT_TYPE::KEY_HELD_DOWN, IKeyboard::Key::Z);
     Action a2 (Action::EVENT_TYPE::KEY_HELD_DOWN, IKeyboard::Key::Q);
     Action a3 (Action::EVENT_TYPE::KEY_HELD_DOWN, IKeyboard::Key::S);
@@ -214,6 +224,31 @@ void ODFAEGCreator::onInit() {
     Action moveCursorAction (Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
     Command moveCursorCommand (moveCursorAction, FastDelegate<void>(&ODFAEGCreator::moveCursor, this, sf::Vector2f(-1, -1)));
     getListener().connect("MoveCursor", moveCursorCommand);
+    BaseChangementMatrix bcm;
+    bcm.set2DIsoMatrix();
+    theMap = new Map(&getRenderComponentManager(), "Map test", 100, 50, 0);
+    theMap->setBaseChangementMatrix(bcm);
+    World::addEntityManager(theMap);
+    World::setCurrentEntityManager("Map test");
+    for (int i = 0; i < 800; i+=100) {
+        for (int j = 0; j < 600; j+=50) {
+            ConvexShape cshape(4);
+            cshape.setFillColor(sf::Color::Transparent);
+            cshape.setOutlineColor(sf::Color(75, 75, 75));
+            cshape.setOutlineThickness(1.f);
+            Vec2f points[4];
+            points[0] = Vec2f(0, 0);
+            points[1] = Vec2f(100, 0);
+            points[2] = Vec2f(100, 50);
+            points[3] = Vec2f(0, 50);
+            for (unsigned int n = 0; n < 4; n++) {
+                points[n] = bcm.changeOfBase(points[n]);
+                points[n] += Vec2f(i, j);
+                cshape.setPoint(n, sf::Vector3f(points[n].x, points[n].y, 0));
+            }
+            cshapes.push_back(cshape);
+        }
+    }
 }
 void ODFAEGCreator::updateScriptText(Shape* shape, Texture* text) {
     /*TextureManager<>& tm = cache.resourceManager<Texture, std::string>("TextureManager");
@@ -237,14 +272,22 @@ void ODFAEGCreator::onRender(RenderComponentManager *cm) {
 
 }
 void ODFAEGCreator::onDisplay(RenderWindow* window) {
-    for (unsigned int i = 0; i < shapes.size(); i++)
-        window->draw(*shapes[i]);
-    View currentView = window->getView();
-    View defaultView = window->getDefaultView();
-    window->setView(defaultView);
-    if (isGuiShown)
-        window->draw(cursor);
-    window->setView(currentView);
+    if (window == &getRenderWindow()) {
+        for (unsigned int i = 0; i < shapes.size(); i++)
+            window->draw(*shapes[i]);
+        View currentView = window->getView();
+        View defaultView = window->getDefaultView();
+        window->setView(defaultView);
+        if (isGuiShown) {
+            window->draw(cursor);
+            if (showGrid) {
+                window->getView().move(getRenderWindow().getSize().x * 0.5f, 300, 0);
+                for (unsigned int  i = 0; i < cshapes.size(); i++)
+                    window->draw(cshapes[i]);
+            }
+        }
+        window->setView(currentView);
+    }
 }
 void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
     if (&getRenderWindow() == window && event.type == IEvent::KEYBOARD_EVENT && event.keyboard.type == IEvent::KEY_EVENT_PRESSED)
@@ -519,11 +562,20 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
         addShape(shape.get());
         shapes.push_back(std::move(shape));
     }
+    if (item->getText() == "Tile") {
+        Tile* tile = new Tile(nullptr, cursor.getPosition(),Vec3f(100, 50, 0), sf::IntRect(0, 0, 0, 0));
+        displayInfos(tile);
+        selectedObject = tile;
+        World::addEntity(tile);
+    }
     if (item->getText() == "Undo") {
         stateStack.undo();
     }
     if (item->getText() == "Redo") {
         stateStack.redo();
+    }
+    if (item->getText() == "Show grid") {
+        showGrid = !showGrid;
     }
 }
 void ODFAEGCreator::addShape(Shape *shape) {
@@ -550,13 +602,13 @@ void ODFAEGCreator::addShape(Shape *shape) {
 bool ODFAEGCreator::removeShape (unsigned int id) {
     for (auto it = shapes.begin(); it != shapes.end();it++) {
         if ((*it)->getId() == id) {
-            unsigned int pos = cppAppliContent.find("shape"+conversionUIntString(id));
+            /*unsigned int pos = cppAppliContent.find("shape"+conversionUIntString(id));
             do {
                 std::string subs = cppAppliContent.substr(pos);
                 unsigned int endpos = pos + subs.find_first_of('\n') + 1;
                 cppAppliContent.erase(pos, pos - endpos);
                 pos = cppAppliContent.find("shape"+conversionUIntString(id));
-            } while(pos != std::string::npos);
+            } while(pos != std::string::npos);*/
             it = shapes.erase(it);
             return true;
         }
@@ -731,13 +783,181 @@ void ODFAEGCreator::displayInfos (Shape* shape) {
     stateStack.addStateGroup(sg);
     pScriptsFiles->setAutoResized(true);
 }
+void ODFAEGCreator::displayInfos (Tile* tile) {
+    rootPropNode->deleteAllNodes();
+    rootMaterialNode->deleteAllNodes();
+    pTransform->removeAll();
+    pMaterial->removeAll();
+    FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
+    lPosition = new Label(getRenderWindow(),Vec3f(0,0,0),Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"Position : ", 15);
+    lPosition->setParent(pTransform);
+    Node* lPosNode = new Node("LabPosition",lPosition,Vec2f(0, 0), Vec2f(1, 0.025),rootPropNode.get());
+    pTransform->addChild(lPosition);
+    lPosX = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"x : ",15);
+    lPosX->setParent(pTransform);
+    Node* lPosXNode = new Node("LabX",lPosX,Vec2f(0, 0),Vec2f(0.25, 0.025), rootPropNode.get());
+    pTransform->addChild(lPosX);
+    tPosX = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionFloatString(tile->getPosition().x),getRenderWindow());
+    tPosX->setParent(pTransform);
+    tPosX->setTextSize(15);
+    lPosXNode->addOtherComponent(tPosX, Vec2f(0.75, 0.025));
+    pTransform->addChild(tPosX);
+    lPosY = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"y : ",15);
+    lPosY->setParent(pTransform);
+    Node* lPosYNode = new Node("LabY",lPosY,Vec2f(0, 0),Vec2f(0.25, 0.025), rootPropNode.get());
+    pTransform->addChild(lPosY);
+    tPosY = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionFloatString(tile->getPosition().y),getRenderWindow());
+    tPosY->setParent(pTransform);
+    tPosY->setTextSize(15);
+    lPosYNode->addOtherComponent(tPosY, Vec2f(0.75, 0.025));
+    pTransform->addChild(tPosY);
+    lPosZ = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"z : ",15);
+    lPosZ->setParent(pTransform);
+    Node* lPosZNode = new Node("LabZ",lPosZ,Vec2f(0, 0),Vec2f(0.25, 0.025), rootPropNode.get());
+    pTransform->addChild(lPosZ);
+    tPosZ = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionFloatString(tile->getPosition().z),getRenderWindow());
+    tPosZ->setParent(pTransform);
+    tPosZ->setTextSize(15);
+    lPosZNode->addOtherComponent(tPosZ, Vec2f(0.75, 0.025));
+    pTransform->addChild(tPosZ);
+    Action a (Action::EVENT_TYPE::TEXT_ENTERED);
+    Command cmdPosX (a, FastDelegate<bool>(&TextArea::isTextChanged, tPosX), FastDelegate<void>(&ODFAEGCreator::onObjectPosChanged, this,tPosX));
+    Command cmdPosY (a, FastDelegate<bool>(&TextArea::isTextChanged, tPosY), FastDelegate<void>(&ODFAEGCreator::onObjectPosChanged, this,tPosY));
+    Command cmdPosZ (a, FastDelegate<bool>(&TextArea::isTextChanged, tPosZ), FastDelegate<void>(&ODFAEGCreator::onObjectPosChanged, this,tPosZ));
+    tPosX->getListener().connect("tPosXChanged", cmdPosX);
+    tPosY->getListener().connect("tPosYChanged", cmdPosY);
+    tPosZ->getListener().connect("tPosZChanged", cmdPosZ);
+    lColor = new Label(getRenderWindow(),Vec3f(0, 0, 0),Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"Color : ", 15);
+    lColor->setParent(pMaterial);
+    Node* lColorNode = new Node("LabColor",lColor,Vec2f(0, 0), Vec2f(1.f, 0.025f), rootMaterialNode.get());
+    pMaterial->addChild(lColor);
+    lRColor = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"r : ", 15);
+    lRColor->setParent(pMaterial);
+    Node* lRColorNode = new Node("LabRColor",lRColor,Vec2f(0, 0), Vec2f(0.25f, 0.025f),rootMaterialNode.get());
+    pMaterial->addChild(lRColor);
+    tRColor = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionFloatString(tile->getColor().r), getRenderWindow());
+    tRColor->setTextSize(15);
+    tRColor->setParent(pMaterial);
+    lRColorNode->addOtherComponent(tRColor, Vec2f(0.75f, 0.025f));
+    pMaterial->addChild(tRColor);
+    lGColor = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"g : ", 15);
+    lGColor->setParent(pMaterial);
+    Node* lGColorNode = new Node("LabRColor",lGColor,Vec2f(0, 0), Vec2f(0.25f, 0.025f),rootMaterialNode.get());
+    pMaterial->addChild(lGColor);
+    tGColor = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionFloatString(tile->getColor().g), getRenderWindow());
+    tGColor->setTextSize(15);
+    tGColor->setParent(pMaterial);
+    lGColorNode->addOtherComponent(tGColor, Vec2f(0.75f, 0.025f));
+    pMaterial->addChild(tGColor);
+    lBColor = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"b : ", 15);
+    lBColor->setParent(pMaterial);
+    Node* lBColorNode = new Node("LabBColor",lBColor,Vec2f(0, 0), Vec2f(0.25f, 0.025f),rootMaterialNode.get());
+    pMaterial->addChild(lBColor);
+    tBColor = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionFloatString(tile->getColor().b), getRenderWindow());
+    tBColor->setTextSize(15);
+    tBColor->setParent(pMaterial);
+    lBColorNode->addOtherComponent(tBColor, Vec2f(0.75f, 0.025f));
+    pMaterial->addChild(tBColor);
+    lAColor = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"a : ", 15);
+    lAColor->setParent(pMaterial);
+    Node* lAColorNode = new Node("LabAColor",lAColor,Vec2f(0, 0), Vec2f(0.25f, 0.025f),rootMaterialNode.get());
+    pMaterial->addChild(lAColor);
+    tAColor = new TextArea(Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),conversionFloatString(tile->getColor().a), getRenderWindow());
+    tAColor->setTextSize(15);
+    tAColor->setParent(pMaterial);
+    lAColorNode->addOtherComponent(tAColor,Vec2f(0.75f, 0.025f));
+    pMaterial->addChild(tAColor);
+    Command cmdRColChanged(a, FastDelegate<bool>(&TextArea::isTextChanged, tRColor), FastDelegate<void>(&ODFAEGCreator::onObjectColorChanged, this, tRColor));
+    tRColor->getListener().connect("TRColorChanged", cmdRColChanged);
+    Command cmdGColChanged(a, FastDelegate<bool>(&TextArea::isTextChanged, tGColor), FastDelegate<void>(&ODFAEGCreator::onObjectColorChanged, this, tGColor));
+    tGColor->getListener().connect("TGColorChanged", cmdGColChanged);
+    Command cmdBColChanged(a, FastDelegate<bool>(&TextArea::isTextChanged, tBColor), FastDelegate<void>(&ODFAEGCreator::onObjectColorChanged, this, tBColor));
+    tBColor->getListener().connect("TBColorChanged", cmdBColChanged);
+    Command cmdAColChanged(a, FastDelegate<bool>(&TextArea::isTextChanged, tAColor), FastDelegate<void>(&ODFAEGCreator::onObjectColorChanged, this, tAColor));
+    tAColor->getListener().connect("TAColorChanged", cmdAColChanged);
+    lTexture = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0), fm.getResourceByAlias(Fonts::Serif),"Texture : ", 15);
+    lTexture->setParent(pMaterial);
+    Node* lTextureNode = new Node("LabTexture",lTexture,Vec2f(0, 0), Vec2f(1.f, 0.025f),rootMaterialNode.get());
+    pMaterial->addChild(lTexture);
+    lTexCoordX = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"Tex x : ", 15);
+    lTexCoordX->setParent(pMaterial);
+    Node* lTexCoordXNode = new Node("LTexCoordX", lTexCoordX,Vec2f(0, 0), Vec2f(0.25f, 0.025f),rootMaterialNode.get());
+    pMaterial->addChild(lTexCoordX);
+    tTexCoordX = new TextArea (Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),"0",getRenderWindow());
+    tTexCoordX->setTextSize(15);
+    tTexCoordX->setParent(pMaterial);
+    lTexCoordXNode->addOtherComponent(tTexCoordX,Vec2f(0.75f, 0.025f));
+    pMaterial->addChild(tTexCoordX);
+    lTexCoordY = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"Tex y : ", 15);
+    lTexCoordY->setParent(pMaterial);
+    Node* lTexCoordYNode = new Node("LTexCoordY", lTexCoordY,Vec2f(0, 0), Vec2f(0.25f, 0.025f),rootMaterialNode.get());
+    pMaterial->addChild(lTexCoordY);
+    tTexCoordY = new TextArea (Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),"0",getRenderWindow());
+    tTexCoordY->setTextSize(15);
+    tTexCoordY->setParent(pMaterial);
+    lTexCoordYNode->addOtherComponent(tTexCoordY,Vec2f(0.75f, 0.025f));
+    pMaterial->addChild(tTexCoordY);
+    lTexCoordW = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"Tex w : ", 15);
+    lTexCoordW->setParent(pMaterial);
+    Node* lTexCoordWNode = new Node("lTexCoordW", lTexCoordW,Vec2f(0, 0), Vec2f(0.25f, 0.025f),rootMaterialNode.get());
+    pMaterial->addChild(lTexCoordW);
+    tTexCoordW = new TextArea (Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),"0",getRenderWindow());
+    tTexCoordW->setTextSize(15);
+    tTexCoordW->setParent(pMaterial);
+    lTexCoordWNode->addOtherComponent(tTexCoordW,Vec2f(0.75f, 0.025f));
+    pMaterial->addChild(tTexCoordW);
+    lTexCoordH = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"Tex h : ", 15);
+    lTexCoordH->setParent(pMaterial);
+    Node* lTexCoordHNode = new Node("LTexCoordH", lTexCoordH,Vec2f(0, 0), Vec2f(0.25f, 0.025f),rootMaterialNode.get());
+    pMaterial->addChild(lTexCoordH);
+    tTexCoordH = new TextArea (Vec3f(0, 0, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),"0",getRenderWindow());
+    tTexCoordH->setTextSize(15);
+    tTexCoordH->setParent(pMaterial);
+    lTexCoordHNode->addOtherComponent(tTexCoordH,Vec2f(0.75f, 0.025f));
+    pMaterial->addChild(tTexCoordH);
+    Command cmdTexCoordXChanged (a, FastDelegate<bool>(&TextArea::isTextChanged,tTexCoordX), FastDelegate<void>(&ODFAEGCreator::onTexCoordsChanged, this, tTexCoordX));
+    tTexCoordX->getListener().connect("TTexCoordXChanged", cmdTexCoordXChanged);
+    Command cmdTexCoordYChanged (a, FastDelegate<bool>(&TextArea::isTextChanged,tTexCoordY), FastDelegate<void>(&ODFAEGCreator::onTexCoordsChanged, this, tTexCoordY));
+    tTexCoordY->getListener().connect("TTexCoordYChanged", cmdTexCoordYChanged);
+    Command cmdTexCoordWChanged (a, FastDelegate<bool>(&TextArea::isTextChanged,tTexCoordW), FastDelegate<void>(&ODFAEGCreator::onTexCoordsChanged, this, tTexCoordW));
+    tTexCoordW->getListener().connect("TTexCoordWChanged", cmdTexCoordWChanged);
+    Command cmdTexCoordHChanged (a, FastDelegate<bool>(&TextArea::isTextChanged,tTexCoordH), FastDelegate<void>(&ODFAEGCreator::onTexCoordsChanged, this, tTexCoordH));
+    tTexCoordH->getListener().connect("TTexCoordXChanged", cmdTexCoordHChanged);
+    lTexImage = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif), "Tex Image : ", 15);
+    lTexImage->setParent(pMaterial);
+    Node* selectTextNode = new Node("SelectTexture",lTexImage,Vec2f(0, 0),Vec2f(0.25f, 0.025f), rootMaterialNode.get());
+    pMaterial->addChild(lTexImage);
+    dpSelectTexture = new DropDownList(getRenderWindow(),Vec3f(0, 0, 0),Vec3f(100, 50, 0), fm.getResourceByAlias(Fonts::Serif),"NONE", 15);
+    dpSelectTexture->setName("SELECTTEXT");
+    dpSelectTexture->setParent(pMaterial);
+    Command cmdTxtChanged(FastDelegate<bool>(&DropDownList::isValueChanged, dpSelectTexture), FastDelegate<void>(&ODFAEGCreator::onSelectedTextureChanged, this, dpSelectTexture));
+    dpSelectTexture->getListener().connect("TextureChanged", cmdTxtChanged);
+    selectTextNode->addOtherComponent(dpSelectTexture,Vec2f(0.75f, 0.025f));
+    pMaterial->addChild(dpSelectTexture);
+    bChooseText = new Button(Vec3f(0, 0, 0), Vec3f(100, 100, 0), fm.getResourceByAlias(Fonts::Serif),"New texture", 15, getRenderWindow());
+    bChooseText->setParent(pMaterial);
+    Node* chooseTextNode = new Node("ChooseText", bChooseText,Vec2f(0, 0), Vec2f(1.f, 0.025f),rootMaterialNode.get());
+    pMaterial->addChild(bChooseText);
+    bChooseText->setName("CHOOSETEXT");
+    bChooseText->addActionListener(this);
+    StateGroup* sg = new StateGroup("SGADDRECTANGLETILE");
+    State* stAddRemoveShape = new State("ADDREMOVETILE", &se);
+    std::ostringstream oss;
+    OTextArchive ota(oss);
+    ota(tile->getId());
+    ota(tile);
+    stAddRemoveShape->addParameter("ADDREMOVETILE", oss.str());
+    sg->addState(stAddRemoveShape);
+    stateStack.addStateGroup(sg);
+    pScriptsFiles->setAutoResized(true);
+}
 void ODFAEGCreator::moveCursor(sf::Vector2f mousePos) {
     BoundingBox bb (guiPos.x, guiPos.y, guiPos.z, guiSize.x, guiSize.y, guiSize.z);
     if (bb.isPointInside(Vec3f(mousePos.x, mousePos.y, 0))) {
         cursor.setPosition(Vec3f(mousePos.x-getRenderWindow().getView().getSize().x * 0.5f, mousePos.y-getRenderWindow().getView().getSize().y * 0.5f, 0));
     }
 }
-void ODFAEGCreator::updateScriptPos(Shape* shape) {
+void ODFAEGCreator::updateScriptPos(Transformable* shape) {
     /*if(cppAppliContent.find("shape"+conversionUIntString(shape->getId())+"->setPosition") == std::string::npos) {
         unsigned int pos = cppAppliContent.find("shape"+conversionUIntString(shape->getId())+" = std::make_unique<RectangleShape>");
         std::string subs = cppAppliContent.substr(pos);
@@ -802,11 +1022,15 @@ void ODFAEGCreator::onObjectColorChanged(TextArea* ta) {
             StateGroup* sg = new StateGroup("SGCHANGERCOLOR"+conversionUIntString(color));
             State* state = new State("SCHANGERCOLOR", &se);
             state->addParameter("OBJECT", selectedObject);
-            state->addParameter("OLDVALUE", selectedObject->getFillColor().r);
+            if (dynamic_cast<Shape*>(selectedObject)) {
+                state->addParameter("OLDVALUE", static_cast<Shape*>(selectedObject)->getFillColor().r);
+            }
             state->addParameter("NEWVALUE", color);
             sg->addState(state);
             stateStack.addStateGroup(sg);
-            selectedObject->setFillColor(sf::Color(Math::clamp(color, 0, 255), selectedObject->getFillColor().g,selectedObject->getFillColor().b, selectedObject->getFillColor().a));
+            if (dynamic_cast<Shape*>(selectedObject)) {
+                static_cast<Shape*>(selectedObject)->setFillColor(sf::Color(Math::clamp(color, 0, 255), static_cast<Shape*>(selectedObject)->getFillColor().g,static_cast<Shape*>(selectedObject)->getFillColor().b, static_cast<Shape*>(selectedObject)->getFillColor().a));
+            }
         }
     }
     if (ta == tGColor) {
@@ -815,11 +1039,15 @@ void ODFAEGCreator::onObjectColorChanged(TextArea* ta) {
             StateGroup* sg = new StateGroup("SGCHANGEGCOLOR"+conversionUIntString(color));
             State* state = new State("SCHANGEGCOLOR", &se);
             state->addParameter("OBJECT", selectedObject);
-            state->addParameter("OLDVALUE", selectedObject->getFillColor().g);
+            if (dynamic_cast<Shape*>(selectedObject)) {
+                state->addParameter("OLDVALUE", static_cast<Shape*>(selectedObject)->getFillColor().g);
+            }
             state->addParameter("NEWVALUE", color);
             sg->addState(state);
             stateStack.addStateGroup(sg);
-            selectedObject->setFillColor(sf::Color(selectedObject->getFillColor().r, Math::clamp(color, 0, 255),selectedObject->getFillColor().b, selectedObject->getFillColor().a));
+            if (dynamic_cast<Shape*>(selectedObject)) {
+                static_cast<Shape*>(selectedObject)->setFillColor(sf::Color(static_cast<Shape*>(selectedObject)->getFillColor().r, Math::clamp(color, 0, 255),static_cast<Shape*>(selectedObject)->getFillColor().b, static_cast<Shape*>(selectedObject)->getFillColor().a));
+            }
         }
     }
     if (ta == tBColor) {
@@ -828,11 +1056,15 @@ void ODFAEGCreator::onObjectColorChanged(TextArea* ta) {
             StateGroup* sg = new StateGroup("SGCHANGEBCOLOR"+conversionUIntString(color));
             State* state = new State("SCHANGEBCOLOR", &se);
             state->addParameter("OBJECT", selectedObject);
-            state->addParameter("OLDVALUE", selectedObject->getFillColor().b);
+            if (dynamic_cast<Shape*>(selectedObject)) {
+                state->addParameter("OLDVALUE", static_cast<Shape*>(selectedObject)->getFillColor().b);
+            }
             state->addParameter("NEWVALUE", color);
             sg->addState(state);
             stateStack.addStateGroup(sg);
-            selectedObject->setFillColor(sf::Color(selectedObject->getFillColor().r, selectedObject->getFillColor().g, Math::clamp(color, 0, 255), selectedObject->getFillColor().a));
+            if (dynamic_cast<Shape*>(selectedObject)) {
+                static_cast<Shape*>(selectedObject)->setFillColor(sf::Color(static_cast<Shape*>(selectedObject)->getFillColor().r, static_cast<Shape*>(selectedObject)->getFillColor().g, Math::clamp(color, 0, 255), static_cast<Shape*>(selectedObject)->getFillColor().a));
+            }
         }
     }
     if (ta == tAColor) {
@@ -841,19 +1073,29 @@ void ODFAEGCreator::onObjectColorChanged(TextArea* ta) {
             StateGroup* sg = new StateGroup("SGCHANGEACOLOR"+conversionUIntString(color));
             State* state = new State("SCHANGEACOLOR", &se);
             state->addParameter("OBJECT", selectedObject);
-            state->addParameter("OLDVALUE", selectedObject->getFillColor().a);
+            if (dynamic_cast<Shape*>(selectedObject)) {
+                state->addParameter("OLDVALUE", static_cast<Shape*>(selectedObject)->getFillColor().a);
+            }
             state->addParameter("NEWVALUE", color);
             sg->addState(state);
             stateStack.addStateGroup(sg);
-            selectedObject->setFillColor(sf::Color(selectedObject->getFillColor().r, selectedObject->getFillColor().g,selectedObject->getFillColor().b, Math::clamp(color, 0, 255)));
+            if (dynamic_cast<Shape*>(selectedObject)) {
+                static_cast<Shape*>(selectedObject)->setFillColor(sf::Color(static_cast<Shape*>(selectedObject)->getFillColor().r, static_cast<Shape*>(selectedObject)->getFillColor().g,static_cast<Shape*>(selectedObject)->getFillColor().b, Math::clamp(color, 0, 255)));
+            }
         }
     }
 }
 void ODFAEGCreator::onSelectedTextureChanged(DropDownList* dp) {
     pMaterial->removeSprites();
-    const Texture* oldTexture = selectedObject->getTexture();
+
+    const Texture* oldTexture;
+    if (dynamic_cast<Shape*>(selectedObject)) {
+        oldTexture = static_cast<Shape*>(selectedObject)->getTexture();
+    }
     if (dp->getSelectedItem() == "NONE") {
-        selectedObject->setTexture(nullptr);
+        if (dynamic_cast<Shape*>(selectedObject)) {
+            static_cast<Shape*>(selectedObject)->setTexture(nullptr);
+        }
     } else {
         TextureManager<>& tm = cache.resourceManager<Texture, std::string>("TextureManager");
         for (unsigned int i = 0; i < textPaths.size(); i++) {
@@ -861,8 +1103,11 @@ void ODFAEGCreator::onSelectedTextureChanged(DropDownList* dp) {
                 const Texture* text = tm.getResourceByPath(textPaths[i]);
                 Sprite sprite (*text, Vec3f(0, bChooseText->getPosition().y + bChooseText->getSize().y, 0),Vec3f(text->getSize().x, text->getSize().y, 0),sf::IntRect(0, 0, text->getSize().x,text->getSize().y));
                 pMaterial->addSprite(sprite);
-                selectedObject->setTexture(text);
-                sf::IntRect textRect = selectedObject->getTextureRect();
+                sf::IntRect textRect;
+                if (dynamic_cast<Shape*>(selectedObject)) {
+                    static_cast<Shape*>(selectedObject)->setTexture(text);
+                    textRect = static_cast<Shape*>(selectedObject)->getTextureRect();
+                }
                 tTexCoordX->setText(conversionIntString(textRect.left));
                 tTexCoordY->setText(conversionIntString(textRect.top));
                 tTexCoordW->setText(conversionIntString(textRect.width));
@@ -879,27 +1124,37 @@ void ODFAEGCreator::onSelectedTextureChanged(DropDownList* dp) {
     StateGroup* sg = new StateGroup("SGCHANGETEXTURE"+conversionLongString(reinterpret_cast<unsigned long>(oldTexture)));
     State* state = new State("SCHANGETEXTURE", &se);
     state->addParameter("OLDVALUE",oldTexture);
-    state->addParameter("NEWVALUE",selectedObject->getTexture());
+    if (dynamic_cast<Shape*>(selectedObject)) {
+        state->addParameter("NEWVALUE",static_cast<Shape*>(selectedObject)->getTexture());
+    }
     state->addParameter("OBJECT", selectedObject);
     sg->addState(state);
     stateStack.addStateGroup(sg);
     pMaterial->updateScrolls();
 }
 void ODFAEGCreator::onTexCoordsChanged (TextArea* ta) {
-    const Texture* tex = selectedObject->getTexture();
-    sf::IntRect texRect = selectedObject->getTextureRect();
+    const Texture* tex;
+    sf::IntRect texRect;
+    if (dynamic_cast<Shape*>(selectedObject)) {
+        tex = static_cast<Shape*>(selectedObject)->getTexture();
+        texRect = static_cast<Shape*>(selectedObject)->getTextureRect();
+    }
     if (tex != nullptr) {
         if (ta == tTexCoordX) {
             if (is_number(ta->getText())) {
                 int texCoordX = conversionStringInt(ta->getText());
                 StateGroup* sg = new StateGroup("SGCHANGEXTEXCOORD");
                 State* state = new State("SCHANGEXTEYCOORD", &se);
-                state->addParameter("OLDVALUE", selectedObject->getTextureRect().left);
+                if (dynamic_cast<Shape*>(selectedObject)) {
+                    state->addParameter("OLDVALUE", static_cast<Shape*>(selectedObject)->getTextureRect().left);
+                }
                 state->addParameter("NEWVALUE", texCoordX);
                 state->addParameter("OBJECT", selectedObject);
                 sg->addState(state);
                 stateStack.addStateGroup(sg);
-                selectedObject->setTextureRect(sf::IntRect(Math::abs(texCoordX), texRect.top, texRect.width, texRect.height));
+                if (dynamic_cast<Shape*>(selectedObject)) {
+                    static_cast<Shape*>(selectedObject)->setTextureRect(sf::IntRect(Math::abs(texCoordX), texRect.top, texRect.width, texRect.height));
+                }
             }
         }
         if (ta == tTexCoordY) {
@@ -907,12 +1162,16 @@ void ODFAEGCreator::onTexCoordsChanged (TextArea* ta) {
                 int texCoordY = conversionStringInt(ta->getText());
                 StateGroup* sg = new StateGroup("SGCHANGEYTEXCOORD"+conversionIntString(texCoordY));
                 State* state = new State("SCHANGEXTEYCOORD", &se);
-                state->addParameter("OLDVALUE", selectedObject->getTextureRect().top);
+                if (dynamic_cast<Shape*>(selectedObject)) {
+                    state->addParameter("OLDVALUE", static_cast<Shape*>(selectedObject)->getTextureRect().top);
+                }
                 state->addParameter("NEWVALUE", texCoordY);
                 state->addParameter("OBJECT", selectedObject);
                 sg->addState(state);
                 stateStack.addStateGroup(sg);
-                selectedObject->setTextureRect(sf::IntRect(texRect.left, Math::abs(texCoordY), texRect.width, texRect.height));
+                if (dynamic_cast<Shape*>(selectedObject)) {
+                    static_cast<Shape*>(selectedObject)->setTextureRect(sf::IntRect(texRect.left, Math::abs(texCoordY), texRect.width, texRect.height));
+                }
             }
         }
         if (ta == tTexCoordW) {
@@ -920,12 +1179,16 @@ void ODFAEGCreator::onTexCoordsChanged (TextArea* ta) {
                 int texCoordW = conversionStringInt(ta->getText());
                 StateGroup* sg = new StateGroup("SGCHANGEWTEWCOORD"+conversionIntString(texCoordW));
                 State* state = new State("SCHANGEXTEWCOORD", &se);
-                state->addParameter("OLDVALUE", selectedObject->getTextureRect().width);
+                if (dynamic_cast<Shape*>(selectedObject)) {
+                    state->addParameter("OLDVALUE", static_cast<Shape*>(selectedObject)->getTextureRect().width);
+                }
                 state->addParameter("NEWVALUE", texCoordW);
                 state->addParameter("OBJECT", selectedObject);
                 sg->addState(state);
                 stateStack.addStateGroup(sg);
-                selectedObject->setTextureRect(sf::IntRect(texRect.left, texRect.top, Math::abs(texCoordW), texRect.height));
+                if (dynamic_cast<Shape*>(selectedObject)) {
+                    static_cast<Shape*>(selectedObject)->setTextureRect(sf::IntRect(texRect.left, texRect.top, Math::abs(texCoordW), texRect.height));
+                }
             }
         }
         if (ta == tTexCoordH) {
@@ -933,12 +1196,16 @@ void ODFAEGCreator::onTexCoordsChanged (TextArea* ta) {
                 int texCoordH = conversionStringInt(ta->getText());
                 StateGroup* sg = new StateGroup("SGCHANGEHTEXCOORD"+conversionIntString(texCoordH));
                 State* state = new State("SCHANGEXTEHCOORD", &se);
-                state->addParameter("OLDVALUE", selectedObject->getTextureRect().height);
+                if (dynamic_cast<Shape*>(selectedObject)) {
+                    state->addParameter("OLDVALUE", static_cast<Shape*>(selectedObject)->getTextureRect().height);
+                }
                 state->addParameter("NEWVALUE", texCoordH);
                 state->addParameter("OBJECT", selectedObject);
                 sg->addState(state);
                 stateStack.addStateGroup(sg);
-                selectedObject->setTextureRect(sf::IntRect(texRect.left, texRect.top, texRect.width, Math::abs(texCoordH)));
+                if (dynamic_cast<Shape*>(selectedObject)) {
+                    static_cast<Shape*>(selectedObject)->setTextureRect(sf::IntRect(texRect.left, texRect.top, texRect.width, Math::abs(texCoordH)));
+                }
             }
         }
     }

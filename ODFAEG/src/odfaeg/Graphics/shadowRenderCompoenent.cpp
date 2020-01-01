@@ -205,17 +205,17 @@ namespace odfaeg {
                 shadowBatcher.clear();
                 for (unsigned int i = 0; i < vEntities.size(); i++) {
                     if ( vEntities[i]->isLeaf()) {
-                        Entity* entity = vEntities[i]->getParent();
+                        Entity* entity = vEntities[i]->getRootEntity();
                         math::Vec3f shadowOrigin, shadowCenter, shadowScale(1.f, 1.f, 1.f), shadowRotationAxis, shadowTranslation;
                         float shadowRotationAngle = 0;
-                        if (entity != nullptr && entity->isModel()) {
-                            shadowCenter = static_cast<Model*>(entity)->getShadowCenter();
-                            shadowScale = static_cast<Model*>(entity)->getShadowScale();
-                            shadowRotationAxis = static_cast<Model*>(entity)->getShadowRotationAxis();
-                            shadowRotationAngle = static_cast<Model*>(entity)->getShadowRotationAngle();
+                        //if (entity != nullptr && entity->isModel()) {
+                            shadowCenter = entity->getShadowCenter();
+                            shadowScale = entity->getShadowScale();
+                            shadowRotationAxis = entity->getShadowRotationAxis();
+                            shadowRotationAngle = entity->getShadowRotationAngle();
                             shadowOrigin = entity->getPosition();
                             shadowTranslation = entity->getPosition() + shadowCenter;
-                        }
+                        //}
                         TransformMatrix tm;
                         tm.setOrigin(shadowOrigin);
                         tm.setScale(shadowScale);

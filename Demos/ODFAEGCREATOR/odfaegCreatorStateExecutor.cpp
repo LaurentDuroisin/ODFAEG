@@ -18,66 +18,84 @@ bool ODFAEGCreatorStateExecutor::doState(State& state) {
     }
     if (state.getName() == "SCHANGEXPOS") {
         float newXPos = state.getParameter("NEWVALUE").getValue<float>();
-        Shape* shape = state.getParameter("OBJECT").getValue<Shape*>();
+        Transformable* shape = state.getParameter("OBJECT").getValue<Transformable*>();
         shape->setPosition(Vec3f(newXPos,shape->getPosition().y, shape->getPosition().z));
         app->updateScriptPos(shape);
     }
     if (state.getName() == "SCHANGEYPOS") {
         float newYPos = state.getParameter("NEWVALUE").getValue<float>();
-        Shape* shape = state.getParameter("OBJECT").getValue<Shape*>();
+        Transformable* shape = state.getParameter("OBJECT").getValue<Transformable*>();
         shape->setPosition(Vec3f(shape->getPosition().x, newYPos, shape->getPosition().z));
         app->updateScriptPos(shape);
     }
     if (state.getName() == "SCHANGEZPOS") {
         float newZPos = state.getParameter("NEWVALUE").getValue<float>();
-        Shape* shape = state.getParameter("OBJECT").getValue<Shape*>();
+        Transformable* shape = state.getParameter("OBJECT").getValue<Transformable*>();
         shape->setPosition(Vec3f(shape->getPosition().x, shape->getPosition().y, newZPos));
         app->updateScriptPos(shape);
     }
     if (state.getName() == "SCHANGERCOLOR") {
         unsigned int color = state.getParameter("NEWVALUE").getValue<unsigned int>();
-        Shape* shape = state.getParameter("OBJECT").getValue<Shape*>();
-        shape->setFillColor(sf::Color(color, shape->getFillColor().g, shape->getFillColor().b, shape->getFillColor().a));
+        Transformable* shape = state.getParameter("OBJECT").getValue<Transformable*>();
+        if (dynamic_cast<Shape*>(shape)) {
+            static_cast<Shape*>(shape)->setFillColor(sf::Color(color, static_cast<Shape*>(shape)->getFillColor().g, static_cast<Shape*>(shape)->getFillColor().b, static_cast<Shape*>(shape)->getFillColor().a));
+        }
     }
     if (state.getName() == "SCHANGEGCOLOR") {
         unsigned int color = state.getParameter("NEWVALUE").getValue<unsigned int>();
-        Shape* shape = state.getParameter("OBJECT").getValue<Shape*>();
-        shape->setFillColor(sf::Color(shape->getFillColor().r, color, shape->getFillColor().b, shape->getFillColor().a));
+        Transformable* shape = state.getParameter("OBJECT").getValue<Transformable*>();
+        if (dynamic_cast<Shape*>(shape)) {
+            static_cast<Shape*>(shape)->setFillColor(sf::Color(static_cast<Shape*>(shape)->getFillColor().r, color, static_cast<Shape*>(shape)->getFillColor().b, static_cast<Shape*>(shape)->getFillColor().a));
+        }
     }
     if (state.getName() == "SCHANGEBCOLOR") {
         unsigned int color = state.getParameter("NEWVALUE").getValue<unsigned int>();
-        Shape* shape = state.getParameter("OBJECT").getValue<Shape*>();
-        shape->setFillColor(sf::Color(shape->getFillColor().r, shape->getFillColor().g, color, shape->getFillColor().a));
+        Transformable* shape = state.getParameter("OBJECT").getValue<Transformable*>();
+        if (dynamic_cast<Shape*>(shape)) {
+            static_cast<Shape*>(shape)->setFillColor(sf::Color(static_cast<Shape*>(shape)->getFillColor().r, static_cast<Shape*>(shape)->getFillColor().g, color, static_cast<Shape*>(shape)->getFillColor().a));
+        }
     }
     if (state.getName() == "SCHANGEACOLOR") {
         unsigned int color = state.getParameter("NEWVALUE").getValue<unsigned int>();
-        Shape* shape = state.getParameter("OBJECT").getValue<Shape*>();
-        shape->setFillColor(sf::Color(shape->getFillColor().r, shape->getFillColor().g, shape->getFillColor().b, color));
+        Transformable* shape = state.getParameter("OBJECT").getValue<Transformable*>();
+        if (dynamic_cast<Shape*>(shape)) {
+            static_cast<Shape*>(shape)->setFillColor(sf::Color(static_cast<Shape*>(shape)->getFillColor().r, static_cast<Shape*>(shape)->getFillColor().g, static_cast<Shape*>(shape)->getFillColor().b, color));
+        }
     }
     if (state.getName() == "SCHANGETEXTURE") {
         const Texture* texture = state.getParameter("NEWVALUE").getValue<const Texture*>();
-        Shape* shape = state.getParameter("OBJECT").getValue<Shape*>();
-        shape->setTexture(texture);
+        Transformable* shape = state.getParameter("OBJECT").getValue<Transformable*>();
+        if (dynamic_cast<Shape*>(shape)) {
+            static_cast<Shape*>(shape)->setTexture(texture);
+        }
     }
     if (state.getName() == "SCHANGEXTEXCOORD") {
         int texCoordX = state.getParameter("NEWVALUE").getValue<int>();
-        Shape* shape = state.getParameter("OBJECT").getValue<Shape*>();
-        shape->setTextureRect(sf::IntRect(texCoordX,shape->getTextureRect().top,shape->getTextureRect().width,shape->getTextureRect().height));
+        Transformable* shape = state.getParameter("OBJECT").getValue<Transformable*>();
+        if (dynamic_cast<Shape*>(shape)) {
+            static_cast<Shape*>(shape)->setTextureRect(sf::IntRect(texCoordX,static_cast<Shape*>(shape)->getTextureRect().top,static_cast<Shape*>(shape)->getTextureRect().width,static_cast<Shape*>(shape)->getTextureRect().height));
+        }
     }
     if (state.getName() == "SCHANGEYTEXCOORD") {
         int texCoordY = state.getParameter("NEWVALUE").getValue<int>();
-        Shape* shape = state.getParameter("OBJECT").getValue<Shape*>();
-        shape->setTextureRect(sf::IntRect(shape->getTextureRect().left,texCoordY,shape->getTextureRect().width,shape->getTextureRect().height));
+        Transformable* shape = state.getParameter("OBJECT").getValue<Transformable*>();
+        if (dynamic_cast<Shape*>(shape)) {
+            static_cast<Shape*>(shape)->setTextureRect(sf::IntRect(static_cast<Shape*>(shape)->getTextureRect().left,texCoordY,static_cast<Shape*>(shape)->getTextureRect().width,static_cast<Shape*>(shape)->getTextureRect().height));
+        }
     }
     if (state.getName() == "SCHANGEWTEXCOORD") {
         int texCoordW = state.getParameter("NEWALUE").getValue<int>();
-        Shape* shape = state.getParameter("OBJECT").getValue<Shape*>();
-        shape->setTextureRect(sf::IntRect(shape->getTextureRect().left,shape->getTextureRect().top,texCoordW,shape->getTextureRect().height));
+        Transformable* shape = state.getParameter("OBJECT").getValue<Transformable*>();
+        if (dynamic_cast<Shape*>(shape)) {
+            static_cast<Shape*>(shape)->setTextureRect(sf::IntRect(static_cast<Shape*>(shape)->getTextureRect().left,static_cast<Shape*>(shape)->getTextureRect().top,texCoordW,static_cast<Shape*>(shape)->getTextureRect().height));
+        }
     }
     if (state.getName() == "SCHANGEXTEHCOORD") {
         int texCoordH = state.getParameter("NEWVALUE").getValue<int>();
-        Shape* shape = state.getParameter("OBJECT").getValue<Shape*>();
-        shape->setTextureRect(sf::IntRect(shape->getTextureRect().left,shape->getTextureRect().top,shape->getTextureRect().width,texCoordH));
+        Transformable* shape = state.getParameter("OBJECT").getValue<Transformable*>();
+        if (dynamic_cast<Shape*>(shape)) {
+            static_cast<Shape*>(shape)->setTextureRect(sf::IntRect(static_cast<Shape*>(shape)->getTextureRect().left,static_cast<Shape*>(shape)->getTextureRect().top,static_cast<Shape*>(shape)->getTextureRect().width,texCoordH));
+        }
     }
 }
 bool ODFAEGCreatorStateExecutor::undoState(State& state) {
@@ -90,67 +108,84 @@ bool ODFAEGCreatorStateExecutor::undoState(State& state) {
         app->removeShape(id);
     }
     if (state.getName() == "SCHANGEXPOS") {
-        std::cout<<"change pos x"<<std::endl;
         float newXPos = state.getParameter("OLDVALUE").getValue<float>();
-        Shape* shape = state.getParameter("OBJECT").getValue<Shape*>();
+        Transformable* shape = state.getParameter("OBJECT").getValue<Transformable*>();
         shape->setPosition(Vec3f(newXPos,shape->getPosition().y, shape->getPosition().z));
         app->updateScriptPos(shape);
     }
     if (state.getName() == "SCHANGEYPOS") {
         float newYPos = state.getParameter("OLDVALUE").getValue<float>();
-        Shape* shape = state.getParameter("OBJECT").getValue<Shape*>();
+        Transformable* shape = state.getParameter("OBJECT").getValue<Transformable*>();
         shape->setPosition(Vec3f(shape->getPosition().x, newYPos, shape->getPosition().z));
         app->updateScriptPos(shape);
     }
     if (state.getName() == "SCHANGEZPOS") {
         float newZPos = state.getParameter("OLDVALUE").getValue<float>();
-        Shape* shape = state.getParameter("OBJECT").getValue<Shape*>();
+        Transformable* shape = state.getParameter("OBJECT").getValue<Transformable*>();
         shape->setPosition(Vec3f(shape->getPosition().x, shape->getPosition().y, newZPos));
         app->updateScriptPos(shape);
     }
     if (state.getName() == "SCHANGERCOLOR") {
         unsigned int color = state.getParameter("OLDVALUE").getValue<unsigned int>();
-        Shape* shape = state.getParameter("OBJECT").getValue<Shape*>();
-        shape->setFillColor(sf::Color(color, shape->getFillColor().g, shape->getFillColor().b, shape->getFillColor().a));
+        Transformable* shape = state.getParameter("OBJECT").getValue<Transformable*>();
+        if (dynamic_cast<Shape*>(shape)) {
+            static_cast<Shape*>(shape)->setFillColor(sf::Color(color, static_cast<Shape*>(shape)->getFillColor().g, static_cast<Shape*>(shape)->getFillColor().b, static_cast<Shape*>(shape)->getFillColor().a));
+        }
     }
     if (state.getName() == "SCHANGEGCOLOR") {
         unsigned int color = state.getParameter("OLDVALUE").getValue<unsigned int>();
-        Shape* shape = state.getParameter("OBJECT").getValue<Shape*>();
-        shape->setFillColor(sf::Color(shape->getFillColor().r, color, shape->getFillColor().b, shape->getFillColor().a));
+        Transformable* shape = state.getParameter("OBJECT").getValue<Transformable*>();
+        if (dynamic_cast<Shape*>(shape)) {
+            static_cast<Shape*>(shape)->setFillColor(sf::Color(static_cast<Shape*>(shape)->getFillColor().r, color, static_cast<Shape*>(shape)->getFillColor().b, static_cast<Shape*>(shape)->getFillColor().a));
+        }
     }
     if (state.getName() == "SCHANGEBCOLOR") {
         unsigned int color = state.getParameter("OLDVALUE").getValue<unsigned int>();
-        Shape* shape = state.getParameter("OBJECT").getValue<Shape*>();
-        shape->setFillColor(sf::Color(shape->getFillColor().r, shape->getFillColor().g, color, shape->getFillColor().a));
+        Transformable* shape = state.getParameter("OBJECT").getValue<Transformable*>();
+        if (dynamic_cast<Shape*>(shape)) {
+            static_cast<Shape*>(shape)->setFillColor(sf::Color(static_cast<Shape*>(shape)->getFillColor().r, static_cast<Shape*>(shape)->getFillColor().g, color, static_cast<Shape*>(shape)->getFillColor().a));
+        }
     }
     if (state.getName() == "SCHANGEACOLOR") {
         unsigned int color = state.getParameter("OLDVALUE").getValue<unsigned int>();
-        Shape* shape = state.getParameter("OBJECT").getValue<Shape*>();
-        shape->setFillColor(sf::Color(shape->getFillColor().r, shape->getFillColor().g, shape->getFillColor().b, color));
+        Transformable* shape = state.getParameter("OBJECT").getValue<Transformable*>();
+        if (dynamic_cast<Shape*>(shape)) {
+            static_cast<Shape*>(shape)->setFillColor(sf::Color(static_cast<Shape*>(shape)->getFillColor().r, static_cast<Shape*>(shape)->getFillColor().g, static_cast<Shape*>(shape)->getFillColor().b, color));
+        }
     }
     if (state.getName() == "SCHANGETEXTURE") {
         const Texture* texture = state.getParameter("OLDVALUE").getValue<const Texture*>();
-        Shape* shape = state.getParameter("OBJECT").getValue<Shape*>();
-        shape->setTexture(texture);
+        Transformable* shape = state.getParameter("OBJECT").getValue<Transformable*>();
+        if (dynamic_cast<Shape*>(shape)) {
+            static_cast<Shape*>(shape)->setTexture(texture);
+        }
     }
     if (state.getName() == "SCHANGEXTEXCOORD") {
         int texCoordX = state.getParameter("OLDVALUE").getValue<int>();
-        Shape* shape = state.getParameter("OBJECT").getValue<Shape*>();
-        shape->setTextureRect(sf::IntRect(texCoordX,shape->getTextureRect().top,shape->getTextureRect().width,shape->getTextureRect().height));
+        Transformable* shape = state.getParameter("OBJECT").getValue<Transformable*>();
+        if (dynamic_cast<Shape*>(shape)) {
+            static_cast<Shape*>(shape)->setTextureRect(sf::IntRect(texCoordX,static_cast<Shape*>(shape)->getTextureRect().top,static_cast<Shape*>(shape)->getTextureRect().width,static_cast<Shape*>(shape)->getTextureRect().height));
+        }
     }
     if (state.getName() == "SCHANGEYTEXCOORD") {
         int texCoordY = state.getParameter("OLDVALUE").getValue<int>();
-        Shape* shape = state.getParameter("OBJECT").getValue<Shape*>();
-        shape->setTextureRect(sf::IntRect(shape->getTextureRect().left,texCoordY,shape->getTextureRect().width,shape->getTextureRect().height));
+        Transformable* shape = state.getParameter("OBJECT").getValue<Transformable*>();
+        if (dynamic_cast<Shape*>(shape)) {
+            static_cast<Shape*>(shape)->setTextureRect(sf::IntRect(static_cast<Shape*>(shape)->getTextureRect().left,texCoordY,static_cast<Shape*>(shape)->getTextureRect().width,static_cast<Shape*>(shape)->getTextureRect().height));
+        }
     }
     if (state.getName() == "SCHANGEWTEXCOORD") {
         int texCoordW = state.getParameter("NEWALUE").getValue<int>();
-        Shape* shape = state.getParameter("OBJECT").getValue<Shape*>();
-        shape->setTextureRect(sf::IntRect(shape->getTextureRect().left,shape->getTextureRect().top,texCoordW,shape->getTextureRect().height));
+        Transformable* shape = state.getParameter("OBJECT").getValue<Transformable*>();
+        if (dynamic_cast<Shape*>(shape)) {
+            static_cast<Shape*>(shape)->setTextureRect(sf::IntRect(static_cast<Shape*>(shape)->getTextureRect().left,static_cast<Shape*>(shape)->getTextureRect().top,texCoordW,static_cast<Shape*>(shape)->getTextureRect().height));
+        }
     }
     if (state.getName() == "SCHANGEXTEHCOORD") {
         int texCoordH = state.getParameter("OLDVALUE").getValue<int>();
-        Shape* shape = state.getParameter("OBJECT").getValue<Shape*>();
-        shape->setTextureRect(sf::IntRect(shape->getTextureRect().left,shape->getTextureRect().top,shape->getTextureRect().width,texCoordH));
+        Transformable* shape = state.getParameter("OBJECT").getValue<Transformable*>();
+        if (dynamic_cast<Shape*>(shape)) {
+            static_cast<Shape*>(shape)->setTextureRect(sf::IntRect(static_cast<Shape*>(shape)->getTextureRect().left,static_cast<Shape*>(shape)->getTextureRect().top,static_cast<Shape*>(shape)->getTextureRect().width,texCoordH));
+        }
     }
 }

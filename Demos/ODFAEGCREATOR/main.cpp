@@ -6,7 +6,7 @@ using namespace odfaeg::math;
 int main(int argc, char* argv[]) {
     EXPORT_CLASS_GUID(BoundingVolumeBoundingBox, BoundingVolume, BoundingBox)
     EXPORT_CLASS_GUID(ShapeRectShape, Shape, RectangleShape)
-    ODFAEGCreator app(sf::VideoMode(1200,700),"ODFAEG Creator");
+    ODFAEGCreator app(sf::VideoMode(800,600),"ODFAEG Creator");
     return app.exec();
     /*RenderWindow window(sf::VideoMode(1200, 700), "Scissor test");
     RenderWindow window2(sf::VideoMode(800, 600), "SubWindow");

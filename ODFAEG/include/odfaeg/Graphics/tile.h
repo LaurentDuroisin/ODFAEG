@@ -140,6 +140,7 @@ namespace odfaeg {
                 void vtserialize(Archive & ar) {
                     Entity::vtserialize(ar);
                 }
+                sf::Color getColor();
         };
     }
 }

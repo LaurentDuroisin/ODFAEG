@@ -575,7 +575,7 @@ namespace sorrok {
         Action combined  = a1 || a2 || a3 || a4;
         Command moveAction(combined, FastDelegate<void>(&MyAppli::keyHeldDown, this, IKeyboard::Key::Unknown));
         getListener().connect("MoveAction", moveAction);
-        g2d::AmbientLight::getAmbientLight().setColor(sf::Color(0, 0, 255));
+        g2d::AmbientLight::getAmbientLight().setColor(sf::Color(255, 255, 255));
         Command leftMouseButtonPressedCommand (a5, FastDelegate<void>(&MyAppli::leftMouseButtonPressed, this, sf::Vector2f(-1, -1)));
         Command rightMouseButtonPressedCommand (a6, FastDelegate<void>(&MyAppli::rightMouseButtonPressed, this, sf::Vector2f(-1, -1)));
         getListener().connect("LeftMouseButtonPressedAction", leftMouseButtonPressedCommand);
@@ -1097,6 +1097,8 @@ namespace sorrok {
                 int textWidth = text->getSize().x;
                 Vec3f tmpCenter = player->getCenter();
                 player->setCenter(Vec3f(0, 0, 0));
+                player->setShadowCenter(Vec3f(0, 200, 0));
+                player->setShadowScale(Vec3f(1, -1, 1));
                 for (unsigned int i = 0; i < 8; i++) {
                     Anim* animation = new Anim(0.1f, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), 0);
                     for (unsigned int j = 0; j < 8; j++) {
@@ -1104,7 +1106,7 @@ namespace sorrok {
                         Tile *tile = new Tile(text, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), textRect);
                         tile->getFaces()[0]->getMaterial().setTexId("VLADSWORD");
                         g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight());
-                        frame->setShadowCenter(Vec3f(0, 200, 0));
+                        //frame->setShadowCenter(Vec3f(0, 200, 0));
                         if (textRectX + textRectWidth >= textWidth) {
                             textRectX = 0;
                             textRectY += textRectHeight;
@@ -1124,7 +1126,7 @@ namespace sorrok {
                         Tile *tile = new Tile(text, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), textRect);
                         tile->getFaces()[0]->getMaterial().setTexId("VLADSWORD");
                         g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight());
-                        frame->setShadowCenter(Vec3f(0, 200, 0));
+                        //frame->setShadowCenter(Vec3f(0, 200, 0));
                         if (textRectX + textRectWidth >= textWidth) {
                             textRectX = 0;
                             textRectY += textRectHeight;
@@ -1145,7 +1147,7 @@ namespace sorrok {
                         Tile *tile = new Tile(text, Vec3f(-50, -50, 0), Vec3f(100, 100, 0), textRect);
                         tile->getFaces()[0]->getMaterial().setTexId("VLADSWORD");
                         g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight());
-                        frame->setShadowCenter(Vec3f(0, 200, 0));
+                        //frame->setShadowCenter(Vec3f(0, 200, 0));
                         if (textRectX + textRectWidth >= textWidth) {
                             textRectX = 0;
                             textRectY += textRectHeight;
@@ -1206,6 +1208,8 @@ namespace sorrok {
                 //for (unsigned int n = 0; n < monsters.size(); n++) {
                 Vec3f tmpCenter = monster->getCenter();
                 monster->setCenter(Vec3f(0, 0, 0));
+                monster->setShadowCenter(Vec3f(0, 200, 0));
+                monster->setShadowScale(Vec3f(1, -1, 1));
                 cache.resourceManager<Texture, std::string>("TextureManager").fromFileWithAlias(path, "OGRO");
                 const Texture* text = cache.resourceManager<Texture, std::string>("TextureManager").getResourceByPath(path);
                 int textRectX = 0, textRectY = 0, textRectWidth = 50, textRectHeight = 100;
@@ -1217,7 +1221,7 @@ namespace sorrok {
                         Tile *tile = new Tile(text, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), textRect);
                         tile->getFaces()[0]->getMaterial().setTexId("OGRO");
                         g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight());
-                        frame->setShadowCenter(Vec3f(0, 200, 0));
+                        //frame->setShadowCenter(Vec3f(0, 200, 0));
                         if (textRectX + textRectWidth >= textWidth) {
                             textRectX = 0;
                             textRectY += textRectHeight;
@@ -1237,7 +1241,7 @@ namespace sorrok {
                         Tile *tile = new Tile(text, Vec3f(-25, -50, 0), Vec3f(50, 100, 0), textRect);
                         tile->getFaces()[0]->getMaterial().setTexId("OGRO");
                         g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight());
-                        frame->setShadowCenter(Vec3f(0, 200, 0));
+                        //frame->setShadowCenter(Vec3f(0, 200, 0));
                         //decor->changeGravityCenter(Vec3f(50, 50, 0));
                         if (textRectX + textRectWidth >= textWidth) {
                             textRectX = 0;
@@ -1259,7 +1263,7 @@ namespace sorrok {
                         Tile *tile = new Tile(text, Vec3f(-50, -50, 0), Vec3f(100, 100, 0), textRect);
                         tile->getFaces()[0]->getMaterial().setTexId("OGRO");
                         g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight());
-                        frame->setShadowCenter(Vec3f(0, 200, 0));
+                        //frame->setShadowCenter(Vec3f(0, 200, 0));
                         //decor->changeGravityCenter(Vec3f(50, 50, 0));
                         if (textRectX + textRectWidth >= textWidth) {
                             textRectX = 0;
@@ -1291,6 +1295,8 @@ namespace sorrok {
             ia(pnjs);
             for (unsigned int i = 0; i < pnjs.size(); i++) {
                 Pnj* pnj = static_cast<Pnj*>(pnjs[i]);
+                pnj->setShadowCenter(Vec3f(0, 200, 0));
+                pnj->setShadowScale(Vec3f(1, -1, 1));
                 std::string path = "tilesets/luigi.png";
                 cache.resourceManager<Texture, std::string>("TextureManager").fromFileWithAlias(path, "LUIGI");
                 const Texture* text = cache.resourceManager<Texture, std::string>("TextureManager").getResourceByPath(path);
@@ -1304,7 +1310,7 @@ namespace sorrok {
                         tile->setName("PNJ");
                         tile->getFaces()[0]->getMaterial().setTexId("LUIGI");
                         g2d::Decor *frame = new g2d::Decor(tile, &g2d::AmbientLight::getAmbientLight());
-                        frame->setShadowCenter(Vec3f(0, 200, 0));
+                        //frame->setShadowCenter(Vec3f(0, 200, 0));
                         if (textRectX + textRectWidth >= textWidth) {
                             textRectX = 0;
                             textRectY += textRectHeight;
