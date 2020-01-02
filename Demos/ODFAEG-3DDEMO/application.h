@@ -10,6 +10,7 @@
 #include "odfaeg/Graphics/shadowRenderComponent.hpp"
 #include "odfaeg/Graphics/lightRenderComponent.hpp"
 #include "odfaeg/Graphics/zSortingRenderComponent.hpp"
+#include "odfaeg/Graphics/perPixelLinkedListRenderComponent.hpp"
 class MyAppli : public odfaeg::core::Application {
 public :
     enum TEXTURES {

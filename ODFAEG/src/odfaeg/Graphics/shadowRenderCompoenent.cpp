@@ -195,8 +195,9 @@ namespace odfaeg {
                 return expression;
             }
             void ShadowRenderComponent::setView(View view) {
-                this->view = view;
-                shadowMap.setView(view);
+                this->view = view;/*View(view.getSize().x, view.getSize().y, view.getPosition().z, view.getDepth());
+                this->view.setCenter(view.getPosition());*/
+                shadowMap.setView(this->view);
             }
             bool ShadowRenderComponent::loadEntitiesOnComponent(std::vector<Entity*> vEntities)
             {
