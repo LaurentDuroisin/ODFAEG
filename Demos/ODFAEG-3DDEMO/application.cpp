@@ -104,6 +104,7 @@ void MyAppli::onInit() {
     g2d::AmbientLight::getAmbientLight().setColor(sf::Color::White);
     Entity* model = new g3d::Model("tilesets/mesh_puddingmill/puddingmill.obj", Vec3f(0, 0, 0));
     model->move(Vec3f(0, 0, 20));
+    model->setShadowCenter(Vec3f(0, 20, 0));
     World::addEntity(model);
     World::update();
 }
