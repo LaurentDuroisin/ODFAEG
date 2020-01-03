@@ -201,6 +201,7 @@ void ODFAEGCreator::onInit() {
     tabPane->setRelSize(1, 1);
     tabPane->setParent(pScriptsFiles);
     pScriptsFiles->addChild(tabPane);
+    pScriptsFiles->setBackgroundColor(sf::Color::Black);
     pTransform = new Panel(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 700, 0), 0);
     pTransform->setBackgroundColor(sf::Color::White);
     rootPropNode = std::make_unique<Node>("Properties", pTransform, Vec2f(0.f, 0.05f), Vec2f(1.f, 1.f-0.05f));
