@@ -113,8 +113,10 @@ namespace odfaeg {
                 onEventPushed(event, rw);
                 for (unsigned int i = 0; i < children.size(); i++) {
                     children[i]->pushEvent(event, rw);
-                    if (children[i]->isRelPosition()) {
-                        children[i]->setAutoResized(true);
+                    if (event.type == odfaeg::window::IEvent::WINDOW_EVENT && event.window.type == odfaeg::window::IEvent::WINDOW_EVENT_RESIZED) {
+                        if (children[i]->isRelPosition()) {
+                            children[i]->setAutoResized(true);
+                        }
                     }
                 }
             }
