@@ -43,9 +43,11 @@ void ODFAEGCreator::onInit() {
     item11 = new MenuItem(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif),"New application");
     item11->addMenuItemListener(this);
     getRenderComponentManager().addComponent(item11);
-    item12 = new MenuItem(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif),"Test 1 2");
+    item12 = new MenuItem(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif),"New scene");
+    item12->addMenuItemListener(this);
     getRenderComponentManager().addComponent(item12);
-    item13 = new MenuItem(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif),"Test 1 3");
+    item13 = new MenuItem(getRenderWindow(), fm.getResourceByAlias(Fonts::Serif),"New component");
+    item13->addMenuItemListener(this);
     getRenderComponentManager().addComponent(item13);
     menu1->addMenuItem(item11);
     menu1->addMenuItem(item12);
@@ -133,6 +135,31 @@ void ODFAEGCreator::onInit() {
     getRenderComponentManager().addComponent(button);
     addWindow(wApplicationNew);
     wApplicationNew->setVisible(false);
+    //Create map window.
+    wNewMap = new RenderWindow(sf::VideoMode(400, 300), "Create new scene", sf::Style::Default, ContextSettings(0, 0, 0, 3, 0));
+    Label* labMapName = new Label(*wNewMap, Vec3f(0, 0, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif), "Map name : ", 15);
+    getRenderComponentManager().addComponent(labMapName);
+    taMapName = new TextArea(Vec3f(200, 0, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif), "", *wNewMap);
+    getRenderComponentManager().addComponent(taMapName);
+    Label* labMapType = new Label(*wNewMap, Vec3f(0, 50, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif), "Application type : ", 15);
+    getRenderComponentManager().addComponent(labMapType);
+    dpMapTypeList = new DropDownList(*wNewMap, Vec3f(200, 50, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"Normal", 15);
+    dpMapTypeList->addItem("2D iso", 15);
+    getRenderComponentManager().addComponent(dpMapTypeList);
+    lMapWidth = new Label(*wNewMap, Vec3f(0, 100, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),"case width : ", 15);
+    lMapHeight = new Label(*wNewMap, Vec3f(200, 100, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),"case height : ", 15);
+    getRenderComponentManager().addComponent(lMapWidth);
+    getRenderComponentManager().addComponent(lMapHeight);
+    taMapWidth = new TextArea(Vec3f(80, 100, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),"100", *wNewMap);
+    taMapHeight =  new TextArea(Vec3f(280, 100, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),"50", *wNewMap);
+    getRenderComponentManager().addComponent(taMapWidth);
+    getRenderComponentManager().addComponent(taMapHeight);
+    Button* createMapButton = new Button(Vec3f(0, 200, 0), Vec3f(400, 100, 0), fm.getResourceByAlias(Fonts::Serif),"Create scene", 15, *wNewMap);
+    createMapButton->addActionListener(this);
+    getRenderComponentManager().addComponent(createMapButton);
+    addWindow(wNewMap);
+    wNewMap->setVisible(false);
+    //Create panel for project files.
     pProjects = new Panel(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 700, 0), 0);
     pProjects->setName("PPROJECTS");
     rootNode = std::make_unique<Node> ("projects", pProjects, Vec2f(0.f, 0.015f), Vec2f(1.f / 6.f, 1.f));
@@ -225,31 +252,6 @@ void ODFAEGCreator::onInit() {
     Action moveCursorAction (Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
     Command moveCursorCommand (moveCursorAction, FastDelegate<void>(&ODFAEGCreator::moveCursor, this, sf::Vector2f(-1, -1)));
     getListener().connect("MoveCursor", moveCursorCommand);
-    BaseChangementMatrix bcm;
-    bcm.set2DIsoMatrix();
-    theMap = new Map(&getRenderComponentManager(), "Map test", 100, 50, 0);
-    theMap->setBaseChangementMatrix(bcm);
-    World::addEntityManager(theMap);
-    World::setCurrentEntityManager("Map test");
-    for (int i = 0; i < 800; i+=100) {
-        for (int j = 0; j < 600; j+=50) {
-            ConvexShape cshape(4);
-            cshape.setFillColor(sf::Color::Transparent);
-            cshape.setOutlineColor(sf::Color(75, 75, 75));
-            cshape.setOutlineThickness(1.f);
-            Vec2f points[4];
-            points[0] = Vec2f(0, 0);
-            points[1] = Vec2f(100, 0);
-            points[2] = Vec2f(100, 50);
-            points[3] = Vec2f(0, 50);
-            for (unsigned int n = 0; n < 4; n++) {
-                points[n] = bcm.changeOfBase(points[n]);
-                points[n] += Vec2f(i, j);
-                cshape.setPoint(n, sf::Vector3f(points[n].x, points[n].y, 0));
-            }
-            cshapes.push_back(cshape);
-        }
-    }
 }
 void ODFAEGCreator::updateScriptText(Shape* shape, Texture* text) {
     /*TextureManager<>& tm = cache.resourceManager<Texture, std::string>("TextureManager");
@@ -525,6 +527,35 @@ void ODFAEGCreator::actionPerformed(Button* button) {
         fdTexturePath->setVisible(true);
         fdTexturePath->setEventContextActivated(true);
     }
+    if (button->getText() == "Create scene") {
+        wNewMap->setVisible(false);
+        BaseChangementMatrix bcm;
+        if (dpMapTypeList->getSelectedItem() == "2D iso")
+            bcm.set2DIsoMatrix();
+        theMap = new Map(&getRenderComponentManager(), taMapName->getText(), conversionStringInt(taMapWidth->getText()), conversionStringInt(taMapHeight->getText()), 0);
+        theMap->setBaseChangementMatrix(bcm);
+        World::addEntityManager(theMap);
+        World::setCurrentEntityManager(taMapName->getText());
+        for (int i = 0; i < getRenderWindow().getSize().x; i+=100) {
+            for (int j = 0; j < getRenderWindow().getSize().y; j+=50) {
+                ConvexShape cshape(4);
+                cshape.setFillColor(sf::Color::Transparent);
+                cshape.setOutlineColor(sf::Color(75, 75, 75));
+                cshape.setOutlineThickness(1.f);
+                Vec2f points[4];
+                points[0] = Vec2f(0, 0);
+                points[1] = Vec2f(100, 0);
+                points[2] = Vec2f(100, 50);
+                points[3] = Vec2f(0, 50);
+                for (unsigned int n = 0; n < 4; n++) {
+                    points[n] = bcm.changeOfBase(points[n]);
+                    points[n] += Vec2f(i, j);
+                    cshape.setPoint(n, sf::Vector3f(points[n].x, points[n].y, 0));
+                }
+                cshapes.push_back(cshape);
+            }
+        }
+    }
 }
 void ODFAEGCreator::actionPerformed(MenuItem* item) {
     if (item->getText() == "New application") {
@@ -564,10 +595,12 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
         shapes.push_back(std::move(shape));
     }
     if (item->getText() == "Tile") {
-        Tile* tile = new Tile(nullptr, cursor.getPosition(),Vec3f(100, 50, 0), sf::IntRect(0, 0, 0, 0));
-        displayInfos(tile);
-        selectedObject = tile;
-        World::addEntity(tile);
+        if (World::getCurrentEntityManager() != nullptr) {
+            Tile* tile = new Tile(nullptr, cursor.getPosition(),Vec3f(100, 50, 0), sf::IntRect(0, 0, 0, 0));
+            World::addEntity(tile);
+            selectedObject = tile;
+            displayInfos(tile);
+        }
     }
     if (item->getText() == "Undo") {
         stateStack.undo();
@@ -577,6 +610,9 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
     }
     if (item->getText() == "Show grid") {
         showGrid = !showGrid;
+    }
+    if (item->getText() == "New scene") {
+        wNewMap->setVisible(true);
     }
 }
 void ODFAEGCreator::addShape(Shape *shape) {

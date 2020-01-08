@@ -32,6 +32,9 @@ namespace odfaeg {
                     std::vector<std::unique_ptr<core::Timer>> aus; /**> holds every timers.*/
                     std::vector<std::unique_ptr<EntityManager>> ems; /**> holds every entity managers*/
                 };
+                static EntityManager* getCurrentEntityManager() {
+                    return currentEntityManager;
+                }
                 /**
                 *    \fn std::vector<CellMap<E>*> getCasesMap()
                 *    \brief get all the cells (containing the entities) of the entity manager.

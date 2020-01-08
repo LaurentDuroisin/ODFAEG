@@ -56,11 +56,11 @@ class ODFAEGCreator : public odfaeg::core::Application,
         *item34, *item41, *item42, *item43;
         odfaeg::core::ResourceCache<> cache;
         odfaeg::graphic::gui::FileDialog* fdTexturePath;
-        odfaeg::graphic::RenderWindow* wApplicationNew;
+        odfaeg::graphic::RenderWindow* wApplicationNew, *wNewMap;
         odfaeg::graphic::gui::TextArea* ta;
-        odfaeg::graphic::gui::DropDownList* dpList, *dpSelectTexture;
-        odfaeg::graphic::gui::Label *lWidth, *lHeight;
-        odfaeg::graphic::gui::TextArea *taWidth, *taHeight, *tScriptEdit;
+        odfaeg::graphic::gui::DropDownList* dpList, *dpSelectTexture, *dpMapTypeList;
+        odfaeg::graphic::gui::Label *lWidth, *lHeight, *lMapWidth, *lMapHeight;
+        odfaeg::graphic::gui::TextArea *taWidth, *taHeight, *tScriptEdit, *taMapName, *taMapWidth, *taMapHeight;
         odfaeg::graphic::gui::Panel *pProjects, *pScriptsFiles, *pScriptsEdit, *pTransform, *pMaterial;
         std::string appliname, minAppliname;
         std::string applitype;
