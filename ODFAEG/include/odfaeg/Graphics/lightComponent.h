@@ -113,6 +113,9 @@ namespace odfaeg {
                 onEventPushed(event, rw);
                 for (unsigned int i = 0; i < children.size(); i++) {
                     children[i]->pushEvent(event, rw);
+                    if (children[i]->isRelPosition()) {
+                        children[i]->setAutoResized(true);
+                    }
                 }
             }
             virtual void processEvents() {
