@@ -56,9 +56,9 @@ class ODFAEGCreator : public odfaeg::core::Application,
         *item34, *item41, *item42, *item43;
         odfaeg::core::ResourceCache<> cache;
         odfaeg::graphic::gui::FileDialog* fdTexturePath;
-        odfaeg::graphic::RenderWindow* wApplicationNew, *wNewMap;
-        odfaeg::graphic::gui::TextArea* ta;
-        odfaeg::graphic::gui::DropDownList* dpList, *dpSelectTexture, *dpMapTypeList;
+        odfaeg::graphic::RenderWindow* wApplicationNew, *wNewMap, *wNewComponent;
+        odfaeg::graphic::gui::TextArea* ta, *taComponentExpression, *taComponentLayer;
+        odfaeg::graphic::gui::DropDownList* dpList, *dpSelectTexture, *dpMapTypeList, *dpComponentType;
         odfaeg::graphic::gui::Label *lWidth, *lHeight, *lMapWidth, *lMapHeight;
         odfaeg::graphic::gui::TextArea *taWidth, *taHeight, *tScriptEdit, *taMapName, *taMapWidth, *taMapHeight;
         odfaeg::graphic::gui::Panel *pProjects, *pScriptsFiles, *pScriptsEdit, *pTransform, *pMaterial;

@@ -28,14 +28,17 @@ namespace odfaeg {
                     layout (location = 1) in vec4 color;
                     layout (location = 2) in vec2 texCoords;
                     layout (location = 10) in mat4 worldMat;
+                    uniform mat4 projectionMatrix;
+                    uniform mat4 viewMatrix;
+                    uniform mat4 textureMatrix;
                     void main() {
-                        gl_Position = worldMat * gl_ModelViewProjectionMatrix * vec4(position, 1.f);
-                        gl_TexCoord[0] = gl_TextureMatrix[0] * vec4(texCoords, 1.f, 1.f);
+                        gl_Position = worldMat * viewMatrix * projectionMatrix * vec4(position, 1.f);
+                        gl_TexCoord[0] = textureMatrix * vec4(texCoords, 1.f, 1.f);
                         gl_FrontColor = color;
                     }
                 )";
                 const std::string fragmentShader =
-                R"(#version 140
+                R"(#version 330
                 uniform sampler2D texture;
                 void main() {
                     gl_FragColor = texture2D (texture, gl_FragCoord.xy) * gl_Color;
@@ -180,10 +183,14 @@ namespace odfaeg {
         void ZSortingRenderComponent::drawNextFrame() {
             RenderStates states;
             if (frameBuffer.getSettings().versionMajor >= 3 && frameBuffer.getSettings().versionMinor >= 3) {
+                math::Matrix4f viewMatrix = view.getViewMatrix().getMatrix();
+                math::Matrix4f projMatrix = view.getProjMatrix().getMatrix();
+                shader.setParameter("projectionMatrix", projMatrix);
+                shader.setParameter("viewMatrix", viewMatrix);
                 VertexBuffer vb(sf::TrianglesStrip);
+                std::vector<float> matrices;
                 for (unsigned int i = 0; i < m_instances.size(); i++) {
                     std::vector<TransformMatrix*> tm = m_instances[i].getTransforms();
-                    std::vector<float> matrices;
                     for (unsigned int j = 0; j < tm.size(); j++) {
                         std::array<float, 16> matrix = tm[j]->getMatrix().toGlMatrix();
                         for (unsigned int n = 0; n < 16; n++) {
@@ -192,11 +199,15 @@ namespace odfaeg {
                     }
                     glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboWorldMatrices));
                     glCheck(glBufferData(GL_ARRAY_BUFFER, sizeof(matrices), &matrices[0], GL_DYNAMIC_DRAW));
-                    for (unsigned int j = 0; j < m_instances[i].getAllVertices().getVertexCount(); j++) {
-                        vb.append(m_instances[i].getAllVertices()[j]);
+                    if (m_instances[i].getVertexArrays().size() > 0) {
+                        for (unsigned int j = 0; j < m_instances[i].getVertexArrays()[0]->getVertexCount(); j++) {
+                            vb.append((*m_instances[i].getVertexArrays()[0])[j]);
+                        }
                     }
                     states.shader = &shader;
                     states.texture = m_instances[i].getMaterial().getTexture();
+                    math::Matrix4f texMatrix = m_instances[i].getMaterial().getTexture()->getTextureMatrix();
+                    shader.setParameter("textureMatrix", texMatrix);
                     frameBuffer.drawInstanced(vb, vboWorldMatrices, sf::TrianglesStrip, 0, 6, tm.size(), states);
                 }
             } else {

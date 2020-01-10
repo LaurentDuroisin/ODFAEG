@@ -953,7 +953,7 @@ namespace sorrok {
                 getView().move (d.x, d.y, d.y);
             }
             World::moveEntity(caracter, d.x, d.y, d.y);
-            World::update();
+            //World::update();
             caracter->interpolation.first = Vec3f(caracter->getCenter().x, caracter->getCenter().y, caracter->getCenter().z);
             if (caracter->isMoving()) {
                 if (caracter->isMovingFromKeyboard()) {
