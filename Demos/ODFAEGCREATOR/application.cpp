@@ -159,6 +159,27 @@ void ODFAEGCreator::onInit() {
     getRenderComponentManager().addComponent(createMapButton);
     addWindow(wNewMap);
     wNewMap->setVisible(false);
+    //Create component.
+    wNewComponent = new RenderWindow(sf::VideoMode(400, 300), "Create new render component", sf::Style::Default, ContextSettings(0, 0, 0, 3, 0));
+    Label* labComponentExpression = new Label(*wNewComponent,Vec3f(0, 0, 0),Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif), "entity's type(s) : ", 15);
+    getRenderComponentManager().addComponent(labComponentExpression);
+    taComponentExpression = new TextArea(Vec3f(200, 0, 0),Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"",*wNewComponent);
+    getRenderComponentManager().addComponent(taComponentExpression);
+    Label* lComponentLayer = new Label(*wNewComponent,Vec3f(0, 50, 0),Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif), "Layer number : ", 15);
+    getRenderComponentManager().addComponent(lComponentLayer);
+    taComponentLayer = new TextArea(Vec3f(200, 50, 0),Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif),"0",*wNewComponent);
+    getRenderComponentManager().addComponent(taComponentLayer);
+    Label* lComponentType = new Label(*wNewComponent, Vec3f(0, 100, 0), Vec3f(200, 50, 0),fm.getResourceByAlias(Fonts::Serif), "component type : ", 15);
+    getRenderComponentManager().addComponent(lComponentType);
+    dpComponentType = new DropDownList(*wNewComponent, Vec3f(200, 100, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif),"LinkedList", 15);
+    dpComponentType->addItem("ZSorting", 15);
+    dpComponentType->addItem("Shadow", 15);
+    dpComponentType->addItem("Light", 15);
+    getRenderComponentManager().addComponent(dpComponentType);
+    Button* bCreateComponent = new Button(Vec3f(0, 150, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif),"Create component",15,*wNewComponent);
+    getRenderComponentManager().addComponent(bCreateComponent);
+    addWindow(wNewComponent);
+    wNewComponent->setVisible(false);
     //Create panel for project files.
     pProjects = new Panel(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 700, 0), 0);
     pProjects->setName("PPROJECTS");
