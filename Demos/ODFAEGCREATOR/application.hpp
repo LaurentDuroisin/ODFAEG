@@ -16,6 +16,10 @@
 #include "odfaeg/Graphics/sprite.h"
 #include "odfaeg/Graphics/map.h"
 #include "odfaegCreatorStateExecutor.hpp"
+#include "odfaeg/Graphics/perPixelLinkedListRenderComponent.hpp"
+#include "odfaeg/Graphics/zSortingRenderComponent.hpp"
+#include "odfaeg/Graphics/shadowRenderComponent.hpp"
+#include "odfaeg/Graphics/lightRenderComponent.hpp"
 class ODFAEGCreator : public odfaeg::core::Application,
                       public odfaeg::graphic::gui::MenuItemListener,
                       public odfaeg::graphic::gui::ActionListener {

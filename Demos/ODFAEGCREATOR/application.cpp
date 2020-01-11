@@ -177,6 +177,7 @@ void ODFAEGCreator::onInit() {
     dpComponentType->addItem("Light", 15);
     getRenderComponentManager().addComponent(dpComponentType);
     Button* bCreateComponent = new Button(Vec3f(0, 150, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif),"Create component",15,*wNewComponent);
+    bCreateComponent->addActionListener(this);
     getRenderComponentManager().addComponent(bCreateComponent);
     addWindow(wNewComponent);
     wNewComponent->setVisible(false);
@@ -325,6 +326,9 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
     }
     if (wApplicationNew == window && event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_CLOSED) {
         wApplicationNew->setVisible(false);
+    }
+    if (&getRenderWindow() == window && event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_RESIZED) {
+        getRenderWindow().getView().reset(BoundingBox(0, 0, getRenderWindow().getView().getPosition().z, event.window.data1, event.window.data2, getRenderWindow().getView().getDepth()));
     }
 }
 void ODFAEGCreator::onExec() {
@@ -575,6 +579,24 @@ void ODFAEGCreator::actionPerformed(Button* button) {
                 }
                 cshapes.push_back(cshape);
             }
+        }
+    }
+    if (button->getText() == "Create component") {
+        if (dpComponentType->getSelectedItem() == "LinkedList") {
+            PerPixelLinkedListRenderComponent* ppll = new PerPixelLinkedListRenderComponent(getRenderWindow(),conversionStringInt(taComponentLayer->getText()),taComponentExpression->getText(),ContextSettings(0, 0, 4, 3, 0));
+            getRenderComponentManager().addComponent(ppll);
+        }
+        if (dpComponentType->getSelectedItem() == "ZSorting") {
+            ZSortingRenderComponent* zs = new ZSortingRenderComponent(getRenderWindow(),conversionStringInt(taComponentLayer->getText()),taComponentExpression->getText(),ContextSettings(0, 0, 4, 3, 0));
+            getRenderComponentManager().addComponent(zs);
+        }
+        if (dpComponentType->getSelectedItem() == "Shadow") {
+            ShadowRenderComponent* src = new ShadowRenderComponent(getRenderWindow(),conversionStringInt(taComponentLayer->getText()),taComponentExpression->getText(),ContextSettings(0, 0, 4, 3, 0));
+            getRenderComponentManager().addComponent(src);
+        }
+        if (dpComponentType->getSelectedItem() == "Light") {
+            LightRenderComponent* lrc = new LightRenderComponent(getRenderWindow(),conversionStringInt(taComponentLayer->getText()),taComponentExpression->getText(),ContextSettings(0, 0, 4, 3, 0));
+            getRenderComponentManager().addComponent(lrc);
         }
     }
 }
