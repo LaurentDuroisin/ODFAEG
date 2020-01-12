@@ -65,13 +65,13 @@ class ODFAEGCreator : public odfaeg::core::Application,
         odfaeg::graphic::gui::DropDownList* dpList, *dpSelectTexture, *dpMapTypeList, *dpComponentType;
         odfaeg::graphic::gui::Label *lWidth, *lHeight, *lMapWidth, *lMapHeight;
         odfaeg::graphic::gui::TextArea *taWidth, *taHeight, *tScriptEdit, *taMapName, *taMapWidth, *taMapHeight;
-        odfaeg::graphic::gui::Panel *pProjects, *pScriptsFiles, *pScriptsEdit, *pTransform, *pMaterial;
+        odfaeg::graphic::gui::Panel *pProjects, *pScriptsFiles, *pScriptsEdit, *pInfos, *pTransform, *pMaterial;
         std::string appliname, minAppliname;
         std::string applitype;
         std::string path;
         std::string cppAppliContent;
         std::vector<std::string> textPaths;
-        std::unique_ptr<odfaeg::graphic::gui::Node> rootNode, rootPropNode, rootMaterialNode;
+        std::unique_ptr<odfaeg::graphic::gui::Node> rootNode, rootPropNode, rootMaterialNode, rootInfosNode;
         odfaeg::graphic::CircleShape cursor;
         odfaeg::math::Vec3f guiSize, guiPos;
         bool isGuiShown, showGrid, alignToGrid;
