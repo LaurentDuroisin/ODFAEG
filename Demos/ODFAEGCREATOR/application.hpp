@@ -42,6 +42,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
     void showFileContent(odfaeg::graphic::gui::Label* lab);
     void displayInfos(odfaeg::graphic::Shape* shape);
     void displayInfos(odfaeg::graphic::Tile* tile);
+    void displayChildren(odfaeg::graphic::gui::Label* label);
     void onObjectPosChanged(odfaeg::graphic::gui::TextArea* ta);
     void onObjectColorChanged(odfaeg::graphic::gui::TextArea* ta);
     void onSelectedTextureChanged(odfaeg::graphic::gui::DropDownList* dp);

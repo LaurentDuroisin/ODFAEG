@@ -332,7 +332,9 @@ void ODFAEGCreator::onUpdate(RenderWindow* window, IEvent& event) {
         wApplicationNew->setVisible(false);
     }
     if (&getRenderWindow() == window && event.type == IEvent::WINDOW_EVENT && event.window.type == IEvent::WINDOW_EVENT_RESIZED) {
-        getRenderWindow().getView().reset(BoundingBox(0, 0, getRenderWindow().getView().getPosition().z, event.window.data1, event.window.data2, getRenderWindow().getView().getDepth()));
+        View view = getRenderWindow().getView();
+        view.reset(BoundingBox(0, 0, getRenderWindow().getView().getPosition().z, event.window.data1, event.window.data2, getRenderWindow().getView().getDepth()));
+        getRenderWindow().setView(view);
     }
 }
 void ODFAEGCreator::onExec() {
@@ -586,6 +588,7 @@ void ODFAEGCreator::actionPerformed(Button* button) {
         }
     }
     if (button->getText() == "Create component") {
+        wNewComponent->setVisible(false);
         if (dpComponentType->getSelectedItem() == "LinkedList") {
             PerPixelLinkedListRenderComponent* ppll = new PerPixelLinkedListRenderComponent(getRenderWindow(),conversionStringInt(taComponentLayer->getText()),taComponentExpression->getText(),ContextSettings(0, 0, 4, 3, 0));
             getRenderComponentManager().addComponent(ppll);
@@ -661,6 +664,9 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
     if (item->getText() == "New scene") {
         wNewMap->setVisible(true);
     }
+    if (item->getText() == "New component") {
+        wNewComponent->setVisible(true);
+    }
 }
 void ODFAEGCreator::addShape(Shape *shape) {
     std::unique_ptr<Shape> ptr;
@@ -702,9 +708,15 @@ bool ODFAEGCreator::removeShape (unsigned int id) {
 void ODFAEGCreator::displayInfos (Shape* shape) {
     rootPropNode->deleteAllNodes();
     rootMaterialNode->deleteAllNodes();
+    rootInfosNode->deleteAllNodes();
     pTransform->removeAll();
     pMaterial->removeAll();
+    pInfos->removeAll();
     FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
+    Label* lId = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif), "Id : shape-"+conversionIntString(shape->getId()), 15);
+    lId->setParent(pInfos);
+    Node* lIdNode = new Node("LabId", lId, Vec2f(0, 0), Vec2f(1, 0.025), rootInfosNode.get());
+    pInfos->addChild(lId);
     lPosition = new Label(getRenderWindow(),Vec3f(0,0,0),Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"Position : ", 15);
     lPosition->setParent(pTransform);
     Node* lPosNode = new Node("LabPosition",lPosition,Vec2f(0, 0), Vec2f(1, 0.025),rootPropNode.get());
@@ -867,12 +879,41 @@ void ODFAEGCreator::displayInfos (Shape* shape) {
     stateStack.addStateGroup(sg);
     pScriptsFiles->setAutoResized(true);
 }
+void ODFAEGCreator::displayChildren(Label* label) {
+    Node* node = rootInfosNode->findNode(label);
+    std::vector<std::string> parts = split(label->getText(), "-");
+    int id = conversionStringInt(parts[1]);
+    Entity* entity = World::getEntity(id);
+    if (node->getNodes().size() == 0) {
+        FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
+        for (unsigned int i = 0; i < entity->getChildren().size(); i++) {
+            Label* label = new Label(getRenderWindow(), Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"Id : entity-"+conversionIntString(entity->getChild(i)->getId()), 15);
+            Action a(Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
+            Command cmd(a, FastDelegate<bool>(&Label::isMouseInside, label), FastDelegate<void>(&ODFAEGCreator::displayChildren, this, label));
+            label->getListener().connect("SHOWCHILDREN"+label->getText(), cmd);
+            label->setParent(pInfos);
+            Node* lNode = new Node(label->getText() + "-child-" + conversionIntString(i), label, Vec2f(0, 0), Vec2f(1.f, 0.025f), node);
+            pInfos->addChild(label);
+        }
+    } else if (node->isNodeVisible()) {
+        node->hideAllNodes();
+    } else {
+        node->showAllNodes();
+    }
+}
 void ODFAEGCreator::displayInfos (Tile* tile) {
     rootPropNode->deleteAllNodes();
     rootMaterialNode->deleteAllNodes();
     pTransform->removeAll();
     pMaterial->removeAll();
     FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
+    Label* lId = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif), "Id : entity-"+conversionIntString(tile->getId()), 15);
+    Action aLId(Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
+    Command cmd(aLId, FastDelegate<bool>(&Label::isMouseInside, lId), FastDelegate<void>(&ODFAEGCreator::displayChildren, this, lId));
+    lId->getListener().connect("SHOWCHILDREN"+lId->getText(), cmd);
+    lId->setParent(pInfos);
+    Node* lIdNode = new Node("LabId", lId, Vec2f(0, 0), Vec2f(1, 0.025), rootInfosNode.get());
+    pInfos->addChild(lId);
     lPosition = new Label(getRenderWindow(),Vec3f(0,0,0),Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif),"Position : ", 15);
     lPosition->setParent(pTransform);
     Node* lPosNode = new Node("LabPosition",lPosition,Vec2f(0, 0), Vec2f(1, 0.025),rootPropNode.get());
