@@ -913,8 +913,10 @@ void ODFAEGCreator::displayChildren(Label* label) {
 void ODFAEGCreator::displayInfos (Tile* tile) {
     rootPropNode->deleteAllNodes();
     rootMaterialNode->deleteAllNodes();
+    rootInfosNode->deleteAllNodes();
     pTransform->removeAll();
     pMaterial->removeAll();
+    pInfos->removeAll();
     FontManager<Fonts>& fm = cache.resourceManager<Font, Fonts>("FontManager");
     Label* lId = new Label(getRenderWindow(),Vec3f(0, 0, 0), Vec3f(200, 17, 0),fm.getResourceByAlias(Fonts::Serif), "Id : entity-"+conversionIntString(tile->getId()), 15);
     Action aLId(Action::EVENT_TYPE::MOUSE_BUTTON_PRESSED_ONCE, IMouse::Left);
