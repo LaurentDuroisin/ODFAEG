@@ -154,9 +154,9 @@ void ODFAEGCreator::onInit() {
     taMapHeight =  new TextArea(Vec3f(280, 100, 0), Vec3f(100, 50, 0),fm.getResourceByAlias(Fonts::Serif),"50", *wNewMap);
     getRenderComponentManager().addComponent(taMapWidth);
     getRenderComponentManager().addComponent(taMapHeight);
-    Button* createMapButton = new Button(Vec3f(0, 200, 0), Vec3f(400, 100, 0), fm.getResourceByAlias(Fonts::Serif),"Create scene", 15, *wNewMap);
-    createMapButton->addActionListener(this);
-    getRenderComponentManager().addComponent(createMapButton);
+    bCreateScene = new Button(Vec3f(0, 200, 0), Vec3f(400, 100, 0), fm.getResourceByAlias(Fonts::Serif),"Create scene", 15, *wNewMap);
+    bCreateScene->addActionListener(this);
+    getRenderComponentManager().addComponent(bCreateScene);
     addWindow(wNewMap);
     wNewMap->setVisible(false);
     //Create component.
@@ -176,7 +176,7 @@ void ODFAEGCreator::onInit() {
     dpComponentType->addItem("Shadow", 15);
     dpComponentType->addItem("Light", 15);
     getRenderComponentManager().addComponent(dpComponentType);
-    Button* bCreateComponent = new Button(Vec3f(0, 150, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif),"Create component",15,*wNewComponent);
+    bCreateComponent = new Button(Vec3f(0, 150, 0), Vec3f(200, 50, 0), fm.getResourceByAlias(Fonts::Serif),"Create component",15,*wNewComponent);
     bCreateComponent->addActionListener(this);
     getRenderComponentManager().addComponent(bCreateComponent);
     addWindow(wNewComponent);
@@ -360,6 +360,7 @@ void ODFAEGCreator::onExec() {
     } else if (dpSelectTexture != nullptr && !dpSelectTexture->isDroppedDown()) {
         bChooseText->setEventContextActivated(true);
     }
+    World::update();
 }
 void ODFAEGCreator::showGUI(Label* label) {
     isGuiShown = true;
@@ -560,6 +561,8 @@ void ODFAEGCreator::actionPerformed(Button* button) {
     }
     if (button->getText() == "Create scene") {
         wNewMap->setVisible(false);
+        button->setEventContextActivated(false);
+        std::cout<<"create scene"<<std::endl;
         BaseChangementMatrix bcm;
         if (dpMapTypeList->getSelectedItem() == "2D iso")
             bcm.set2DIsoMatrix();
@@ -567,6 +570,8 @@ void ODFAEGCreator::actionPerformed(Button* button) {
         theMap->setBaseChangementMatrix(bcm);
         World::addEntityManager(theMap);
         World::setCurrentEntityManager(taMapName->getText());
+        EntitiesUpdater* eu = new EntitiesUpdater();
+        World::addWorker(eu);
         for (int i = 0; i < getRenderWindow().getSize().x; i+=100) {
             for (int j = 0; j < getRenderWindow().getSize().y; j+=50) {
                 ConvexShape cshape(4);
@@ -589,6 +594,8 @@ void ODFAEGCreator::actionPerformed(Button* button) {
     }
     if (button->getText() == "Create component") {
         wNewComponent->setVisible(false);
+        button->setEventContextActivated(false);
+        std::cout<<"Create component"<<std::endl;
         if (dpComponentType->getSelectedItem() == "LinkedList") {
             PerPixelLinkedListRenderComponent* ppll = new PerPixelLinkedListRenderComponent(getRenderWindow(),conversionStringInt(taComponentLayer->getText()),taComponentExpression->getText(),ContextSettings(0, 0, 4, 3, 0));
             getRenderComponentManager().addComponent(ppll);
@@ -663,9 +670,11 @@ void ODFAEGCreator::actionPerformed(MenuItem* item) {
     }
     if (item->getText() == "New scene") {
         wNewMap->setVisible(true);
+        bCreateScene->setEventContextActivated(true);
     }
     if (item->getText() == "New component") {
         wNewComponent->setVisible(true);
+        bCreateComponent->setEventContextActivated(true);
     }
 }
 void ODFAEGCreator::addShape(Shape *shape) {

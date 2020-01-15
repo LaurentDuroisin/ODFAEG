@@ -20,6 +20,7 @@
 #include "odfaeg/Graphics/zSortingRenderComponent.hpp"
 #include "odfaeg/Graphics/shadowRenderComponent.hpp"
 #include "odfaeg/Graphics/lightRenderComponent.hpp"
+#include "odfaeg/Graphics/entitiesUpdater.h"
 class ODFAEGCreator : public odfaeg::core::Application,
                       public odfaeg::graphic::gui::MenuItemListener,
                       public odfaeg::graphic::gui::ActionListener {
@@ -83,7 +84,7 @@ class ODFAEGCreator : public odfaeg::core::Application,
         odfaeg::graphic::gui::Label *lPosX, *lPosY, *lPosZ, *lPosition, *lColor, *lRColor,
         *lGColor, *lBColor, *lAColor, *lTexture, *lTexCoordX, *lTexCoordY, *lTexCoordW, *lTexCoordH, *lTexImage;
         odfaeg::graphic::gui::TabPane* tabPane;
-        odfaeg::graphic::gui::Button* bChooseText;
+        odfaeg::graphic::gui::Button* bChooseText, *bCreateComponent, *bCreateScene;
         odfaeg::graphic::Shape* sTextRect;
         odfaeg::core::StateStack stateStack;
         ODFAEGCreatorStateExecutor se;
