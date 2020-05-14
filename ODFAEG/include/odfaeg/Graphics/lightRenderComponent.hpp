@@ -71,6 +71,9 @@ namespace odfaeg {
                 View view; /**> the view of the component.*/
                 std::string expression;
                 bool update;
+                unsigned int vboWorldMatrices;
+                VertexBuffer vb;
+                std::vector<float> matrices;
         };
     }
 }

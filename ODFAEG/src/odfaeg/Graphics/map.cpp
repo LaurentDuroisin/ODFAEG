@@ -636,7 +636,7 @@ namespace odfaeg {
 
         }
         bool Map::addEntity(Entity *entity) {
-            EntityManager::addEntity(entity);
+            //EntityManager::addEntity(entity);
             if (entity->isAnimated()) {
                 if (static_cast<AnimatedEntity*>(entity)->getCurrentFrame() != nullptr) {
                     addEntity(static_cast<AnimatedEntity*>(entity)->getCurrentFrame());

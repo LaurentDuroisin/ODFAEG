@@ -12,7 +12,7 @@ namespace odfaeg {
             view(window.getView()),
             expression(expression),
             quad(math::Vec3f(window.getView().getSize().x, window.getView().getSize().y, window.getSize().y * 0.5f)) {
-            quad.move(math::Vec3f(-window.getView().getSize().x * 0.5f, -window.getView().getSize().y * 0.5f, 0));
+            quad.move(math::Vec3f(-window.getView().getSize().x * 0.5f, 0/*-window.getView().getSize().y * 0.5f*/, 0));
             GLuint maxNodes = 20 * window.getView().getSize().x * window.getView().getSize().y;
             GLint nodeSize = 5 * sizeof(GLfloat) + sizeof(GLuint);
             frameBuffer.create(window.getView().getSize().x, window.getView().getSize().y, settings);
@@ -44,163 +44,264 @@ namespace odfaeg {
             core::Command cmd(signal, slot);
             getListener().connect("UPDATE", cmd);
 
-
-            const std::string  simpleVertexShader =
-            R"(#version 140
-            void main () {
-                gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
-                gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;
-                gl_FrontColor = gl_Color;
-            })";
-            const std::string filterNotOpaquePixels =
-            R"(#version 140
-            uniform sampler2D texture;
-            uniform float haveTexture;
-            void main () {
-                vec4 texel = texture2D(texture, gl_TexCoord[0].xy);
-                vec4 colors[2];
-                colors[1] = texel * gl_Color;
-                colors[0] = gl_Color;
-                bool b = (haveTexture > 0.9);
-                vec4 color = colors[int(b)];
-                colors[0] = vec4(0, 0, 0, 0);
-                colors[1] = color;
-                b = (color.a == 1);
-                gl_FragColor = colors[int(b)];
-            })";
-            const std::string initializeSSBO =
-            R"(#version 140
-               #extension GL_ARB_shader_storage_buffer_object : require
-               struct NodeType {
-                  vec4 color;
-                  float depth;
-                  uint next;
-               };
-               layout(binding = 0, std430) buffer linkedLists {
-                   NodeType nodes[];
-               };
-               void main() {
-                   for (int i = 0; i < 20; i++) {
-                       nodes[i].color = vec4(0, 0, 0, 0);
-                       nodes[i].depth = 0;
-                       nodes[i].next = 0xffffffffu;
-                   }
-                   gl_FragColor = vec4(0, 0, 0, 0);
-               })";
-            const std::string fragmentShader =
-            R"(#version 140
-               #extension GL_ARB_shader_atomic_counters : require
-               #extension GL_ARB_shading_language_420pack : require
-               #extension GL_ARB_shader_image_load_store : require
-               #extension GL_ARB_shader_storage_buffer_object : require
-               struct NodeType {
-                  vec4 color;
-                  float depth;
-                  uint next;
-               };
-               layout(binding = 0, offset = 0) uniform atomic_uint nextNodeCounter;
-               layout(binding = 0, r32ui) uniform uimage2D headPointers;
-               layout(binding = 0, std430) buffer linkedLists {
-                   NodeType nodes[];
-               };
-               uniform uint maxNodes;
-               uniform float haveTexture;
-               uniform sampler2D texture;
-               void main() {
-                   uint nodeIdx = atomicCounterIncrement(nextNodeCounter);
-                   vec4 texel = texture2D(texture, gl_TexCoord[0].xy);
-                   vec4 color = (haveTexture > 0.9) ? gl_Color * texel : gl_Color;
-                   if (nodeIdx < maxNodes) {
-                        uint prevHead = imageAtomicExchange(headPointers, ivec2(gl_FragCoord.xy), nodeIdx);
-                        nodes[nodeIdx].color = color;
-                        nodes[nodeIdx].depth = gl_FragCoord.z;
-                        nodes[nodeIdx].next = prevHead;
-                   }
-                   gl_FragColor = vec4(0, 0, 0, 0);
-               })";
-               const std::string fragmentShader2 =
-               R"(
-               #version 140
-               #extension GL_ARB_shader_atomic_counters : require
-               #extension GL_ARB_shading_language_420pack : require
-               #extension GL_ARB_shader_image_load_store : require
-               #extension GL_ARB_shader_storage_buffer_object : require
-               #define MAX_FRAGMENTS 20
-               struct NodeType {
-                  vec4 color;
-                  float depth;
-                  uint next;
-               };
-               layout(binding = 0, r32ui) uniform uimage2D headPointers;
-               layout(binding = 0, std430) buffer linkedLists {
-                   NodeType nodes[];
-               };
-               void main() {
-                  NodeType frags[MAX_FRAGMENTS];
-                  int count = 0;
-                  uint n = imageLoad(headPointers, ivec2(gl_FragCoord.xy)).r;
-                  while( n != 0xffffffffu && count < MAX_FRAGMENTS) {
-                       frags[count] = nodes[n];
-                       n = frags[count].next;
-                       count++;
-                  }
-                  //merge sort
-                  int i, j1, j2, k;
-                  int a, b, c;
-                  int step = 1;
-                  NodeType leftArray[MAX_FRAGMENTS/2]; //for merge sort
-
-                  while (step <= count)
-                  {
-                      i = 0;
-                      while (i < count - step)
-                      {
-                          ////////////////////////////////////////////////////////////////////////
-                          //merge(step, i, i + step, min(i + step + step, count));
-                          a = i;
-                          b = i + step;
-                          c = (i + step + step) >= count ? count : (i + step + step);
-
-                          for (k = 0; k < step; k++)
-                              leftArray[k] = frags[a + k];
-
-                          j1 = 0;
-                          j2 = 0;
-                          for (k = a; k < c; k++)
-                          {
-                              if (b + j1 >= c || (j2 < step && leftArray[j2].depth > frags[b + j1].depth))
-                                  frags[k] = leftArray[j2++];
-                              else
-                                  frags[k] = frags[b + j1++];
-                          }
-                          ////////////////////////////////////////////////////////////////////////
-                          i += 2 * step;
+            if (settings.versionMajor >= 4 && settings.versionMinor >= 3) {
+                glGenBuffers(1, &vboWorldMatrices);
+                const std::string vertexShader = R"(#version 460 core
+                                                    layout (location = 0) in vec3 position;
+                                                    layout (location = 1) in vec4 color;
+                                                    layout (location = 2) in vec2 texCoords;
+                                                    layout (location = 3) in mat4 worldMat;
+                                                    uniform mat4 projectionMatrix;
+                                                    uniform mat4 viewMatrix;
+                                                    uniform mat4 textureMatrix;
+                                                    out vec2 fTexCoords;
+                                                    out vec4 frontColor;
+                                                    void main() {
+                                                        gl_Position = projectionMatrix * viewMatrix * worldMat * vec4(position, 1.f);
+                                                        fTexCoords = (textureMatrix * vec4(texCoords, 1.f, 1.f)).xy;
+                                                        frontColor = color;
+                                                    }
+                                                    )";
+                const std::string  simpleVertexShader = R"(#version 460 core
+                                                        layout (location = 0) in vec3 position;
+                                                        layout (location = 1) in vec4 color;
+                                                        layout (location = 2) in vec2 texCoords;
+                                                        uniform mat4 projectionMatrix;
+                                                        uniform mat4 viewMatrix;
+                                                        uniform mat4 worldMat;
+                                                        void main () {
+                                                            gl_Position = projectionMatrix * viewMatrix * worldMat * vec4(position, 1.f);
+                                                        })";
+                const std::string fragmentShader = R"(#version 460 core
+                                                      struct NodeType {
+                                                          vec4 color;
+                                                          float depth;
+                                                          uint next;
+                                                      };
+                                                      layout(binding = 0, offset = 0) uniform atomic_uint nextNodeCounter;
+                                                      layout(binding = 0, r32ui) uniform uimage2D headPointers;
+                                                      layout(binding = 0, std430) buffer linkedLists {
+                                                          NodeType nodes[];
+                                                      };
+                                                      uniform uint maxNodes;
+                                                      uniform float haveTexture;
+                                                      uniform sampler2D texture;
+                                                      in vec4 frontColor;
+                                                      in vec2 fTexCoords;
+                                                      layout (location = 0) out vec4 fcolor;
+                                                      void main() {
+                                                           uint nodeIdx = atomicCounterIncrement(nextNodeCounter);
+                                                           vec4 texel = texture2D(texture, fTexCoords.xy);
+                                                           vec4 color = (haveTexture > 0.9) ? frontColor * texel : frontColor;
+                                                           if (nodeIdx < maxNodes) {
+                                                                uint prevHead = imageAtomicExchange(headPointers, ivec2(gl_FragCoord.xy), nodeIdx);
+                                                                nodes[nodeIdx].color = color;
+                                                                nodes[nodeIdx].depth = gl_FragCoord.z;
+                                                                nodes[nodeIdx].next = prevHead;
+                                                           }
+                                                           fcolor = vec4(0, 0, 0, 0);
+                                                      })";
+                 const std::string fragmentShader2 =
+                   R"(
+                   #version 460
+                   #define MAX_FRAGMENTS 20
+                   struct NodeType {
+                      vec4 color;
+                      float depth;
+                      uint next;
+                   };
+                   layout(binding = 0, r32ui) uniform uimage2D headPointers;
+                   layout(binding = 0, std430) buffer linkedLists {
+                       NodeType nodes[];
+                   };
+                   layout(location = 0) out vec4 fcolor;
+                   void main() {
+                      NodeType frags[MAX_FRAGMENTS];
+                      int count = 0;
+                      uint n = imageLoad(headPointers, ivec2(gl_FragCoord.xy)).r;
+                      while( n != 0xffffffffu && count < MAX_FRAGMENTS) {
+                           frags[count] = nodes[n];
+                           n = frags[count].next;
+                           count++;
                       }
-                      step *= 2;
-                  }
-                  vec4 color = vec4(0, 0, 0, 0);
-                  for( int i = count - 1; i >= 0; i--)
-                  {
-                    color.rgb = frags[i].color.rgb * frags[i].color.a + color.rgb * (1 - frags[i].color.a);
-                    color.a = frags[i].color.a + color.a * (1 - frags[i].color.a);
-                  }
-                  gl_FragColor = color;
-               })";
-               if (!initialize.loadFromMemory(simpleVertexShader, initializeSSBO)) {
-                    throw core::Erreur(54, "Failed to load initialize ssbo shader");
-               }
-               if (!perPixelLinkedList.loadFromMemory(simpleVertexShader, fragmentShader)) {
-                    throw core::Erreur(54, "Failed to load per pixel linked list shader");
-               }
-               if (!perPixelLinkedListP2.loadFromMemory(simpleVertexShader, fragmentShader2)) {
-                    throw core::Erreur(54, "Failed to load per pixel linked list pass 2 shader");
-               }
-               if (!filterNotOpaque.loadFromMemory(simpleVertexShader, filterNotOpaquePixels)) {
-                    throw core::Erreur(54, "Failed to load filter not opaque shader");
-               }
-               perPixelLinkedList.setParameter("maxNodes", maxNodes);
-               perPixelLinkedList.setParameter("texture", Shader::CurrentTexture);
-               filterNotOpaque.setParameter("texture", Shader::CurrentTexture);
+                      //merge sort
+                      int i, j1, j2, k;
+                      int a, b, c;
+                      int step = 1;
+                      NodeType leftArray[MAX_FRAGMENTS/2]; //for merge sort
+
+                      while (step <= count)
+                      {
+                          i = 0;
+                          while (i < count - step)
+                          {
+                              ////////////////////////////////////////////////////////////////////////
+                              //merge(step, i, i + step, min(i + step + step, count));
+                              a = i;
+                              b = i + step;
+                              c = (i + step + step) >= count ? count : (i + step + step);
+
+                              for (k = 0; k < step; k++)
+                                  leftArray[k] = frags[a + k];
+
+                              j1 = 0;
+                              j2 = 0;
+                              for (k = a; k < c; k++)
+                              {
+                                  if (b + j1 >= c || (j2 < step && leftArray[j2].depth > frags[b + j1].depth))
+                                      frags[k] = leftArray[j2++];
+                                  else
+                                      frags[k] = frags[b + j1++];
+                              }
+                              ////////////////////////////////////////////////////////////////////////
+                              i += 2 * step;
+                          }
+                          step *= 2;
+                      }
+                      vec4 color = vec4(0, 0, 0, 0);
+                      for( int i = count - 1; i >= 0; i--)
+                      {
+                        color.rgb = frags[i].color.rgb * frags[i].color.a + color.rgb * (1 - frags[i].color.a);
+                        color.a = frags[i].color.a + color.a * (1 - frags[i].color.a);
+                      }
+                      fcolor = color;
+                   })";
+                   if (!perPixelLinkedList.loadFromMemory(vertexShader, fragmentShader)) {
+                        throw core::Erreur(54, "Failed to load per pixel linked list shader");
+                   }
+                   std::cout<<"ppll shaders 1 compilated"<<std::endl;
+                   if (!perPixelLinkedListP2.loadFromMemory(simpleVertexShader, fragmentShader2)) {
+                        throw core::Erreur(55, "Failed to load per pixel linked list pass 2 shader");
+                   }
+                   /*if (!filterNotOpaque.loadFromMemory(simpleVertexShader, filterNotOpaquePixels)) {
+                        throw core::Erreur(54, "Failed to load filter not opaque shader");
+                   }*/
+                   perPixelLinkedList.setParameter("maxNodes", maxNodes);
+                   perPixelLinkedList.setParameter("texture", Shader::CurrentTexture);
+            } else {
+                const std::string  simpleVertexShader =
+                R"(#version 140
+                void main () {
+                    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+                    gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;
+                    gl_FrontColor = gl_Color;
+                })";
+                const std::string fragmentShader =
+                R"(#version 140
+                   #extension GL_ARB_shader_atomic_counters : require
+                   #extension GL_ARB_shading_language_420pack : require
+                   #extension GL_ARB_shader_image_load_store : require
+                   #extension GL_ARB_shader_storage_buffer_object : require
+                   struct NodeType {
+                      vec4 color;
+                      float depth;
+                      uint next;
+                   };
+                   layout(binding = 0, offset = 0) uniform atomic_uint nextNodeCounter;
+                   layout(binding = 0, r32ui) uniform uimage2D headPointers;
+                   layout(binding = 0, std430) buffer linkedLists {
+                       NodeType nodes[];
+                   };
+                   uniform uint maxNodes;
+                   uniform float haveTexture;
+                   uniform sampler2D texture;
+                   void main() {
+                       uint nodeIdx = atomicCounterIncrement(nextNodeCounter);
+                       vec4 texel = texture2D(texture, gl_TexCoord[0].xy);
+                       vec4 color = (haveTexture > 0.9) ? gl_Color * texel : gl_Color;
+                       if (nodeIdx < maxNodes) {
+                            uint prevHead = imageAtomicExchange(headPointers, ivec2(gl_FragCoord.xy), nodeIdx);
+                            nodes[nodeIdx].color = color;
+                            nodes[nodeIdx].depth = gl_FragCoord.z;
+                            nodes[nodeIdx].next = prevHead;
+                       }
+                       gl_FragColor = vec4(0, 0, 0, 0);
+                   })";
+                   const std::string fragmentShader2 =
+                   R"(
+                   #version 140
+                   #extension GL_ARB_shader_atomic_counters : require
+                   #extension GL_ARB_shading_language_420pack : require
+                   #extension GL_ARB_shader_image_load_store : require
+                   #extension GL_ARB_shader_storage_buffer_object : require
+                   #define MAX_FRAGMENTS 20
+                   struct NodeType {
+                      vec4 color;
+                      float depth;
+                      uint next;
+                   };
+                   layout(binding = 0, r32ui) uniform uimage2D headPointers;
+                   layout(binding = 0, std430) buffer linkedLists {
+                       NodeType nodes[];
+                   };
+                   void main() {
+                      NodeType frags[MAX_FRAGMENTS];
+                      int count = 0;
+                      uint n = imageLoad(headPointers, ivec2(gl_FragCoord.xy)).r;
+                      while( n != 0xffffffffu && count < MAX_FRAGMENTS) {
+                           frags[count] = nodes[n];
+                           n = frags[count].next;
+                           count++;
+                      }
+                      //merge sort
+                      int i, j1, j2, k;
+                      int a, b, c;
+                      int step = 1;
+                      NodeType leftArray[MAX_FRAGMENTS/2]; //for merge sort
+
+                      while (step <= count)
+                      {
+                          i = 0;
+                          while (i < count - step)
+                          {
+                              ////////////////////////////////////////////////////////////////////////
+                              //merge(step, i, i + step, min(i + step + step, count));
+                              a = i;
+                              b = i + step;
+                              c = (i + step + step) >= count ? count : (i + step + step);
+
+                              for (k = 0; k < step; k++)
+                                  leftArray[k] = frags[a + k];
+
+                              j1 = 0;
+                              j2 = 0;
+                              for (k = a; k < c; k++)
+                              {
+                                  if (b + j1 >= c || (j2 < step && leftArray[j2].depth > frags[b + j1].depth))
+                                      frags[k] = leftArray[j2++];
+                                  else
+                                      frags[k] = frags[b + j1++];
+                              }
+                              ////////////////////////////////////////////////////////////////////////
+                              i += 2 * step;
+                          }
+                          step *= 2;
+                      }
+                      vec4 color = vec4(0, 0, 0, 0);
+                      for( int i = count - 1; i >= 0; i--)
+                      {
+                        color.rgb = frags[i].color.rgb * frags[i].color.a + color.rgb * (1 - frags[i].color.a);
+                        color.a = frags[i].color.a + color.a * (1 - frags[i].color.a);
+                      }
+                      gl_FragColor = color;
+                   })";
+                   /*if (!initialize.loadFromMemory(simpleVertexShader, initializeSSBO)) {
+                        throw core::Erreur(54, "Failed to load initialize ssbo shader");
+                   } */
+                   if (!perPixelLinkedList.loadFromMemory(simpleVertexShader, fragmentShader)) {
+                        throw core::Erreur(54, "Failed to load per pixel linked list shader");
+                   }
+                   if (!perPixelLinkedListP2.loadFromMemory(simpleVertexShader, fragmentShader2)) {
+                        throw core::Erreur(54, "Failed to load per pixel linked list pass 2 shader");
+                   }
+                   std::cout<<"shaders compilated"<<std::endl;
+                   /*if (!filterNotOpaque.loadFromMemory(simpleVertexShader, filterNotOpaquePixels)) {
+                        throw core::Erreur(54, "Failed to load filter not opaque shader");
+                   }*/
+                   perPixelLinkedList.setParameter("maxNodes", maxNodes);
+                   perPixelLinkedList.setParameter("texture", Shader::CurrentTexture);
+                }
+               //filterNotOpaque.setParameter("texture", Shader::CurrentTexture);
                backgroundColor = sf::Color::Transparent;
                glCheck(glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, 0, atomicBuffer));
                glCheck(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, linkedListBuffer));
@@ -226,42 +327,105 @@ namespace odfaeg {
 
         }
         void PerPixelLinkedListRenderComponent::drawNextFrame() {
-            currentStates.blendMode = sf::BlendNone;
-            currentStates.shader=&perPixelLinkedList;
-
-            for (unsigned int i = 0; i < m_instances.size(); i++) {
-               if (m_instances[i].getAllVertices().getVertexCount() > 0) {
-                    if (m_instances[i].getMaterial().getTexture() == nullptr) {
-                        perPixelLinkedList.setParameter("haveTexture", 0.f);
-                    } else {
-                        perPixelLinkedList.setParameter("haveTexture", 1.f);
+            if (frameBuffer.getSettings().versionMajor >= 4 && frameBuffer.getSettings().versionMinor >= 3) {
+                math::Matrix4f viewMatrix = view.getViewMatrix().getMatrix().transpose();
+                math::Matrix4f projMatrix = view.getProjMatrix().getMatrix().transpose();
+                perPixelLinkedList.setParameter("projectionMatrix", projMatrix);
+                perPixelLinkedList.setParameter("viewMatrix", viewMatrix);
+                for (unsigned int i = 0; i < m_instances.size(); i++) {
+                    if (m_instances[i].getAllVertices().getVertexCount() > 0) {
+                        vb.clear();
+                        vb.setPrimitiveType(m_instances[i].getVertexArrays()[0]->getPrimitiveType());
+                        matrices.clear();
+                        std::vector<TransformMatrix*> tm = m_instances[i].getTransforms();
+                        for (unsigned int j = 0; j < tm.size(); j++) {
+                            tm[j]->update();
+                            std::array<float, 16> matrix = tm[j]->getMatrix().transpose().toGlMatrix();
+                            for (unsigned int n = 0; n < 16; n++) {
+                                matrices.push_back(matrix[n]);
+                            }
+                        }
+                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, vboWorldMatrices));
+                        glCheck(glBufferData(GL_ARRAY_BUFFER, matrices.size() * sizeof(float), &matrices[0], GL_DYNAMIC_DRAW));
+                        glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+                        if (m_instances[i].getVertexArrays().size() > 0) {
+                            for (unsigned int j = 0; j < m_instances[i].getVertexArrays()[0]->getVertexCount(); j++) {
+                                vb.append((*m_instances[i].getVertexArrays()[0])[j]);
+                            }
+                            vb.update();
+                        }
+                        currentStates.blendMode = sf::BlendNone;
+                        currentStates.shader = &perPixelLinkedList;
+                        currentStates.texture = m_instances[i].getMaterial().getTexture();
+                        if (m_instances[i].getMaterial().getTexture() != nullptr) {
+                            math::Matrix4f texMatrix = m_instances[i].getMaterial().getTexture()->getTextureMatrix();
+                            perPixelLinkedList.setParameter("textureMatrix", texMatrix);
+                            perPixelLinkedList.setParameter("haveTexture", 1.f);
+                        } else {
+                            perPixelLinkedList.setParameter("haveTexture", 0.f);
+                        }
+                        frameBuffer.drawInstanced(vb, vboWorldMatrices, m_instances[i].getVertexArrays()[0]->getPrimitiveType(), 0, m_instances[i].getVertexArrays()[0]->getVertexCount(), tm.size(), currentStates);
                     }
-                    currentStates.texture = m_instances[i].getMaterial().getTexture();
-                    frameBuffer.draw(m_instances[i].getAllVertices(), currentStates);
                 }
+                glCheck(glFinish());
+                glCheck(glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT));
+                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+                vb2.clear();
+                vb2.setPrimitiveType(sf::Quads);
+                Vertex v1 (sf::Vector3f(0, 0, 0));
+                Vertex v2 (sf::Vector3f(quad.getSize().x,0, 0));
+                Vertex v3 (sf::Vector3f(quad.getSize().x, quad.getSize().y, quad.getSize().z));
+                Vertex v4 (sf::Vector3f(0, quad.getSize().y, quad.getSize().z));
+                vb2.append(v1);
+                vb2.append(v2);
+                vb2.append(v3);
+                vb2.append(v4);
+                vb2.update();
+                math::Matrix4f matrix = quad.getTransform().getMatrix().transpose();
+                perPixelLinkedListP2.setParameter("projectionMatrix", projMatrix);
+                perPixelLinkedListP2.setParameter("viewMatrix", viewMatrix);
+                perPixelLinkedListP2.setParameter("worldMat", matrix);
+                currentStates.shader = &perPixelLinkedListP2;
+                frameBuffer.drawVertexBuffer(vb2, currentStates);
+                glCheck(glFinish());
+                frameBuffer.display();
+            } else {
+                currentStates.blendMode = sf::BlendNone;
+                currentStates.shader=&perPixelLinkedList;
+
+                for (unsigned int i = 0; i < m_instances.size(); i++) {
+                   if (m_instances[i].getAllVertices().getVertexCount() > 0) {
+                        if (m_instances[i].getMaterial().getTexture() == nullptr) {
+                            perPixelLinkedList.setParameter("haveTexture", 0.f);
+                        } else {
+                            perPixelLinkedList.setParameter("haveTexture", 1.f);
+                        }
+                        currentStates.texture = m_instances[i].getMaterial().getTexture();
+                        frameBuffer.draw(m_instances[i].getAllVertices(), currentStates);
+                    }
+                }
+                glCheck(glFinish());
+                glCheck(glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT));
+
+                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+
+                currentStates.shader = &perPixelLinkedListP2;
+                /*for (unsigned int i = 0; i < m_instances.size(); i++) {
+                   if (m_instances[i].getAllVertices().getVertexCount() > 0) {
+                        frameBuffer.draw(m_instances[i].getAllVertices(), currentStates);
+                   }
+
+                //glCheck(glDepthMask(GL_TRUE));*/
+
+                //quad.setCenter(frameBuffer.getView().getPosition());
+                frameBuffer.draw(quad, currentStates);
+                glCheck(glFinish());
+                frameBuffer.display();
             }
-            glCheck(glFinish());
-            glCheck(glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT));
-
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-
-
-            currentStates.shader = &perPixelLinkedListP2;
-            /*for (unsigned int i = 0; i < m_instances.size(); i++) {
-               if (m_instances[i].getAllVertices().getVertexCount() > 0) {
-                    frameBuffer.draw(m_instances[i].getAllVertices(), currentStates);
-               }
-
-            //glCheck(glDepthMask(GL_TRUE));*/
-
-            //quad.setCenter(frameBuffer.getView().getPosition());
-            frameBuffer.draw(quad, currentStates);
-            glCheck(glFinish());
-            frameBuffer.display();
         }
         void PerPixelLinkedListRenderComponent::draw(RenderTarget& target, RenderStates states) {
-            /*states.blendMode = sf::BlendNone;
-            states.shader=&perPixelLinkedList;
+            /*states.shader=&perPixelLinkedList;
             for (unsigned int i = 0; i < m_instances.size(); i++) {
                if (m_instances[i].getAllVertices().getVertexCount() > 0) {
                     if (m_instances[i].getMaterial().getTexture() == nullptr) {

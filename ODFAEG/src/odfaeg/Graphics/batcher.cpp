@@ -28,10 +28,10 @@ namespace odfaeg {
                 return texId;
             }
             bool Material::TextureInfo::operator== (TextureInfo& info) {
-                return texture == info.texture;
+                return texture == info.texture && rect.left == info.rect.left && rect.top == info.rect.top && rect.width == info.rect.width && rect.height == info.rect.height;
             }
             bool Material::TextureInfo::operator!= (TextureInfo& info) {
-                return texture != info.texture;
+                return !(*this == info);
             }
             const Texture* Material::TextureInfo::getTexture() const {
                 return texture;
@@ -260,7 +260,7 @@ namespace odfaeg {
             void Instance::addVertexShadowArray (VertexArray va, TransformMatrix tm, ViewMatrix viewMatrix, TransformMatrix shadowProjMatrix) {
                 m_transforms.push_back(&tm);
                 m_vertexArrays.push_back(&va);
-                shadowProjMatrix.combine(viewMatrix.getMatrix());
+                //shadowProjMatrix.combine(viewMatrix.getMatrix());
                 shadowProjMatrix.combine(tm.getMatrix());
                 for (unsigned int i = 0; i < va.getVertexCount(); i++) {
                     math::Vec3f t = shadowProjMatrix.transform(math::Vec3f(va[i].position.x, va[i].position.y, va[i].position.z));

@@ -95,9 +95,6 @@ namespace odfaeg {
                 glCheck(glDeleteTextures(1, &texture));
             }
         }
-        void Texture::bindToImage(unsigned int unit, int level, bool layered, int layer, unsigned int access, unsigned int format) {
-            glCheck(glBindImageTexture(unit, m_texture, level, layered, layer, access, format));
-        }
 
         ////////////////////////////////////////////////////////////
         bool Texture::create(unsigned int width, unsigned int height, GLenum precision, GLenum format, GLenum type)
@@ -140,15 +137,16 @@ namespace odfaeg {
             }
 
             // Make sure that the current texture binding will be preserved
-            priv::TextureSaver save;
+            //priv::TextureSaver save;
 
             // Initialize the texture
             glCheck(glBindTexture(GL_TEXTURE_2D, m_texture));
-            glCheck(glTexImage2D(GL_TEXTURE_2D, 0, precision, m_actualSize.x, m_actualSize.y, 0, format, type, NULL));
+            glCheck(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL));
             glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, m_isRepeated ? GL_REPEAT : GL_CLAMP_TO_EDGE));
             glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_isRepeated ? GL_REPEAT : GL_CLAMP_TO_EDGE));
             glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_isSmooth ? GL_LINEAR : GL_NEAREST));
             glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_isSmooth ? GL_LINEAR : GL_NEAREST));
+
             m_cacheId = getUniqueId();
             m_type = type;
             m_format = format;
@@ -579,6 +577,8 @@ namespace odfaeg {
         const sf::Image& Texture::getImage() const {
             return m_image;
         }
+        unsigned int Texture::getNativeHandle() const {
+            return m_texture;
+        }
     }
 } // namespace sf
-

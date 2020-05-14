@@ -91,8 +91,10 @@ namespace odfaeg {
             View view; /**> the view of the component.*/
             std::string expression;
             bool update;
-            unsigned int atomicBuffer, linkedListBuffer, clearBuf, clearBuf2, clearBuf3, pass1Index, pass2Index, headPtrTex, colorTex, depthTex;
+            unsigned int atomicBuffer, linkedListBuffer, clearBuf, clearBuf2, clearBuf3, pass1Index, pass2Index, headPtrTex, colorTex, depthTex, vboWorldMatrices;
             Sprite frameBufferSprite;
+            VertexBuffer vb, vb2;
+            std::vector<float> matrices;
         };
     }
 }

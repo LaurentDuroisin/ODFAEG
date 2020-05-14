@@ -541,9 +541,9 @@ namespace sorrok {
 
         //caracter->setCenter(Vec3f(getView().getPosition().x, getView().getPosition().y, 300));
 
-        ZSortingRenderComponent *frc1 = new ZSortingRenderComponent(getRenderWindow(),0, "",ContextSettings(0, 0, 0, 3, 0));
+        PerPixelLinkedListRenderComponent *frc1 = new PerPixelLinkedListRenderComponent(getRenderWindow(),0, "",ContextSettings(0, 0, 0, 4, 6));
         ShadowRenderComponent *frc2 = new ShadowRenderComponent(getRenderWindow(),1, "");
-        PerPixelLinkedListRenderComponent* frc3 = new PerPixelLinkedListRenderComponent(getRenderWindow(),2,"", ContextSettings(0, 0, 0, 3, 0));
+        PerPixelLinkedListRenderComponent* frc3 = new PerPixelLinkedListRenderComponent(getRenderWindow(),2,"", ContextSettings(0, 0, 0, 4, 6));
         LightRenderComponent* frc4 = new LightRenderComponent(getRenderWindow(),3,"");
         /*View view = getView();
         frc1->setView(view);*/

@@ -78,8 +78,7 @@ namespace odfaeg
             ///
             ////////////////////////////////////////////////////////////
             Texture();
-            void bindToImage(unsigned int unit, int level, bool layered, int layer, unsigned int access, unsigned int format);
-            ////////////////////////////////////////////////////////////
+             ////////////////////////////////////////////////////////////
             /// \brief Copy constructor
             ///
             /// \param copy instance to copy
@@ -501,6 +500,7 @@ namespace odfaeg
             const sf::Image& getImage() const;
             void onLoad(std::vector<sf::Uint8>& pixels);
             void onSave(std::vector<sf::Uint8>& pixels);
+            unsigned int getNativeHandle() const;
         private :
 
             friend class RenderTexture;

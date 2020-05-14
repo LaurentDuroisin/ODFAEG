@@ -99,6 +99,7 @@ namespace odfaeg {
             void setLocal(unsigned int index, math::Vec3f v);
             std::vector<unsigned int> getBaseIndexes();
             void remove (unsigned int index);
+            void update();
 
             ////////////////////////////////////////////////////////////
             /// \brief Clear the vertex array

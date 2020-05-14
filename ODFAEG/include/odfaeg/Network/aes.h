@@ -48,8 +48,8 @@ namespace odfaeg {
                 ossl_key = new unsigned char[32];
                 iv = new unsigned char[32];
                 aesSalt = new unsigned char[8];
-                e_ctx = new EVP_CIPHER_CTX;
-                d_ctx = new EVP_CIPHER_CTX;
+                e_ctx = EVP_CIPHER_CTX_new();
+                d_ctx = EVP_CIPHER_CTX_new();
                 aesPass = ossl_generateKey(256);
                 generateKey(256);
             }
@@ -104,8 +104,8 @@ namespace odfaeg {
                 delete[] iv;
                 delete[] aesSalt;
                 delete[] aesPass;
-                EVP_CIPHER_CTX_cleanup(d_ctx);
-                EVP_CIPHER_CTX_cleanup(e_ctx);
+                EVP_CIPHER_CTX_free(d_ctx);
+                EVP_CIPHER_CTX_free(e_ctx);
                 delete e_ctx;
                 delete d_ctx;
             }
